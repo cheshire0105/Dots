@@ -7,11 +7,7 @@
 
 import UIKit
 
-
-
-import UIKit
-
-class MainTabBarController: UITabBarController {
+class GlassTabBar: UITabBarController {
 
     let customTabBarView = UIView()
     let stackView = UIStackView()
@@ -28,14 +24,13 @@ class MainTabBarController: UITabBarController {
 
             let originalImage = images[i]?.withRenderingMode(.alwaysOriginal)
             button.setImage(originalImage, for: .normal)
-            button.setImage(originalImage, for: .selected)
+            button.setImage(originalImage, for: .selected)  // 동일한 이미지를 선택 상태에도 설정
+            button.backgroundColor = .clear  // 초기 배경색 설정
 
             // Set text font size
             button.titleLabel?.font = UIFont.systemFont(ofSize: 12) // Adjust the font size as desired
 
             button.setTitleColor(.white, for: .normal)
-            button.setTitleColor(.white, for: .selected)
-            button.tintColor = .black // Set image color to black
 
             let imageSize = button.imageView!.intrinsicContentSize
             let titleSize = button.titleLabel!.intrinsicContentSize
@@ -133,7 +128,19 @@ class MainTabBarController: UITabBarController {
             button.tag = index
 
             button.heightAnchor.constraint(equalToConstant: 70).isActive = true
+
+            // 첫 번째 버튼의 왼쪽 모서리만 둥글게 설정
+            if index == 0 {
+                button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+                button.layer.cornerRadius = 25
+            }
+            // 마지막 버튼의 오른쪽 모서리만 둥글게 설정
+            else if index == titles.count - 1 {
+                button.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+                button.layer.cornerRadius = 25
+            }
         }
+
     }
 
     @objc func tabBarButtonTapped(_ sender: UIButton) {
@@ -141,11 +148,11 @@ class MainTabBarController: UITabBarController {
             if button == sender {
                 selectedIndex = index
                 button.isSelected = true
+                button.backgroundColor = .darkGray  // 탭 됐을 때의 배경색
             } else {
                 button.isSelected = false
+                button.backgroundColor = .clear  // 기본 배경색
             }
         }
     }
 }
-
-
