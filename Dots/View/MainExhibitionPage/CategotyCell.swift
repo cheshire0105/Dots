@@ -32,11 +32,11 @@ class CategotyCell: UICollectionViewCell {
         contentView.addSubview(label)
         label.textAlignment = .center
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 15)  // 텍스트 크기를 22로 설정
+        label.font = UIFont.systemFont(ofSize: 13)  // 텍스트 크기를 22로 설정
         label.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        contentView.layer.borderWidth = 1
+        contentView.layer.borderWidth = 0.7
         contentView.layer.borderColor = UIColor.white.cgColor
         updateBackgroundColor()
     }
