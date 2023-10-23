@@ -53,6 +53,8 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
 
         setupNewCollectionView()
         bindNewCollectionView()
+
+        
     }
 
     private func setupCollectionView() {
@@ -103,7 +105,16 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         }).disposed(by: disposeBag)
 
         MainExhibitionCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
+
+        // 페이징 효과 적용
+        MainExhibitionCollectionView.isPagingEnabled = true
+
+        // UICollectionViewFlowLayout의 minimumLineSpacing을 조절
+        if let flowLayout = MainExhibitionCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            flowLayout.minimumLineSpacing = 0
+        }
     }
+
 
 
     // 기존의 sizeForItemAt 메소드를 수정하여, 새로운 컬렉션뷰의 사이즈도 설정해줍니다.
