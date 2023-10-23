@@ -1,8 +1,6 @@
 import UIKit
 
 class CustomCell: UICollectionViewCell {
-    
-
     let 작성자_이미지 = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 20
@@ -11,10 +9,12 @@ class CustomCell: UICollectionViewCell {
 
         return imageView
     }()
-    
+
     let 작성자_이름: UILabel = {
         let label = UILabel()
         label.text = ""
+        label.textColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: 16)
         return label
     }()
 
@@ -32,22 +32,39 @@ class CustomCell: UICollectionViewCell {
 
         return imageView
     }()
-    
+
     let 인기셀_아티스트 = {
+        let button = UIButton()
+        button.setTitle("", for: .normal)
+        button.backgroundColor = UIColor.systemGray
+        button.isEnabled = true
+        button.layer.cornerRadius = 10
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        return button
+    }()
+
+    let 인기셀_전시장소 = {
+        let button = UIButton()
+        button.setTitle("", for: .normal)
+        button.backgroundColor = UIColor.systemGray
+        button.isEnabled = true
+        button.layer.cornerRadius = 10
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+
+        return button
+    }()
+
+    let 인기셀_리뷰내용 = {
         let label = UILabel()
         label.text = ""
-        label.backgroundColor = UIColor.lightGray
-        label.layer.cornerRadius = 10
+        label.textColor = UIColor.systemGray2
+        label.font = UIFont.systemFont(ofSize: 16)
         return label
     }()
-    
-    let 인기셀_전시장소 = {
-        let label = UILabel()
-        label.text = ""
-        label.backgroundColor = UIColor.lightGray
-        label.layer.cornerRadius = 10
-        return label
-    } ()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -68,7 +85,7 @@ class CustomCell: UICollectionViewCell {
         contentView.addSubview(인기셀_이미지)
         contentView.addSubview(인기셀_아티스트)
         contentView.addSubview(인기셀_전시장소)
-
+        contentView.addSubview(인기셀_리뷰내용)
         작성자_이미지.snp.makeConstraints { make in
             make.width.equalTo(38)
             make.height.equalTo(38)
@@ -98,17 +115,24 @@ class CustomCell: UICollectionViewCell {
             make.bottom.equalToSuperview().offset(-207)
         }
         인기셀_아티스트.snp.makeConstraints { make in
-            make.width.equalTo(139.03)
-            make.height.equalTo(31)
+            make.width.equalTo(135)
+            make.height.equalTo(25)
             make.top.equalTo(인기셀_이미지.snp.bottom).offset(12)
             make.leading.equalToSuperview().offset(18)
         }
         인기셀_전시장소.snp.makeConstraints { make in
-            make.width.equalTo(91.9)
-            make.height.equalTo(31)
+            make.width.equalTo(135)
+            make.height.equalTo(25)
             make.top.equalTo(인기셀_이미지.snp.bottom).offset(12)
             make.leading.equalTo(인기셀_아티스트.snp.trailing).offset(7.07)
-
+        }
+        인기셀_리뷰내용.snp.makeConstraints { make in
+            make.width.equalTo(305)
+            make.height.equalTo(135)
+            make.top.equalTo(인기셀_아티스트.snp.bottom)
+            make.bottom.equalToSuperview()
+            make.leading.equalTo(인기셀_이미지)
+            make.trailing.equalTo(인기셀_이미지)
         }
     }
 }
