@@ -20,6 +20,7 @@
 		FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB2B2AE6010F00853006 /* PopularReviewsPage.swift */; };
 		FF58FB2E2AE6013600853006 /* Mypage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB2D2AE6013600853006 /* Mypage.swift */; };
 		FF58FB302AE6025100853006 /* MapPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB2F2AE6025100853006 /* MapPage.swift */; };
+		FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB362AE60BFB00853006 /* SearchPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		FF58FB2B2AE6010F00853006 /* PopularReviewsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewsPage.swift; sourceTree = "<group>"; };
 		FF58FB2D2AE6013600853006 /* Mypage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mypage.swift; sourceTree = "<group>"; };
 		FF58FB2F2AE6025100853006 /* MapPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPage.swift; sourceTree = "<group>"; };
+		FF58FB362AE60BFB00853006 /* SearchPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,10 +111,11 @@
 			isa = PBXGroup;
 			children = (
 				FF58FB312AE6029400853006 /* MainExhibitionPage */,
+				FF58FB352AE60BC300853006 /* SearchPage */,
+				FF58FB322AE602BB00853006 /* PopularReviewsPage */,
 				FF58FB332AE602E100853006 /* MapPage */,
 				FF58FB342AE6037600853006 /* MyPage */,
-				FF58FB322AE602BB00853006 /* PopularReviewsPage */,
-				FF58FB292AE600DF00853006 /* AudioGuidePage.swift */,
+				FF58FB382AE60C3000853006 /* AudioPage */,
 				FF58FB252AE6009500853006 /* ExhibitionDetailsPage.swift */,
 				FF58FB272AE600B500853006 /* ReviewDetailsPage.swift */,
 			);
@@ -187,6 +190,22 @@
 				FF58FB2D2AE6013600853006 /* Mypage.swift */,
 			);
 			path = MyPage;
+			sourceTree = "<group>";
+		};
+		FF58FB352AE60BC300853006 /* SearchPage */ = {
+			isa = PBXGroup;
+			children = (
+				FF58FB362AE60BFB00853006 /* SearchPage.swift */,
+			);
+			path = SearchPage;
+			sourceTree = "<group>";
+		};
+		FF58FB382AE60C3000853006 /* AudioPage */ = {
+			isa = PBXGroup;
+			children = (
+				FF58FB292AE600DF00853006 /* AudioGuidePage.swift */,
+			);
+			path = AudioPage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,6 +327,7 @@
 				FF58FB262AE6009500853006 /* ExhibitionDetailsPage.swift in Sources */,
 				FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */,
 				FF58FB2E2AE6013600853006 /* Mypage.swift in Sources */,
+				FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */,
 				FF3C971F2AE5FEA1006FEF23 /* MainExhibitionPage.swift in Sources */,
 				FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */,
 				FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */,
