@@ -11,5 +11,7 @@ target 'Dots' do
   pod 'RxCocoa'
   pod 'SnapKit'
   pod 'RxDataSources'
+  pod 'CollectionViewPagingLayout'
+
 
 end
