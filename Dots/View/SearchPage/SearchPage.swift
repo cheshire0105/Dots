@@ -8,15 +8,12 @@
 import UIKit
 
 class SearchPage: UIViewController {
-
+//
     override func viewDidLoad() {
+        //
         super.viewDidLoad()
 
     }
-    
-
-
-
+    //
 }
-// test 
-// ssh
+
