@@ -41,7 +41,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         view.addSubview(CategoryCollectionView)
         CategoryCollectionView.snp.makeConstraints { make in
             collectionViewTopConstraint = make.top.equalTo(view.safeAreaLayoutGuide.snp.top).constraint.update(offset: 16)
-            make.left.right.equalToSuperview().offset(16)
+            make.left.right.equalToSuperview().offset(6)
             make.height.equalTo(40)
         }
     }
@@ -65,5 +65,4 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
     }
 }
 
-// 새로운 시작!
 
