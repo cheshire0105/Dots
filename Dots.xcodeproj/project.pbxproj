@@ -14,6 +14,7 @@
 		FF3C97222AE5FEA1006FEF23 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF3C97202AE5FEA1006FEF23 /* Main.storyboard */; };
 		FF3C97242AE5FEA4006FEF23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF3C97232AE5FEA4006FEF23 /* Assets.xcassets */; };
 		FF3C97272AE5FEA4006FEF23 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF3C97252AE5FEA4006FEF23 /* LaunchScreen.storyboard */; };
+		FF47B5EE2AE61BA5006A5004 /* GlassTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF47B5ED2AE61BA5006A5004 /* GlassTabBar.swift */; };
 		FF58FB262AE6009500853006 /* ExhibitionDetailsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB252AE6009500853006 /* ExhibitionDetailsPage.swift */; };
 		FF58FB282AE600B500853006 /* ReviewDetailsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB272AE600B500853006 /* ReviewDetailsPage.swift */; };
 		FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB292AE600DF00853006 /* AudioGuidePage.swift */; };
@@ -35,6 +36,7 @@
 		FF3C97232AE5FEA4006FEF23 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FF3C97262AE5FEA4006FEF23 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FF3C97282AE5FEA4006FEF23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FF47B5ED2AE61BA5006A5004 /* GlassTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassTabBar.swift; sourceTree = "<group>"; };
 		FF58FB252AE6009500853006 /* ExhibitionDetailsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExhibitionDetailsPage.swift; sourceTree = "<group>"; };
 		FF58FB272AE600B500853006 /* ReviewDetailsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewDetailsPage.swift; sourceTree = "<group>"; };
 		FF58FB292AE600DF00853006 /* AudioGuidePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioGuidePage.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				FF3C971E2AE5FEA1006FEF23 /* MainExhibitionPage.swift */,
+				FF47B5ED2AE61BA5006A5004 /* GlassTabBar.swift */,
 			);
 			path = MainExhibitionPage;
 			sourceTree = "<group>";
@@ -332,6 +335,7 @@
 				FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */,
 				FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */,
 				FF3C971D2AE5FEA1006FEF23 /* SceneDelegate.swift in Sources */,
+				FF47B5EE2AE61BA5006A5004 /* GlassTabBar.swift in Sources */,
 				FF58FB282AE600B500853006 /* ReviewDetailsPage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -485,6 +489,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Dots/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -513,6 +518,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Dots/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
