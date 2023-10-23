@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         // MainTabBarController 초기화
-        let tabBarController = MainTabBarController()
+        let tabBarController = GlassTabBar()
 
         // 윈도우 초기화 및 설정
         window = UIWindow(windowScene: windowScene)
