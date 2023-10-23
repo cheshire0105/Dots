@@ -7,6 +7,9 @@ target 'Dots' do
 
   # Pods for Dots
 
-pod 'SnapKit'
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'SnapKit'
+  pod 'RxDataSources'
 
 end
