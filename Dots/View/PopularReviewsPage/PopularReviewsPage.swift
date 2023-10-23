@@ -21,7 +21,7 @@ class PopularReviewsPage: UIViewController {
 
     let 인기_컬렉션_뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 345, height: 645)
+        layout.itemSize = CGSize(width: 345, height: 625)
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
 
@@ -37,11 +37,11 @@ class PopularReviewsPage: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        ui레이아웃()
-        인기_컬렉션_뷰.register(CustomCell.self, forCellWithReuseIdentifier: "PopulaReviewCell")
         view.backgroundColor = UIColor.black
+        ui레이아웃()
         인기_컬렉션_뷰.dataSource = self
         인기_컬렉션_뷰.delegate = self
+        인기_컬렉션_뷰.register(CustomCell.self, forCellWithReuseIdentifier: "PopulaReviewCell")
     }
 }
 
@@ -53,7 +53,7 @@ extension PopularReviewsPage {
         페이지_제목.snp.makeConstraints { make in
             make.width.equalTo(42)
             make.height.equalTo(22)
-            make.top.equalToSuperview().offset(68)
+            make.top.equalToSuperview().offset(30)
             make.bottom.equalToSuperview().offset(-762)
             make.leading.equalToSuperview().offset(175)
             make.trailing.equalToSuperview().offset(-176)
@@ -62,16 +62,16 @@ extension PopularReviewsPage {
         인기순_추천순_버튼.snp.makeConstraints { make in
             make.width.equalTo(103)
             make.height.equalTo(22)
-            make.top.equalToSuperview().offset(104)
-            make.bottom.equalToSuperview().offset(-726)
+            make.top.equalTo(페이지_제목.snp.bottom).offset(-10)
+            make.bottom.equalTo(인기_컬렉션_뷰.snp.top).offset(-5)
             make.leading.equalToSuperview().offset(274)
             make.trailing.equalToSuperview().offset(-16)
         }
         인기_컬렉션_뷰.snp.makeConstraints { make in
             make.width.equalTo(345)
             make.height.equalTo(645)
-            make.top.equalTo(페이지_제목.snp.bottom).offset(75)
-            make.bottom.equalToSuperview().offset(-42)
+            make.top.equalTo(인기순_추천순_버튼.snp.bottom).offset(-5)
+            make.bottom.equalToSuperview().offset(-125)
             make.leading.equalToSuperview().offset(26)
         }
     }
@@ -89,7 +89,12 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         cell.인기셀_이미지.image = UIImage(named: "morningStar")
         cell.작성자_이미지.image = UIImage(named: "cabanel")
         cell.작성자_이름.text = "리뷰 작성자"
-        cell.하트_아이콘.image = UIImage(systemName: "heart")
+        cell.하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
+        cell.인기셀_아티스트.setTitle("알렉상드르 카나벨", for: .normal)
+        cell.인기셀_전시장소.setTitle("파리 루브르 박물관", for: .normal)
+        cell.인기셀_리뷰내용.text = """
+'타락한 천사’는 19세기 프랑스 화가 알렉상드르 카바넬(Alexandre Cabanel)의 작품이다. 에두아르 마네를 구심점으로 새로운 미술 운동인 인상주의가 태동하고 있을 때, 카바넬은 아카데믹한 고전주의 양식으로 작업한 제도권 미술계의 총아였다. 그는 신화와 역사, 성서 이야기를 주제로 하는 역사화, 종교화를 그렸다. 이 장르의 전통적인 테마는 성인, 천사, 영웅적인 인물이었는데, 카바넬은 ‘타락한 천사’에서 악마를 묘사해 당대 많은 논란을 일으켰다.
+"""
         return cell
     }
 }
