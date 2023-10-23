@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F9325C22AE67DC400C27F1B /* PopularReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9325C12AE67DC400C27F1B /* PopularReviewCell.swift */; };
 		B2CE169A506AD7C5CC83404E /* Pods_Dots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7463B6322E0941141F04DE43 /* Pods_Dots.framework */; };
 		FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3C971A2AE5FEA1006FEF23 /* AppDelegate.swift */; };
 		FF3C971D2AE5FEA1006FEF23 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3C971C2AE5FEA1006FEF23 /* SceneDelegate.swift */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		11C543E865FC39B95C159CDC /* Pods-Dots.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.release.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.release.xcconfig"; sourceTree = "<group>"; };
+		1F9325C12AE67DC400C27F1B /* PopularReviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewCell.swift; sourceTree = "<group>"; };
 		7463B6322E0941141F04DE43 /* Pods_Dots.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Dots.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75A67AE9D70EFBEEF526F19F /* Pods-Dots.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.debug.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.debug.xcconfig"; sourceTree = "<group>"; };
 		FF3C97172AE5FEA1006FEF23 /* Dots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dots.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				FF58FB2B2AE6010F00853006 /* PopularReviewsPage.swift */,
+				1F9325C12AE67DC400C27F1B /* PopularReviewCell.swift */,
 			);
 			path = PopularReviewsPage;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				FF3C971D2AE5FEA1006FEF23 /* SceneDelegate.swift in Sources */,
 				FF47B5EE2AE61BA5006A5004 /* GlassTabBar.swift in Sources */,
 				FF58FB282AE600B500853006 /* ReviewDetailsPage.swift in Sources */,
+				1F9325C22AE67DC400C27F1B /* PopularReviewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
