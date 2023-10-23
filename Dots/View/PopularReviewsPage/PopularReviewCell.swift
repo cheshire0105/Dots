@@ -89,8 +89,8 @@ class CustomCell: UICollectionViewCell {
         작성자_이미지.snp.makeConstraints { make in
             make.width.equalTo(38)
             make.height.equalTo(38)
-            make.top.equalToSuperview().offset(18)
-            make.leading.equalToSuperview().offset(21)
+            make.top.equalToSuperview().offset(19)
+            make.leading.equalToSuperview().offset(20)
         }
         작성자_이름.snp.makeConstraints { make in
             make.width.equalTo(100)
@@ -110,7 +110,7 @@ class CustomCell: UICollectionViewCell {
             make.width.equalTo(306)
             make.height.equalTo(368)
             make.top.equalTo(작성자_이미지.snp.bottom).offset(14)
-            make.leading.equalToSuperview().offset(18)
+            make.leading.equalToSuperview().offset(19)
             make.trailing.equalToSuperview().offset(-21)
             make.bottom.equalToSuperview().offset(-207)
         }
@@ -118,7 +118,7 @@ class CustomCell: UICollectionViewCell {
             make.width.equalTo(135)
             make.height.equalTo(25)
             make.top.equalTo(인기셀_이미지.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(18)
+            make.leading.equalToSuperview().offset(19)
         }
         인기셀_전시장소.snp.makeConstraints { make in
             make.width.equalTo(135)
