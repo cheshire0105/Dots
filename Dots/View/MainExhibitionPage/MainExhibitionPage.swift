@@ -40,7 +40,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
     private func setupCollectionView() {
         view.addSubview(CategoryCollectionView)
         CategoryCollectionView.snp.makeConstraints { make in
-            collectionViewTopConstraint = make.top.equalTo(view.safeAreaLayoutGuide.snp.top).constraint
+            collectionViewTopConstraint = make.top.equalTo(view.safeAreaLayoutGuide.snp.top).constraint.update(offset: 16)
             make.left.right.equalToSuperview().offset(16)
             make.height.equalTo(40)
         }
