@@ -32,19 +32,18 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
     }()
 
     // 새로운 컬렉션뷰를 정의합니다.
-     lazy var MainExhibitionCollectionView: UICollectionView = {
-         let flowLayout = UICollectionViewFlowLayout()
-         flowLayout.scrollDirection = .horizontal
-         flowLayout.sectionInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
-         flowLayout.minimumInteritemSpacing = 8
-         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-         collectionView.backgroundColor = .black
-         collectionView.showsHorizontalScrollIndicator = false
-         collectionView.register(MainExhibitionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
-         collectionView.isScrollEnabled = true
-         collectionView.showsVerticalScrollIndicator = false
-         return collectionView
-     }()
+    // MainExhibitionCollectionView 초기화 부분에서 레이아웃 설정 변경
+    lazy var MainExhibitionCollectionView: UICollectionView = {
+        let compositionalLayout = createCompositionalLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
+        collectionView.backgroundColor = .black
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.register(MainExhibitionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
+        //        collectionView.register(GraySquareCell.self, forCellWithReuseIdentifier: "GraySquareCell")
+        collectionView.isScrollEnabled = true
+        collectionView.showsVerticalScrollIndicator = false
+        return collectionView
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,7 +53,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         setupNewCollectionView()
         bindNewCollectionView()
 
-        
     }
 
     private func setupCollectionView() {
@@ -64,6 +62,25 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
             make.left.right.equalToSuperview().offset(6)
             make.height.equalTo(40)
         }
+    }
+
+    // 컴포지셔널 레이아웃을 생성하는 메소드
+    func createCompositionalLayout() -> UICollectionViewLayout {
+        // Main Exhibition Item
+        let mainExhibitionItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                            heightDimension: .absolute(360)) // MainExhibitionCollectionCell의 높이
+        let mainExhibitionItem = NSCollectionLayoutItem(layoutSize: mainExhibitionItemSize)
+
+        // Main Exhibition Group
+        let mainExhibitionGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                             heightDimension: .absolute(360))
+        let mainExhibitionGroup = NSCollectionLayoutGroup.horizontal(layoutSize: mainExhibitionGroupSize, subitems: [mainExhibitionItem])
+
+        // Main Exhibition Section
+        let section = NSCollectionLayoutSection(group: mainExhibitionGroup)
+        section.orthogonalScrollingBehavior = .groupPaging // 여기에서 가로 스크롤을 설정합니다.
+
+        return UICollectionViewCompositionalLayout(section: section)
     }
 
     private func bindCollectionView() {
@@ -81,13 +98,13 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
     }
 
     private func setupNewCollectionView() {
-          view.addSubview(MainExhibitionCollectionView)
-          MainExhibitionCollectionView.snp.makeConstraints { make in
-              make.top.equalTo(CategoryCollectionView.snp.bottom).offset(20)
-              make.left.right.equalToSuperview()
-              make.height.equalTo(380)
-          }
-      }
+        view.addSubview(MainExhibitionCollectionView)
+        MainExhibitionCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(CategoryCollectionView.snp.bottom).offset(20)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(380)
+        }
+    }
 
     private func bindNewCollectionView() {
         // 예제 데이터
@@ -151,11 +168,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
             cell.label.textAlignment = .right
         }
     }
-
-
-
-
-
 
     // 기존의 sizeForItemAt 메소드를 수정하여, 새로운 컬렉션뷰의 사이즈도 설정해줍니다.
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
