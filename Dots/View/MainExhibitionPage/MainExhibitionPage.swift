@@ -84,7 +84,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
           view.addSubview(MainExhibitionCollectionView)
           MainExhibitionCollectionView.snp.makeConstraints { make in
               make.top.equalTo(CategoryCollectionView.snp.bottom).offset(20)
-              make.left.right.equalToSuperview().offset(6)
+              make.left.right.equalToSuperview()
               make.height.equalTo(380)
           }
       }
@@ -144,7 +144,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
             }
 
             cell.label.snp.remakeConstraints { make in
-                make.top.equalTo(cell.imageView.snp.centerY).offset(-30)
+                make.top.equalTo(cell.imageView.snp.centerY).offset(-80)
                 make.right.equalToSuperview()
                 make.height.equalTo(100)
             }
