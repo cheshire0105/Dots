@@ -35,7 +35,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
      lazy var MainExhibitionCollectionView: UICollectionView = {
          let flowLayout = UICollectionViewFlowLayout()
          flowLayout.scrollDirection = .horizontal
-         flowLayout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+         flowLayout.sectionInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
          flowLayout.minimumInteritemSpacing = 8
          let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
          collectionView.backgroundColor = .black
@@ -132,7 +132,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
                 make.left.equalToSuperview()
                 make.height.equalTo(100)
             }
-            cell.label.textAlignment = .left  
+            cell.label.textAlignment = .left
 
         } else {
             // 홀수 번째 셀의 기본 레이아웃
