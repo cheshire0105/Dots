@@ -8,24 +8,23 @@
 import UIKit
 
 class GlassTabBar: UITabBarController {
-
     let customTabBarView = UIView()
     let stackView = UIStackView()
 
     let titles = ["홈", "검색", "인기", "지도", "마이"]
     let images = [UIImage(named: "home"), UIImage(named: "search"), UIImage(named: "hot"), UIImage(named: "map"), UIImage(named: "mypage")]
-    let backgroundView = UIView()  // 스택뷰의 백그라운드 뷰
+    let backgroundView = UIView() // 스택뷰의 백그라운드 뷰
 
     lazy var buttons: [UIButton] = {
         var buttons: [UIButton] = []
-        for i in 0..<titles.count {
+        for i in 0 ..< titles.count {
             let button = UIButton()
             button.setTitle(titles[i], for: .normal)
 
             let originalImage = images[i]?.withRenderingMode(.alwaysOriginal)
             button.setImage(originalImage, for: .normal)
-            button.setImage(originalImage, for: .selected)  // 동일한 이미지를 선택 상태에도 설정
-            button.backgroundColor = .clear  // 초기 배경색 설정
+            button.setImage(originalImage, for: .selected) // 동일한 이미지를 선택 상태에도 설정
+            button.backgroundColor = .clear // 초기 배경색 설정
 
             // Set text font size
             button.titleLabel?.font = UIFont.systemFont(ofSize: 12) // Adjust the font size as desired
@@ -67,7 +66,7 @@ class GlassTabBar: UITabBarController {
         let fifthVC = Mypage()
         fifthVC.view.backgroundColor = .purple
 
-        self.viewControllers = [firstVC, secondVC, thirdVC, fourthVC, fifthVC]
+        viewControllers = [firstVC, secondVC, thirdVC, fourthVC, fifthVC]
     }
 
     func setupCustomTabBarView() {
@@ -75,7 +74,7 @@ class GlassTabBar: UITabBarController {
         tabBar.isHidden = true
 
         customTabBarView.backgroundColor = .clear
-        customTabBarView.frame = CGRect(x: 0, y: view.frame.height - 130, width: view.frame.width, height: 90)  // 여백을 위해 높이를 조금 늘림
+        customTabBarView.frame = CGRect(x: 0, y: view.frame.height - 130, width: view.frame.width, height: 90) // 여백을 위해 높이를 조금 늘림
         view.addSubview(customTabBarView)
 
         // 글래스 모피즘(Glassmorphism) 효과 추가
@@ -140,7 +139,6 @@ class GlassTabBar: UITabBarController {
                 button.layer.cornerRadius = 25
             }
         }
-        
     }
 
     @objc func tabBarButtonTapped(_ sender: UIButton) {
@@ -148,10 +146,10 @@ class GlassTabBar: UITabBarController {
             if button == sender {
                 selectedIndex = index
                 button.isSelected = true
-                button.backgroundColor = .darkGray  // 탭 됐을 때의 배경색
+                button.backgroundColor = .darkGray // 탭 됐을 때의 배경색
             } else {
                 button.isSelected = false
-                button.backgroundColor = .clear  // 기본 배경색
+                button.backgroundColor = .clear // 기본 배경색
             }
         }
     }
