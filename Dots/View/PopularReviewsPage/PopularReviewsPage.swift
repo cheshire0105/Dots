@@ -58,6 +58,8 @@ class PopularReviewsPage: UIViewController {
         collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
+
         return collectionView
     }()
 
@@ -153,5 +155,23 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         let height = width * 1.55
 
         return CGSize(width: width, height: height)
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        centerCell()
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            centerCell()
+        }
+    }
+
+    func centerCell() {
+        let centerPoint = CGPoint(x: 인기_컬렉션_뷰.contentOffset.x + 인기_컬렉션_뷰.bounds.width / 2, y: 인기_컬렉션_뷰.bounds.height / 2)
+
+        if let indexPath = 인기_컬렉션_뷰.indexPathForItem(at: centerPoint) {
+            인기_컬렉션_뷰.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        }
     }
 }
