@@ -35,7 +35,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
      lazy var MainExhibitionCollectionView: UICollectionView = {
          let flowLayout = UICollectionViewFlowLayout()
          flowLayout.scrollDirection = .horizontal
-         flowLayout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+         flowLayout.sectionInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
          flowLayout.minimumInteritemSpacing = 8
          let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
          collectionView.backgroundColor = .black
@@ -53,6 +53,8 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
 
         setupNewCollectionView()
         bindNewCollectionView()
+
+        
     }
 
     private func setupCollectionView() {
@@ -96,14 +98,63 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
                 cell.label.text = text
                 cell.contentView.clipsToBounds = true
                 cell.setImage(image: UIImage(named: "Rectangle")) // 각 셀에 이미지 설정
+                self.adjustCellLayoutForEvenItems(cell: cell, indexPath: IndexPath(row: row, section: 0))
             }.disposed(by: disposeBag)
+
 
         MainExhibitionCollectionView.rx.itemSelected.subscribe(onNext: { indexPath in
             print("Selected new item at \(indexPath.row)")
         }).disposed(by: disposeBag)
 
         MainExhibitionCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
+
+        // 페이징 효과 적용
+        MainExhibitionCollectionView.isPagingEnabled = true
+
+        // UICollectionViewFlowLayout의 minimumLineSpacing을 조절
+        if let flowLayout = MainExhibitionCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            flowLayout.minimumLineSpacing = 0
+        }
     }
+
+    private func adjustCellLayoutForEvenItems(cell: MainExhibitionCollectionCell, indexPath: IndexPath) {
+        if indexPath.row % 2 == 0 { // 짝수 번째 셀인 경우
+            // 이미지를 오른쪽으로 이동
+            cell.imageView.snp.remakeConstraints { make in
+                make.top.equalToSuperview()
+                make.right.equalToSuperview()
+                make.width.equalTo(200)
+                make.height.equalTo(370)
+            }
+
+            cell.label.snp.remakeConstraints { make in
+                make.top.equalTo(cell.imageView.snp.centerY).offset(10)
+                make.left.equalToSuperview()
+                make.height.equalTo(100)
+            }
+            cell.label.textAlignment = .left
+
+        } else {
+            // 홀수 번째 셀의 기본 레이아웃
+            cell.imageView.snp.remakeConstraints { make in
+                make.top.equalToSuperview()
+                make.left.equalToSuperview()
+                make.width.equalTo(200)
+                make.height.equalTo(370)
+            }
+
+            cell.label.snp.remakeConstraints { make in
+                make.top.equalTo(cell.imageView.snp.centerY).offset(-30)
+                make.right.equalToSuperview()
+                make.height.equalTo(100)
+            }
+            cell.label.textAlignment = .right
+        }
+    }
+
+
+
+
 
 
     // 기존의 sizeForItemAt 메소드를 수정하여, 새로운 컬렉션뷰의 사이즈도 설정해줍니다.
@@ -111,10 +162,11 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         if collectionView == CategoryCollectionView {
             return CGSize(width: 73, height: 34)
         } else if collectionView == MainExhibitionCollectionView {
-            return CGSize(width: UIScreen.main.bounds.width, height: 360) // 화면의 가로길이에서 40포인트를 뺀 값을 셀의 가로길이로 설정
+            return CGSize(width: UIScreen.main.bounds.width, height: 360) // 화면의 가로길이를 셀의 가로길이로 설정
         }
         return CGSize.zero
     }
+
 
 }
 
