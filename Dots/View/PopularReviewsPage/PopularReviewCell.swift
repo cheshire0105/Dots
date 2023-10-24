@@ -1,6 +1,6 @@
 import UIKit
 
-class CustomCell: UICollectionViewCell {
+class PopularReviewCell: UICollectionViewCell {
     let 작성자_이미지 = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 20
@@ -63,13 +63,23 @@ class CustomCell: UICollectionViewCell {
         label.text = ""
         label.textColor = UIColor.systemGray2
         label.font = UIFont.systemFont(ofSize: 16)
+        label.numberOfLines = 8
+        label.lineBreakMode = .byWordWrapping
         return label
+    }()
+
+    let 더보기_버튼 = {
+        let button = UIButton()
+        button.setTitle("더보기", for: .normal)
+        button.setTitleColor(UIColor.systemBlue, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        return button
     }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         인기셀layout()
-        layer.cornerRadius = 10
+        layer.cornerRadius = 20
         backgroundColor = UIColor.darkGray
     }
 
@@ -129,8 +139,8 @@ class CustomCell: UICollectionViewCell {
         인기셀_리뷰내용.snp.makeConstraints { make in
             make.width.equalTo(305)
             make.height.equalTo(135)
-            make.top.equalTo(인기셀_아티스트.snp.bottom)
-            make.bottom.equalToSuperview()
+            make.top.equalTo(인기셀_아티스트.snp.bottom).offset(5)
+            make.bottom.equalToSuperview().offset(-5)
             make.leading.equalTo(인기셀_이미지)
             make.trailing.equalTo(인기셀_이미지)
         }
