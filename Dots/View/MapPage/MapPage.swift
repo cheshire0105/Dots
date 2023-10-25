@@ -43,9 +43,27 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
 
         setupLocationManager()
 
-
+        
+        addDoneButtonOnKeyboard()
 
     }
+
+    func addDoneButtonOnKeyboard() {
+        let doneToolbar = UIToolbar()
+        doneToolbar.sizeToFit()
+
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(title: "닫기", style: .done, target: self, action: #selector(doneButtonTapped))
+        doneButton.tintColor = .white
+
+        doneToolbar.items = [flexSpace, doneButton]
+        customSearchField.inputAccessoryView = doneToolbar
+    }
+
+    @objc func doneButtonTapped() {
+        customSearchField.resignFirstResponder()
+    }
+
 
     func setupLocationManager() {
         locationManager = CLLocationManager()
@@ -71,7 +89,7 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
         backgroundView.layer.cornerRadius = 22
         self.view.addSubview(backgroundView)
         backgroundView.snp.makeConstraints { make in
-            make.width.equalTo(300)
+            make.trailing.equalToSuperview().offset(-80)
             make.height.equalTo(44)
             make.leading.equalToSuperview().offset(16)
             make.top.equalToSuperview().offset(65)
