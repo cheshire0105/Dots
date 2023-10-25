@@ -11,7 +11,7 @@ import SnapKit
 
 class MapPage: UIViewController {
 
-    var mapView: NMFMapView!
+    var naverMapView: NMFNaverMapView!  // NaverMapView 사용
     var customSearchField: UITextField!
     var currentLocationButton: UIButton! // 현재 위치 아이콘
 
@@ -20,19 +20,23 @@ class MapPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // 지도 뷰를 생성합니다.
-        mapView = NMFMapView(frame: self.view.frame)
-        mapView.mapType = .navi
-        mapView.isNightModeEnabled = true
-        self.view.addSubview(mapView)
-        mapView.snp.makeConstraints { make in
+        // NMFNaverMapView를 생성하고, 내부의 NMFMapView 설정
+        naverMapView = NMFNaverMapView(frame: self.view.frame)
+        naverMapView.mapView.mapType = .navi
+        naverMapView.mapView.isNightModeEnabled = true
+
+        // 확대/축소 버튼 표시
+        naverMapView.showZoomControls = false
+
+        self.view.addSubview(naverMapView)
+        naverMapView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
         setupCustomSearchField()
         setupCurrentLocationButton()
-
     }
+
 
     func setupCustomSearchField() {
         // 배경 뷰 생성
@@ -69,7 +73,7 @@ class MapPage: UIViewController {
         currentLocationButton.backgroundColor = .white
         currentLocationButton.layer.cornerRadius = 22 // 버튼의 높이와 너비가 44이므로 반으로 나눈 값
         currentLocationButton.addTarget(self, action: #selector(currentLocationButtonTapped), for: .touchUpInside) // 버튼 탭 시 동작 추가
-        
+
         // 이미지 설정
         if let iconImage = UIImage(named: "Geo") {
             currentLocationButton.setImage(iconImage, for: .normal)
