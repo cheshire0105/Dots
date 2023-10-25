@@ -13,7 +13,9 @@ class MapPage: UIViewController {
 
     var mapView: NMFMapView!
     var customSearchField: UITextField!
-    
+    var currentLocationIcon: UIView! // 현재 위치 아이콘
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +30,8 @@ class MapPage: UIViewController {
         }
 
         setupCustomSearchField()
+        setupCurrentLocationIcon()
+
     }
 
     func setupCustomSearchField() {
@@ -37,7 +41,7 @@ class MapPage: UIViewController {
         backgroundView.layer.cornerRadius = 22
         self.view.addSubview(backgroundView)
         backgroundView.snp.makeConstraints { make in
-            make.width.equalTo(302)
+            make.width.equalTo(300)
             make.height.equalTo(44)
             make.leading.equalToSuperview().offset(16)
             make.top.equalToSuperview().offset(65)
@@ -59,4 +63,17 @@ class MapPage: UIViewController {
             make.bottom.equalToSuperview().offset(-8)
         }
     }
+    func setupCurrentLocationIcon() {
+        currentLocationIcon = UIView()
+        currentLocationIcon.backgroundColor = .white
+        currentLocationIcon.layer.cornerRadius = 22 // 뷰의 높이와 너비가 44이므로 반으로 나눈 값
+        self.view.addSubview(currentLocationIcon)
+        currentLocationIcon.snp.makeConstraints { make in
+            make.width.height.equalTo(44)
+            make.leading.equalTo(customSearchField.snp.trailing).offset(30) // customSearchField 옆에 위치
+            make.top.equalToSuperview().offset(65)
+        }
+    }
+
+
 }
