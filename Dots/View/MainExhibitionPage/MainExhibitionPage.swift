@@ -71,6 +71,9 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         setupNewCollectionView()
         bindNewCollectionView()
 
+        MainExhibitionCollectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+
+
     }
 
     private func setupCollectionView() {
@@ -149,20 +152,25 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         MainExhibitionCollectionView.snp.makeConstraints { make in
             make.top.equalTo(CategoryCollectionView.snp.bottom).offset(20)
             make.left.right.equalToSuperview()
-            make.height.equalTo(1000)
+            make.bottom.equalTo(view.snp.bottom)
         }
-    } 
+    }
+
 
     private func bindNewCollectionView() {
         // 예제 데이터
         let firstSectionItems = Array(repeating: "리암 길릭: \n The Alterants", count: 10)
-         let secondSectionItems = Array(repeating: "GraySquare", count: 10)
-         let thirdSectionItems = Array(repeating: "GraySquare", count: 10) // 세 번째 섹션 데이터
-         let sections = [
-             SectionItem(header: "MainExhibition", items: firstSectionItems),
-             SectionItem(header: "GraySquare", items: secondSectionItems),
-             SectionItem(header: "GraySquare", items: thirdSectionItems) // 세 번째 섹션 추가
-         ]
+        let secondSectionItems = Array(repeating: "GraySquare", count: 10)
+        let thirdSectionItems = Array(repeating: "GraySquare", count: 10) // 세 번째 섹션 데이터
+        let tirthSectionItems = Array(repeating: "GraySquare", count: 10) // 네 번째 섹션 데이터
+
+        let sections = [
+            SectionItem(header: "MainExhibition", items: firstSectionItems),
+            SectionItem(header: "GraySquare", items: secondSectionItems),
+            SectionItem(header: "GraySquare", items: thirdSectionItems), // 세 번째 섹션 추가
+            SectionItem(header: "GraySquare", items: tirthSectionItems) // 세 번째 섹션 추가
+
+        ]
 
 
         // 2. 데이터 소스를 설정합니다.
@@ -188,15 +196,17 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
                         header.label.text = "용인 근처의 전시"
                     } else if indexPath.section == 2 {
                         header.label.text = "도트 님의 취향 저격 콘텐츠"
+                    } else if indexPath.section == 3 {
+                        header.label.text = "도트 님의 가까운 전시"
                     }
                     return header
                 }
                 return UICollectionReusableView()
-            
+
 
             }
 
-            
+
         )
 
         Observable.just(sections)
