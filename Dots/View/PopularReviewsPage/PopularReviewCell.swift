@@ -92,14 +92,12 @@ class PopularReviewCell: UICollectionViewCell {
     }
 }
 
-
-
-//MARK: -  EXTENSION
+// MARK: -  EXTENSION
 
 extension PopularReviewCell {
     func configure(with imageData: UIImage) {
-          인기셀_이미지.image = imageData
-      }
+        인기셀_이미지.image = imageData
+    }
 }
 
 extension PopularReviewCell {
@@ -114,54 +112,49 @@ extension PopularReviewCell {
         contentView.addSubview(인기셀_리뷰내용)
         
         인기셀_작성자_이미지.snp.makeConstraints { make in
-            make.width.equalTo(38)
-            make.height.equalTo(38)
-            make.top.equalToSuperview().offset(19)
-            make.leading.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(10)
+            make.bottom.equalTo(인기셀_이미지.snp.top).offset(-10)
+            make.leading.equalTo(인기셀_이미지)
+            make.trailing.equalTo(인기셀_작성자_이름.snp.leading).offset(-10)
         }
         인기셀_작성자_이름.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalTo(26)
-            make.top.equalToSuperview().offset(26)
+            
+            make.centerY.equalTo(인기셀_작성자_이미지)
             make.leading.equalToSuperview().offset(68)
         }
         인기셀_하트_아이콘.snp.makeConstraints { make in
-            make.width.equalTo(25)
-            make.height.equalTo(22)
-            make.top.equalToSuperview().offset(26)
-            make.trailing.equalToSuperview().offset(-26)
-            make.centerY.equalTo(인기셀_작성자_이미지)
+//            make.size.equalTo(인기셀_작성자_이미지).offset(-8)
+            make.centerY.equalTo(인기셀_작성자_이름)
+            make.top.bottom.equalTo(인기셀_작성자_이름)
+            
+            make.trailing.equalTo(인기셀_이미지.snp.trailing)
         }
         
         인기셀_이미지.snp.makeConstraints { make in
-            make.width.equalTo(306)
-            make.height.equalTo(368)
-            make.top.equalTo(인기셀_작성자_이미지.snp.bottom).offset(14)
-            make.leading.equalToSuperview().offset(19)
-            make.trailing.equalToSuperview().offset(-21)
+            
+            make.top.equalToSuperview().offset(60)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalToSuperview().offset(-207)
         }
         인기셀_아티스트.snp.makeConstraints { make in
-            make.width.equalTo(135)
-            make.height.equalTo(25)
-            make.top.equalTo(인기셀_이미지.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(19)
+            make.top.equalTo(인기셀_이미지.snp.bottom).offset(10)
+            make.leading.equalTo(인기셀_이미지.snp.leading)
         }
         인기셀_전시장소.snp.makeConstraints { make in
-            make.width.equalTo(135)
-            make.height.equalTo(25)
-            make.top.equalTo(인기셀_이미지.snp.bottom).offset(12)
-            make.leading.equalTo(인기셀_아티스트.snp.trailing).offset(7.07)
+            make.top.equalTo(인기셀_이미지.snp.bottom).offset(10)
+            make.leading.equalTo(인기셀_아티스트.snp.trailing).offset(10)
         }
         인기셀_리뷰제목.snp.makeConstraints { make in
-            make.top.equalTo(인기셀_아티스트.snp.bottom).offset(17)
+            make.top.equalTo(인기셀_아티스트.snp.bottom).offset(10)
             make.leading.equalTo(인기셀_이미지)
         }
         인기셀_리뷰내용.snp.makeConstraints { make in
-            
             make.leading.equalTo(인기셀_이미지)
             make.trailing.equalTo(인기셀_이미지)
-            make.bottom.equalToSuperview().offset(-5) // 수정된 부분
+            make.top.equalTo(인기셀_리뷰제목.snp.bottom).offset(10)
+            make.bottom.equalToSuperview().offset(-10)
+            
         }
     }
 }
