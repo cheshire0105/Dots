@@ -74,7 +74,7 @@ class GlassTabBar: UITabBarController {
         tabBar.isHidden = true
 
         customTabBarView.backgroundColor = .clear
-        customTabBarView.frame = CGRect(x: 0, y: view.frame.height - 130, width: view.frame.width, height: 90) // 여백을 위해 높이를 조금 늘림
+        customTabBarView.frame = CGRect(x: 0, y: view.frame.height - 100, width: view.frame.width, height: 90) // 여백을 위해 높이를 조금 늘림
         view.addSubview(customTabBarView)
 
         // 글래스 모피즘(Glassmorphism) 효과 추가
