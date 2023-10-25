@@ -8,12 +8,16 @@
 import UIKit
 import NMapsMap
 import SnapKit
+import CoreLocation
 
-class MapPage: UIViewController {
+
+class MapPage: UIViewController,CLLocationManagerDelegate {
 
     var naverMapView: NMFNaverMapView!  // NaverMapView 사용
     var customSearchField: UITextField!
     var currentLocationButton: UIButton! // 현재 위치 아이콘
+    var locationManager: CLLocationManager!
+
 
 
 
@@ -36,7 +40,28 @@ class MapPage: UIViewController {
 
         setupCustomSearchField()
         setupCurrentLocationButton()
+
+        setupLocationManager()
+
+
+
     }
+
+    func setupLocationManager() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization() // 위치 권한 요청
+        locationManager.startUpdatingLocation() // 위치 업데이트 시작
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let center = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
+            naverMapView.mapView.moveCamera(NMFCameraUpdate(scrollTo: center))
+            locationManager.stopUpdatingLocation() // 중복 위치 업데이트 방지를 위해 업데이트 중지
+        }
+    }
+
 
 
     func setupCustomSearchField() {
@@ -69,6 +94,11 @@ class MapPage: UIViewController {
         }
     }
 
+
+
+
+
+
     func setupCurrentLocationButton() {
         currentLocationButton = UIButton()
         currentLocationButton.backgroundColor = .white
@@ -92,9 +122,9 @@ class MapPage: UIViewController {
 
 
     @objc func currentLocationButtonTapped() {
-        // 버튼이 탭될 때 실행될 코드를 여기에 작성합니다.
-        print("Current location button tapped!")
+        locationManager.startUpdatingLocation() // 위치 업데이트 시작
     }
+
 
 
 }
