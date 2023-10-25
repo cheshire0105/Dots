@@ -27,6 +27,7 @@ class MapPage: UIViewController {
 
         // 확대/축소 버튼 표시
         naverMapView.showZoomControls = false
+        naverMapView.showCompass = false
 
         self.view.addSubview(naverMapView)
         naverMapView.snp.makeConstraints { make in
