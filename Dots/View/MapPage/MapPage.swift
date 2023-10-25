@@ -13,7 +13,7 @@ class MapPage: UIViewController {
 
     var mapView: NMFMapView!
     var customSearchField: UITextField!
-    var currentLocationIcon: UIView! // 현재 위치 아이콘
+    var currentLocationButton: UIButton! // 현재 위치 아이콘
 
 
 
@@ -30,7 +30,7 @@ class MapPage: UIViewController {
         }
 
         setupCustomSearchField()
-        setupCurrentLocationIcon()
+        setupCurrentLocationButton()
 
     }
 
@@ -63,16 +63,32 @@ class MapPage: UIViewController {
             make.bottom.equalToSuperview().offset(-8)
         }
     }
-    func setupCurrentLocationIcon() {
-        currentLocationIcon = UIView()
-        currentLocationIcon.backgroundColor = .white
-        currentLocationIcon.layer.cornerRadius = 22 // 뷰의 높이와 너비가 44이므로 반으로 나눈 값
-        self.view.addSubview(currentLocationIcon)
-        currentLocationIcon.snp.makeConstraints { make in
+
+    func setupCurrentLocationButton() {
+        currentLocationButton = UIButton()
+        currentLocationButton.backgroundColor = .white
+        currentLocationButton.layer.cornerRadius = 22 // 버튼의 높이와 너비가 44이므로 반으로 나눈 값
+        currentLocationButton.addTarget(self, action: #selector(currentLocationButtonTapped), for: .touchUpInside) // 버튼 탭 시 동작 추가
+        
+        // 이미지 설정
+        if let iconImage = UIImage(named: "Geo") {
+            currentLocationButton.setImage(iconImage, for: .normal)
+            currentLocationButton.imageView?.contentMode = .scaleAspectFit // 이미지가 버튼 내에서 적절하게 맞게 표시되도록 합니다
+            currentLocationButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) // 이미지의 여백 설정 (원하는대로 조절 가능)
+        }
+
+        self.view.addSubview(currentLocationButton)
+        currentLocationButton.snp.makeConstraints { make in
             make.width.height.equalTo(44)
             make.leading.equalTo(customSearchField.snp.trailing).offset(30) // customSearchField 옆에 위치
             make.top.equalToSuperview().offset(65)
         }
+    }
+
+
+    @objc func currentLocationButtonTapped() {
+        // 버튼이 탭될 때 실행될 코드를 여기에 작성합니다.
+        print("Current location button tapped!")
     }
 
 
