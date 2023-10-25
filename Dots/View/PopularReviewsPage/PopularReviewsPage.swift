@@ -5,7 +5,6 @@ import SnapKit
 import UIKit
 
 class PopularReviewsPage: UIViewController {
-    private let 현재페이지 = BehaviorRelay<Int>(value: 0)
     let 페이지_제목 = {
         let label = UILabel()
         label.text = "HOT"
@@ -57,8 +56,8 @@ class PopularReviewsPage: UIViewController {
     let 인기_컬렉션_뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 1
+        layout.minimumInteritemSpacing = 1
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -125,13 +124,15 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PopulaReviewCell", for: indexPath) as? PopularReviewCell else {
             return UICollectionViewCell()
         }
+    
+        cell.addImagesToScrollView(imageNames: imageNames)
 
-        cell.인기셀_이미지.image = UIImage(named: "morningStar")
+        //cell.인기셀_이미지.image = UIImage(named: "morningStar")
         cell.인기셀_작성자_이미지.image = UIImage(named: "cabanel")
         cell.인기셀_작성자_이름.text = "리뷰 작성자"
         cell.인기셀_하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
-        cell.인기셀_아티스트.setTitle("알렉상드르 카바넬", for: .normal)
-        cell.인기셀_전시장소.setTitle("파리 루브르 박물관", for: .normal)
+        cell.인기셀_아티스트.setTitle(" 알렉상드르 카바넬 ", for: .normal)
+        cell.인기셀_전시장소.setTitle(" 파리 루브르 박물관 ", for: .normal)
         cell.인기셀_리뷰제목.text = "Morning Star"
         cell.인기셀_리뷰내용.text = """
         '타락한 천사’는 19세기 프랑스 화가 알렉상드르 카바넬(Alexandre Cabanel)의 작품이다. 에두아르 마네를 구심점으로 새로운 미술 운동인 인상주의가 태동하고 있을 때, 카바넬은 아카데믹한 고전주의 양식으로 작업한 제도권 미술계의 총아였다. 그는 신화와 역사, 성서 이야기를 주제로 하는 역사화, 종교화를 그렸다.이 장르의 전통적인 테마는 성인, 천사, 영웅적인 인물이었는데, 카바넬은 ‘타락한 천사’에서 악마를 묘사해 당대 많은 논란을 일으켰다.
