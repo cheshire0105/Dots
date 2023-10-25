@@ -151,7 +151,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
             make.left.right.equalToSuperview()
             make.height.equalTo(1000)
         }
-    }
+    } 
 
     private func bindNewCollectionView() {
         // 예제 데이터
