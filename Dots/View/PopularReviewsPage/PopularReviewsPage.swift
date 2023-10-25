@@ -1,8 +1,11 @@
-// 인기후기페이지 뷰컨트롤러
+// 인기 리뷰 뷰 컨트롤러
+import RxCocoa
+import RxSwift
 import SnapKit
 import UIKit
 
 class PopularReviewsPage: UIViewController {
+    private let 현재페이지 = BehaviorRelay<Int>(value: 0)
     let 페이지_제목 = {
         let label = UILabel()
         label.text = "HOT"
@@ -17,7 +20,7 @@ class PopularReviewsPage: UIViewController {
         button.setTitle("인기순", for: .normal)
         button.setTitle("인기순", for: .selected)
         button.setTitleColor(UIColor.white, for: .selected)
-        button.setTitleColor(UIColor.blue, for: .normal)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
@@ -37,7 +40,7 @@ class PopularReviewsPage: UIViewController {
         button.setTitle("추천순", for: .normal)
         button.setTitle("추천순", for: .selected)
         button.setTitleColor(UIColor.white, for: .selected)
-        button.setTitleColor(UIColor.blue, for: .normal)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
@@ -70,6 +73,8 @@ class PopularReviewsPage: UIViewController {
         인기_컬렉션_뷰.dataSource = self
         인기_컬렉션_뷰.delegate = self
         인기_컬렉션_뷰.register(PopularReviewCell.self, forCellWithReuseIdentifier: "PopulaReviewCell")
+        인기_컬렉션_뷰.isPagingEnabled = true
+        //
     }
 }
 
@@ -134,44 +139,27 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         }
 
         cell.인기셀_이미지.image = UIImage(named: "morningStar")
-        cell.작성자_이미지.image = UIImage(named: "cabanel")
-        cell.작성자_이름.text = "리뷰 작성자"
-        cell.하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
+        cell.인기셀_작성자_이미지.image = UIImage(named: "cabanel")
+        cell.인기셀_작성자_이름.text = "리뷰 작성자"
+        cell.인기셀_하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
         cell.인기셀_아티스트.setTitle("알렉상드르 카바넬", for: .normal)
         cell.인기셀_전시장소.setTitle("파리 루브르 박물관", for: .normal)
+        cell.인기셀_리뷰제목.text = "Morning Star"
         cell.인기셀_리뷰내용.text = """
-        '타락한 천사’는 19세기 프랑스 화가 알렉상드르 카바넬(Alexandre Cabanel)의 작품이다. 에두아르 마네를 구심점으로 새로운 미술 운동인 인상주의가 태동하고 있을 때, 카바넬은 아카데믹한 고전주의 양식으로 작업한 제도권 미술계의 총아였다. 그는 신화와 역사, 성서 이야기를 주제로 하는 역사화, 종교화를 그렸다. 이 장르의 전통적인 테마는 성인, 천사, 영웅적인 인물이었는데, 카바넬은 ‘타락한 천사’에서 악마를 묘사해 당대 많은 논란을 일으켰다.
+        '타락한 천사’는 19세기 프랑스 화가 알렉상드르 카바넬(Alexandre Cabanel)의 작품이다. 에두아르 마네를 구심점으로 새로운 미술 운동인 인상주의가 태동하고 있을 때, 카바넬은 아카데믹한 고전주의 양식으로 작업한 제도권 미술계의 총아였다. 그는 신화와 역사, 성서 이야기를 주제로 하는 역사화, 종교화를 그렸다.이 장르의 전통적인 테마는 성인, 천사, 영웅적인 인물이었는데, 카바넬은 ‘타락한 천사’에서 악마를 묘사해 당대 많은 논란을 일으켰다.
         """
-        let 최대_글자수 = 150
+        let 최대_글자수 = 230
         if let text = cell.인기셀_리뷰내용.text, text.count > 최대_글자수 {
-            let 글자수_줄이기 = String(text.prefix(최대_글자수)) + "..."
+            let 글자수_줄이기 = String(text.prefix(최대_글자수)) + " . . ." + " 더보기"
             cell.인기셀_리뷰내용.text = 글자수_줄이기
         }
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width * 1
-        let height = width * 1.55
+        let width = collectionView.frame.width * 0.98
+        let height = width * 1.45
 
         return CGSize(width: width, height: height)
-    }
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        centerCell()
-    }
-
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            centerCell()
-        }
-    }
-
-    func centerCell() {
-        let centerPoint = CGPoint(x: 인기_컬렉션_뷰.contentOffset.x + 인기_컬렉션_뷰.bounds.width / 2, y: 인기_컬렉션_뷰.bounds.height / 2)
-
-        if let indexPath = 인기_컬렉션_뷰.indexPathForItem(at: centerPoint) {
-            인기_컬렉션_뷰.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        }
     }
 }
