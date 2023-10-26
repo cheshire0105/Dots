@@ -7,7 +7,7 @@ import UIKit
 class PopularReviewsPage: UIViewController {
     let 페이지_제목 = {
         let label = UILabel()
-        label.text = "HOT"
+        label.text = "Popular Review"
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .center
@@ -55,11 +55,12 @@ class PopularReviewsPage: UIViewController {
 
     let 인기_컬렉션_뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 1
-        layout.minimumInteritemSpacing = 1
-
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+
         collectionView.backgroundColor = .clear
         collectionView.layer.cornerRadius = 10
         collectionView.showsHorizontalScrollIndicator = false
@@ -72,9 +73,11 @@ class PopularReviewsPage: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.clear
         ui레이아웃()
+
         인기_컬렉션_뷰.dataSource = self
         인기_컬렉션_뷰.delegate = self
         인기_컬렉션_뷰.register(PopularReviewCell.self, forCellWithReuseIdentifier: "PopulaReviewCell")
+
         인기_컬렉션_뷰.isPagingEnabled = true
         //
     }
@@ -88,13 +91,12 @@ extension PopularReviewsPage {
         view.addSubview(추천순_버튼)
         view.addSubview(인기_컬렉션_뷰)
         페이지_제목.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalTo(22)
+
             make.top.equalToSuperview().offset(60)
             make.centerX.equalToSuperview()
         }
         인기순_버튼.snp.makeConstraints { make in
-            make.top.equalTo(페이지_제목.snp.bottom).offset(20)
+            make.top.equalTo(페이지_제목.snp.bottom).offset(28)
             make.trailing.equalTo(구분선.snp.leading).offset(-5)
             make.bottom.equalTo(구분선)
         }
@@ -103,13 +105,14 @@ extension PopularReviewsPage {
             make.centerY.equalTo(인기순_버튼)
         }
         추천순_버튼.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-12)
+            make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalTo(인기순_버튼)
         }
         인기_컬렉션_뷰.snp.makeConstraints { make in
-            make.top.equalTo(인기순_버튼.snp.bottom).offset(10)
+//            make.top.equalTo(인기순_버튼.snp.bottom).offset(10)
+            make.top.equalToSuperview().offset(130)
             make.leading.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-100)
+            make.bottom.equalToSuperview().offset(-70)
             make.centerX.equalToSuperview()
         }
     }
@@ -117,23 +120,23 @@ extension PopularReviewsPage {
 
 extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        3
+        return 이미지모델_인스턴스.이미지묶음들.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PopulaReviewCell", for: indexPath) as? PopularReviewCell else {
             return UICollectionViewCell()
         }
-    
-        cell.addImagesToScrollView(imageNames: imageNames)
 
-        //cell.인기셀_이미지.image = UIImage(named: "morningStar")
+        // cell.인기셀_이미지.image = UIImage(named: "morningStar")
         cell.인기셀_작성자_이미지.image = UIImage(named: "cabanel")
         cell.인기셀_작성자_이름.text = "리뷰 작성자"
         cell.인기셀_하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
-        cell.인기셀_아티스트.setTitle(" 알렉상드르 카바넬 ", for: .normal)
-        cell.인기셀_전시장소.setTitle(" 파리 루브르 박물관 ", for: .normal)
-        cell.인기셀_리뷰제목.text = "Morning Star"
+        cell.인기셀_아티스트.setTitle("알렉상드르 카바넬", for: .selected)
+        cell.인기셀_아티스트.setTitle("알렉상드르 카바넬", for: .normal)
+        cell.인기셀_전시장소.setTitle("파리 루브르 박물관", for: .selected)
+        cell.인기셀_전시장소.setTitle("파리 루브르 박물관", for: .normal)
+        // cell.인기셀_리뷰제목.text = "Morning Star"
         cell.인기셀_리뷰내용.text = """
         '타락한 천사’는 19세기 프랑스 화가 알렉상드르 카바넬(Alexandre Cabanel)의 작품이다. 에두아르 마네를 구심점으로 새로운 미술 운동인 인상주의가 태동하고 있을 때, 카바넬은 아카데믹한 고전주의 양식으로 작업한 제도권 미술계의 총아였다. 그는 신화와 역사, 성서 이야기를 주제로 하는 역사화, 종교화를 그렸다.이 장르의 전통적인 테마는 성인, 천사, 영웅적인 인물이었는데, 카바넬은 ‘타락한 천사’에서 악마를 묘사해 당대 많은 논란을 일으켰다.
         """
@@ -147,7 +150,7 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width * 1
-        let height = collectionView.frame.height * 1
+        let height = collectionView.frame.height * 0.98
         return CGSize(width: width, height: height)
     }
 }
