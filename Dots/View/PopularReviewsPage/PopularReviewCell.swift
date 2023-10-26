@@ -5,13 +5,6 @@ import UIKit
 
 class PopularReviewCell: UICollectionViewCell {
     var 전시정보_서브셀_인스턴스 = 전시정보_서브셀()
-    let pageControl: UIPageControl = {
-        let pageControl = UIPageControl()
-        pageControl.currentPageIndicatorTintColor = .white
-        pageControl.pageIndicatorTintColor = .lightGray
-
-        return pageControl
-    }()
 
     var 인기셀_작성자_이미지 = {
         var imageView = UIImageView()
@@ -65,16 +58,6 @@ class PopularReviewCell: UICollectionViewCell {
         return button
     }()
 
-//
-//    let 인기셀_리뷰제목 = {
-//        let label = UILabel()
-//        label.text = ""
-//        label.textColor = UIColor.white
-//        label.font = UIFont.boldSystemFont(ofSize: 20)
-//        label.textAlignment = .center
-//        return label
-//    }()
-
     let 인기셀_리뷰내용 = {
         let label = UILabel()
         label.text = ""
@@ -94,7 +77,7 @@ class PopularReviewCell: UICollectionViewCell {
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .orange
+        collectionView.backgroundColor = .clear
         collectionView.layer.cornerRadius = 10
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
@@ -109,16 +92,14 @@ class PopularReviewCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        인기셀layout()
-        layer.cornerRadius = 30
         backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
-        //backgroundColor = UIColor.darkGray
+        layer.cornerRadius = 30
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 20
-        //
-        인기셀_이미지_묶음_컬렉션뷰.isPagingEnabled = true
+        인기셀layout()
         인기셀_이미지_묶음_컬렉션뷰.dataSource = self
         인기셀_이미지_묶음_컬렉션뷰.delegate = self
+        인기셀_이미지_묶음_컬렉션뷰.isPagingEnabled = true
         인기셀_이미지_묶음_컬렉션뷰.register(인기셀_이미지_묶음_셀.self, forCellWithReuseIdentifier: "인기셀_이미지_묶음_셀")
     }
 
@@ -136,7 +117,6 @@ extension PopularReviewCell {
         contentView.addSubview(인기셀_작성자_이름)
         contentView.addSubview(인기셀_하트_아이콘)
         addSubview(인기셀_이미지_묶음_컬렉션뷰)
-        addSubview(pageControl)
         contentView.addSubview(인기셀_아티스트)
         contentView.addSubview(인기셀_전시장소)
         contentView.addSubview(인기셀_리뷰내용)
@@ -164,10 +144,6 @@ extension PopularReviewCell {
             make.trailing.equalToSuperview().offset(-40)
             make.bottom.equalToSuperview().offset(-205)
         }
-        pageControl.snp.makeConstraints { make in
-            make.bottom.equalTo(인기셀_이미지_묶음_컬렉션뷰).offset(-25)
-            make.centerX.equalToSuperview()
-        }
 
         인기셀_아티스트.snp.makeConstraints { make in
             make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(10)
@@ -192,17 +168,17 @@ extension PopularReviewCell {
 
 extension PopularReviewCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 전시정보_서브셀_인스턴스.전시이미지묶음.count
+        return 전시정보_서브셀_인스턴스.전시이미지묶음[collectionView.tag].count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "인기셀_이미지_묶음_셀", for: indexPath) as? 인기셀_이미지_묶음_셀 else {
             return UICollectionViewCell()
         }
-        let imageArray = 전시정보_서브셀_인스턴스.전시이미지묶음[indexPath.item]
 
-        // 전체 이미지 배열을 사용하여 셀에 데이터 설정
-        cell.인기셀_이미지.image = UIImage(named: imageArray.first ?? "")
+        let imageName = 전시정보_서브셀_인스턴스.전시이미지묶음[collectionView.tag][indexPath.item]
+        cell.인기셀_이미지.image = UIImage(named: imageName)
+
         return cell
     }
 
