@@ -2,17 +2,9 @@ import RxCocoa
 import RxSwift
 import SnapKit
 import UIKit
-var 이미지모델_인스턴스: 이미지모델 = {
-    // 여기서 이미지 모델을 초기화
-    let 이미지묶음1 = 이미지묶음(첫번째: "morningStar", 두번째: "morningStar", 세번째: "Rectangle", 네번째: "morningStar")
-    let 이미지묶음2 = 이미지묶음(첫번째: "morningStar", 두번째: "morningStar", 세번째: "morningStar", 네번째: "morningStar")
-    let 이미지묶음3 = 이미지묶음(첫번째: "morningStar", 두번째: "morningStar", 세번째: "morningStar", 네번째: "morningStar")
-
-    let 이미지모델 = 이미지모델(이미지묶음들: [이미지묶음1, 이미지묶음2, 이미지묶음3])
-    return 이미지모델
-}()
 
 class PopularReviewCell: UICollectionViewCell {
+    var 전시정보_서브셀_인스턴스 = 전시정보_서브셀()
     let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.currentPageIndicatorTintColor = .white
@@ -23,7 +15,7 @@ class PopularReviewCell: UICollectionViewCell {
 
     var 인기셀_작성자_이미지 = {
         var imageView = UIImageView()
-        imageView.layer.cornerRadius = 20
+        imageView.layer.cornerRadius = 18
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -120,6 +112,7 @@ class PopularReviewCell: UICollectionViewCell {
         인기셀layout()
         layer.cornerRadius = 30
         backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
+        //backgroundColor = UIColor.darkGray
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 20
         //
@@ -149,10 +142,10 @@ extension PopularReviewCell {
         contentView.addSubview(인기셀_리뷰내용)
 
         인기셀_작성자_이미지.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(32)
+            make.top.equalToSuperview().offset(34)
             make.bottom.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.top).offset(-12)
             make.leading.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.leading)
-            make.trailing.equalTo(인기셀_작성자_이름.snp.leading).offset(-10)
+            make.trailing.equalTo(인기셀_작성자_이름.snp.leading).offset(-13)
         }
         인기셀_작성자_이름.snp.makeConstraints { make in
 
@@ -176,12 +169,6 @@ extension PopularReviewCell {
             make.centerX.equalToSuperview()
         }
 
-        //        인기셀_이미지.snp.makeConstraints { make in
-        //            make.top.equalToSuperview().offset(60)
-        //            make.leading.equalToSuperview().offset(20)
-        //            make.trailing.equalToSuperview().offset(-20)
-        //            make.bottom.equalToSuperview().offset(-207)
-        //        }
         인기셀_아티스트.snp.makeConstraints { make in
             make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(10)
             make.leading.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.leading)
@@ -201,32 +188,23 @@ extension PopularReviewCell {
             make.bottom.equalToSuperview().offset(-25)
         }
     }
-
-    func configure(with 이미지묶음: 이미지모델) {
-        if let cell = 인기셀_이미지_묶음_컬렉션뷰.cellForItem(at: IndexPath(item: 0, section: 0)) as? 인기셀_이미지_묶음_셀 {
-            cell.configure(with: 이미지묶음)
-        }
-
-        인기셀_이미지_묶음_컬렉션뷰.reloadData()
-    }
 }
 
 extension PopularReviewCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 이미지모델_인스턴스.이미지묶음들.count
+        return 전시정보_서브셀_인스턴스.전시이미지묶음.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "인기셀_이미지_묶음_셀", for: indexPath) as? 인기셀_이미지_묶음_셀 else {
             return UICollectionViewCell()
         }
+        let imageArray = 전시정보_서브셀_인스턴스.전시이미지묶음[indexPath.item]
 
-        let 이미지묶음 = 이미지모델_인스턴스.이미지묶음들[indexPath.item]
-        cell.configure(with: 이미지모델.init(이미지묶음들: [이미지묶음]))
-
+        // 전체 이미지 배열을 사용하여 셀에 데이터 설정
+        cell.인기셀_이미지.image = UIImage(named: imageArray.first ?? "")
         return cell
     }
-
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width * 1
