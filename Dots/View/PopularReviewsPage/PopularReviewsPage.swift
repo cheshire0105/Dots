@@ -7,7 +7,7 @@ import UIKit
 class PopularReviewsPage: UIViewController {
     let 페이지_제목 = {
         let label = UILabel()
-        label.text = "HOT"
+        label.text = "Popular Review"
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .center
@@ -55,12 +55,12 @@ class PopularReviewsPage: UIViewController {
 
     let 인기_컬렉션_뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 25
-        layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
-
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+
         collectionView.backgroundColor = .clear
         collectionView.layer.cornerRadius = 10
         collectionView.showsHorizontalScrollIndicator = false
@@ -77,6 +77,7 @@ class PopularReviewsPage: UIViewController {
         인기_컬렉션_뷰.dataSource = self
         인기_컬렉션_뷰.delegate = self
         인기_컬렉션_뷰.register(PopularReviewCell.self, forCellWithReuseIdentifier: "PopulaReviewCell")
+
         인기_컬렉션_뷰.isPagingEnabled = true
         //
     }
@@ -90,13 +91,12 @@ extension PopularReviewsPage {
         view.addSubview(추천순_버튼)
         view.addSubview(인기_컬렉션_뷰)
         페이지_제목.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalTo(22)
+
             make.top.equalToSuperview().offset(60)
             make.centerX.equalToSuperview()
         }
         인기순_버튼.snp.makeConstraints { make in
-            make.top.equalTo(페이지_제목.snp.bottom).offset(20)
+            make.top.equalTo(페이지_제목.snp.bottom).offset(28)
             make.trailing.equalTo(구분선.snp.leading).offset(-5)
             make.bottom.equalTo(구분선)
         }
@@ -105,13 +105,14 @@ extension PopularReviewsPage {
             make.centerY.equalTo(인기순_버튼)
         }
         추천순_버튼.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-12)
+            make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalTo(인기순_버튼)
         }
         인기_컬렉션_뷰.snp.makeConstraints { make in
-            make.top.equalTo(인기순_버튼.snp.bottom).offset(10)
+//            make.top.equalTo(인기순_버튼.snp.bottom).offset(10)
+            make.top.equalToSuperview().offset(130)
             make.leading.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-100)
+            make.bottom.equalToSuperview().offset(-70)
             make.centerX.equalToSuperview()
         }
     }
@@ -119,7 +120,7 @@ extension PopularReviewsPage {
 
 extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        0
+        return 이미지모델_인스턴스.이미지묶음들.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -148,8 +149,8 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width * 0.93
-        let height = collectionView.frame.height * 1
+        let width = collectionView.frame.width * 1
+        let height = collectionView.frame.height * 0.98
         return CGSize(width: width, height: height)
     }
 }
