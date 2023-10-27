@@ -52,6 +52,8 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .black
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+
         collectionView.register(MainExhibitionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
         collectionView.register(GraySquareCell.self, forCellWithReuseIdentifier: "GraySquareCell")
         collectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "sectionHeader") // 여기를 수정했습니다.
@@ -61,15 +63,27 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         return collectionView
     }()
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // 네비게이션 바의 아이템들을 숨깁니다.
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // 네비게이션 바의 아이템들을 숨깁니다.
+           navigationController?.setNavigationBarHidden(true, animated: false)
         setupCollectionView()
         bindCollectionView()
 
         setupNewCollectionView()
         bindNewCollectionView()
 
-        MainExhibitionCollectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+
+
 
     }
 
@@ -208,12 +222,15 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
 
         MainExhibitionCollectionView.rx.itemSelected.subscribe(onNext: { indexPath in
             print("Selected new item at \(indexPath.row)")
+
+            let exhibitionPage = ExhibitionPage()
+            self.navigationController?.pushViewController(exhibitionPage, animated: false)
         }).disposed(by: disposeBag)
 
         MainExhibitionCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
 
         // 페이징 효과 적용
-//        MainExhibitionCollectionView.isPagingEnabled = true
+        //        MainExhibitionCollectionView.isPagingEnabled = true
 
         // UICollectionViewFlowLayout의 minimumLineSpacing을 조절
         if let flowLayout = MainExhibitionCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
