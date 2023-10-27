@@ -32,6 +32,8 @@ class ExhibitionPage: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
 
+        self.view.backgroundColor = .black
+
         setupBackButton()
         setupRightBarButton()
 

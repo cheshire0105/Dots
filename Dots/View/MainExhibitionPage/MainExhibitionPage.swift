@@ -83,7 +83,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         bindNewCollectionView()
 
 
-
+        self.view.backgroundColor = .black
 
     }
 
@@ -215,7 +215,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
             }
 
         )
-
+ 
         Observable.just(sections)
             .bind(to: MainExhibitionCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
@@ -224,7 +224,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
             print("Selected new item at \(indexPath.row)")
 
             let exhibitionPage = ExhibitionPage()
-            self.navigationController?.pushViewController(exhibitionPage, animated: false)
+            self.navigationController?.pushViewController(exhibitionPage, animated: true)
         }).disposed(by: disposeBag)
 
         MainExhibitionCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
