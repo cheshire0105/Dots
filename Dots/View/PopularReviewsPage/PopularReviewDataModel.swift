@@ -26,5 +26,5 @@ struct 전시정보_메인셀 {
 }
 
 struct 전시정보_서브셀 {
-    var 전시이미지묶음: [[String]] = [["morningStar", "Rectangle"], ["help", "picasso"]]
+    var 전시이미지묶음: [[String]] = [["morningStar", "help"], ["renee", "henri"]]
 }

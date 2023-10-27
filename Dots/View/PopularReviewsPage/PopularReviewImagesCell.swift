@@ -8,15 +8,17 @@ class 인기셀_이미지_묶음_셀: UICollectionViewCell {
         var imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.borderWidth = 10
+        imageView.layer.borderColor = UIColor.darkGray.withAlphaComponent(0.7).cgColor
 
         return imageView
     }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
-            contentView.addSubview(인기셀_이미지)
+        backgroundColor = .clear
+        contentView.addSubview(인기셀_이미지)
         인기셀_이미지.snp.makeConstraints { make in
             make.size.equalToSuperview()
         }

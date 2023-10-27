@@ -82,6 +82,7 @@ class PopularReviewsPage: UIViewController {
 
         인기_컬렉션_뷰.isPagingEnabled = true
         //
+
     }
 }
 
@@ -140,6 +141,8 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         cell.인기셀_전시장소.setTitle(메인셀모델.전시장소이름, for: .selected)
         cell.인기셀_전시장소.setTitle(메인셀모델.전시장소이름, for: .normal)
         cell.인기셀_리뷰내용.text = 메인셀모델.본문내용
+        cell.인기셀_이미지_묶음_컬렉션뷰.tag = indexPath.row
+
         let 최대_글자수 = 200
         if let text = cell.인기셀_리뷰내용.text, text.count > 최대_글자수 {
             let 글자수_줄이기 = String(text.prefix(최대_글자수)) + " . . ." + " 더보기"
