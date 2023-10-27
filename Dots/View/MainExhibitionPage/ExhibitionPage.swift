@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ExhibitionPage: UIViewController {
+class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     // 스크롤 뷰와 콘텐츠 뷰를 정의합니다.
     let scrollView = UIScrollView()
@@ -24,6 +24,19 @@ class ExhibitionPage: UIViewController {
     let iconImageViewTwo = UIImageView()
     let descriptionLabelTwo = UILabel()
     let stackViewTwo = UIStackView()
+
+    private lazy var pageViewController: UIPageViewController = {
+        let pageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        pageVC.dataSource = self
+        pageVC.delegate = self
+        return pageVC
+    }()
+
+    private lazy var viewControllers: [UIViewController] = {
+        let firstVC = FirstPageViewController()
+        let secondVC = SecondPageViewController()
+        return [firstVC, secondVC]
+    }()
 
     let mySegmentedControl = MyPageSegmentedControl(items: ["페이지 1", "페이지 2"])
 
@@ -51,8 +64,49 @@ class ExhibitionPage: UIViewController {
         setupScrollView()
         setupExhibitionImage()
 
+        addChild(pageViewController)
+        contentView.addSubview(pageViewController.view)
+        pageViewController.didMove(toParent: self)
+        pageViewController.setViewControllers([viewControllers[0]], direction: .forward, animated: true, completion: nil)
+
+        setupPageViewControllerConstraints()
 
 
+
+    }
+
+    private func setupPageViewControllerConstraints() {
+        pageViewController.view.snp.makeConstraints { make in
+            make.top.equalTo(mySegmentedControl.snp.bottom).offset(10)
+            make.left.right.equalTo(view)
+            make.height.equalTo(view).multipliedBy(0.7) // 예를 들어, contentView의 높이의 절반만큼 설정
+        }
+    }
+
+
+    @objc func segmentChanged(_ sender: UISegmentedControl) {
+        let direction: UIPageViewController.NavigationDirection = (pageViewController.viewControllers?.first == viewControllers[sender.selectedSegmentIndex]) ? .reverse : .forward
+        pageViewController.setViewControllers([viewControllers[sender.selectedSegmentIndex]], direction: direction, animated: true, completion: nil)
+    }
+
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        if let index = viewControllers.firstIndex(of: viewController), index > 0 {
+            return viewControllers[index - 1]
+        }
+        return nil
+    }
+
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        if let index = viewControllers.firstIndex(of: viewController), index < viewControllers.count - 1 {
+            return viewControllers[index + 1]
+        }
+        return nil
+    }
+
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        if completed, let currentViewController = pageViewController.viewControllers?.first, let index = viewControllers.firstIndex(of: currentViewController) {
+            mySegmentedControl.selectedSegmentIndex = index
+        }
     }
 
 
@@ -155,18 +209,7 @@ class ExhibitionPage: UIViewController {
 
     }
 
-    @objc func segmentChanged(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
-            // 첫 번째 세그먼트 선택됨
-            break
-        case 1:
-            // 두 번째 세그먼트 선택됨
-            break
-        default:
-            break
-        }
-    }
+
 
     // 스크롤 뷰 설정
     private func setupScrollView() {
@@ -217,7 +260,7 @@ class MyPageSegmentedControl: UISegmentedControl {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.removeBackgroundAndDivider() // 백그라운드와 구분선을 제거합니다.
-        
+
     }
 
     // 아이템 배열을 사용하여 객체를 초기화하는 생성자입니다.
@@ -272,5 +315,19 @@ class MyPageSegmentedControl: UISegmentedControl {
                 self.underlineView.frame.origin.x = underlineFinalXPosition
             }
         )
+    }
+}
+
+class FirstPageViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .red // 첫 번째 페이지의 배경색을 빨간색으로 설정
+    }
+}
+
+class SecondPageViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .blue // 두 번째 페이지의 배경색을 파란색으로 설정
     }
 }
