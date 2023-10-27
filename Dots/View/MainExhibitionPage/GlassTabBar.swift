@@ -54,6 +54,8 @@ class GlassTabBar: UITabBarController {
     func setupTabBarItems() {
         let firstVC = MainExhibitionPage()
         firstVC.view.backgroundColor = .black
+        let firstNavController = UINavigationController(rootViewController: firstVC) // 이 줄을 추가합니다.
+
 
         let secondVC = SearchPage()
         secondVC.view.backgroundColor = .green
@@ -66,7 +68,7 @@ class GlassTabBar: UITabBarController {
         let fifthVC = Mypage()
         fifthVC.view.backgroundColor = .purple
 
-        viewControllers = [firstVC, secondVC, thirdVC, fourthVC, fifthVC]
+        viewControllers = [firstNavController, secondVC, thirdVC, fourthVC, fifthVC]
     }
 
     func setupCustomTabBarView() {
