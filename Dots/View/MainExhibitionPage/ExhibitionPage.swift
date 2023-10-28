@@ -45,6 +45,8 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         let pageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         pageVC.dataSource = self
         pageVC.delegate = self
+        pageVC.view.backgroundColor = .yellow // 배경색을 설정해 줍니다.
+
         return pageVC
     }()
 
@@ -108,13 +110,13 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
 
     private func setupPageViewControllerConstraints() {
-
         pageViewController.view.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom).offset(10)
             make.left.right.equalTo(contentView)
-            make.height.equalTo(contentView).multipliedBy(0.7)
+            make.height.equalTo(view.snp.height)
         }
     }
+
 
 
 
@@ -246,29 +248,27 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
 
 
-    // 스크롤 뷰 설정
+
     private func setupScrollView() {
-        // 스크롤 뷰를 뷰에 추가
         view.addSubview(scrollView)
-
         scrollView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview() // 스크롤 뷰를 전체 화면으로 설정
+            make.edges.equalTo(view)
         }
 
-        // 콘텐츠 뷰를 스크롤 뷰에 추가
         scrollView.addSubview(contentView)
-        contentView.snp.makeConstraints { (make) in
-            make.top.equalTo(view)
-            make.left.right.equalToSuperview()
-            make.width.equalTo(scrollView) // 콘텐츠 뷰의 너비를 스크롤 뷰의 너비와 같게 설정
 
-            // 마지막 UI 요소의 bottom 제약을 설정
-            make.bottom.equalTo(pageViewController.view.snp.bottom)
+        let firstPageHeight: CGFloat = 1000
+        let secondPageHeight: CGFloat = 1500
+
+        contentView.snp.remakeConstraints { (make) in
+            make.top.equalTo(scrollView)
+            make.left.right.equalTo(view)
+            make.width.equalTo(scrollView)  // contentView의 너비를 scrollView와 동일하게 설정
+            make.height.equalTo(firstPageHeight + secondPageHeight)
+            make.bottom.equalTo(scrollView)  // 추가: contentView의 하단을 scrollView의 하단에 맞춤
         }
-
-
-
     }
+
 
 
 
@@ -350,6 +350,7 @@ class MyPageSegmentedControl: UISegmentedControl {
         super.layoutSubviews()
 
         // 밑줄의 최종 x 좌표를 계산합니다.
+        // 밑줄의 최종 x 좌표를 계산합니다.
         let underlineFinalXPosition = (self.bounds.width / CGFloat(self.numberOfSegments)) * CGFloat(self.selectedSegmentIndex)
         // 애니메이션을 사용하여 밑줄의 위치를 이동시킵니다.
         UIView.animate(
@@ -368,17 +369,33 @@ class MyPageSegmentedControl: UISegmentedControl {
 class FirstPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red // 첫 번째 페이지의 배경색을 빨간색으로 설정
         print("FirstPageViewController loaded")
 
+        let redView = UIView()
+        redView.backgroundColor = .red
+        view.addSubview(redView)
+
+        redView.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.height.equalTo(1000) // 빨강색 뷰의 높이를 1000으로 설정
+        }
     }
 }
 
 class SecondPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .blue // 두 번째 페이지의 배경색을 파란색으로 설정
         print("SecondPageViewController loaded")
 
+        let blueView = UIView()
+        blueView.backgroundColor = .blue
+        view.addSubview(blueView)
+
+        blueView.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.height.equalTo(1500) // 파랑색 뷰의 높이를 1500으로 설정
+        }
     }
 }
+
+
