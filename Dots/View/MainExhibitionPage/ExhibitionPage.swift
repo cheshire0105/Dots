@@ -25,6 +25,22 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     let descriptionLabelTwo = UILabel()
     let stackViewTwo = UIStackView()
 
+    // 세그먼트 컨트롤을 생성합니다.
+    private let segmentedControl: MyPageSegmentedControl = {
+        let items = ["후기", "전시 정보"] // 세그먼트의 아이템들을 설정합니다.
+        let segmentedControl = MyPageSegmentedControl(items: items) // 세그먼트 컨트롤을 초기화합니다.
+        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .normal) // 일반 상태의 타이틀 색상을 설정합니다.
+        segmentedControl.setTitleTextAttributes(
+            [
+                NSAttributedString.Key.foregroundColor: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1),
+                .font: UIFont.systemFont(ofSize: 13, weight: .semibold) // 선택된 상태의 타이틀 색상과 폰트를 설정합니다.
+            ],
+            for: .selected
+        )
+        segmentedControl.selectedSegmentIndex = 0 // 첫 번째 세그먼트를 기본으로 선택합니다.
+        return segmentedControl
+    }()
+
     private lazy var pageViewController: UIPageViewController = {
         let pageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         pageVC.dataSource = self
@@ -38,7 +54,12 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         return [firstVC, secondVC]
     }()
 
-    let mySegmentedControl = MyPageSegmentedControl(items: ["페이지 1", "페이지 2"])
+    @objc private func didChangeSegmentControl(_ sender: UISegmentedControl) {
+        let direction: UIPageViewController.NavigationDirection = (pageViewController.viewControllers?.first == viewControllers[sender.selectedSegmentIndex]) ? .reverse : .forward
+        pageViewController.setViewControllers([viewControllers[sender.selectedSegmentIndex]], direction: direction, animated: true, completion: nil)
+    }
+
+    //    let mySegmentedControl = MyPageSegmentedControl(items: ["페이지 1", "페이지 2"])
 
 
     override func viewWillAppear(_ animated: Bool) {
@@ -51,43 +72,52 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // 1. 기본 뷰 설정
         // 네비게이션 바의 배경을 투명하게 설정
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
-
         self.view.backgroundColor = .black
-
         setupBackButton()
         setupRightBarButton()
 
-        setupScrollView()
+        // 2. UI 구성요소 설정
+        // 스크롤 뷰와 관련된 설정
+        //        setupScrollView()
+        // 전시 이미지와 관련된 뷰 설정
         setupExhibitionImage()
+        // 세그먼트 컨트롤의 값이 변경되었을 때 didChangeSegmentControl 메서드를 호출하도록 설정
+        segmentedControl.addTarget(self, action: #selector(didChangeSegmentControl), for: .valueChanged)
 
+        setupScrollView()
+
+        // 3. UIPageViewController 설정
         addChild(pageViewController)
-        contentView.addSubview(pageViewController.view)
+        contentView.addSubview(pageViewController.view)  // pageViewController의 뷰를 contentView에 추가합니다.
         pageViewController.didMove(toParent: self)
         pageViewController.setViewControllers([viewControllers[0]], direction: .forward, animated: true, completion: nil)
-
-        setupPageViewControllerConstraints()
-
-
-
+        setupPageViewControllerConstraints() // 제약 조건 설정
     }
 
+
+
+
+
+
+
+
+
     private func setupPageViewControllerConstraints() {
+
         pageViewController.view.snp.makeConstraints { make in
-            make.top.equalTo(mySegmentedControl.snp.bottom).offset(10)
-            make.left.right.equalTo(view)
-            make.height.equalTo(view).multipliedBy(0.7) // 예를 들어, contentView의 높이의 절반만큼 설정
+            make.top.equalTo(segmentedControl.snp.bottom).offset(10)
+            make.left.right.equalTo(contentView)
+            make.height.equalTo(contentView).multipliedBy(0.7)
         }
     }
 
 
-    @objc func segmentChanged(_ sender: UISegmentedControl) {
-        let direction: UIPageViewController.NavigationDirection = (pageViewController.viewControllers?.first == viewControllers[sender.selectedSegmentIndex]) ? .reverse : .forward
-        pageViewController.setViewControllers([viewControllers[sender.selectedSegmentIndex]], direction: direction, animated: true, completion: nil)
-    }
+
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         if let index = viewControllers.firstIndex(of: viewController), index > 0 {
@@ -105,9 +135,13 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if completed, let currentViewController = pageViewController.viewControllers?.first, let index = viewControllers.firstIndex(of: currentViewController) {
-            mySegmentedControl.selectedSegmentIndex = index
+            segmentedControl.selectedSegmentIndex = index
         }
     }
+
+
+
+
 
 
 
@@ -125,7 +159,10 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         stackViewTwo.addArrangedSubview(descriptionLabelTwo)
         contentView.addSubview(stackViewTwo)
 
-        contentView.addSubview(mySegmentedControl)
+        contentView.addSubview(segmentedControl)
+
+        contentView.addSubview(pageViewController.view)
+
 
         // 이미지 뷰의 제약 조건을 설정합니다.
         exhibitionImageView.snp.makeConstraints { make in
@@ -160,11 +197,13 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         }
 
         // MyPageSegmentedControl 설정
-        mySegmentedControl.snp.makeConstraints { make in
+        segmentedControl.snp.makeConstraints { make in
             make.top.equalTo(exhibitionImageView.snp.bottom).offset(16)
             make.left.equalTo(contentView).offset(16)
             make.height.equalTo(40)  // 높이 지정
         }
+
+
 
 
         stackView.axis = .horizontal
@@ -202,10 +241,6 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         descriptionLabelTwo.textColor = .white
 
 
-        mySegmentedControl.selectedSegmentIndex = 0
-        mySegmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
-        mySegmentedControl.setTitle("후기", forSegmentAt: 0)
-        mySegmentedControl.setTitle("전시정보", forSegmentAt: 1)
 
     }
 
@@ -215,6 +250,7 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     private func setupScrollView() {
         // 스크롤 뷰를 뷰에 추가
         view.addSubview(scrollView)
+
         scrollView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview() // 스크롤 뷰를 전체 화면으로 설정
         }
@@ -222,11 +258,18 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         // 콘텐츠 뷰를 스크롤 뷰에 추가
         scrollView.addSubview(contentView)
         contentView.snp.makeConstraints { (make) in
-            make.top.equalTo(view) // 변경된 부분: 콘텐츠 뷰의 상단을 뷰의 상단에 맞춤
-            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(view)
+            make.left.right.equalToSuperview()
             make.width.equalTo(scrollView) // 콘텐츠 뷰의 너비를 스크롤 뷰의 너비와 같게 설정
+
+            // 마지막 UI 요소의 bottom 제약을 설정
+            make.bottom.equalTo(pageViewController.view.snp.bottom)
         }
+
+
+
     }
+
 
 
 
@@ -316,12 +359,18 @@ class MyPageSegmentedControl: UISegmentedControl {
             }
         )
     }
+
+
+
+
 }
 
 class FirstPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red // 첫 번째 페이지의 배경색을 빨간색으로 설정
+        print("FirstPageViewController loaded")
+
     }
 }
 
@@ -329,5 +378,7 @@ class SecondPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .blue // 두 번째 페이지의 배경색을 파란색으로 설정
+        print("SecondPageViewController loaded")
+
     }
 }
