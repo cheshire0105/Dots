@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIScrollViewDelegate {
 
     // 스크롤 뷰와 콘텐츠 뷰를 정의합니다.
     let scrollView = UIScrollView()
@@ -73,6 +73,11 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        scrollView.contentInsetAdjustmentBehavior = .never
+
+        scrollView.delegate = self
+
 
         // 1. 기본 뷰 설정
         // 네비게이션 바의 배경을 투명하게 설정
@@ -167,12 +172,13 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
 
         // 이미지 뷰의 제약 조건을 설정합니다.
-        exhibitionImageView.snp.makeConstraints { make in
+        exhibitionImageView.snp.updateConstraints { make in
             make.top.equalTo(contentView) // 상단에서 16픽셀 떨어진 위치에 배치
             make.left.equalTo(contentView) // 왼쪽에서 16픽셀 떨어진 위치에 배치
             make.right.equalTo(contentView) // 오른쪽에서 16픽셀 떨어진 위치에 배치
             make.height.equalTo(350)
         }
+
 
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(200) // 이미지 아래에 10픽셀 떨어진 위치에 배치
@@ -218,7 +224,7 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
 
         // 이미지 뷰에 이미지를 설정합니다. (원하는 이미지로 변경하실 수 있습니다.)
-        exhibitionImageView.image = UIImage(named: "ExhibitionPageBack")
+        exhibitionImageView.image = UIImage(named: "morningStar")
         exhibitionImageView.contentMode = .scaleAspectFill // 이미지의 콘텐츠 모드를 설정합니다.
         exhibitionImageView.clipsToBounds = true
 
@@ -252,7 +258,8 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     private func setupScrollView() {
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { (make) in
-            make.edges.equalTo(view)
+            make.top.equalTo(view.snp.top) // 화면 최상단에 맞춤
+            make.left.right.bottom.equalTo(view)
         }
 
         scrollView.addSubview(contentView)
@@ -265,9 +272,11 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
             make.left.right.equalTo(view)
             make.width.equalTo(scrollView)  // contentView의 너비를 scrollView와 동일하게 설정
             make.height.equalTo(firstPageHeight + secondPageHeight)
-            make.bottom.equalTo(scrollView)  // 추가: contentView의 하단을 scrollView의 하단에 맞춤
+            make.bottom.equalTo(scrollView)  // contentView의 하단을 scrollView의 하단에 맞춤
         }
     }
+
+
 
 
 
@@ -295,6 +304,30 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     @objc func rightButtonTapped() {
     }
 }
+
+extension ExhibitionPage {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let yOffset = scrollView.contentOffset.y
+        if yOffset < 0 {
+            // 스크롤이 위로 이동할 때
+            let newHeight = 350 - yOffset  // 원래 이미지 뷰 높이에서 스크롤 양을 빼서 새 높이를 계산
+            let newTopOffset = 200 - yOffset  // 원래 titleLabel의 상단 위치에서 스크롤 양을 빼서 새 위치를 계산
+
+            exhibitionImageView.snp.updateConstraints { make in
+                make.height.equalTo(newHeight)
+            }
+
+            titleLabel.snp.updateConstraints { make in
+                make.top.equalTo(contentView).offset(newTopOffset)
+            }
+
+            exhibitionImageView.layoutIfNeeded()
+            titleLabel.layoutIfNeeded()
+        }
+    }
+}
+
+
 
 // MARK: - 사용자 정의 세그먼트 컨트롤 클래스를 선언합니다.
 class MyPageSegmentedControl: UISegmentedControl {
