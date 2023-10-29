@@ -15,7 +15,7 @@ class PopularReviewsPage: UIViewController {
         label.textAlignment = .center
         return label
     }()
-
+//커밋 테스트하기
     let 인기순_버튼 = {
         let button = UIButton()
         button.setTitle("인기순", for: .normal)
