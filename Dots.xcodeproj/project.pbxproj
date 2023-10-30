@@ -11,6 +11,8 @@
 		1FDD34842AE9A114002A72BB /* PopularReviewImagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */; };
 		1FF9CB0C2AEAABB9002B0F61 /* PopularReviewDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */; };
 		370F3F0A2AEEC11000C4A8F5 /* MyPageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */; };
+		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
+		37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */; };
 		B2CE169A506AD7C5CC83404E /* Pods_Dots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7463B6322E0941141F04DE43 /* Pods_Dots.framework */; };
 		FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3C971A2AE5FEA1006FEF23 /* AppDelegate.swift */; };
 		FF3C971D2AE5FEA1006FEF23 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3C971C2AE5FEA1006FEF23 /* SceneDelegate.swift */; };
@@ -37,6 +39,8 @@
 		1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewImagesCell.swift; sourceTree = "<group>"; };
 		1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDataModel.swift; sourceTree = "<group>"; };
 		370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCell.swift; sourceTree = "<group>"; };
+		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
+		37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicket.swift; sourceTree = "<group>"; };
 		7463B6322E0941141F04DE43 /* Pods_Dots.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Dots.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75A67AE9D70EFBEEF526F19F /* Pods-Dots.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.debug.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.debug.xcconfig"; sourceTree = "<group>"; };
 		FF3C97172AE5FEA1006FEF23 /* Dots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dots.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,6 +216,8 @@
 			children = (
 				FF58FB2D2AE6013600853006 /* Mypage.swift */,
 				370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */,
+				37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */,
+				377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -350,6 +356,7 @@
 				FF58FB302AE6025100853006 /* MapPage.swift in Sources */,
 				FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */,
 				FF58FB262AE6009500853006 /* ExhibitionDetailsPage.swift in Sources */,
+				37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */,
 				FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionCollectionCell.swift in Sources */,
 				FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */,
 				FF58FB2E2AE6013600853006 /* Mypage.swift in Sources */,
@@ -362,6 +369,7 @@
 				FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */,
 				FF3C971D2AE5FEA1006FEF23 /* SceneDelegate.swift in Sources */,
 				FFE0C9B52AEB413300F3D783 /* ExhibitionPage.swift in Sources */,
+				377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */,
 				FF47B5EE2AE61BA5006A5004 /* GlassTabBar.swift in Sources */,
 				FF58FB282AE600B500853006 /* ReviewDetailsPage.swift in Sources */,
 				1F9325C22AE67DC400C27F1B /* PopularReviewCell.swift in Sources */,
