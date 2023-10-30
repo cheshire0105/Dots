@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "마티스.jpg",
+      "filename" : "solar_settings-bold.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "solar_settings-bold@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "solar_settings-bold@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

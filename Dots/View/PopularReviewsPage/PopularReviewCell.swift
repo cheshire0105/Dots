@@ -13,7 +13,7 @@ class PopularReviewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-//커밋테스트
+
     let 인기셀_작성자_이름: UILabel = {
         let label = UILabel()
         label.text = ""

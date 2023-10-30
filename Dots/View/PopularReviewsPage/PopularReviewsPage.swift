@@ -15,7 +15,6 @@ class PopularReviewsPage: UIViewController {
         label.textAlignment = .center
         return label
     }()
-//커밋 테스트하기
     let 인기순_버튼 = {
         let button = UIButton()
         button.setTitle("인기순", for: .normal)
@@ -55,7 +54,7 @@ class PopularReviewsPage: UIViewController {
         return ui
     }()
 
-    let 인기_컬렉션_뷰: UICollectionView = {
+    lazy var 인기_컬렉션_뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.scrollDirection = .horizontal
@@ -67,13 +66,13 @@ class PopularReviewsPage: UIViewController {
         collectionView.layer.cornerRadius = 10
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
-
         return collectionView
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.clear
+        print("Popular Review Page")
+        view.backgroundColor = UIColor.black
         ui레이아웃()
 
         인기_컬렉션_뷰.dataSource = self
