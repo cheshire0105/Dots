@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIScrollViewDelegate {
 
     // 스크롤 뷰와 콘텐츠 뷰를 정의합니다.
     let scrollView = UIScrollView()
@@ -24,6 +24,11 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     let iconImageViewTwo = UIImageView()
     let descriptionLabelTwo = UILabel()
     let stackViewTwo = UIStackView()
+
+    private lazy var firstPageViewController: FirstPageViewController = {
+           let viewController = FirstPageViewController()
+           return viewController
+       }()
 
     // 세그먼트 컨트롤을 생성합니다.
     private let segmentedControl: MyPageSegmentedControl = {
@@ -74,6 +79,11 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        scrollView.contentInsetAdjustmentBehavior = .never
+
+        scrollView.delegate = self
+
+
         // 1. 기본 뷰 설정
         // 네비게이션 바의 배경을 투명하게 설정
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -99,6 +109,20 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         pageViewController.didMove(toParent: self)
         pageViewController.setViewControllers([viewControllers[0]], direction: .forward, animated: true, completion: nil)
         setupPageViewControllerConstraints() // 제약 조건 설정
+
+        // FirstPageViewController를 자식 뷰 컨트롤러로 추가
+              addChild(firstPageViewController)
+              scrollView.addSubview(firstPageViewController.view)
+              firstPageViewController.didMove(toParent: self)
+
+              // FirstPageViewController의 뷰에 대한 레이아웃 설정
+              firstPageViewController.view.snp.makeConstraints { make in
+                  make.top.equalTo(segmentedControl.snp.bottom).offset(10)
+                  make.left.right.equalTo(scrollView)
+                  make.width.equalTo(scrollView)  // 스크롤 뷰의 너비와 동일하게 설정
+                  make.height.equalTo(1000)  // 원하는 높이 값 설정
+                  make.bottom.equalTo(scrollView)  // 이 줄을 추가하여 스크롤 뷰의 bottom과 연결
+              }
     }
 
 
@@ -167,12 +191,13 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
 
         // 이미지 뷰의 제약 조건을 설정합니다.
-        exhibitionImageView.snp.makeConstraints { make in
+        exhibitionImageView.snp.updateConstraints { make in
             make.top.equalTo(contentView) // 상단에서 16픽셀 떨어진 위치에 배치
             make.left.equalTo(contentView) // 왼쪽에서 16픽셀 떨어진 위치에 배치
             make.right.equalTo(contentView) // 오른쪽에서 16픽셀 떨어진 위치에 배치
             make.height.equalTo(350)
         }
+
 
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(200) // 이미지 아래에 10픽셀 떨어진 위치에 배치
@@ -218,7 +243,7 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
 
         // 이미지 뷰에 이미지를 설정합니다. (원하는 이미지로 변경하실 수 있습니다.)
-        exhibitionImageView.image = UIImage(named: "ExhibitionPageBack")
+        exhibitionImageView.image = UIImage(named: "morningStar")
         exhibitionImageView.contentMode = .scaleAspectFill // 이미지의 콘텐츠 모드를 설정합니다.
         exhibitionImageView.clipsToBounds = true
 
@@ -252,22 +277,22 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     private func setupScrollView() {
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { (make) in
-            make.edges.equalTo(view)
+            make.top.equalTo(view.snp.top) // 화면 최상단에 맞춤
+            make.left.right.bottom.equalTo(view)
         }
 
         scrollView.addSubview(contentView)
-
-        let firstPageHeight: CGFloat = 1000
-        let secondPageHeight: CGFloat = 1500
 
         contentView.snp.remakeConstraints { (make) in
             make.top.equalTo(scrollView)
             make.left.right.equalTo(view)
             make.width.equalTo(scrollView)  // contentView의 너비를 scrollView와 동일하게 설정
-            make.height.equalTo(firstPageHeight + secondPageHeight)
-            make.bottom.equalTo(scrollView)  // 추가: contentView의 하단을 scrollView의 하단에 맞춤
+            make.bottom.equalTo(pageViewController.view.snp.bottom)  // 중요: contentView의 하단을 pageViewController의 뷰의 하단에 맞춤
         }
     }
+
+
+
 
 
 
@@ -295,6 +320,30 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     @objc func rightButtonTapped() {
     }
 }
+
+extension ExhibitionPage {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let yOffset = scrollView.contentOffset.y
+        if yOffset < 0 {
+            // 스크롤이 위로 이동할 때
+            let newHeight = 350 - yOffset  // 원래 이미지 뷰 높이에서 스크롤 양을 빼서 새 높이를 계산
+            let newTopOffset = 200 - yOffset  // 원래 titleLabel의 상단 위치에서 스크롤 양을 빼서 새 위치를 계산
+
+            exhibitionImageView.snp.updateConstraints { make in
+                make.height.equalTo(newHeight)
+            }
+
+            titleLabel.snp.updateConstraints { make in
+                make.top.equalTo(contentView).offset(newTopOffset)
+            }
+
+            exhibitionImageView.layoutIfNeeded()
+            titleLabel.layoutIfNeeded()
+        }
+    }
+}
+
+
 
 // MARK: - 사용자 정의 세그먼트 컨트롤 클래스를 선언합니다.
 class MyPageSegmentedControl: UISegmentedControl {
@@ -366,21 +415,28 @@ class MyPageSegmentedControl: UISegmentedControl {
 
 }
 
+
+
 class FirstPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("FirstPageViewController loaded")
 
+        // FirstPageViewController의 뷰의 배경색을 설정
+        view.backgroundColor = .white
+
         let redView = UIView()
         redView.backgroundColor = .red
         view.addSubview(redView)
 
+        // redView의 레이아웃 제약 조건을 설정
         redView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
             make.height.equalTo(1000) // 빨강색 뷰의 높이를 1000으로 설정
         }
     }
 }
+
 
 class SecondPageViewController: UIViewController {
     override func viewDidLoad() {
