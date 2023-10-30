@@ -54,7 +54,7 @@ class PopularReviewsPage: UIViewController {
         return ui
     }()
 
-    lazy var 인기_컬렉션_뷰: UICollectionView = {
+    lazy var 인기_컬렉션_뷰 = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.scrollDirection = .horizontal
