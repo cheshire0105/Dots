@@ -5,7 +5,8 @@ import SnapKit
 import UIKit
 
 class PopularReviewsPage: UIViewController {
-    var 전시정보_메인셀_인스턴스 = 전시정보_메인셀(사용자프로필이미지: "", 사용자프로필이름: "", 전시아티스트이름: "", 전시장소이름: "", 본문내용: "")
+    var 유저정보_인스턴스 = 유저정보(사용자프로필이미지: "", 사용자프로필이름: "")
+    var 전시정보_메인셀_인스턴스 = 전시정보_택스트(전시아티스트이름: "", 전시장소이름: "", 본문제목: "", 본문내용: "")
 
     let 페이지_제목 = {
         let label = UILabel()
@@ -54,10 +55,10 @@ class PopularReviewsPage: UIViewController {
         return ui
     }()
 
-    lazy var 인기_컬렉션_뷰 = {
+    lazy var 인기_컬렉션_뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        layout.scrollDirection = .horizontal
+        layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -112,7 +113,7 @@ extension PopularReviewsPage {
         }
         인기_컬렉션_뷰.snp.makeConstraints { make in
 //            make.top.equalTo(인기순_버튼.snp.bottom).offset(10)
-            make.top.equalToSuperview().offset(130)
+            make.top.equalToSuperview().offset(150)
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview().offset(-70)
             make.centerX.equalToSuperview()
@@ -129,20 +130,21 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PopulaReviewCell", for: indexPath) as? PopularReviewCell else {
             return UICollectionViewCell()
         }
+        let 메인셀_유저정보 = 유저정보_인스턴스.마이페이지_유저정보[indexPath.row]
+        let 메인셀_전시정보 = 전시정보_메인셀_인스턴스.인기_전시정보[indexPath.row]
 
-        let 메인셀모델 = 전시정보_메인셀_인스턴스.인기_전시정보[indexPath.row]
-
-        cell.인기셀_작성자_이미지.image = UIImage(named: 메인셀모델.사용자프로필이미지)
-        cell.인기셀_작성자_이름.text = 메인셀모델.사용자프로필이름
+        cell.인기셀_작성자_이미지.image = UIImage(named: 메인셀_유저정보.사용자프로필이미지)
+        //cell.인기셀_작성자_이름.text = 메인셀_유저정보.사용자프로필이름
         cell.인기셀_하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
-        cell.인기셀_아티스트.setTitle(메인셀모델.전시아티스트이름, for: .selected)
-        cell.인기셀_아티스트.setTitle(메인셀모델.전시아티스트이름, for: .normal)
-        cell.인기셀_전시장소.setTitle(메인셀모델.전시장소이름, for: .selected)
-        cell.인기셀_전시장소.setTitle(메인셀모델.전시장소이름, for: .normal)
-        cell.인기셀_리뷰내용.text = 메인셀모델.본문내용
+//        cell.인기셀_아티스트.setTitle(메인셀_전시정보.전시아티스트이름, for: .selected)
+//        cell.인기셀_아티스트.setTitle(메인셀_전시정보.전시아티스트이름, for: .normal)
+//        cell.인기셀_전시장소.setTitle(메인셀_전시정보.전시장소이름, for: .selected)
+        //cell.인기셀_전시장소.setTitle(메인셀_전시정보.전시장소이름, for: .normal)
+        cell.인기셀_리뷰제목.text = 메인셀_전시정보.본문제목
+        cell.인기셀_리뷰내용.text = 메인셀_전시정보.본문내용
         cell.인기셀_이미지_묶음_컬렉션뷰.tag = indexPath.row
 
-        let 최대_글자수 = 200
+        let 최대_글자수 = 90
         if let text = cell.인기셀_리뷰내용.text, text.count > 최대_글자수 {
             let 글자수_줄이기 = String(text.prefix(최대_글자수)) + " . . ." + " 더보기"
             cell.인기셀_리뷰내용.text = 글자수_줄이기
@@ -152,7 +154,7 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width * 1
-        let height = collectionView.frame.height * 0.98
+        let height = collectionView.frame.height * 0.6
         return CGSize(width: width, height: height)
     }
 }
