@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIScrollViewDelegate {
+class ExhibitionPage: UIViewController, UIScrollViewDelegate {
 
     // MARK: - 변수들
 
@@ -27,10 +27,6 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
     let descriptionLabelTwo = UILabel()
     let stackViewTwo = UIStackView()
 
-    private lazy var firstPageViewController: FirstPageViewController = {
-        let viewController = FirstPageViewController()
-        return viewController
-    }()
 
     private let segmentedControl: MyPageSegmentedControl = {
         let items = ["후기", "전시 정보"]
@@ -45,21 +41,6 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         )
         segmentedControl.selectedSegmentIndex = 0
         return segmentedControl
-    }()
-
-    private lazy var pageViewController: UIPageViewController = {
-        let pageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-        pageVC.dataSource = self
-        pageVC.delegate = self
-        pageVC.view.backgroundColor = .yellow
-
-        return pageVC
-    }()
-
-    private lazy var viewControllers: [UIViewController] = {
-        let firstVC = FirstPageViewController()
-        let secondVC = SecondPageViewController()
-        return [firstVC, secondVC]
     }()
 
 
@@ -84,70 +65,14 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
         setupBackButton()
         setupRightBarButton()
         setupExhibitionImage()
-        segmentedControl.addTarget(self, action: #selector(didChangeSegmentControl), for: .valueChanged)
         setupScrollView()
 
-        addChild(pageViewController)
-        contentView.addSubview(pageViewController.view)
-        pageViewController.didMove(toParent: self)
-        pageViewController.setViewControllers([viewControllers[0]], direction: .forward, animated: true, completion: nil)
-        setupPageViewControllerConstraints()
-
-        addChild(firstPageViewController)
-        scrollView.addSubview(firstPageViewController.view)
-        firstPageViewController.didMove(toParent: self)
-
-        firstPageViewController.view.snp.makeConstraints { make in
-            make.top.equalTo(segmentedControl.snp.bottom).offset(10)
-            make.left.right.equalTo(scrollView)
-            make.width.equalTo(scrollView)
-            make.height.equalTo(1000)
-            make.bottom.equalTo(scrollView)
-        }
     }
 
     // MARK: - 함수들
-
-    // 세그먼트의 값이 변경 되었을 때
-    @objc private func didChangeSegmentControl(_ sender: UISegmentedControl) {
-        let direction: UIPageViewController.NavigationDirection = (pageViewController.viewControllers?.first == viewControllers[sender.selectedSegmentIndex]) ? .reverse : .forward
-        pageViewController.setViewControllers([viewControllers[sender.selectedSegmentIndex]], direction: direction, animated: true, completion: nil)
-    }
-    
-    // 세그먼트 컨트롤에서 보여지는 PageView의 레이아웃
-    private func setupPageViewControllerConstraints() {
-        pageViewController.view.snp.makeConstraints { make in
-            make.top.equalTo(segmentedControl.snp.bottom).offset(10)
-            make.left.right.equalTo(contentView)
-            make.height.equalTo(view.snp.height)
-        }
-    }
-    
-    // 페이지 컨트롤러의 첫번째 인덱스
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        if let index = viewControllers.firstIndex(of: viewController), index > 0 {
-            return viewControllers[index - 1]
-        }
-        return nil
-    }
-    
-    // 페이지 컨트롤러의 두번째 인덱스
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        if let index = viewControllers.firstIndex(of: viewController), index < viewControllers.count - 1 {
-            return viewControllers[index + 1]
-        }
-        return nil
-    }
-
-    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        if completed, let currentViewController = pageViewController.viewControllers?.first, let index = viewControllers.firstIndex(of: currentViewController) {
-            segmentedControl.selectedSegmentIndex = index
-        }
-    }
     
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
-
         view.addSubview(scrollView)
 
         scrollView.snp.makeConstraints { (make) in
@@ -156,12 +81,14 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
         scrollView.addSubview(contentView)
 
-        contentView.snp.remakeConstraints { (make) in
-            make.top.equalTo(scrollView)
-            make.left.right.equalTo(scrollView)
-            make.bottom.equalTo(pageViewController.view.snp.bottom)
+        contentView.snp.makeConstraints { (make) in
+            make.top.left.right.equalTo(scrollView)
+            make.bottom.equalTo(segmentedControl.snp.bottom) // 가장 아래에 위치한 뷰의 bottom과 연결
+            make.width.equalTo(scrollView) // contentView의 너비를 scrollView의 너비와 동일하게 설정
         }
     }
+
+
 
     // 상단의 전시 이미지를 설정 하는 함수
     private func setupExhibitionImage() {
@@ -191,9 +118,6 @@ class ExhibitionPage: UIViewController, UIPageViewControllerDataSource, UIPageVi
 
         // 세그먼트 컨트롤을 추가
         contentView.addSubview(segmentedControl)
-
-        // 세그먼트 컨트롤로 연결 되는 페이지 뷰를 추가
-        contentView.addSubview(pageViewController.view)
 
         exhibitionImageView.snp.updateConstraints { make in
             make.top.equalTo(contentView)
@@ -376,42 +300,5 @@ class MyPageSegmentedControl: UISegmentedControl {
 }
 
 
-
-class FirstPageViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        print("FirstPageViewController loaded")
-
-        // FirstPageViewController의 뷰의 배경색을 설정
-        view.backgroundColor = .white
-
-        let redView = UIView()
-        redView.backgroundColor = .red
-        view.addSubview(redView)
-
-        // redView의 레이아웃 제약 조건을 설정
-        redView.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.height.equalTo(1000) // 빨강색 뷰의 높이를 1000으로 설정
-        }
-    }
-}
-
-
-class SecondPageViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        print("SecondPageViewController loaded")
-
-        let blueView = UIView()
-        blueView.backgroundColor = .blue
-        view.addSubview(blueView)
-
-        blueView.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.height.equalTo(1500) // 파랑색 뷰의 높이를 1500으로 설정
-        }
-    }
-}
 
 
