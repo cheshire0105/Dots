@@ -27,10 +27,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
     let descriptionLabelTwo = UILabel()
     let stackViewTwo = UIStackView()
 
-
-    private let segmentedControl: MyPageSegmentedControl = {
+    private let segmentedControl: PageSegmentedControl = {
         let items = ["후기", "전시 정보"]
-        let segmentedControl = MyPageSegmentedControl(items: items)
+        let segmentedControl = PageSegmentedControl(items: items)
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .normal)
         segmentedControl.setTitleTextAttributes(
             [
@@ -43,6 +42,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
         return segmentedControl
     }()
 
+    let redView = UIView()
+        let blueView = UIView()
 
     // MARK: - 뷰의 생명주기
 
@@ -66,11 +67,13 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
         setupRightBarButton()
         setupExhibitionImage()
         setupScrollView()
+        setupViews()
+               setupSegmentedControl()
 
     }
 
     // MARK: - 함수들
-    
+
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
         view.addSubview(scrollView)
@@ -83,12 +86,10 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
 
         contentView.snp.makeConstraints { (make) in
             make.top.left.right.equalTo(scrollView)
-            make.bottom.equalTo(segmentedControl.snp.bottom) // 가장 아래에 위치한 뷰의 bottom과 연결
-            make.width.equalTo(scrollView) // contentView의 너비를 scrollView의 너비와 동일하게 설정
+            make.bottom.equalTo(segmentedControl.snp.bottom)
+            make.width.equalTo(scrollView)
         }
     }
-
-
 
     // 상단의 전시 이미지를 설정 하는 함수
     private func setupExhibitionImage() {
@@ -98,7 +99,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
         contentView.addSubview(exhibitionImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(galleryButtonLabel)
-        
+
         // 그 밑에 위치와 날짜 레이블의 스택뷰를 추가
         stackView.addArrangedSubview(iconImageView)
         stackView.addArrangedSubview(descriptionLabel)
@@ -182,6 +183,30 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
 
     }
 
+    private func setupViews() {
+         contentView.addSubview(redView)
+         contentView.addSubview(blueView)
+
+         redView.snp.makeConstraints { make in
+             make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+             make.left.right.equalTo(contentView)
+             make.height.equalTo(1000) // 높이 설정
+         }
+
+         blueView.snp.makeConstraints { make in
+             make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+             make.left.right.equalTo(contentView)
+             make.height.equalTo(2000) // 높이 설정
+         }
+
+         redView.backgroundColor = .red
+         blueView.backgroundColor = .blue
+
+         // 초기 상태 설정
+         redView.isHidden = false
+         blueView.isHidden = true
+     }
+
     private func setupBackButton() {
         let backButtonImage = UIImage(named: "backButton")
         let backButton = UIBarButtonItem(image: backButtonImage, style: .plain, target: self, action: #selector(backButtonTapped))
@@ -203,6 +228,25 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
     @objc func rightButtonTapped() {
 
     }
+
+
+    private func setupSegmentedControl() {
+        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
+    }
+
+    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            redView.isHidden = false
+            blueView.isHidden = true
+        case 1:
+            redView.isHidden = true
+            blueView.isHidden = false
+        default:
+            break
+        }
+    }
+
 }
 
 extension ExhibitionPage {
@@ -230,7 +274,7 @@ extension ExhibitionPage {
 
 
 // MARK: - 사용자 정의 세그먼트 컨트롤 클래스를 선언합니다.
-class MyPageSegmentedControl: UISegmentedControl {
+class PageSegmentedControl: UISegmentedControl {
 
     // 프레임을 사용하여 객체를 초기화하는 생성자입니다.
     override init(frame: CGRect) {
@@ -293,10 +337,6 @@ class MyPageSegmentedControl: UISegmentedControl {
             }
         )
     }
-
-
-
-
 }
 
 
