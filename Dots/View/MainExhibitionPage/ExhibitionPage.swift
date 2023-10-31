@@ -50,7 +50,11 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
+        if let glassTabBar = tabBarController as? GlassTabBar {
+            glassTabBar.customTabBarView.isHidden = true
+        }
     }
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +80,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
 
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
+
         view.addSubview(scrollView)
 
         scrollView.snp.makeConstraints { (make) in
@@ -86,7 +91,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
 
         contentView.snp.makeConstraints { (make) in
             make.top.left.right.equalTo(scrollView)
-            make.bottom.equalTo(segmentedControl.snp.bottom)
+            make.bottom.equalTo(scrollView.snp.bottom)
             make.width.equalTo(scrollView)
         }
     }
