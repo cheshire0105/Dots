@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 class Mypage: UIViewController {
-    
+    var 유저정보_인스턴스 = 유저정보(사용자프로필이미지: "", 사용자프로필이름: "")
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
@@ -128,6 +128,9 @@ class Mypage: UIViewController {
         마이페이지_컬렉션뷰.dataSource = self
         마이페이지_컬렉션뷰.delegate = self
         마이페이지_컬렉션뷰.register(MyPageCell.self, forCellWithReuseIdentifier: "MyPageCell")
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        
     }
     private func UI레이아웃 () {
         

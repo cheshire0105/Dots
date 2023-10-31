@@ -10,10 +10,16 @@ class MyPageTicket: UIViewController {
         let label = UILabel()
         label.text = "My Ticket"
         label.textColor = .white
-        label.font = UIFont.boldSystemFont(ofSize: 15)
+        label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textAlignment = .center
         return label
     }()
+    private let 뒤로가기_버튼 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "backButton"), for: .normal)
+        button.isSelected = !button.isSelected
+        return button
+    } ()
     
     private var 티켓_전시명 = {
         let label = UILabel()
@@ -61,26 +67,31 @@ class MyPageTicket: UIViewController {
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("My ticket")
         view.backgroundColor = UIColor.black
         navigationItem.hidesBackButton = true
-        
+        navigationController?.navigationBar.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
         UI레이아웃()
         티켓_컬렉션뷰_레이아웃()
         티켓_컬렉션뷰.dataSource = self
         티켓_컬렉션뷰.delegate = self
         티켓_컬렉션뷰.register(MyPageTicketCell.self, forCellWithReuseIdentifier: "MyPageTicketCell")
         작성버튼_레이아웃()
-      
-      
+        버튼_클릭()
     }
+ 
     
     private func UI레이아웃() {
-        for UI뷰 in [티켓_페이지_제목,티켓_전시명,티켓_전시장소] {
+        for UI뷰 in [티켓_페이지_제목 , 뒤로가기_버튼 , 티켓_전시명 , 티켓_전시장소] {
             view.addSubview(UI뷰)
         }
         티켓_페이지_제목.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(60)
             make.centerX.equalToSuperview()
+        }
+        뒤로가기_버튼.snp.makeConstraints { make in
+            make.centerY.equalTo(티켓_페이지_제목)
+            make.leading.equalToSuperview().offset(39)
         }
         티켓_전시명.snp.makeConstraints { make in
             make.top.equalTo(티켓_페이지_제목.snp.bottom).offset(49)
@@ -128,5 +139,15 @@ class MyPageTicket: UIViewController {
                 let width = collectionView.frame.width * 1
                 let height = collectionView.frame.height * 0.95
                 return CGSize(width: width, height: height)
+            }
+            
+            private func 버튼_클릭() {
+                뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+                
+
+            }
+
+            @objc func 뒤로가기_버튼_클릭() {
+                navigationController?.popViewController(animated: true)
             }
         }

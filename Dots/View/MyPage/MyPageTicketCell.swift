@@ -4,7 +4,9 @@ import UIKit
 
 class MyPageTicketCell : UICollectionViewCell {
    
-   
+    
+    
+    
     
     override func layoutSubviews() {
         super.layoutSubviews()
