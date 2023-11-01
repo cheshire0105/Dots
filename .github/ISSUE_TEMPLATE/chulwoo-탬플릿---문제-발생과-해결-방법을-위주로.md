@@ -1,6 +1,6 @@
 ---
 name: chulwoo 탬플릿 - 문제 발생과 해결 방법을 위주로
-about: Describe this issue template's purpose here.
+about: 문제 발생과 해결을 위주로 정리 할 수 있는 탬플릿.
 title: ''
 labels: ''
 assignees: ''
