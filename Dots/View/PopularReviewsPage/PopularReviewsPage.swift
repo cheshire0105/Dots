@@ -135,8 +135,8 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         let 메인셀_전시정보 = 전시정보_메인셀_인스턴스.인기_전시정보[indexPath.row]
 
         cell.인기셀_작성자_이미지.image = UIImage(named: 메인셀_유저정보.사용자프로필이미지)
-        //cell.인기셀_작성자_이름.text = 메인셀_유저정보.사용자프로필이름
-        cell.인기셀_하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
+        cell.인기셀_작성자_이름.text = 메인셀_유저정보.사용자프로필이름
+//        cell.인기셀_하트_아이콘.image = UIImage(systemName: "heart")?.withTintColor(UIColor.lightGray, renderingMode: .alwaysOriginal)
 //        cell.인기셀_아티스트.setTitle(메인셀_전시정보.전시아티스트이름, for: .selected)
 //        cell.인기셀_아티스트.setTitle(메인셀_전시정보.전시아티스트이름, for: .normal)
 //        cell.인기셀_전시장소.setTitle(메인셀_전시정보.전시장소이름, for: .selected)
