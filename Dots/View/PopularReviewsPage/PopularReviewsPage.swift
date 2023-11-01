@@ -148,10 +148,12 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         return CGSize(width: width, height: height)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let 인기리뷰_디테일_화면 = PopularReviewDetail()
-        self.navigationController?.pushViewController(인기리뷰_디테일_화면, animated: true)
-    }
-    
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        
+//        let 인기리뷰_디테일_화면 = PopularReviewDetail()
+//        
+//        
+//        self.navigationController?.pushViewController(인기리뷰_디테일_화면, animated: true)
+//    }
+//    
 }

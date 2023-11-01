@@ -15,18 +15,18 @@ class PopularReviewCell: UICollectionViewCell {
     var 좋아요_블록 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor.systemPink.withAlphaComponent(0.8)
-        uiView.layer.cornerRadius = 25
+        uiView.layer.cornerRadius = 20
         return uiView
     } ()
     var 조회수_블록 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor.white.withAlphaComponent(0.8)
-        uiView.layer.cornerRadius = 25
+        uiView.layer.cornerRadius = 20
         return uiView
     } ()
     var 인기셀_작성자_이미지 = {
         var imageView = UIImageView()
-        imageView.layer.cornerRadius = 20
+        imageView.layer.cornerRadius = 15
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -131,7 +131,6 @@ class PopularReviewCell: UICollectionViewCell {
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 10
         인기셀layout()
-        블록layout()
         인기셀_이미지_묶음_컬렉션뷰.dataSource = self
         인기셀_이미지_묶음_컬렉션뷰.delegate = self
         인기셀_이미지_묶음_컬렉션뷰.isPagingEnabled = true
@@ -148,73 +147,17 @@ class PopularReviewCell: UICollectionViewCell {
 
 extension PopularReviewCell {
     
-    func 블록layout () {
-        addSubview(유저_블록)
-        addSubview(조회수_블록)
-        addSubview(좋아요_블록)
-        addSubview(인기셀_작성자_이미지)
-        addSubview(인기셀_작성자_이름)
-        addSubview(조회수_버튼)
-        addSubview(좋아요_버튼)
-        addSubview(좋아요_카운트)
-        addSubview(조회수_카운트)
-        유저_블록.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(236)
-            make.leading.equalToSuperview().offset(30)
-            make.trailing.equalToSuperview().offset(-213)
-            make.bottom.equalToSuperview().offset(-136)
-        }
-        
-        조회수_블록.snp.makeConstraints { make in
-            make.top.equalTo(유저_블록)
-            make.bottom.equalTo(유저_블록)
-            make.leading.equalTo(유저_블록.snp.trailing).offset(78)
-            make.trailing.equalToSuperview().offset(-86)
-        }
-        
-        좋아요_블록.snp.makeConstraints { make in
-            make.top.equalTo(유저_블록)
-            make.bottom.equalTo(유저_블록)
-            make.leading.equalTo(조회수_블록.snp.trailing).offset(6)
-            make.trailing.equalToSuperview().offset(-30)
-        }
-        인기셀_작성자_이미지.snp.makeConstraints { make in
-            make.top.equalTo(유저_블록.snp.top).offset(5)
-            make.bottom.equalTo(유저_블록.snp.bottom).offset(-5)
-            make.leading.equalTo(유저_블록.snp.leading).offset(5)
-            make.trailing.equalTo(유저_블록.snp.trailing).offset(-106)
-        }
-        인기셀_작성자_이름.snp.makeConstraints { make in
-            make.top.equalTo(유저_블록.snp.top).offset(15)
-            make.bottom.equalTo(유저_블록.snp.bottom).offset(-15)
-            make.leading.equalTo(인기셀_작성자_이미지.snp.trailing).offset(5)
-            make.trailing.equalTo(유저_블록).offset(-5)
-        }
-        조회수_버튼.snp.makeConstraints { make in
-            make.top.equalTo(조회수_블록).offset(10)
-            make.centerX.equalTo(조회수_블록)
-        }
-        좋아요_버튼.snp.makeConstraints { make in
-            make.top.equalTo(좋아요_블록.snp.top).offset(10)
-            make.centerX.equalTo(좋아요_블록)
-        }
-        조회수_카운트.snp.makeConstraints { make in
-            make.top.equalTo(조회수_버튼.snp.bottom).offset(-3)
-            make.centerX.equalTo(조회수_블록)
-        }
-        좋아요_카운트.snp.makeConstraints { make in
-            make.top.equalTo(좋아요_버튼.snp.bottom).offset(-3)
-            make.centerX.equalTo(좋아요_블록)
-        }
-    }
-    
     func 인기셀layout() {
       
-        addSubview(인기셀_이미지_묶음_컬렉션뷰)
-    
+        contentView.addSubview(인기셀_이미지_묶음_컬렉션뷰)
         contentView.addSubview(인기셀_리뷰제목)
         contentView.addSubview(인기셀_리뷰내용)
-       
+        contentView.addSubview(유저_블록)
+        contentView.addSubview(조회수_블록)
+        contentView.addSubview(좋아요_블록)
+        contentView.addSubview(인기셀_작성자_이미지)
+        contentView.addSubview(조회수_버튼)
+        contentView.addSubview(좋아요_버튼)
         인기셀_이미지_묶음_컬렉션뷰.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().offset(20)
@@ -234,7 +177,39 @@ extension PopularReviewCell {
             make.trailing.equalTo(인기셀_이미지_묶음_컬렉션뷰).offset(-5)
             make.bottom.equalToSuperview().offset(-23)
         }
+        유저_블록.snp.makeConstraints { make in
+            make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(-20)
+            make.bottom.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(30)
+            make.trailing.equalToSuperview().offset(-250)
+        }
+        조회수_블록.snp.makeConstraints { make in
+            make.top.equalTo(유저_블록)
+            make.bottom.equalTo(유저_블록)
+            make.leading.equalTo(유저_블록.snp.trailing).offset(130)
+            make.trailing.equalToSuperview().offset(-80)
+        }
+        좋아요_블록.snp.makeConstraints { make in
+            make.top.equalTo(유저_블록)
+            make.bottom.equalTo(유저_블록)
+            make.leading.equalTo(조회수_블록.snp.trailing).offset(10)
+            make.trailing.equalToSuperview().offset(-30)
+
+        }
+        인기셀_작성자_이미지.snp.makeConstraints { make in
+            make.top.equalTo(유저_블록).offset(5)
+            make.leading.equalTo(유저_블록.snp.leading).offset(5)
+            make.bottom.equalTo(유저_블록.snp.bottom).offset(-5)
+            make.trailing.equalTo(유저_블록.snp.trailing).offset(-78)
+        }
+        조회수_버튼.snp.makeConstraints { make in
+//            make.top.equalTo()
+        }
+        
+        
     }
+    
+
 }
 
 extension PopularReviewCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
