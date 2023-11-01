@@ -76,6 +76,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
 
     }
 
+    
+
     // MARK: - 함수들
 
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
