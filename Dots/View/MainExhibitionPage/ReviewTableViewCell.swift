@@ -18,6 +18,8 @@ class ReviewTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
+        self.backgroundColor = .black  // 셀의 배경색을 검은색으로 설정
+
         // UI 컴포넌트 추가 및 레이아웃 설정
         contentView.addSubview(titleLabel)
         contentView.addSubview(contentLabel)
@@ -41,8 +43,13 @@ class ReviewTableViewCell: UITableViewCell {
 
         // 스타일 설정
         titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        titleLabel.textColor = .white  // 텍스트 색상을 하얀색으로 설정
+
         contentLabel.font = UIFont.systemFont(ofSize: 14)
+        contentLabel.textColor = .white  // 텍스트 색상을 하얀색으로 설정
+
         authorLabel.font = UIFont.systemFont(ofSize: 12)
+        authorLabel.textColor = .white  // 텍스트 색상을 하얀색으로 설정
     }
 
     required init?(coder: NSCoder) {
@@ -55,6 +62,7 @@ class ReviewTableViewCell: UITableViewCell {
         authorLabel.text = review.author
     }
 }
+
 
 struct Review {
     let title: String

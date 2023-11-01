@@ -54,7 +54,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         
-        collectionView.register(MainExhibitionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
+        collectionView.register(MainExhibitionFirstSectionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
         collectionView.register(GraySquareCell.self, forCellWithReuseIdentifier: "GraySquareCell")
         collectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "sectionHeader") // 여기를 수정했습니다.
         
@@ -194,7 +194,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         let dataSource = RxCollectionViewSectionedReloadDataSource<SectionItem>(
             configureCell: { (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
                 if indexPath.section == 0 {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionCollectionCell
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
                     cell.label.text = item
                     cell.contentView.clipsToBounds = true
                     cell.setImage(image: UIImage(named: "Rectangle"))
@@ -246,7 +246,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         }
     }
     
-    private func adjustCellLayoutForEvenItems(cell: MainExhibitionCollectionCell, indexPath: IndexPath) {
+    private func adjustCellLayoutForEvenItems(cell: MainExhibitionFirstSectionCollectionCell, indexPath: IndexPath) {
         if indexPath.row % 2 == 0 { // 짝수 번째 셀인 경우
             // 이미지를 오른쪽으로 이동
             cell.imageView.snp.remakeConstraints { make in
