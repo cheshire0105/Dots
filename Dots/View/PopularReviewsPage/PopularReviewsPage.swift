@@ -16,6 +16,7 @@ class PopularReviewsPage: UIViewController {
         label.textAlignment = .center
         return label
     }()
+    
     let 인기순_버튼 = {
         let button = UIButton()
         button.setTitle("인기순", for: .normal)
@@ -115,7 +116,7 @@ extension PopularReviewsPage {
 //            make.top.equalTo(인기순_버튼.snp.bottom).offset(10)
             make.top.equalToSuperview().offset(150)
             make.leading.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-70)
+            make.bottom.equalToSuperview()
             make.centerX.equalToSuperview()
         }
     }
