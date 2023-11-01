@@ -27,28 +27,17 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     let descriptionLabelTwo = UILabel()
     let stackViewTwo = UIStackView()
 
-    private let segmentedControl: PageSegmentedControl = {
-        let items = ["후기", "전시 정보"]
-        let segmentedControl = PageSegmentedControl(items: items)
-        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .normal)
-        segmentedControl.setTitleTextAttributes(
-            [
-                NSAttributedString.Key.foregroundColor: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1),
-                .font: UIFont.systemFont(ofSize: 13, weight: .semibold)
-            ],
-            for: .selected
-        )
-        segmentedControl.selectedSegmentIndex = 0
-        return segmentedControl
-    }()
-
     let reviewView = UIView()
     let exhibitionInformationView = UIView()
 
     let tableView = UITableView()
 
+    // 세그먼트 컨트롤 대신에 버튼을 사용
+    let reviewsButton = UIButton()
+    let exhibitionInfoButton = UIButton()
+
     // 테이블 뷰의 높이 제약 조건을 클래스 프로퍼티로 정의
-       var tableViewHeightConstraint: Constraint?
+    var tableViewHeightConstraint: Constraint?
 
     var reviewViewHeightConstraint: Constraint? // reviewView의 높이 제약조건을 저장할 프로퍼티
 
@@ -100,9 +89,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         setupExhibitionImage()
         setupScrollView()
         setupViews()
-        setupSegmentedControl()
 
         setupTableView()
+
 
     }
 
@@ -113,8 +102,28 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
 
 
-
     // MARK: - 함수들
+
+    // 버튼을 설정하는 함수
+
+
+    @objc func reviewsButtonTapped() {
+        reviewView.isHidden = false
+        exhibitionInformationView.isHidden = true
+        updateScrollViewContentSize()
+    }
+
+    @objc func exhibitionInfoButtonTapped() {
+        reviewView.isHidden = true
+        exhibitionInformationView.isHidden = false
+        updateScrollViewContentSizeForExhibitionInfoView()
+    }
+
+    func updateScrollViewContentSizeForExhibitionInfoView() {
+        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + exhibitionInformationView.frame.height + 32
+        scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
+    }
+
 
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
@@ -160,8 +169,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         stackViewTwo.spacing = 10
         stackViewTwo.alignment = .center
 
-        // 세그먼트 컨트롤을 추가
-        contentView.addSubview(segmentedControl)
+
 
         exhibitionImageView.snp.updateConstraints { make in
             make.top.equalTo(contentView)
@@ -218,10 +226,30 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         descriptionLabelTwo.font = UIFont.systemFont(ofSize: 12)
         descriptionLabelTwo.textColor = .white
 
-        segmentedControl.snp.makeConstraints { make in
+        contentView.addSubview(reviewsButton)
+        contentView.addSubview(exhibitionInfoButton)
+
+        reviewsButton.setTitle("후기", for: .normal)
+        reviewsButton.setTitleColor(.white, for: .normal)
+        reviewsButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        reviewsButton.addTarget(self, action: #selector(reviewsButtonTapped), for: .touchUpInside)
+
+        exhibitionInfoButton.setTitle("전시 정보", for: .normal)
+        exhibitionInfoButton.setTitleColor(.white, for: .normal)
+        exhibitionInfoButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        exhibitionInfoButton.addTarget(self, action: #selector(exhibitionInfoButtonTapped), for: .touchUpInside)
+
+        reviewsButton.snp.makeConstraints { make in
             make.top.equalTo(exhibitionImageView.snp.bottom).offset(16)
             make.left.equalTo(contentView).offset(16)
-            make.height.equalTo(40)  // 높이 지정
+            make.height.equalTo(40)
+        }
+
+        exhibitionInfoButton.snp.makeConstraints { make in
+            make.top.equalTo(exhibitionImageView.snp.bottom).offset(16)
+            make.left.equalTo(reviewsButton.snp.right).offset(16)
+            make.height.equalTo(40)
+            make.width.equalTo(reviewsButton.snp.width)  // 너비 동일하게 설정
         }
 
     }
@@ -231,14 +259,14 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         contentView.addSubview(exhibitionInformationView)
 
         reviewView.snp.makeConstraints { make in
-            make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+            make.top.equalTo(reviewsButton.snp.bottom).offset(16)
             make.left.right.equalTo(contentView)
             //            make.height.equalTo(1000).priority(.high) // 우선순위를 높음으로 설정
             make.bottom.equalTo(contentView).priority(.high) // 추가된 부분: redView의 하단을 contentView의 하단에 연결
         }
 
         exhibitionInformationView.snp.makeConstraints { make in
-            make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+            make.top.equalTo(reviewsButton.snp.bottom).offset(16)
             make.left.right.equalTo(contentView)
             make.height.equalTo(2000).priority(.high) // 우선순위를 높음으로 설정
             make.bottom.equalTo(contentView) // 추가된 부분: blueView의 하단을 contentView의 하단에 연결
@@ -281,24 +309,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     }
 
 
-    private func setupSegmentedControl() {
-        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
-    }
 
-    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
-            reviewView.isHidden = false
-            exhibitionInformationView.isHidden = true
-            updateScrollViewContentSize()
-        case 1:
-            reviewView.isHidden = true
-            exhibitionInformationView.isHidden = false
-            scrollView.contentSize = CGSize(width: view.frame.width, height: exhibitionInformationView.frame.height + segmentedControl.frame.height + 32)
-        default:
-            break
-        }
-    }
+
+
 
 
     private func setupTableView() {
@@ -310,17 +323,17 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         // 초기 높이를 0으로 설정하지 않고, 테이블 뷰의 데이터에 따라 높이가 결정되도록 합니다.
         tableView.snp.makeConstraints { make in
-               make.top.equalTo(segmentedControl.snp.bottom).offset(16)
-               make.left.right.equalTo(contentView)
-               make.bottom.equalTo(reviewView)
-           }
+            make.top.equalTo(reviewsButton.snp.bottom).offset(16)
+            make.left.right.equalTo(contentView)
+            make.bottom.equalTo(reviewView)
+        }
 
         // reviewView의 높이 제약조건을 저장합니다.
-           reviewView.snp.makeConstraints { make in
-               self.reviewViewHeightConstraint = make.height.equalTo(0).constraint
-           }
+        reviewView.snp.makeConstraints { make in
+            self.reviewViewHeightConstraint = make.height.equalTo(0).constraint
+        }
 
-           reloadDataAndUpdateHeight()
+        reloadDataAndUpdateHeight()
 
         // 데이터 로드 및 테이블 뷰의 높이 업데이트
         reloadDataAndUpdateHeight()
@@ -338,15 +351,15 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
 
     func updateTableViewHeight() {
-         // 테이블 뷰에 행이 있는지 확인한 후 높이 업데이트
-         guard tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 else {
-             return
-         }
+        // 테이블 뷰에 행이 있는지 확인한 후 높이 업데이트
+        guard tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 else {
+            return
+        }
 
-         tableView.layoutIfNeeded()
-         tableViewHeightConstraint?.update(offset: tableView.contentSize.height)
-         updateScrollViewContentSize()
-     }
+        tableView.layoutIfNeeded()
+        tableViewHeightConstraint?.update(offset: tableView.contentSize.height)
+        updateScrollViewContentSize()
+    }
 
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -361,11 +374,12 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     }
 
     func updateScrollViewContentSize() {
-        let totalHeight = exhibitionImageView.frame.height + segmentedControl.frame.height + reviewView.frame.height + 32
+        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + reviewView.frame.height + 32
         if scrollView.contentSize.height != totalHeight {
             scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         }
     }
+
 
 
 
@@ -375,9 +389,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         }
 
 
-        
+
 
     }
 
-    
+
 }
