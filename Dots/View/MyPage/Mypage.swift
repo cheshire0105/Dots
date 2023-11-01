@@ -215,7 +215,7 @@ extension Mypage : UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-       let 마이페이지_티켓_화면 = MyPageTicket()
-        self.navigationController?.pushViewController(마이페이지_티켓_화면, animated: true)
+        let 마이페이지_티켓_화면 = MyPageTicket()
+         self.navigationController?.pushViewController(마이페이지_티켓_화면, animated: true)
     }
 }
