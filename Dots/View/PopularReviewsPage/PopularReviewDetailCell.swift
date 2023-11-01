@@ -3,7 +3,7 @@ import RxSwift
 import SnapKit
 import UIKit
 
-class 인기셀_이미지_묶음_셀: UICollectionViewCell {
+class 인기리뷰_디테일_셀: UICollectionViewCell {
     var 인기셀_이미지 = {
         var imageView = UIImageView()
         imageView.layer.cornerRadius = 10
