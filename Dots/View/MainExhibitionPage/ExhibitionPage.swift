@@ -132,7 +132,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
             make.height.equalTo(350)
         }
 
-        exhibitionImageView.image = UIImage(named: "morningStar")
+        exhibitionImageView.image = UIImage(named: "ExhibitionPageBack")
         exhibitionImageView.contentMode = .scaleAspectFill
         exhibitionImageView.clipsToBounds = true
 
@@ -257,29 +257,6 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
     }
 
 }
-
-extension ExhibitionPage {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let yOffset = scrollView.contentOffset.y
-        if yOffset < 0 {
-            // 스크롤이 위로 이동할 때
-            let newHeight = 350 - yOffset  // 원래 이미지 뷰 높이에서 스크롤 양을 빼서 새 높이를 계산
-            let newTopOffset = 200 - yOffset  // 원래 titleLabel의 상단 위치에서 스크롤 양을 빼서 새 위치를 계산
-
-            exhibitionImageView.snp.updateConstraints { make in
-                make.height.equalTo(newHeight)
-            }
-
-            titleLabel.snp.updateConstraints { make in
-                make.top.equalTo(contentView).offset(newTopOffset)
-            }
-
-            exhibitionImageView.layoutIfNeeded()
-            titleLabel.layoutIfNeeded()
-        }
-    }
-}
-
 
 
 // MARK: - 사용자 정의 세그먼트 컨트롤 클래스를 선언합니다.
