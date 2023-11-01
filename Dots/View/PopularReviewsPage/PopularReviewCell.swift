@@ -269,4 +269,6 @@ extension PopularReviewCell: UICollectionViewDataSource, UICollectionViewDelegat
         let height = collectionView.frame.height * 1
         return CGSize(width: width, height: height)
     }
+    
+    
 }
