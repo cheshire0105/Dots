@@ -210,8 +210,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewView.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom).offset(16)
             make.left.right.equalTo(contentView)
-            make.height.equalTo(1000).priority(.high) // 우선순위를 높음으로 설정
-            make.bottom.equalTo(contentView) // 추가된 부분: redView의 하단을 contentView의 하단에 연결
+//            make.height.equalTo(1000).priority(.high) // 우선순위를 높음으로 설정
+            make.bottom.equalTo(contentView).priority(.high) // 추가된 부분: redView의 하단을 contentView의 하단에 연결
         }
         
         exhibitionInformationView.snp.makeConstraints { make in
@@ -267,25 +267,32 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         case 0:
             reviewView.isHidden = false
             exhibitionInformationView.isHidden = true
+            // 스크롤 뷰의 contentSize를 리뷰 뷰의 높이에 맞게 조정
+            scrollView.contentSize = CGSize(width: view.frame.width, height: reviewView.frame.height + segmentedControl.frame.height + 16)
         case 1:
             reviewView.isHidden = true
             exhibitionInformationView.isHidden = false
+            // 스크롤 뷰의 contentSize를 전시 정보 뷰의 높이에 맞게 조정
+            scrollView.contentSize = CGSize(width: view.frame.width, height: exhibitionInformationView.frame.height + segmentedControl.frame.height + 16)
         default:
             break
         }
     }
 
+
     private func setupTableView() {
         reviewView.addSubview(tableView)
 
-        tableView.backgroundColor = .black
+        tableView.backgroundColor = .white
 
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ReviewTableViewCell.self, forCellReuseIdentifier: "ReviewTableViewCell")
 
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(segmentedControl.snp.bottom)
+            make.left.right.equalTo(contentView)
+            make.bottom.equalTo(contentView)
         }
     }
 
