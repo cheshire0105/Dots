@@ -66,9 +66,9 @@ class GlassTabBar: UITabBarController {
         fourthVC.view.backgroundColor = .yellow
 
         let fifthVC = Mypage()
-        
+        let fifthNavController = UINavigationController(rootViewController: fifthVC)
 
-        viewControllers = [firstNavController, secondVC, thirdVC, fourthVC, fifthVC]
+        viewControllers = [firstNavController, secondVC, thirdVC, fourthVC, fifthNavController]
     }
 
     func setupCustomTabBarView() {

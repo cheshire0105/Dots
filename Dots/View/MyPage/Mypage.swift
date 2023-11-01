@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 class Mypage: UIViewController {
-    
+    var 유저정보_인스턴스 = 유저정보(사용자프로필이미지: "", 사용자프로필이름: "")
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
@@ -27,7 +27,6 @@ class Mypage: UIViewController {
         var button = UIButton()
         button.setImage(UIImage(named: "setting" ), for: .normal)
         button.isSelected = !button.isSelected
-        
         return button
     } ()
     
@@ -108,7 +107,7 @@ class Mypage: UIViewController {
         layout.minimumLineSpacing = 1
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
-
+        
         collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
         collectionView.showsVerticalScrollIndicator = false
@@ -116,6 +115,7 @@ class Mypage: UIViewController {
         collectionView.isPagingEnabled = true
         return collectionView
     }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,6 +128,9 @@ class Mypage: UIViewController {
         마이페이지_컬렉션뷰.dataSource = self
         마이페이지_컬렉션뷰.delegate = self
         마이페이지_컬렉션뷰.register(MyPageCell.self, forCellWithReuseIdentifier: "MyPageCell")
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        
     }
     private func UI레이아웃 () {
         
@@ -167,7 +170,7 @@ class Mypage: UIViewController {
         }
         마이페이지_체크인_버튼.snp.makeConstraints { make in
             make.top.bottom.equalTo(마이페이지_티켓_버튼)
-           make.centerX.equalToSuperview()
+            make.centerX.equalToSuperview()
             
         }
         마이페이지_체크인_택스트.snp.makeConstraints { make in
@@ -188,7 +191,7 @@ class Mypage: UIViewController {
         마이페이지_컬렉션뷰.snp.makeConstraints { make in
             make.top.equalTo(마이페이지_좋아요_택스트.snp.bottom).offset(20)
             make.leading.trailing.bottom.equalToSuperview()
-        
+            
         }
     }
 }
@@ -209,5 +212,10 @@ extension Mypage : UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         let width = collectionView.frame.width * 0.5
         let height = collectionView.frame.height * 0.5
         return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+       let 마이페이지_티켓_화면 = MyPageTicket()
+        self.navigationController?.pushViewController(마이페이지_티켓_화면, animated: true)
     }
 }
