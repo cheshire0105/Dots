@@ -156,8 +156,12 @@ extension PopularReviewCell {
         contentView.addSubview(조회수_블록)
         contentView.addSubview(좋아요_블록)
         contentView.addSubview(인기셀_작성자_이미지)
+        contentView.addSubview(인기셀_작성자_이름)
         contentView.addSubview(조회수_버튼)
-        contentView.addSubview(좋아요_버튼)
+        contentView.addSubview(조회수_카운트)
+        contentView.addSubview(좋아요_카운트)
+        addSubview(좋아요_버튼)
+
         인기셀_이미지_묶음_컬렉션뷰.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().offset(20)
@@ -194,21 +198,41 @@ extension PopularReviewCell {
             make.bottom.equalTo(유저_블록)
             make.leading.equalTo(조회수_블록.snp.trailing).offset(10)
             make.trailing.equalToSuperview().offset(-30)
-
         }
+        
         인기셀_작성자_이미지.snp.makeConstraints { make in
             make.top.equalTo(유저_블록).offset(5)
             make.leading.equalTo(유저_블록.snp.leading).offset(5)
             make.bottom.equalTo(유저_블록.snp.bottom).offset(-5)
             make.trailing.equalTo(유저_블록.snp.trailing).offset(-78)
         }
+        
         인기셀_작성자_이름.snp.makeConstraints { make in
             make.top.equalTo(유저_블록).offset(5)
             make.bottom.equalTo(유저_블록.snp.bottom).offset(-5)
-            make.leading.equalTo(유저_블록.snp.leading).offset(5)
+            make.leading.equalTo(인기셀_작성자_이미지.snp.trailing).offset(5)
         }
+        
         조회수_버튼.snp.makeConstraints { make in
-//            make.top.equalTo()
+            make.top.equalTo(조회수_블록).offset(5)
+            make.leading.equalTo(조회수_블록.snp.leading).offset(5)
+            make.trailing.equalTo(조회수_블록.snp.trailing).offset(-5)
+        }
+        좋아요_버튼.snp.makeConstraints { make in
+            make.top.equalTo(좋아요_블록).offset(5)
+            make.leading.equalTo(좋아요_블록.snp.leading).offset(5)
+            make.trailing.equalTo(좋아요_블록.snp.trailing).offset(-5)
+        }
+        조회수_카운트.snp.makeConstraints { make in
+            make.top.equalTo(조회수_버튼.snp.bottom).offset(-3)
+            make.leading.equalTo(조회수_블록.snp.leading).offset(6)
+            make.trailing.equalTo(조회수_블록.snp.trailing).offset(-5)
+
+        }
+        좋아요_카운트.snp.makeConstraints { make in
+            make.top.equalTo(좋아요_버튼.snp.bottom).offset(-3)
+            make.leading.equalTo(좋아요_블록.snp.leading).offset(6)
+            make.trailing.equalTo(좋아요_블록.snp.trailing).offset(-5)
         }
         
         
