@@ -42,8 +42,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
         return segmentedControl
     }()
 
-    let redView = UIView()
-        let blueView = UIView()
+    let reviewView = UIView()
+    let exhibitionInformationView = UIView()
 
     // MARK: - 뷰의 생명주기
 
@@ -72,7 +72,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
         setupExhibitionImage()
         setupScrollView()
         setupViews()
-               setupSegmentedControl()
+        setupSegmentedControl()
 
     }
 
@@ -80,21 +80,21 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
 
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
-
         view.addSubview(scrollView)
-
-        scrollView.snp.makeConstraints { (make) in
-            make.top.right.left.bottom.equalTo(view)
-        }
-
         scrollView.addSubview(contentView)
 
-        contentView.snp.makeConstraints { (make) in
-            make.top.left.right.equalTo(scrollView)
-            make.bottom.equalTo(scrollView.snp.bottom)
-            make.width.equalTo(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view)
         }
+
+        contentView.snp.makeConstraints { make in
+            make.top.bottom.equalTo(scrollView)
+            make.left.right.equalTo(view)
+            make.height.greaterThanOrEqualTo(view) // 콘텐츠 뷰의 높이가 뷰의 높이보다 크거나 같도록 설정
+        }
+
     }
+
 
     // 상단의 전시 이미지를 설정 하는 함수
     private func setupExhibitionImage() {
@@ -189,28 +189,32 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
     }
 
     private func setupViews() {
-         contentView.addSubview(redView)
-         contentView.addSubview(blueView)
+        contentView.addSubview(reviewView)
+        contentView.addSubview(exhibitionInformationView)
 
-         redView.snp.makeConstraints { make in
-             make.top.equalTo(segmentedControl.snp.bottom).offset(16)
-             make.left.right.equalTo(contentView)
-             make.height.equalTo(1000) // 높이 설정
-         }
+        reviewView.snp.makeConstraints { make in
+            make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+            make.left.right.equalTo(contentView)
+            make.height.equalTo(1000).priority(.high) // 우선순위를 높음으로 설정
+            make.bottom.equalTo(contentView) // 추가된 부분: redView의 하단을 contentView의 하단에 연결
+        }
 
-         blueView.snp.makeConstraints { make in
-             make.top.equalTo(segmentedControl.snp.bottom).offset(16)
-             make.left.right.equalTo(contentView)
-             make.height.equalTo(2000) // 높이 설정
-         }
+        exhibitionInformationView.snp.makeConstraints { make in
+            make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+            make.left.right.equalTo(contentView)
+            make.height.equalTo(2000).priority(.high) // 우선순위를 높음으로 설정
+            make.bottom.equalTo(contentView) // 추가된 부분: blueView의 하단을 contentView의 하단에 연결
+        }
 
-         redView.backgroundColor = .red
-         blueView.backgroundColor = .blue
 
-         // 초기 상태 설정
-         redView.isHidden = false
-         blueView.isHidden = true
-     }
+        reviewView.backgroundColor = .red
+        exhibitionInformationView.backgroundColor = .blue
+
+        // 초기 상태 설정
+        reviewView.isHidden = false
+        exhibitionInformationView.isHidden = true
+    }
+
 
     private func setupBackButton() {
         let backButtonImage = UIImage(named: "backButton")
@@ -242,11 +246,11 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate {
     @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
-            redView.isHidden = false
-            blueView.isHidden = true
+            reviewView.isHidden = false
+            exhibitionInformationView.isHidden = true
         case 1:
-            redView.isHidden = true
-            blueView.isHidden = false
+            reviewView.isHidden = true
+            exhibitionInformationView.isHidden = false
         default:
             break
         }
