@@ -68,13 +68,6 @@ class PopularReviewCell: UICollectionViewCell {
         return label
     } ()
     
-    
-    //    let 인기셀_하트_아이콘 = {
-    //        let imageView = UIImageView()
-    //        imageView.clipsToBounds = true
-    //        return imageView
-    //    }()
-    
     let 인기셀_아티스트 = {
         let button = UIButton()
         button.setTitle("", for: .normal)
@@ -89,21 +82,7 @@ class PopularReviewCell: UICollectionViewCell {
         button.isSelected = !button.isSelected
         return button
     }()
-    //
-    //    let 인기셀_전시장소 = {
-    //        let button = UIButton()
-    //        button.setTitle("", for: .normal)
-    //        button.setTitle("", for: .selected)
-    //        button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.4)
-    //        button.isEnabled = true
-    //        button.layer.cornerRadius = 12
-    //        button.titleLabel?.adjustsFontSizeToFitWidth = true
-    //        button.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 12)
-    //        button.setTitleColor(UIColor.white, for: .selected)
-    //        button.setTitleColor(UIColor.darkGray, for: .normal)
-    //        button.isSelected = !button.isSelected
-    //        return button
-    //    }()
+   
     let 인기셀_리뷰제목 = {
         let label = UILabel()
         label.text = ""
@@ -230,51 +209,19 @@ extension PopularReviewCell {
     }
     
     func 인기셀layout() {
-        //
-        //
-        //        contentView.addSubview(인기셀_하트_아이콘)
+      
         addSubview(인기셀_이미지_묶음_컬렉션뷰)
-        //        contentView.addSubview(인기셀_아티스트)
-        //        contentView.addSubview(인기셀_전시장소)
+    
         contentView.addSubview(인기셀_리뷰제목)
         contentView.addSubview(인기셀_리뷰내용)
-        
-        //        인기셀_작성자_이미지.snp.makeConstraints { make in
-        //            make.top.equalToSuperview().offset(34)
-        //            make.bottom.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.top).offset(-12)
-        //            make.leading.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.leading)
-        //            make.trailing.equalTo(인기셀_작성자_이름.snp.leading).offset(-13)
-        //        }
-        //        인기셀_작성자_이름.snp.makeConstraints { make in
-        //
-        //            make.centerY.equalTo(인기셀_작성자_이미지)
-        //            make.leading.equalToSuperview().offset(88)
-        //        }
-        //        인기셀_하트_아이콘.snp.makeConstraints { make in
-        //            make.width.equalTo(인기셀_작성자_이미지)
-        //            make.top.equalTo(인기셀_작성자_이미지.snp.top).offset(3)
-        //            make.bottom.equalTo(인기셀_작성자_이미지.snp.bottom).offset(-3)
-        //            make.trailing.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.trailing)
-        //        }
+       
         인기셀_이미지_묶음_컬렉션뷰.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalToSuperview().offset(-157)
         }
-        
-        //        인기셀_아티스트.snp.makeConstraints { make in
-        //            make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(10)
-        //            make.leading.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.leading)
-        //            make.bottom.equalTo(인기셀_전시장소)
-        //            make.width.equalTo(135)
-        //        }
-        //        인기셀_전시장소.snp.makeConstraints { make in
-        //            make.width.equalTo(115)
-        //            make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(10)
-        //            make.leading.equalTo(인기셀_아티스트.snp.trailing).offset(10)
-        //        }
-        
+    
         인기셀_리뷰제목.snp.makeConstraints { make in
             make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(41)
             make.leading.equalTo(인기셀_이미지_묶음_컬렉션뷰).offset(5)
