@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 // 새로운 셀 클래스를 정의합니다.
-class MainExhibitionCollectionCell: UICollectionViewCell {
+class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
 
     var label: UILabel!
     var imageView: UIImageView!
