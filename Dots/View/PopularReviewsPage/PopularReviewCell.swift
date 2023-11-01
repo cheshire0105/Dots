@@ -204,13 +204,13 @@ extension PopularReviewCell {
             make.top.equalTo(유저_블록).offset(5)
             make.leading.equalTo(유저_블록.snp.leading).offset(5)
             make.bottom.equalTo(유저_블록.snp.bottom).offset(-5)
-            make.trailing.equalTo(유저_블록.snp.trailing).offset(-78)
+            make.trailing.equalTo(인기셀_작성자_이름.snp.leading).offset(-5)
         }
         
         인기셀_작성자_이름.snp.makeConstraints { make in
             make.top.equalTo(유저_블록).offset(5)
             make.bottom.equalTo(유저_블록.snp.bottom).offset(-5)
-            make.leading.equalTo(인기셀_작성자_이미지.snp.trailing).offset(5)
+            make.leading.equalTo(유저_블록.snp.leading).offset(38)
         }
         
         조회수_버튼.snp.makeConstraints { make in
