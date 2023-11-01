@@ -2,7 +2,7 @@ import RxCocoa
 import RxSwift
 import SnapKit
 import UIKit
-
+// pull from master branch
 class PopularReviewCell: UICollectionViewCell {
     var 전시정보_서브셀_인스턴스 = 전시정보_이미지()
     
