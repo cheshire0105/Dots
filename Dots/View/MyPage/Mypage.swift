@@ -83,8 +83,8 @@ class Mypage: UIViewController {
     
     let 마이페이지_좋아요_버튼 = {
         var button = UIButton()
-        button.setImage(UIImage(named:"heart"), for: .selected)
-        button.setImage(UIImage(named: "heart"), for: .normal)
+        button.setImage(UIImage(named:"좋아요"), for: .selected)
+        button.setImage(UIImage(named: "좋아요"), for: .normal)
         button.isSelected = !button.isSelected
         button.isSelected = !button.isSelected
         return button
