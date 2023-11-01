@@ -12,18 +12,21 @@ class PopularReviewCell: UICollectionViewCell {
         uiView.layer.cornerRadius = 20
         return uiView
     } ()
+    
     var 좋아요_블록 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor.systemPink.withAlphaComponent(0.8)
         uiView.layer.cornerRadius = 20
         return uiView
     } ()
+    
     var 조회수_블록 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         uiView.layer.cornerRadius = 20
         return uiView
     } ()
+    
     var 인기셀_작성자_이미지 = {
         var imageView = UIImageView()
         imageView.layer.cornerRadius = 15
@@ -40,6 +43,7 @@ class PopularReviewCell: UICollectionViewCell {
         label.textAlignment = .left
         return label
     }()
+    
     let 좋아요_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "좋아요"), for: .normal)
@@ -47,6 +51,7 @@ class PopularReviewCell: UICollectionViewCell {
         
         return button
     } ()
+    
     let 좋아요_카운트 = {
         let label = UILabel()
         label.text = "카운트"
@@ -54,12 +59,14 @@ class PopularReviewCell: UICollectionViewCell {
         label.textColor = UIColor.white
         return label
     } ()
+    
     let 조회수_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "조회수"), for: .normal)
         button.isEnabled = false
         return button
     } ()
+    
     let 조회수_카운트 = {
         let label = UILabel()
         label.text = "카운트"
@@ -101,7 +108,7 @@ class PopularReviewCell: UICollectionViewCell {
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .justified
         return label
-    }()
+    } ()
     
     let 인기셀_이미지_묶음_컬렉션뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -117,7 +124,7 @@ class PopularReviewCell: UICollectionViewCell {
         collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
         
         return collectionView
-    }()
+    } ()
     
     override func layoutSubviews() {
         super.layoutSubviews()
