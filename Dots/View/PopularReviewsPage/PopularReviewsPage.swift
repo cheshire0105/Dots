@@ -3,7 +3,7 @@ import RxCocoa
 import RxSwift
 import SnapKit
 import UIKit
-
+//pull from master 
 class PopularReviewsPage: UIViewController {
     var 유저정보_인스턴스 = 유저정보(사용자프로필이미지: "", 사용자프로필이름: "")
     var 전시정보_메인셀_인스턴스 = 전시정보_택스트(전시아티스트이름: "", 전시장소이름: "", 본문제목: "", 본문내용: "")
