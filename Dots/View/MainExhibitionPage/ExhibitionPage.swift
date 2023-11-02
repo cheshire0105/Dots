@@ -46,6 +46,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     // 테이블 뷰의 높이 제약 조건을 클래스 프로퍼티로 정의
     var reviewTableViewHeightConstraint: Constraint?
 
+    let exhibitionInfoTextView = UITextView()
+
+
     // 더미 데이터
     let reviews = [
         Review(title: "훌륭한 전시회였어요!", content: "정말 재미있게 관람했습니다. 다음에 또 오고 싶어요.", author: "홍길동", imageName: "morningStar"),
@@ -94,6 +97,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         setupViews()
         setupTableView()
         setupButtonBorders()
+        setupExhibitionInfoTextView()
 
 
     }
@@ -106,6 +110,48 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
 
     // MARK: - 함수들
+
+    private func setupExhibitionInfoTextView() {
+        exhibitionInformationView.addSubview(exhibitionInfoTextView)
+
+        // 스타일 설정
+        exhibitionInfoTextView.backgroundColor = .darkGray // 배경색 설정
+        exhibitionInfoTextView.textColor = .white // 글자색 설정
+        exhibitionInfoTextView.font = .systemFont(ofSize: 14)
+        exhibitionInfoTextView.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) // 패딩 값 설정
+        exhibitionInfoTextView.isEditable = false // 편집 불가능하게 설정
+        exhibitionInfoTextView.isSelectable = false // 선택 불가능하게 설정
+        exhibitionInfoTextView.layer.cornerRadius = 10 // 모서리를 둥글게 하는 정도 설정
+        exhibitionInfoTextView.clipsToBounds = true // 모서리를 둥글게 잘라내기
+        exhibitionInfoTextView.isScrollEnabled = false
+
+
+        // 레이아웃 설정
+        exhibitionInfoTextView.snp.makeConstraints { make in
+            make.top.equalTo(reviewsButton.snp.bottom).offset(10)
+            make.left.equalTo(contentView).offset(10)
+            make.right.equalTo(contentView).offset(-10)
+            make.height.equalTo(150)
+        }
+
+        // 텍스트 설정
+        exhibitionInfoTextView.text = "«김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다. 이번 전시는 1950년대부터 현재까지 다양한 매체, 장르, 주제를 넘나들며 예술의 최전선에서 독자적인 영역을 구축해 온 작가의 전위적인 면모를 확인할 수 있다. 비디오 아트, 설치, 판화, 퍼포먼스, 회화 등 미술의 범주를 넘어 무용, 연극, 영화, 음악에 이르기까지 다양한 분야에서 활발한 활동을 펼쳐 온 작가를 입체적으로 만나볼 수 있는 자리이기도 하다. 한국 현대미술사에서 중요한 위치를 차지하는 작가임에도 불구하고 김구림의 작품을 설명하거나 깊이 있게 경험할 기회는 충분치 않았기에 이번 전시를 통해 김구림의 미술사적 성과를 재확인하고, 현재진행형 작가로서 오늘날 그의 행보를 살펴보고자 한다. 전시는 1960년대 초 한국전쟁 이후 실존적인 문제에 매달리며 제작한 초기 회화, 1960-70년대 한국 실험미술의 중심에서 발표했던 퍼포먼스와 설치, 1980년대 중반부터 지속하는 <음과 양> 시리즈 등을 고루 소개한다. 또한 김구림 작가의 동시대적 면모를 확인할 수 있는 대형 설치와 함께 영화-무용-음악-연극을 한데 모은 공연을 새롭게 선보인다. 1950년대부터 이어진 김구림의 전방위적 활동과 거침없는 도전은 시대에 대한 반응이었고, 관습에 대한 저항이었던 바 그와 다른 시간대를 영위하는 이들이 단숨에 파악하기에는 어려운 낯선 영역일 것이다. 따라서 이번 전시는 부분적으로 밖에 파악할 수밖에 없었던 김구림의 세계를 최대한 온전하게 전달하는 데 초점을 두었다. 김구림과 함께 그의 결정적 순간들을 재방문해 보길 바라며, 김구림의 발자취를 경유하는 가운데 한국 미술사에 대한 이해의 폭을 넓히는 기회가 되길 바란다."
+
+        // 라인을 추가하기 위한 UIView 생성
+        let lineView = UIView()
+        lineView.backgroundColor = .lightGray  // 라인 색상 설정
+        exhibitionInformationView.addSubview(lineView)  // 라인 뷰를 상위 뷰에 추가
+
+        // 라인 뷰의 레이아웃 제약 조건 설정
+        lineView.snp.makeConstraints { make in
+            make.top.equalTo(exhibitionInfoTextView.snp.bottom).offset(10)  // 텍스트뷰의 바닥에서 10 포인트 아래에 위치
+            make.left.right.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 좌우에 맞춤
+            make.height.equalTo(1)  // 높이를 1로 설정하여 얇은 선 만들기
+        }
+
+
+    }
+
 
     // 전시 후기 버튼
     @objc func reviewsButtonTapped() {
@@ -340,7 +386,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         }
 
         reviewView.backgroundColor = .red
-        exhibitionInformationView.backgroundColor = .blue
+        exhibitionInformationView.backgroundColor = .black
+
 
         // 초기 상태 설정
         reviewView.isHidden = false
@@ -394,7 +441,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewTableViewHeightConstraint?.update(offset: tableView.contentSize.height)
         updateScrollViewContentSize()
     }
-    
+
 
     func updateScrollViewContentSize() {
         let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + reviewView.frame.height + 32
