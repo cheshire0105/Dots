@@ -29,7 +29,6 @@ class SearchPage: UIViewController, UISearchBarDelegate {
         setupHighlightView()
         selectButton(popularButton)  // 초기 선택
 
-
     }
 
     func setupHighlightView() {
@@ -37,8 +36,8 @@ class SearchPage: UIViewController, UISearchBarDelegate {
         view.addSubview(highlightView)
 
         highlightView.snp.makeConstraints { make in
-            make.top.equalTo(separatorLine.snp.bottom)
-            make.height.equalTo(2)
+            make.top.equalTo(separatorLine.snp.top)
+            make.height.equalTo(1)
             make.width.equalTo(popularButton)
             make.centerX.equalTo(popularButton)
         }
@@ -50,7 +49,7 @@ class SearchPage: UIViewController, UISearchBarDelegate {
         selectedButton = button
 
         highlightView.snp.remakeConstraints { make in
-            make.top.equalTo(separatorLine.snp.bottom)
+            make.bottom.equalTo(separatorLine.snp.top )
             make.height.equalTo(2)
             make.width.equalTo(button)
             make.centerX.equalTo(button)
