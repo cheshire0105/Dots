@@ -12,6 +12,7 @@ target 'Dots' do
   pod 'SnapKit'
   pod 'RxDataSources'
   pod 'NMapsMap'
+  pod 'PanModal'
 
 
 end

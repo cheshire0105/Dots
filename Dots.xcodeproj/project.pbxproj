@@ -13,6 +13,8 @@
 		370F3F0A2AEEC11000C4A8F5 /* MyPageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */; };
 		3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */; };
 		3727BE0C2AF293EC0055AD24 /* PopularReviewDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE0B2AF293EC0055AD24 /* PopularReviewDetailCell.swift */; };
+		377041D92AF3CADF009FE818 /* PopularReviewDetailPanModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377041D82AF3CADF009FE818 /* PopularReviewDetailPanModal.swift */; };
+		377041DB2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377041DA2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift */; };
 		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
 		37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */; };
 		B2CE169A506AD7C5CC83404E /* Pods_Dots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7463B6322E0941141F04DE43 /* Pods_Dots.framework */; };
@@ -44,6 +46,8 @@
 		370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCell.swift; sourceTree = "<group>"; };
 		3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetail.swift; sourceTree = "<group>"; };
 		3727BE0B2AF293EC0055AD24 /* PopularReviewDetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetailCell.swift; sourceTree = "<group>"; };
+		377041D82AF3CADF009FE818 /* PopularReviewDetailPanModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetailPanModal.swift; sourceTree = "<group>"; };
+		377041DA2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetailPanModalCell.swift; sourceTree = "<group>"; };
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
 		37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicket.swift; sourceTree = "<group>"; };
 		7463B6322E0941141F04DE43 /* Pods_Dots.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Dots.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,7 +210,9 @@
 				1F9325C12AE67DC400C27F1B /* PopularReviewCell.swift */,
 				1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */,
 				3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */,
+				377041D82AF3CADF009FE818 /* PopularReviewDetailPanModal.swift */,
 				3727BE0B2AF293EC0055AD24 /* PopularReviewDetailCell.swift */,
+				377041DA2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift */,
 				1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */,
 			);
 			path = PopularReviewsPage;
@@ -362,6 +368,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				377041D92AF3CADF009FE818 /* PopularReviewDetailPanModal.swift in Sources */,
 				FF58FB302AE6025100853006 /* MapPage.swift in Sources */,
 				FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */,
 				FF58FB262AE6009500853006 /* ExhibitionDetailsPage.swift in Sources */,
@@ -373,6 +380,7 @@
 				1FF9CB0C2AEAABB9002B0F61 /* PopularReviewDataModel.swift in Sources */,
 				370F3F0A2AEEC11000C4A8F5 /* MyPageCell.swift in Sources */,
 				FF3C971F2AE5FEA1006FEF23 /* MainExhibitionPage.swift in Sources */,
+				377041DB2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift in Sources */,
 				3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */,
 				FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */,
 				1FDD34842AE9A114002A72BB /* PopularReviewImagesCell.swift in Sources */,
