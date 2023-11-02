@@ -158,7 +158,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         // 레이블의 레이아웃 제약 조건 설정
         infoLabel.snp.makeConstraints { make in
-            make.top.equalTo(lineView.snp.bottom).offset(10)  // 라인 뷰의 바닥에서 10 포인트 아래에 위치
+            make.top.equalTo(lineView.snp.bottom).offset(15)  // 라인 뷰의 바닥에서 10 포인트 아래에 위치
             make.left.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 왼쪽에 맞춤
             make.right.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 오른쪽에 맞춤
         }
@@ -184,12 +184,53 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         // 스택 뷰의 레이아웃 제약 조건 설정
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(infoLabel.snp.bottom).offset(10)  // "관람 정보" 레이블의 바닥에서 10 포인트 아래에 위치
+            make.top.equalTo(infoLabel.snp.bottom).offset(15)  // "관람 정보" 레이블의 바닥에서 10 포인트 아래에 위치
             make.left.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 좌우에 맞춤
 
         }
-
         
+        // "장소" 레이블 생성
+        let locationLabel = UILabel()
+        locationLabel.text = "장소"
+        locationLabel.textColor = .lightGray
+        locationLabel.font = .systemFont(ofSize: 14)
+
+        // "국립현대미술관" 레이블 생성
+        let museumLabel = UILabel()
+        museumLabel.text = "국립현대미술관"
+        museumLabel.textColor = .lightGray
+        museumLabel.font = .systemFont(ofSize: 14)
+
+        // 세로 선을 표현하기 위한 레이블 생성
+        let separatorLabel = UILabel()
+        separatorLabel.text = "|"
+        separatorLabel.textColor = .lightGray
+        separatorLabel.font = .systemFont(ofSize: 14)
+
+        // "지하 1층 6, 7 전시실" 레이블 생성
+        let exhibitionRoomLabel = UILabel()
+        exhibitionRoomLabel.text = "지하 1층 6, 7 전시실"
+        exhibitionRoomLabel.textColor = .lightGray
+        exhibitionRoomLabel.font = .systemFont(ofSize: 14)
+
+        // "국립현대미술관", "|", "지하 1층 6, 7 전시실"을 묶기 위한 스택 뷰
+        let museumDetailsStackView = UIStackView(arrangedSubviews: [museumLabel, separatorLabel, exhibitionRoomLabel])
+        museumDetailsStackView.axis = .horizontal
+        museumDetailsStackView.spacing = 10  // 간격 조절
+        museumDetailsStackView.alignment = .center
+
+        // "장소" 레이블과 위에서 생성한 스택 뷰를 묶기 위한 스택 뷰
+        let locationStackView = UIStackView(arrangedSubviews: [locationLabel, museumDetailsStackView])
+        locationStackView.axis = .horizontal
+        locationStackView.spacing = 50  // 간격 조절
+        locationStackView.alignment = .center
+        exhibitionInformationView.addSubview(locationStackView)
+
+        locationStackView.snp.makeConstraints { make in
+            make.top.equalTo(stackView.snp.bottom).offset(10)
+            make.left.equalTo(exhibitionInfoTextView)
+        }
+
 
 
     }
