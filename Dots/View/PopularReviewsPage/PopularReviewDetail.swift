@@ -3,6 +3,7 @@ import SwiftUI
 import RxSwift
 import RxCocoa
 import SnapKit
+import PanModal
 
 class PopularReviewDetail : UIViewController {
     var selectedCellIndex: Int?
@@ -174,6 +175,23 @@ class PopularReviewDetail : UIViewController {
         }
     }
     
+   
+    
+    private func 버튼_클릭() {
+        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        댓글_버튼.addTarget(self, action: #selector(댓글_버튼_클릭), for: .touchUpInside)
+
+    }
+    @objc func 뒤로가기_버튼_클릭() {
+        navigationController?.popViewController(animated: true)
+    }
+    @objc func 댓글_버튼_클릭() {
+        let 댓글_판모달 = PopularReviewDetailPanModal()
+        presentPanModal(댓글_판모달)
+    }
+}
+
+extension PopularReviewDetail {
     func UI레이아웃 () {
         view.addSubview(뒤로가기_버튼_블록)
         view.addSubview(뒤로가기_버튼)
@@ -286,13 +304,6 @@ class PopularReviewDetail : UIViewController {
             make.bottom.equalToSuperview().offset(-365)
         }
     }
-    
-    private func 버튼_클릭() {
-        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
-    }
-    @objc func 뒤로가기_버튼_클릭() {
-        navigationController?.popViewController(animated: true)
-    }
 }
 
 extension PopularReviewDetail : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -313,4 +324,10 @@ extension PopularReviewDetail : UICollectionViewDelegate, UICollectionViewDataSo
         return CGSize(width: width, height: height)
     }
     
+}
+
+extension PopularReviewDetail : PanModalPresentable {
+    var panScrollable: UIScrollView? {
+            return 인기_디테일_컬렉션뷰
+        }
 }

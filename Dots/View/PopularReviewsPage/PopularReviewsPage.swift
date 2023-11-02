@@ -1,8 +1,10 @@
 // 인기 리뷰 뷰 컨트롤러
+
 import RxCocoa
 import RxSwift
 import SnapKit
 import UIKit
+
 
 class PopularReviewsPage: UIViewController {
     var 유저정보_인스턴스 = 유저정보(사용자프로필이미지: "", 사용자프로필이름: "")
@@ -70,7 +72,7 @@ class PopularReviewsPage: UIViewController {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 150, left: 0, bottom: 50, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 130, left: 0, bottom: 50, right: 0)
         
         collectionView.backgroundColor = .clear
         collectionView.layer.cornerRadius = 10
@@ -78,6 +80,7 @@ class PopularReviewsPage: UIViewController {
         collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
         return collectionView
     }()
+    
     override func viewWillAppear(_ animated: Bool) {
         if let glassTabBar = tabBarController as? GlassTabBar {
             glassTabBar.customTabBarView.isHidden = false
@@ -179,11 +182,7 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
         return CGSize(width: width, height: height)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        print(indexPath.row + 1)
-//        let 인기리뷰페이지_디테일_화면 = PopularReviewDetail()
-//        인기리뷰페이지_디테일_화면.selectedCellIndex = selectedCellIndex
-//        self.navigationController?.pushViewController(인기리뷰페이지_디테일_화면, animated: true)
-//        
+
         print(indexPath.row + 1)
             let 인기리뷰페이지_디테일_화면 = PopularReviewDetail()
             인기리뷰페이지_디테일_화면.selectedCellIndex = indexPath.row
