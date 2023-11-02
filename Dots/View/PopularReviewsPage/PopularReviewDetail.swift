@@ -94,15 +94,23 @@ class PopularReviewDetail : UIViewController {
     
     private let 리뷰_제목 = {
         let label = UILabel()
-        label.text = "카운트"
-        label.font = UIFont(name: "HelveticaNeue", size: 10)
-        label.textColor = UIColor.darkGray
+        label.text = "전시 리뷰 제목 택스트"
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = UIColor.white
         return label
     } ()
-    
+    private let 리뷰_전시명 = {
+        let label = UILabel()
+        label.text = "리암 길릭 : Alterants"
+        label.font = UIFont(name: "HelveticaNeue", size: 16)
+        label.textColor = UIColor.white
+        return label
+    } ()
     private let 리뷰_내용 = {
         let label = UILabel()
-        label.text = ""
+        label.text = """
+        assajflfj sjflajslf asfj! asjlsjffjklasfj ? asfjklff, asjfkl.sjflsajfjlafjlasjfjs,fasjdlfjsdlfsflkfjlksajklf;qierxnvjdsfkla!.aslkfdjlkajfsajjfjaslfkjfksdlfjalksdfqejrklasdklfjkldfaldsfajsqr!!aslfjsasajflkjsfal,sfjalsjflsflkajfslajflksjlajklfjlkasjflksajflkjsl asjflksfj l asjflk ja lajsklfj klsajf jaskdfnjkqwenrk joiv njqweojr njkxz sjl wke njkfsd k lksdjf lsjlwqne krjbkjsn kllfj
+        """
         label.textColor = UIColor.white
         label.font = UIFont(name: "HelveticaNeue", size: 14)
         label.numberOfLines = 0
@@ -110,6 +118,21 @@ class PopularReviewDetail : UIViewController {
         label.textAlignment = .justified
         return label
     } ()
+    
+    private let 댓글_버튼 = {
+        let 댓글갯수 : Int = 0
+        let button = UIButton()
+        button.setTitle(" 댓글\(댓글갯수)개", for: .normal)
+        button.setTitleColor(UIColor.black, for: .selected)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        button.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 12)
+        button.setImage(UIImage(named: "댓글"), for: .normal)
+        button.backgroundColor = UIColor.white
+        button.isSelected = !button.isSelected
+        button.layer.cornerRadius = 10
+        return button
+    } ()
+    
     lazy var 인기_디테일_컬렉션뷰: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -125,7 +148,11 @@ class PopularReviewDetail : UIViewController {
         collectionView.isPagingEnabled = true
         return collectionView
     }()
-    
+    override func viewWillAppear(_ animated: Bool) {
+        if let glassTabBar = tabBarController as? GlassTabBar {
+            glassTabBar.customTabBarView.isHidden = true
+        }
+    }
     override func viewDidLoad() {
         print("Popular Review Detail")
         
@@ -159,6 +186,10 @@ class PopularReviewDetail : UIViewController {
         view.addSubview(좋아요_버튼)
         view.addSubview(조회수_카운트)
         view.addSubview(좋아요_카운트)
+        view.addSubview(리뷰_제목)
+        view.addSubview(리뷰_전시명)
+        view.addSubview(리뷰_내용)
+        view.addSubview(댓글_버튼)
         
         뒤로가기_버튼_블록.snp.makeConstraints { make in
             make.height.equalTo(40)
@@ -222,6 +253,27 @@ class PopularReviewDetail : UIViewController {
             make.top.equalTo(좋아요_버튼.snp.bottom).offset(-3)
             make.leading.equalTo(좋아요_블록.snp.leading).offset(6)
             make.trailing.equalTo(좋아요_블록.snp.trailing).offset(-5)
+        }
+        리뷰_제목.snp.makeConstraints { make in
+            make.top.equalTo(유저_블록.snp.bottom).offset(36)
+            make.leading.equalTo(유저_블록)
+            
+        }
+        리뷰_전시명.snp.makeConstraints { make in
+            make.top.equalTo(리뷰_제목.snp.bottom).offset(10)
+            make.leading.equalTo(유저_블록)
+        }
+        리뷰_내용.snp.makeConstraints { make in
+            make.top.equalTo(리뷰_전시명.snp.bottom).offset(20)
+            make.leading.equalTo(유저_블록)
+            make.trailing.equalTo(좋아요_블록.snp.trailing)
+            
+        }
+        댓글_버튼.snp.makeConstraints { make in
+            make.height.equalTo(30)
+            make.width.equalTo(100)
+            make.bottom.equalToSuperview().offset(-42)
+            make.centerX.equalToSuperview()
         }
     }
     
