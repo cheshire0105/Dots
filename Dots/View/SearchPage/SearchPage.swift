@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class SearchPage: UIViewController, UISearchBarDelegate {
+class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
     let searchBar = UISearchBar()
     let popularButton = UIButton()
@@ -20,6 +20,16 @@ class SearchPage: UIViewController, UISearchBarDelegate {
     let highlightView = UIView()
     var selectedButton: UIButton?
 
+    let tableView = UITableView()
+    var currentData: [String] = []
+
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        selectButton(popularButton)
+    }
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,9 +37,10 @@ class SearchPage: UIViewController, UISearchBarDelegate {
         setupButtons()
         setupSeparatorLine()
         setupHighlightView()
-        selectButton(popularButton)  // 초기 선택
-
+        setupTableView()
+        // selectButton(popularButton)  // 이 줄을 제거
     }
+
 
     func setupHighlightView() {
         highlightView.backgroundColor = .white
@@ -62,6 +73,7 @@ class SearchPage: UIViewController, UISearchBarDelegate {
 
     @objc func buttonClicked(_ sender: UIButton) {
         selectButton(sender)
+        updateData(for: sender)
     }
 
 
@@ -136,5 +148,95 @@ class SearchPage: UIViewController, UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.resignFirstResponder()  // 키보드 숨기기
+    }
+
+    func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.backgroundColor = .black  // 배경색을 검정색으로 설정
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "customCell")  // 새로운 셀 클래스를 등록
+        view.addSubview(tableView)
+
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(separatorLine.snp.bottom)
+            make.leading.trailing.bottom.equalTo(view)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 200  // 원하는 높이로 설정
+    }
+
+
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return currentData.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "customCell", for: indexPath) as! CustomTableViewCell
+        cell.titleLabel.text = "올해의 작가전"
+        cell.contentLabel.text = "국립현대미술관 서울"
+        return cell
+    }
+
+
+    func updateData(for button: UIButton) {
+        if button == popularButton {
+            currentData = ["인기 1", "인기 2", "인기 3"]
+        } else if button == exhibitionButton {
+            currentData = ["전시 1", "전시 2", "전시 3"]
+        } else {
+            currentData = []
+        }
+        tableView.reloadData()
+    }
+}
+
+class CustomTableViewCell: UITableViewCell {
+
+    let grayBox = UIView()
+    let titleLabel = UILabel()
+    let contentLabel = UILabel()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func setupViews() {
+        self.backgroundColor = .black  // 셀의 배경색을 검정색으로 설정
+
+        grayBox.backgroundColor = .gray
+        contentView.addSubview(grayBox)
+
+        titleLabel.textColor = .white
+        contentView.addSubview(titleLabel)
+
+        contentLabel.textColor = .white
+        contentView.addSubview(contentLabel)
+
+        // SnapKit을 사용하여 레이아웃 설정
+        grayBox.snp.makeConstraints { make in
+            make.centerY.equalTo(contentView)
+            make.leading.equalTo(contentView).offset(15)
+            make.width.equalTo(130)
+            make.height.equalTo(180)
+        }
+
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(grayBox.snp.top).offset(50)
+            make.leading.equalTo(grayBox.snp.trailing).offset(10)
+        }
+
+        contentLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.leading.equalTo(titleLabel)
+        }
     }
 }
