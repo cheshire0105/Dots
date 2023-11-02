@@ -166,13 +166,13 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // "기간" 레이블 생성
         let periodLabel = UILabel()
         periodLabel.text = "기간"
-        periodLabel.textColor = .lightGray
+        periodLabel.textColor = .white
         periodLabel.font = .systemFont(ofSize: 14)
 
         // "2023.1.1 ~ 2023.1.1" 텍스트를 가진 레이블 생성
         let dateLabel = UILabel()
         dateLabel.text = "2023.1.1 ~ 2023.1.1"
-        dateLabel.textColor = .lightGray
+        dateLabel.textColor = .white
         dateLabel.font = .systemFont(ofSize: 14)
 
         // 레이블들을 수평으로 배치하기 위한 스택 뷰 생성
@@ -192,25 +192,25 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // "장소" 레이블 생성
         let locationLabel = UILabel()
         locationLabel.text = "장소"
-        locationLabel.textColor = .lightGray
+        locationLabel.textColor = .white
         locationLabel.font = .systemFont(ofSize: 14)
 
         // "국립현대미술관" 레이블 생성
         let museumLabel = UILabel()
         museumLabel.text = "국립현대미술관"
-        museumLabel.textColor = .lightGray
+        museumLabel.textColor = .white
         museumLabel.font = .systemFont(ofSize: 14)
 
         // 세로 선을 표현하기 위한 레이블 생성
         let separatorLabel = UILabel()
         separatorLabel.text = "|"
-        separatorLabel.textColor = .lightGray
+        separatorLabel.textColor = .white
         separatorLabel.font = .systemFont(ofSize: 14)
 
         // "지하 1층 6, 7 전시실" 레이블 생성
         let exhibitionRoomLabel = UILabel()
         exhibitionRoomLabel.text = "지하 1층 6, 7 전시실"
-        exhibitionRoomLabel.textColor = .lightGray
+        exhibitionRoomLabel.textColor = .white
         exhibitionRoomLabel.font = .systemFont(ofSize: 14)
 
         // "국립현대미술관", "|", "지하 1층 6, 7 전시실"을 묶기 위한 스택 뷰
@@ -270,7 +270,67 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             make.right.equalTo(buttonLabel.snp.left).offset(-10) // 버튼 안의 레이블 왼쪽에서 10 포인트 떨어진 곳에 위치
         }
 
+        // 경계선 생성
+        let bottomLineView = UIView()
+        bottomLineView.backgroundColor = .lightGray
+        exhibitionInformationView.addSubview(bottomLineView)
 
+        // 경계선 레이아웃 설정
+        bottomLineView.snp.makeConstraints { make in
+            make.top.equalTo(button.snp.bottom).offset(15)
+            make.left.right.equalTo(exhibitionInfoTextView)
+            make.height.equalTo(1)
+        }
+
+        // "관람료" 레이블 생성
+        let admissionFeeLabel = UILabel()
+        admissionFeeLabel.text = "관람료"
+        admissionFeeLabel.textColor = .white
+        admissionFeeLabel.font = .systemFont(ofSize: 14)
+
+        // "2000원" 레이블 생성
+        let feeLabel = UILabel()
+        feeLabel.text = "2000원"
+        feeLabel.textColor = .white
+        feeLabel.font = .systemFont(ofSize: 14)
+
+        // 관람료 정보를 담을 스택 뷰 생성
+        let admissionFeeStackView = UIStackView(arrangedSubviews: [admissionFeeLabel, feeLabel])
+        admissionFeeStackView.axis = .horizontal
+        admissionFeeStackView.spacing = 40
+        admissionFeeStackView.alignment = .center
+        exhibitionInformationView.addSubview(admissionFeeStackView)
+
+        // 관람료 스택 뷰 레이아웃 설정
+        admissionFeeStackView.snp.makeConstraints { make in
+            make.top.equalTo(bottomLineView.snp.bottom).offset(15)
+            make.left.equalTo(exhibitionInfoTextView)
+        }
+
+        // "영업시간" 레이블 생성
+        let openingHoursLabel = UILabel()
+        openingHoursLabel.text = "영업시간"
+        openingHoursLabel.textColor = .white
+        openingHoursLabel.font = .systemFont(ofSize: 14)
+
+        // "9:00 ~ 6:00" 레이블 생성
+        let hoursLabel = UILabel()
+        hoursLabel.text = "9:00 ~ 6:00"
+        hoursLabel.textColor = .white
+        hoursLabel.font = .systemFont(ofSize: 14)
+
+        // 영업시간 정보를 담을 스택 뷰 생성
+        let openingHoursStackView = UIStackView(arrangedSubviews: [openingHoursLabel, hoursLabel])
+        openingHoursStackView.axis = .horizontal
+        openingHoursStackView.spacing = 30
+        openingHoursStackView.alignment = .center
+        exhibitionInformationView.addSubview(openingHoursStackView)
+
+        // 영업시간 스택 뷰 레이아웃 설정
+        openingHoursStackView.snp.makeConstraints { make in
+            make.top.equalTo(admissionFeeStackView.snp.bottom).offset(15)
+            make.left.equalTo(exhibitionInfoTextView)
+        }
 
 
     }
