@@ -149,6 +149,48 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             make.height.equalTo(1)  // 높이를 1로 설정하여 얇은 선 만들기
         }
 
+        // "관람 정보"를 표시하기 위한 UILabel 생성
+        let infoLabel = UILabel()
+        infoLabel.text = "관람 정보"
+        infoLabel.textColor = .lightGray  // 글자 색상 설정
+        infoLabel.font = .boldSystemFont(ofSize: 16)  // 폰트와 크기 설정
+        exhibitionInformationView.addSubview(infoLabel)  // 레이블을 상위 뷰에 추가
+
+        // 레이블의 레이아웃 제약 조건 설정
+        infoLabel.snp.makeConstraints { make in
+            make.top.equalTo(lineView.snp.bottom).offset(10)  // 라인 뷰의 바닥에서 10 포인트 아래에 위치
+            make.left.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 왼쪽에 맞춤
+            make.right.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 오른쪽에 맞춤
+        }
+
+        // "기간" 레이블 생성
+        let periodLabel = UILabel()
+        periodLabel.text = "기간"
+        periodLabel.textColor = .lightGray
+        periodLabel.font = .systemFont(ofSize: 14)
+
+        // "2023.1.1 ~ 2023.1.1" 텍스트를 가진 레이블 생성
+        let dateLabel = UILabel()
+        dateLabel.text = "2023.1.1 ~ 2023.1.1"
+        dateLabel.textColor = .lightGray
+        dateLabel.font = .systemFont(ofSize: 14)
+
+        // 레이블들을 수평으로 배치하기 위한 스택 뷰 생성
+        let stackView = UIStackView(arrangedSubviews: [periodLabel, dateLabel])
+        stackView.axis = .horizontal
+        stackView.spacing = 50  // 레이블 사이의 간격
+        stackView.alignment = .center
+        exhibitionInformationView.addSubview(stackView)
+
+        // 스택 뷰의 레이아웃 제약 조건 설정
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(infoLabel.snp.bottom).offset(10)  // "관람 정보" 레이블의 바닥에서 10 포인트 아래에 위치
+            make.left.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 좌우에 맞춤
+
+        }
+
+        
+
 
     }
 
