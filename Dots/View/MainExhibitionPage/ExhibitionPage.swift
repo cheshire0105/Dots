@@ -188,7 +188,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             make.left.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 좌우에 맞춤
 
         }
-        
+
         // "장소" 레이블 생성
         let locationLabel = UILabel()
         locationLabel.text = "장소"
@@ -330,6 +330,33 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         openingHoursStackView.snp.makeConstraints { make in
             make.top.equalTo(admissionFeeStackView.snp.bottom).offset(15)
             make.left.equalTo(exhibitionInfoTextView)
+        }
+
+        // 영업시간 스택 뷰 밑에 경계선 추가
+        let secondLineView = UIView()
+        secondLineView.backgroundColor = .lightGray
+        exhibitionInformationView.addSubview(secondLineView)
+
+        secondLineView.snp.makeConstraints { make in
+            make.top.equalTo(openingHoursStackView.snp.bottom).offset(15)
+            make.left.right.equalTo(exhibitionInfoTextView)
+            make.height.equalTo(1)
+        }
+
+        // 미술관 홈페이지 버튼 생성
+        let homepageButton = UIButton(type: .system)
+        homepageButton.backgroundColor = .black
+        homepageButton.setTitle("미술관 홈페이지로 가기", for: .normal)
+        homepageButton.setTitleColor(.white, for: .normal)
+        homepageButton.titleLabel?.font = .systemFont(ofSize: 14)
+//        homepageButton.layer.cornerRadius = 5
+        exhibitionInformationView.addSubview(homepageButton)
+
+        homepageButton.snp.makeConstraints { make in
+            make.top.equalTo(secondLineView.snp.bottom).offset(15)
+            make.left.equalTo(exhibitionInfoTextView)
+//            make.right.equalTo(exhibitionInfoTextView)
+            make.height.equalTo(40)
         }
 
 
