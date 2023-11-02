@@ -227,9 +227,49 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.addSubview(locationStackView)
 
         locationStackView.snp.makeConstraints { make in
-            make.top.equalTo(stackView.snp.bottom).offset(10)
+            make.top.equalTo(stackView.snp.bottom).offset(15)
             make.left.equalTo(exhibitionInfoTextView)
         }
+
+        // 버튼 생성
+        let button = UIButton(type: .system)
+        button.backgroundColor = .darkGray // 배경색 설정
+        exhibitionInformationView.addSubview(button)
+
+        // 버튼의 레이아웃 설정
+        button.snp.remakeConstraints { make in
+            make.top.equalTo(museumDetailsStackView.snp.bottom).offset(15)
+            make.left.equalTo(museumDetailsStackView)
+            make.right.equalTo(museumDetailsStackView).offset(40)
+            make.height.equalTo(33)
+        }
+
+        // 버튼 안에 들어갈 레이블 생성
+        let buttonLabel = UILabel()
+        buttonLabel.text = "길찾기" // 버튼 안에 들어갈 텍스트
+        buttonLabel.textColor = .white // 텍스트 색상 설정
+        buttonLabel.font = .systemFont(ofSize: 13) // 원하는 폰트 크기로 설정
+        button.layer.cornerRadius = 5
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1
+        button.addSubview(buttonLabel)
+
+        // 버튼 안의 레이블 레이아웃 설정
+        buttonLabel.snp.makeConstraints { make in
+            make.center.equalTo(button) // 버튼의 중앙에 위치
+        }
+
+        // 버튼 안에 들어갈 이미지 아이콘 생성
+        let buttonIcon = UIImageView(image: UIImage(named: "Union")) // SF Symbols에서 제공하는 이미지 사용
+        buttonIcon.tintColor = .white // 이미지 색상 설정
+        button.addSubview(buttonIcon)
+
+        // 버튼 안의 이미지 아이콘 레이아웃 설정
+        buttonIcon.snp.makeConstraints { make in
+            make.centerY.equalTo(button) // 버튼의 세로 중앙에 위치
+            make.right.equalTo(buttonLabel.snp.left).offset(-10) // 버튼 안의 레이블 왼쪽에서 10 포인트 떨어진 곳에 위치
+        }
+
 
 
 
