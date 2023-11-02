@@ -4,7 +4,7 @@ import SnapKit
 import UIKit
 
 class 인기리뷰_디테일_셀: UICollectionViewCell {
-    var 인기셀_이미지 = {
+    var 인기셀_디테일_이미지 = {
         var imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.clipsToBounds = true
@@ -18,8 +18,8 @@ class 인기리뷰_디테일_셀: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
-        contentView.addSubview(인기셀_이미지)
-        인기셀_이미지.snp.makeConstraints { make in
+        contentView.addSubview(인기셀_디테일_이미지)
+        인기셀_디테일_이미지.snp.makeConstraints { make in
             make.size.equalToSuperview()
         }
     }
