@@ -39,6 +39,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     // 경계선
     let borderView = UIView()
 
+    // 버튼 하단 테두리 뷰
+    let reviewsButtonBorder = UIView()
+    let exhibitionInfoButtonBorder = UIView()
 
     // 테이블 뷰의 높이 제약 조건을 클래스 프로퍼티로 정의
     var reviewTableViewHeightConstraint: Constraint?
@@ -89,8 +92,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         setupExhibitionImage()
         setupScrollView()
         setupViews()
-
         setupTableView()
+        setupButtonBorders()
 
 
     }
@@ -109,6 +112,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewView.isHidden = false
         exhibitionInformationView.isHidden = true
         updateScrollViewContentSize()
+
+        reviewsButtonBorder.backgroundColor = .white
+        exhibitionInfoButtonBorder.backgroundColor = .clear
     }
 
     // 전시 정보 버튼
@@ -116,6 +122,30 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewView.isHidden = true
         exhibitionInformationView.isHidden = false
         updateScrollViewContentSizeForExhibitionInfoView()
+
+        reviewsButtonBorder.backgroundColor = .clear
+        exhibitionInfoButtonBorder.backgroundColor = .white
+    }
+
+    // 버튼 하단 테두리 설정
+    private func setupButtonBorders() {
+        contentView.addSubview(reviewsButtonBorder)
+        contentView.addSubview(exhibitionInfoButtonBorder)
+
+        reviewsButtonBorder.backgroundColor = .white
+        exhibitionInfoButtonBorder.backgroundColor = .clear
+
+        reviewsButtonBorder.snp.makeConstraints { make in
+            make.top.equalTo(reviewsButton.snp.bottom)
+            make.left.right.equalTo(reviewsButton)
+            make.height.equalTo(1)
+        }
+
+        exhibitionInfoButtonBorder.snp.makeConstraints { make in
+            make.top.equalTo(exhibitionInfoButton.snp.bottom)
+            make.left.right.equalTo(exhibitionInfoButton)
+            make.height.equalTo(1)
+        }
     }
 
     // 스크롤 뷰의 사이즈를 재조정 하는 함수
@@ -364,7 +394,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewTableViewHeightConstraint?.update(offset: tableView.contentSize.height)
         updateScrollViewContentSize()
     }
-
+    
 
     func updateScrollViewContentSize() {
         let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + reviewView.frame.height + 32
