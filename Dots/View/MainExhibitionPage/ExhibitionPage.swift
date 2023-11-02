@@ -45,8 +45,13 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     // 테이블 뷰의 높이 제약 조건을 클래스 프로퍼티로 정의
     var reviewTableViewHeightConstraint: Constraint?
+    var exhibitionInfoViewHeightConstraint: Constraint?
+
 
     let exhibitionInfoTextView = UITextView()
+
+    let museumHomepageButton = UIButton(type: .system)
+
 
 
     // 더미 데이터
@@ -343,19 +348,16 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             make.height.equalTo(1)
         }
 
-        // 미술관 홈페이지 버튼 생성
-        let homepageButton = UIButton(type: .system)
-        homepageButton.backgroundColor = .black
-        homepageButton.setTitle("미술관 홈페이지로 가기", for: .normal)
-        homepageButton.setTitleColor(.white, for: .normal)
-        homepageButton.titleLabel?.font = .systemFont(ofSize: 14)
-//        homepageButton.layer.cornerRadius = 5
-        exhibitionInformationView.addSubview(homepageButton)
 
-        homepageButton.snp.makeConstraints { make in
+        museumHomepageButton.backgroundColor = .black
+        museumHomepageButton.setTitle("미술관 홈페이지로 가기", for: .normal)
+        museumHomepageButton.setTitleColor(.white, for: .normal)
+        museumHomepageButton.titleLabel?.font = .systemFont(ofSize: 14)
+        exhibitionInformationView.addSubview(museumHomepageButton)
+
+        museumHomepageButton.snp.makeConstraints { make in
             make.top.equalTo(secondLineView.snp.bottom).offset(15)
             make.left.equalTo(exhibitionInfoTextView)
-//            make.right.equalTo(exhibitionInfoTextView)
             make.height.equalTo(40)
         }
 
@@ -378,6 +380,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewView.isHidden = true
         exhibitionInformationView.isHidden = false
         updateScrollViewContentSizeForExhibitionInfoView()
+
 
         reviewsButtonBorder.backgroundColor = .clear
         exhibitionInfoButtonBorder.backgroundColor = .white
@@ -406,9 +409,11 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     // 스크롤 뷰의 사이즈를 재조정 하는 함수
     func updateScrollViewContentSizeForExhibitionInfoView() {
-        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + exhibitionInformationView.frame.height + 32
+        // exhibitionInformationView의 높이를 계산하지 않고, homepageButton의 bottom까지의 높이를 사용합니다.
+        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + museumHomepageButton.frame.maxY + 32 + 16 // 16은 버튼과 스크롤 뷰 하단의 여백
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
     }
+
 
     private func setupBackButton() {
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
@@ -591,8 +596,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.snp.makeConstraints { make in
             make.top.equalTo(reviewsButton.snp.bottom).offset(16)
             make.left.right.equalTo(contentView)
-            make.height.equalTo(2000).priority(.high) // 우선순위를 높음으로 설정
-            make.bottom.equalTo(contentView) // 전시 정보 뷰의 하단을 contentView의 하단에 연결
+            make.bottom.equalTo(contentView)  // 이 부분을 추가합니다.
+            // make.height.equalTo(2000).priority(.high) // 이 부분을 제거하거나 주석 처리합니다.
         }
 
         reviewView.backgroundColor = .red
