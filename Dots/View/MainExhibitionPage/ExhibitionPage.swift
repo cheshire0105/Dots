@@ -10,7 +10,7 @@ import SnapKit
 
 class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
 
-    // MARK: - 변수들
+    // MARK: - 변수
 
     let scrollView = UIScrollView()
     let contentView = UIView()
@@ -37,10 +37,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     let exhibitionInfoButton = UIButton()
 
     // 테이블 뷰의 높이 제약 조건을 클래스 프로퍼티로 정의
-    var tableViewHeightConstraint: Constraint?
-
-    var reviewViewHeightConstraint: Constraint? // reviewView의 높이 제약조건을 저장할 프로퍼티
-
+    var reviewTableViewHeightConstraint: Constraint?
 
     // 더미 데이터
     let reviews = [
@@ -53,7 +50,6 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
         Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
         Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-
     ]
 
     // MARK: - 뷰의 생명주기
@@ -104,40 +100,69 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     // MARK: - 함수들
 
-    // 버튼을 설정하는 함수
-
-
+    // 전시 후기 버튼
     @objc func reviewsButtonTapped() {
         reviewView.isHidden = false
         exhibitionInformationView.isHidden = true
         updateScrollViewContentSize()
     }
-
+    
+    // 전시 정보 버튼
     @objc func exhibitionInfoButtonTapped() {
         reviewView.isHidden = true
         exhibitionInformationView.isHidden = false
         updateScrollViewContentSizeForExhibitionInfoView()
     }
 
+    // 스크롤 뷰의 사이즈를 재조정 하는 함수
     func updateScrollViewContentSizeForExhibitionInfoView() {
         let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + exhibitionInformationView.frame.height + 32
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
     }
 
+    private func setupBackButton() {
+        navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+
+        let backButtonImage = UIImage(named: "backButton")
+        let backButton = UIBarButtonItem(image: backButtonImage, style: .plain, target: self, action: #selector(backButtonTapped))
+        backButton.tintColor = .white
+        navigationItem.leftBarButtonItem = backButton
+    }
+
+
+    @objc func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+
+    private func setupRightBarButton() {
+        let rightButtonImage = UIImage(named: "audioGuide")
+        let rightButton = UIBarButtonItem(image: rightButtonImage, style: .plain, target: self, action: #selector(rightButtonTapped))
+        rightButton.tintColor = .white
+        navigationItem.rightBarButtonItem = rightButton
+    }
+
+    @objc func rightButtonTapped() {
+
+    }
+
 
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
+
         view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
 
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view)
         }
 
+        scrollView.addSubview(contentView)
+
         contentView.snp.makeConstraints { make in
             make.top.bottom.equalTo(scrollView)
             make.left.right.equalTo(view)
-            make.height.greaterThanOrEqualTo(view) // 콘텐츠 뷰의 높이가 뷰의 높이보다 크거나 같도록 설정
+            make.height.greaterThanOrEqualTo(view) 
+            // 콘텐츠 뷰의 높이가 뷰의 높이보다 크거나 같도록 설정
         }
 
     }
@@ -168,8 +193,6 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         stackViewTwo.axis = .horizontal
         stackViewTwo.spacing = 10
         stackViewTwo.alignment = .center
-
-
 
         exhibitionImageView.snp.updateConstraints { make in
             make.top.equalTo(contentView)
@@ -254,6 +277,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     }
 
+    // 버튼으로 보여지는 뷰의 레이아웃을 정하는 함수.
     private func setupViews() {
         contentView.addSubview(reviewView)
         contentView.addSubview(exhibitionInformationView)
@@ -261,17 +285,15 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewView.snp.makeConstraints { make in
             make.top.equalTo(reviewsButton.snp.bottom).offset(16)
             make.left.right.equalTo(contentView)
-            //            make.height.equalTo(1000).priority(.high) // 우선순위를 높음으로 설정
-            make.bottom.equalTo(contentView).priority(.high) // 추가된 부분: redView의 하단을 contentView의 하단에 연결
+            make.bottom.equalTo(contentView).priority(.high) // 전시 리뷰 뷰의 하단을 contentView의 하단에 연결
         }
 
         exhibitionInformationView.snp.makeConstraints { make in
             make.top.equalTo(reviewsButton.snp.bottom).offset(16)
             make.left.right.equalTo(contentView)
             make.height.equalTo(2000).priority(.high) // 우선순위를 높음으로 설정
-            make.bottom.equalTo(contentView) // 추가된 부분: blueView의 하단을 contentView의 하단에 연결
+            make.bottom.equalTo(contentView) // 전시 정보 뷰의 하단을 contentView의 하단에 연결
         }
-
 
         reviewView.backgroundColor = .red
         exhibitionInformationView.backgroundColor = .blue
@@ -279,40 +301,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 초기 상태 설정
         reviewView.isHidden = false
         exhibitionInformationView.isHidden = true
-    }
-
-
-    private func setupBackButton() {
-        navigationController?.interactivePopGestureRecognizer?.delegate = nil
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-
-        let backButtonImage = UIImage(named: "backButton")
-        let backButton = UIBarButtonItem(image: backButtonImage, style: .plain, target: self, action: #selector(backButtonTapped))
-        backButton.tintColor = .white
-        navigationItem.leftBarButtonItem = backButton
-    }
-
-
-    @objc func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
-    }
-
-    private func setupRightBarButton() {
-        let rightButtonImage = UIImage(named: "audioGuide")
-        let rightButton = UIBarButtonItem(image: rightButtonImage, style: .plain, target: self, action: #selector(rightButtonTapped))
-        rightButton.tintColor = .white
-        navigationItem.rightBarButtonItem = rightButton
-    }
-
-    @objc func rightButtonTapped() {
 
     }
-
-
-
-
-
-
 
     private func setupTableView() {
         reviewView.addSubview(tableView)
@@ -330,7 +320,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         // reviewView의 높이 제약조건을 저장합니다.
         reviewView.snp.makeConstraints { make in
-            self.reviewViewHeightConstraint = make.height.equalTo(0).constraint
+            self.reviewTableViewHeightConstraint = make.height.equalTo(0).constraint
         }
 
         reloadDataAndUpdateHeight()
@@ -344,7 +334,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             self.tableView.reloadData()
             self.tableView.layoutIfNeeded()
             let tableViewHeight = self.tableView.contentSize.height
-            self.reviewViewHeightConstraint?.update(offset: tableViewHeight)
+            self.reviewTableViewHeightConstraint?.update(offset: tableViewHeight)
             self.updateScrollViewContentSize()
         }
     }
@@ -357,10 +347,17 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         }
 
         tableView.layoutIfNeeded()
-        tableViewHeightConstraint?.update(offset: tableView.contentSize.height)
+        reviewTableViewHeightConstraint?.update(offset: tableView.contentSize.height)
         updateScrollViewContentSize()
     }
 
+
+    func updateScrollViewContentSize() {
+        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + reviewView.frame.height + 32
+        if scrollView.contentSize.height != totalHeight {
+            scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
+        }
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return reviews.count
@@ -373,25 +370,10 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         return cell
     }
 
-    func updateScrollViewContentSize() {
-        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + reviewView.frame.height + 32
-        if scrollView.contentSize.height != totalHeight {
-            scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
-        }
-    }
-
-
-
-
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == reviews.count - 1 {
             updateTableViewHeight()
         }
-
-
-
-
     }
-
 
 }
