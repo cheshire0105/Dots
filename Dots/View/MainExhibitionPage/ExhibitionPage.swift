@@ -36,6 +36,10 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     let reviewsButton = UIButton()
     let exhibitionInfoButton = UIButton()
 
+    // 경계선
+    let borderView = UIView()
+
+
     // 테이블 뷰의 높이 제약 조건을 클래스 프로퍼티로 정의
     var reviewTableViewHeightConstraint: Constraint?
 
@@ -106,7 +110,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.isHidden = true
         updateScrollViewContentSize()
     }
-    
+
     // 전시 정보 버튼
     @objc func exhibitionInfoButtonTapped() {
         reviewView.isHidden = true
@@ -161,7 +165,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         contentView.snp.makeConstraints { make in
             make.top.bottom.equalTo(scrollView)
             make.left.right.equalTo(view)
-            make.height.greaterThanOrEqualTo(view) 
+            make.height.greaterThanOrEqualTo(view)
             // 콘텐츠 뷰의 높이가 뷰의 높이보다 크거나 같도록 설정
         }
 
@@ -189,6 +193,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         stackViewTwo.addArrangedSubview(iconImageViewTwo)
         stackViewTwo.addArrangedSubview(descriptionLabelTwo)
         contentView.addSubview(stackViewTwo)
+        contentView.addSubview(borderView)
+
 
         stackViewTwo.axis = .horizontal
         stackViewTwo.spacing = 10
@@ -274,6 +280,14 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             make.height.equalTo(40)
             make.width.equalTo(reviewsButton.snp.width)  // 너비 동일하게 설정
         }
+
+        borderView.snp.makeConstraints { make in
+            make.top.equalTo(reviewsButton.snp.bottom)
+            make.width.equalToSuperview()
+            make.height.equalTo(1) // 경계선 뷰의 너비를 1로 설정하여 얇은 선 만들기
+        }
+
+        borderView.backgroundColor = .lightGray  // 경계선 색상 설정
 
     }
 
