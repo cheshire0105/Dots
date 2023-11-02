@@ -312,7 +312,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 영업시간 정보를 담을 스택 뷰 생성
         let openingHoursStackView = UIStackView(arrangedSubviews: [openingHoursLabel, hoursLabel])
         openingHoursStackView.axis = .horizontal
-        openingHoursStackView.spacing = 30
+        openingHoursStackView.spacing = 28
         openingHoursStackView.alignment = .center
         exhibitionInformationView.addSubview(openingHoursStackView)
 
