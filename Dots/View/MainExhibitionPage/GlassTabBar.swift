@@ -59,7 +59,7 @@ class GlassTabBar: UITabBarController {
 
 
         let secondVC = SearchPage()
-        secondVC.view.backgroundColor = .green
+        secondVC.view.backgroundColor = .black
 
         let thirdVC = PopularReviewsPage()
         let thirdNavController = UINavigationController(rootViewController: thirdVC)
