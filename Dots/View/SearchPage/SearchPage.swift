@@ -154,7 +154,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .black  // 배경색을 검정색으로 설정
-        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "customCell")  // 새로운 셀 클래스를 등록
+        tableView.register(searchPageTableViewCell.self, forCellReuseIdentifier: "searchPageTableViewCell")  // 새로운 셀 클래스를 등록
         view.addSubview(tableView)
 
         tableView.snp.makeConstraints { make in
@@ -174,7 +174,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "customCell", for: indexPath) as! CustomTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
         cell.titleLabel.text = "올해의 작가전"
         cell.contentLabel.text = "국립현대미술관 서울"
         return cell
@@ -193,50 +193,3 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     }
 }
 
-class CustomTableViewCell: UITableViewCell {
-
-    let grayBox = UIView()
-    let titleLabel = UILabel()
-    let contentLabel = UILabel()
-
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-        setupViews()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func setupViews() {
-        self.backgroundColor = .black  // 셀의 배경색을 검정색으로 설정
-
-        grayBox.backgroundColor = .gray
-        contentView.addSubview(grayBox)
-
-        titleLabel.textColor = .white
-        contentView.addSubview(titleLabel)
-
-        contentLabel.textColor = .white
-        contentView.addSubview(contentLabel)
-
-        // SnapKit을 사용하여 레이아웃 설정
-        grayBox.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView)
-            make.leading.equalTo(contentView).offset(15)
-            make.width.equalTo(130)
-            make.height.equalTo(180)
-        }
-
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(grayBox.snp.top).offset(50)
-            make.leading.equalTo(grayBox.snp.trailing).offset(10)
-        }
-
-        contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5)
-            make.leading.equalTo(titleLabel)
-        }
-    }
-}
