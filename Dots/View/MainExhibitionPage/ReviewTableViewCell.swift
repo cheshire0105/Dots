@@ -14,20 +14,31 @@ class ReviewTableViewCell: UITableViewCell {
     let titleLabel = UILabel()
     let contentLabel = UILabel()
     let authorLabel = UILabel()
+    let exhibitionPageReviewCellImage = UIImageView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        self.backgroundColor = .black  // 셀의 배경색을 검은색으로 설정
+        self.backgroundColor = .black
 
-        // UI 컴포넌트 추가 및 레이아웃 설정
+        // UI 컴포넌트 추가
         contentView.addSubview(titleLabel)
         contentView.addSubview(contentLabel)
         contentView.addSubview(authorLabel)
+        contentView.addSubview(exhibitionPageReviewCellImage)
 
-        titleLabel.snp.makeConstraints { make in
-            make.top.left.equalToSuperview().inset(10)
+        // 이미지 뷰의 레이아웃 설정 (오른쪽에 위치)
+        exhibitionPageReviewCellImage.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(10)
             make.right.equalToSuperview().inset(10)
+            make.width.height.equalTo(50)
+        }
+
+        // 레이블의 레이아웃 설정 (이미지 뷰의 왼쪽에 위치)
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(10)
+            make.left.equalToSuperview().inset(10)
+            make.right.equalTo(exhibitionPageReviewCellImage.snp.left).offset(-10)
         }
 
         contentLabel.snp.makeConstraints { make in
@@ -43,13 +54,13 @@ class ReviewTableViewCell: UITableViewCell {
 
         // 스타일 설정
         titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        titleLabel.textColor = .white  // 텍스트 색상을 하얀색으로 설정
+        titleLabel.textColor = .white
 
         contentLabel.font = UIFont.systemFont(ofSize: 14)
-        contentLabel.textColor = .white  // 텍스트 색상을 하얀색으로 설정
+        contentLabel.textColor = .white
 
         authorLabel.font = UIFont.systemFont(ofSize: 12)
-        authorLabel.textColor = .white  // 텍스트 색상을 하얀색으로 설정
+        authorLabel.textColor = .white
     }
 
     required init?(coder: NSCoder) {
@@ -60,12 +71,13 @@ class ReviewTableViewCell: UITableViewCell {
         titleLabel.text = review.title
         contentLabel.text = review.content
         authorLabel.text = review.author
+        exhibitionPageReviewCellImage.image = UIImage(named: review.imageName)
     }
 }
-
 
 struct Review {
     let title: String
     let content: String
     let author: String
+    let imageName: String
 }

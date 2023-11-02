@@ -41,15 +41,15 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     // 더미 데이터
     let reviews = [
-        Review(title: "훌륭한 전시회였어요!", content: "정말 재미있게 관람했습니다. 다음에 또 오고 싶어요.", author: "홍길동"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
-        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희"),
+        Review(title: "훌륭한 전시회였어요!", content: "정말 재미있게 관람했습니다. 다음에 또 오고 싶어요.", author: "홍길동", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
+        Review(title: "추천합니다", content: "전시회 분위기가 너무 좋았고 작품들도 인상적이었습니다.", author: "김영희", imageName: "morningStar"),
     ]
 
     // MARK: - 뷰의 생명주기
