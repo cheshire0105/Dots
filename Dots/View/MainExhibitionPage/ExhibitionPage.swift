@@ -32,22 +32,17 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     let tableView = UITableView()
 
-    // 세그먼트 컨트롤 대신에 버튼을 사용
     let reviewsButton = UIButton()
     let exhibitionInfoButton = UIButton()
-
-    // 경계선
     let borderView = UIView()
-
-    // 버튼 하단 테두리 뷰
     let reviewsButtonBorder = UIView()
     let exhibitionInfoButtonBorder = UIView()
 
-    // 테이블 뷰의 높이 제약 조건을 클래스 프로퍼티로 정의
     var reviewTableViewHeightConstraint: Constraint?
+    var exhibitionInfoViewHeightConstraint: Constraint?
 
     let exhibitionInfoTextView = UITextView()
-
+    let museumHomepageButton = UIButton(type: .system)
 
     // 더미 데이터
     let reviews = [
@@ -72,7 +67,6 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         }
     }
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -80,7 +74,6 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
 
         tableView.isScrollEnabled = false
-
 
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.delegate = self
@@ -99,15 +92,12 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         setupButtonBorders()
         setupExhibitionInfoTextView()
 
-
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         reloadDataAndUpdateHeight()
     }
-
-
 
     // MARK: - 함수들
 
@@ -322,7 +312,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 영업시간 정보를 담을 스택 뷰 생성
         let openingHoursStackView = UIStackView(arrangedSubviews: [openingHoursLabel, hoursLabel])
         openingHoursStackView.axis = .horizontal
-        openingHoursStackView.spacing = 30
+        openingHoursStackView.spacing = 28
         openingHoursStackView.alignment = .center
         exhibitionInformationView.addSubview(openingHoursStackView)
 
@@ -343,25 +333,19 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             make.height.equalTo(1)
         }
 
-        // 미술관 홈페이지 버튼 생성
-        let homepageButton = UIButton(type: .system)
-        homepageButton.backgroundColor = .black
-        homepageButton.setTitle("미술관 홈페이지로 가기", for: .normal)
-        homepageButton.setTitleColor(.white, for: .normal)
-        homepageButton.titleLabel?.font = .systemFont(ofSize: 14)
-//        homepageButton.layer.cornerRadius = 5
-        exhibitionInformationView.addSubview(homepageButton)
+        museumHomepageButton.backgroundColor = .black
+        museumHomepageButton.setTitle("미술관 홈페이지로 가기", for: .normal)
+        museumHomepageButton.setTitleColor(.white, for: .normal)
+        museumHomepageButton.titleLabel?.font = .systemFont(ofSize: 14)
+        exhibitionInformationView.addSubview(museumHomepageButton)
 
-        homepageButton.snp.makeConstraints { make in
+        museumHomepageButton.snp.makeConstraints { make in
             make.top.equalTo(secondLineView.snp.bottom).offset(15)
             make.left.equalTo(exhibitionInfoTextView)
-//            make.right.equalTo(exhibitionInfoTextView)
             make.height.equalTo(40)
         }
 
-
     }
-
 
     // 전시 후기 버튼
     @objc func reviewsButtonTapped() {
@@ -378,6 +362,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewView.isHidden = true
         exhibitionInformationView.isHidden = false
         updateScrollViewContentSizeForExhibitionInfoView()
+
 
         reviewsButtonBorder.backgroundColor = .clear
         exhibitionInfoButtonBorder.backgroundColor = .white
@@ -404,9 +389,30 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         }
     }
 
+    // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
+    private func setupScrollView() {
+
+        view.addSubview(scrollView)
+
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view)
+        }
+
+        scrollView.addSubview(contentView)
+
+        contentView.snp.makeConstraints { make in
+            make.top.bottom.equalTo(scrollView)
+            make.left.right.equalTo(view)
+            make.height.greaterThanOrEqualTo(view)
+            // 콘텐츠 뷰의 높이가 뷰의 높이보다 크거나 같도록 설정
+        }
+
+    }
+
     // 스크롤 뷰의 사이즈를 재조정 하는 함수
     func updateScrollViewContentSizeForExhibitionInfoView() {
-        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + exhibitionInformationView.frame.height + 32
+        // exhibitionInformationView의 높이를 계산하지 않고, homepageButton의 bottom까지의 높이를 사용합니다.
+        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + museumHomepageButton.frame.maxY + 32 + 16 // 16은 버튼과 스크롤 뷰 하단의 여백
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
     }
 
@@ -437,25 +443,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     }
 
 
-    // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
-    private func setupScrollView() {
 
-        view.addSubview(scrollView)
-
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view)
-        }
-
-        scrollView.addSubview(contentView)
-
-        contentView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(scrollView)
-            make.left.right.equalTo(view)
-            make.height.greaterThanOrEqualTo(view)
-            // 콘텐츠 뷰의 높이가 뷰의 높이보다 크거나 같도록 설정
-        }
-
-    }
 
 
     // 상단의 전시 이미지를 설정 하는 함수
@@ -591,8 +579,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.snp.makeConstraints { make in
             make.top.equalTo(reviewsButton.snp.bottom).offset(16)
             make.left.right.equalTo(contentView)
-            make.height.equalTo(2000).priority(.high) // 우선순위를 높음으로 설정
-            make.bottom.equalTo(contentView) // 전시 정보 뷰의 하단을 contentView의 하단에 연결
+            make.bottom.equalTo(contentView)  // 이 부분을 추가합니다.
+            // make.height.equalTo(2000).priority(.high) // 이 부분을 제거하거나 주석 처리합니다.
         }
 
         reviewView.backgroundColor = .red

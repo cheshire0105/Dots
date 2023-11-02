@@ -49,6 +49,7 @@ class GlassTabBar: UITabBarController {
 
         setupTabBarItems()
         setupCustomTabBarView()
+        updateTabBarAppearance()
     }
 
     func setupTabBarItems() {
@@ -58,7 +59,7 @@ class GlassTabBar: UITabBarController {
 
 
         let secondVC = SearchPage()
-        secondVC.view.backgroundColor = .green
+        secondVC.view.backgroundColor = .black
 
         let thirdVC = PopularReviewsPage()
         let thirdNavController = UINavigationController(rootViewController: thirdVC)
@@ -145,15 +146,21 @@ class GlassTabBar: UITabBarController {
     }
 
     @objc func tabBarButtonTapped(_ sender: UIButton) {
+          selectedIndex = sender.tag
+          updateTabBarAppearance()
+      }
+
+    func updateTabBarAppearance() {
         for (index, button) in buttons.enumerated() {
-            if button == sender {
-                selectedIndex = index
+            if index == selectedIndex {
                 button.isSelected = true
-                button.backgroundColor = .darkGray // 탭 됐을 때의 배경색
+                button.backgroundColor = .darkGray // 선택된 탭의 배경색
             } else {
                 button.isSelected = false
                 button.backgroundColor = .clear // 기본 배경색
             }
         }
     }
+
+
 }
