@@ -9,13 +9,13 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
     
     private let 블러_블록 = {
         let uiView = UIView()
-        uiView.backgroundColor = .black.withAlphaComponent(0.7)
+        uiView.backgroundColor = .black.withAlphaComponent(0.8)
         uiView.layer.cornerRadius = 30
         return uiView
     } ()
+    
     private let 판모달_댓글_테이블뷰 = {
         let tableView = UITableView()
-        //      tableView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.6)
         tableView.backgroundColor = UIColor.clear
         tableView.isUserInteractionEnabled = true
         tableView.showsVerticalScrollIndicator = false
@@ -23,19 +23,39 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
         
         return tableView
     }()
-    
+    private let 댓글_작성자_이미지 = {
+        var imageView = UIImageView()
+        imageView.image = UIImage(named: "cabanel")
+        imageView.layer.cornerRadius = 20
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    } ()
+    private let 댓글_입력_블록 = {
+      let uiView = UIView()
+        uiView.backgroundColor = .darkGray.withAlphaComponent(0.8)
+        uiView.layer.cornerRadius = 25
+        return uiView
+    } ()
     private let 판모달_댓글_입력 = {
         let textField = UITextField ()
         textField.placeholder = "댓글작성..."
-        textField.textColor = UIColor.gray
-        textField.backgroundColor = UIColor.clear
+        textField.textColor = UIColor.white
+        textField.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         textField.textColor = UIColor.white
         textField.font = UIFont(name: "HelveticaNeue", size: 16)
-        textField.layer.cornerRadius = 20
+        textField.layer.cornerRadius = 25
         //textField.becomeFirstResponder()
         return textField
     } ()
-    
+    private let 댓글_버튼 = {
+            let button = UIButton()
+        button.setImage(UIImage(named: "댓글버튼"), for: .normal)
+        button.backgroundColor = UIColor.white
+        button.layer.cornerRadius = 24
+        button.isSelected = !button.isSelected
+        return button
+    } ()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.clear
@@ -45,14 +65,11 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
                gradientLayer.colors = [UIColor(white: 0, alpha: 0.8).cgColor, UIColor(white: 0, alpha: 0).cgColor]
                gradientLayer.locations = [0.0, 1.0]
 
-               // 그라디언트 레이어를 추가
                view.layer.insertSublayer(gradientLayer, at: 0)
         let blurEffect = UIBlurEffect(style: .systemThickMaterialDark)
         let visualEffectView = UIVisualEffectView(effect: blurEffect)
         visualEffectView.layer.cornerRadius = 25
-        //visualEffectView.backgroundColor = UIColor(white: 0.5, alpha: 0.8)  // 예시로 0.5의 투명도로 설정
-        visualEffectView.alpha = 0.6  // 예시로 0.6으로 조절
-
+        visualEffectView.alpha = 0.6
         visualEffectView.layer.masksToBounds = true
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(visualEffectView)
@@ -61,7 +78,7 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
         }
         
         테이블뷰_레이아웃()
-        댓글입력_레이아웃()
+        UI레이아웃()
         
         판모달_댓글_테이블뷰.delegate = self
         판모달_댓글_테이블뷰.dataSource = self
@@ -76,15 +93,45 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
             make.leading.equalToSuperview().offset(5)
             make.trailing.equalToSuperview().offset(-5)
         }
-    }
-    func 댓글입력_레이아웃 () {
-        view.addSubview(판모달_댓글_입력)
-        판모달_댓글_입력.snp.makeConstraints { make in
-            make.top.equalTo(판모달_댓글_테이블뷰.snp.bottom).offset(10)
-            make.leading.equalTo(판모달_댓글_테이블뷰.snp.leading).offset(5)
-            make.trailing.equalTo(판모달_댓글_테이블뷰.snp.trailing).offset(-5)
+        블러_블록.addSubview(댓글_입력_블록)
+        댓글_입력_블록.snp.makeConstraints { make in
+//            make.height.equalTo(20)
+//            make.width.equalTo(200)
+//            make.leading.equalTo(판모달_댓글_테이블뷰).offset(5)
+//            make.trailing.equalToSuperview().offset(-85)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-90)
+//            make.top.equalToSuperview().offset(400)
+            make.height.equalTo(52)
             make.bottom.equalToSuperview().offset(-20)
         }
+        
+    }
+    
+    func UI레이아웃 () {
+        view.addSubview(댓글_작성자_이미지)
+        댓글_작성자_이미지.snp.makeConstraints { make in
+            make.top.equalTo(댓글_입력_블록.snp.top)
+            make.bottom.equalTo(댓글_입력_블록.snp.bottom)
+            make.leading.equalTo(댓글_입력_블록.snp.leading)
+            make.trailing.equalTo(댓글_입력_블록.snp.trailing).offset(-255)
+           
+        }
+        view.addSubview(판모달_댓글_입력)
+        판모달_댓글_입력.snp.makeConstraints { make in
+            make.top.equalTo(댓글_입력_블록.snp.top)
+            make.bottom.equalTo(댓글_입력_블록.snp.bottom)
+            make.leading.equalTo(댓글_입력_블록.snp.leading).offset(55)
+            make.trailing.equalTo(댓글_입력_블록.snp.trailing).offset(0)
+        }
+        view.addSubview(댓글_버튼)
+        댓글_버튼.snp.makeConstraints { make in
+            make.top.equalTo(댓글_입력_블록.snp.top)
+            make.bottom.equalTo(댓글_입력_블록.snp.bottom)
+            make.leading.equalTo(댓글_입력_블록.snp.trailing).offset(10)
+            make.trailing.equalTo(판모달_댓글_테이블뷰.snp.trailing).offset(-20)
+        }
+        
     }
     
     func 테이블뷰_레이아웃 () {
@@ -92,8 +139,8 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
         판모달_댓글_테이블뷰.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(63)
             make.bottom.equalToSuperview().offset(-90)
-            make.leading.equalToSuperview().offset(12)
-            make.trailing.equalToSuperview().offset(-12)
+            make.leading.equalToSuperview().offset(18)
+            make.trailing.equalToSuperview().offset(-18)
         }
     }
 }

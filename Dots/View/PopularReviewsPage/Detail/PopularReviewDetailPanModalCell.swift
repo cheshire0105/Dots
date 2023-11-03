@@ -63,7 +63,7 @@ class PopularReviewDetailPanModalCell: UITableViewCell {
             make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(5)
             make.bottom.equalToSuperview().offset(-10)
-            make.trailing.equalToSuperview().offset(-360)
+            make.trailing.equalToSuperview().offset(-350)
         }
         댓글_작성자_이름.snp.makeConstraints { make in
             make.top.equalTo(댓글_작성자_이미지)
