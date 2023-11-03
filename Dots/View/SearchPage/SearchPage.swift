@@ -60,7 +60,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         selectedButton = button
 
         highlightView.snp.remakeConstraints { make in
-            make.bottom.equalTo(separatorLine.snp.top )
+            make.bottom.equalTo(separatorLine.snp.top)
             make.height.equalTo(2)
             make.width.equalTo(button)
             make.centerX.equalTo(button)
@@ -69,7 +69,10 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
+
+        updateData(for: button)  // 여기에 추가
     }
+
 
     @objc func buttonClicked(_ sender: UIButton) {
         selectButton(sender)
