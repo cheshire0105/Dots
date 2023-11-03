@@ -429,13 +429,17 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     @objc func backButtonTapped() {
         navigationController?.popViewController(animated: true)
+        
     }
+
 
     private func setupRightBarButton() {
         let rightButtonImage = UIImage(named: "audioGuide")
         let rightButton = UIBarButtonItem(image: rightButtonImage, style: .plain, target: self, action: #selector(rightButtonTapped))
         rightButton.tintColor = .white
         navigationItem.rightBarButtonItem = rightButton
+
+        
     }
 
     @objc func rightButtonTapped() {

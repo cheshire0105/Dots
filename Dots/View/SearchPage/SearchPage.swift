@@ -37,10 +37,47 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        setupCollectionView()
+
+        if !isCollectionViewSetupDone {
+            setupCollectionViewLayout()
+            isCollectionViewSetupDone = true
+        }
     }
 
-    
+    func setupCollectionViewLayout() {
+        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        layout.scrollDirection = .vertical
+
+        // Adjust these values as necessary
+        let padding: CGFloat = 10
+        let minimumItemSpacing: CGFloat = 10
+        let minimumLineSpacing: CGFloat = 20
+
+        // Set the section insets with different top and bottom padding
+        let sectionInsetTop: CGFloat = 20
+        let sectionInsetBottom: CGFloat = 100
+        layout.sectionInset = UIEdgeInsets(top: sectionInsetTop, left: padding, bottom: sectionInsetBottom, right: padding)
+
+        // Calculate the available width by subtracting the insets for the left and right
+        let availableWidth = view.frame.size.width - padding * 2 - minimumItemSpacing * 2
+
+        // Calculate the item width and height
+        let itemWidth = (availableWidth / 3).rounded(.down)
+        let itemHeight: CGFloat = 150 // 원하는 높이 값으로 설정
+
+        // Set the item size
+        layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
+        layout.minimumInteritemSpacing = minimumItemSpacing
+        layout.minimumLineSpacing = minimumLineSpacing
+
+        // Apply the new layout
+        collectionView.setCollectionViewLayout(layout, animated: true)
+    }
+
+
+
+
+
 
 
     override func viewDidLoad() {
@@ -50,9 +87,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupSeparatorLine()
         setupHighlightView()
         setupTableView()
-        // selectButton(popularButton)  // 이 줄을 제거
-
-        setupCollectionView()
+        setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
     }
 
 
@@ -200,21 +235,22 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     func updateData(for button: UIButton) {
         if button == popularButton {
-            currentData = ["인기 1", "인기 2", "인기 3"]
+            currentData = (1...10).map { "인기 \($0)" } // "인기 1"부터 "인기 10"까지의 문자열을 생성합니다.
             tableView.isHidden = false
             collectionView.isHidden = true
         } else if button == exhibitionButton {
-            currentData = ["전시 1", "전시 2", "전시 3"]
+            currentData = (1...10).map { "전시 \($0)" } // "전시 1"부터 "전시 10"까지의 문자열을 생성합니다.
             tableView.isHidden = false
             collectionView.isHidden = true
         } else if button == artistButton {
-            currentData = ["작가 1", "작가 2", "작가 3"]
+            currentData = (1...20).map { "작가 \($0)" } // "작가 1"부터 "작가 10"까지의 문자열을 생성합니다.
             tableView.isHidden = true
             collectionView.isHidden = false
         }
         tableView.reloadData()
         collectionView.reloadData()
     }
+
 
 
     func setupCollectionView() {
@@ -225,21 +261,12 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         collectionView.isHidden = true // 처음에는 숨김 처리
         view.addSubview(collectionView)
 
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .vertical
-            let padding: CGFloat = 0 // 여백 없음
-            let collectionViewSize = collectionView.frame.size.width - padding * 2
-            let itemSize = collectionViewSize / 3 // 세 개의 셀이 한 행에 들어가므로
-            layout.itemSize = CGSize(width: itemSize, height: itemSize)
-            layout.minimumInteritemSpacing = 0 // 아이템 간의 최소 간격
-            layout.minimumLineSpacing = 0 // 줄 간의 최소 간격
-        }
-
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(separatorLine.snp.bottom)
             make.leading.trailing.bottom.equalTo(view)
         }
     }
+
 
 
 
@@ -273,6 +300,10 @@ class ArtistCollectionViewCell: UICollectionViewCell {
     }
 
     private func setupViews() {
+        // Set the background color of the cell
+        self.backgroundColor = .black
+        
+
         // 원형 뷰 설정
         circleView.backgroundColor = .gray
         circleView.layer.cornerRadius = 50 // 반지름이 50인 원형 뷰
@@ -280,12 +311,14 @@ class ArtistCollectionViewCell: UICollectionViewCell {
 
         // titleLabel 설정
         titleLabel.font = UIFont.systemFont(ofSize: 14)
-        titleLabel.textColor = .black
+        titleLabel.textColor = .white
+        titleLabel.text = "작가 이름" // 여기에 실제 작가 이름을 나중에 설정해야 합니다.
         contentView.addSubview(titleLabel)
 
         // contentLabel 설정
         contentLabel.font = UIFont.systemFont(ofSize: 12)
-        contentLabel.textColor = .darkGray
+        contentLabel.textColor = .white
+        contentLabel.text = "작가 정보" // 여기에 실제 작가 정보를 나중에 설정해야 합니다.
         contentView.addSubview(contentLabel)
 
         // SnapKit을 사용하여 원형 뷰의 제약 조건 설정
@@ -307,5 +340,7 @@ class ArtistCollectionViewCell: UICollectionViewCell {
             make.centerX.equalTo(contentView)
         }
     }
+
+
 }
 
