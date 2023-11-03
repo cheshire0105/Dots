@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
+class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
 
     let searchBar = UISearchBar()
     let popularButton = UIButton()
@@ -23,12 +23,24 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     let tableView = UITableView()
     var currentData: [String] = []
 
+    var isCollectionViewSetupDone = false
+
+
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+
+
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         selectButton(popularButton)
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setupCollectionView()
+    }
 
+    
 
 
     override func viewDidLoad() {
@@ -39,6 +51,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupHighlightView()
         setupTableView()
         // selectButton(popularButton)  // 이 줄을 제거
+
+        setupCollectionView()
     }
 
 
@@ -187,12 +201,111 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     func updateData(for button: UIButton) {
         if button == popularButton {
             currentData = ["인기 1", "인기 2", "인기 3"]
+            tableView.isHidden = false
+            collectionView.isHidden = true
         } else if button == exhibitionButton {
             currentData = ["전시 1", "전시 2", "전시 3"]
-        } else {
-            currentData = []
+            tableView.isHidden = false
+            collectionView.isHidden = true
+        } else if button == artistButton {
+            currentData = ["작가 1", "작가 2", "작가 3"]
+            tableView.isHidden = true
+            collectionView.isHidden = false
         }
         tableView.reloadData()
+        collectionView.reloadData()
+    }
+
+
+    func setupCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.backgroundColor = .black
+        collectionView.register(ArtistCollectionViewCell.self, forCellWithReuseIdentifier: "ArtistCollectionViewCell")
+        collectionView.isHidden = true // 처음에는 숨김 처리
+        view.addSubview(collectionView)
+
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .vertical
+            let padding: CGFloat = 0 // 여백 없음
+            let collectionViewSize = collectionView.frame.size.width - padding * 2
+            let itemSize = collectionViewSize / 3 // 세 개의 셀이 한 행에 들어가므로
+            layout.itemSize = CGSize(width: itemSize, height: itemSize)
+            layout.minimumInteritemSpacing = 0 // 아이템 간의 최소 간격
+            layout.minimumLineSpacing = 0 // 줄 간의 최소 간격
+        }
+
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(separatorLine.snp.bottom)
+            make.leading.trailing.bottom.equalTo(view)
+        }
+    }
+
+
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return currentData.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ArtistCollectionViewCell", for: indexPath) as! ArtistCollectionViewCell
+        cell.titleLabel.text = "작가 이름"
+        cell.contentLabel.text = "작가 정보"
+        return cell
+    }
+
+
+}
+
+
+class ArtistCollectionViewCell: UICollectionViewCell {
+    let titleLabel = UILabel()
+    let contentLabel = UILabel()
+    let circleView = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupViews() {
+        // 원형 뷰 설정
+        circleView.backgroundColor = .gray
+        circleView.layer.cornerRadius = 50 // 반지름이 50인 원형 뷰
+        contentView.addSubview(circleView)
+
+        // titleLabel 설정
+        titleLabel.font = UIFont.systemFont(ofSize: 14)
+        titleLabel.textColor = .black
+        contentView.addSubview(titleLabel)
+
+        // contentLabel 설정
+        contentLabel.font = UIFont.systemFont(ofSize: 12)
+        contentLabel.textColor = .darkGray
+        contentView.addSubview(contentLabel)
+
+        // SnapKit을 사용하여 원형 뷰의 제약 조건 설정
+        circleView.snp.makeConstraints { make in
+            make.top.equalTo(contentView).offset(10)
+            make.centerX.equalTo(contentView)
+            make.width.height.equalTo(100) // 원의 크기를 100x100으로 설정
+        }
+
+        // titleLabel의 제약 조건 설정
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(circleView.snp.bottom).offset(10)
+            make.centerX.equalTo(contentView)
+        }
+
+        // contentLabel의 제약 조건 설정
+        contentLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.centerX.equalTo(contentView)
+        }
     }
 }
 
