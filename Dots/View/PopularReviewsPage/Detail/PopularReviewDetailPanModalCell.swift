@@ -22,13 +22,14 @@ class PopularReviewDetailPanModalCell: UITableViewCell {
     let 댓글_내용 = {
         let label = UILabel()
         label.text = """
-oiv njqweojr njkxz sjl wke njkfsdkrjbkjsn kllfj
+저도 여기 다녀왔는데 좋았어요
 """
         label.textColor = UIColor.white
         label.font = UIFont(name: "HelveticaNeue", size: 16)
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .left
+        label.backgroundColor = .orange.withAlphaComponent(0.3)
         return label
     } ()
     let 댓글_좋아요_버튼 = {
@@ -36,7 +37,6 @@ oiv njqweojr njkxz sjl wke njkfsdkrjbkjsn kllfj
         button.setImage(UIImage(named: "댓글하트on"), for: .normal)
         button.setImage(UIImage(named: "댓글하트off"), for: .selected)
         button.isSelected = true
-        
         return button
     } ()
     
@@ -73,17 +73,18 @@ oiv njqweojr njkxz sjl wke njkfsdkrjbkjsn kllfj
         댓글_내용.snp.makeConstraints { make in
             make.top.equalTo(댓글_작성자_이름.snp.bottom).offset(3)
             make.leading.equalTo(댓글_작성자_이미지.snp.trailing).offset(10)
-            make.trailing.equalToSuperview().offset(-35)
+            make.trailing.equalToSuperview().offset(-80)
             make.bottom.equalTo(댓글_작성자_이미지.snp.bottom)
         }
         댓글_좋아요_버튼.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(5)
-            make.leading.equalTo(댓글_내용.snp.trailing).offset(5)
-            make.trailing.equalToSuperview().offset(-5)
+            make.trailing.equalToSuperview().offset(-50)
             make.bottom.equalToSuperview().offset(-5)
         }
         댓글_좋아요_카운트.snp.makeConstraints { make in
-            
+            make.top.equalToSuperview().offset(5)
+            make.trailing.equalToSuperview().offset(-30)
+            make.bottom.equalToSuperview().offset(-5)
         }
     }
     

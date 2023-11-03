@@ -77,7 +77,7 @@ class PopularReviewsPage: UIViewController {
         collectionView.backgroundColor = .clear
         collectionView.layer.cornerRadius = 10
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
+        collectionView.decelerationRate = UIScrollView.DecelerationRate.normal
         return collectionView
     }()
     
@@ -98,8 +98,6 @@ class PopularReviewsPage: UIViewController {
         인기_컬렉션_뷰.dataSource = self
         인기_컬렉션_뷰.delegate = self
         인기_컬렉션_뷰.register(PopularReviewCell.self, forCellWithReuseIdentifier: "PopulaReviewCell")
-        
-        인기_컬렉션_뷰.isPagingEnabled = true
         //
         
     }
