@@ -110,7 +110,7 @@ class PopularReviewDetail : UIViewController {
     private let 리뷰_내용 = {
         let label = UILabel()
         label.text = """
-        assajflfj sjflajslf asfj! asjlsjffjklasfj ? asfjklff, asjfkl.sjflsajfjlafjlasjfjs,fasjdlfjsdlfsflkfjlksajklf;qierxnvjdsfkla!.aslkfdjlkajfsajjfjaslfkjfksdlfjalksdfqejrklasdklfjkldfaldsfajsqr!!aslfjsasajflkjsfal,sfjalsjflsflkajfslajflksjlajklfjlkasjflksajflkjsl asjflksfj l asjflk ja lajsklfj klsajf jaskdfnjkqwenrk joiv njqweojr njkxz sjl wke njkfsd k lksdjf lsjlwqne krjbkjsn kllfj
+        글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용글내용
         """
         label.textColor = UIColor.white
         label.font = UIFont(name: "HelveticaNeue", size: 14)
