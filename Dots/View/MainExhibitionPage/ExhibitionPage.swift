@@ -35,11 +35,15 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     let reviewsButton = UIButton()
     let exhibitionInfoButton = UIButton()
     let borderView = UIView()
-    let reviewsButtonBorder = UIView()
-    let exhibitionInfoButtonBorder = UIView()
+    let selectedBorderView = UIView()
+//    let reviewsButtonBorder = UIView()
+//    let exhibitionInfoButtonBorder = UIView()
 
     var reviewTableViewHeightConstraint: Constraint?
     var exhibitionInfoViewHeightConstraint: Constraint?
+
+    var selectedButton: UIButton?
+
 
     let exhibitionInfoTextView = UITextView()
     let museumHomepageButton = UIButton(type: .system)
@@ -67,6 +71,9 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         }
     }
 
+
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -89,16 +96,31 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         setupScrollView()
         setupViews()
         setupTableView()
-        setupButtonBorders()
+//        setupButtonBorders()
         setupExhibitionInfoTextView()
+        setupHighlightView()
 
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        animateBorder(to: reviewsButton)
+
         reloadDataAndUpdateHeight()
     }
+    
 
+    func setupHighlightView() {
+        selectedBorderView.backgroundColor = .white
+        view.addSubview(selectedBorderView)
+
+        selectedBorderView.snp.makeConstraints { make in
+            make.top.equalTo(borderView.snp.top)
+            make.height.equalTo(1)
+            make.width.equalTo(reviewsButton)
+            make.centerX.equalTo(reviewsButton)
+        }
+    }
     // MARK: - 함수들
 
     private func setupExhibitionInfoTextView() {
@@ -353,8 +375,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.isHidden = true
         updateScrollViewContentSize()
 
-        reviewsButtonBorder.backgroundColor = .white
-        exhibitionInfoButtonBorder.backgroundColor = .clear
+        selectedButton = reviewsButton // 현재 선택된 버튼 업데이트
+        animateBorder(to: reviewsButton) // Border 이동 애니메이션
     }
 
     // 전시 정보 버튼
@@ -363,31 +385,38 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.isHidden = false
         updateScrollViewContentSizeForExhibitionInfoView()
 
-
-        reviewsButtonBorder.backgroundColor = .clear
-        exhibitionInfoButtonBorder.backgroundColor = .white
+        selectedButton = exhibitionInfoButton // 현재 선택된 버튼 업데이트
+        animateBorder(to: exhibitionInfoButton) // Border 이동 애니메이션
     }
- 
-    // 버튼 하단 테두리 설정
-    private func setupButtonBorders() {
-        contentView.addSubview(reviewsButtonBorder)
-        contentView.addSubview(exhibitionInfoButtonBorder)
 
-        reviewsButtonBorder.backgroundColor = .white
-        exhibitionInfoButtonBorder.backgroundColor = .clear
+    // 버튼 하단 테두리를 선택된 버튼 아래로 이동시키는 애니메이션 메서드
+    func animateBorder(to button: UIButton) {
+        selectedButton?.setTitleColor(.lightGray, for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        selectedButton = button
 
-        reviewsButtonBorder.snp.makeConstraints { make in
-            make.top.equalTo(reviewsButton.snp.bottom)
-            make.left.right.equalTo(reviewsButton)
-            make.height.equalTo(1)
+        selectedBorderView.snp.remakeConstraints { make in
+            make.bottom.equalTo(borderView.snp.top)
+            make.width.equalTo(button)
+            make.height.equalTo(2)
+            make.centerX.equalTo(button)
         }
 
-        exhibitionInfoButtonBorder.snp.makeConstraints { make in
-            make.top.equalTo(exhibitionInfoButton.snp.bottom)
-            make.left.right.equalTo(exhibitionInfoButton)
-            make.height.equalTo(1)
+        UIView.animate(withDuration: 0.3) {
+            // borderView의 새 위치를 설정하는 제약 조건을 여기에 넣으세요
+
+            self.view.layoutIfNeeded() // 애니메이션 효과 적용을 위해 layout을 업데이트합니다.
         }
+
+        
+
+
+
     }
+
+
+
+
 
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
@@ -471,7 +500,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         stackViewTwo.addArrangedSubview(iconImageViewTwo)
         stackViewTwo.addArrangedSubview(descriptionLabelTwo)
         contentView.addSubview(stackViewTwo)
-        contentView.addSubview(borderView)
+        contentView.addSubview(selectedBorderView)
 
 
         stackViewTwo.axis = .horizontal
@@ -535,6 +564,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         contentView.addSubview(reviewsButton)
         contentView.addSubview(exhibitionInfoButton)
+        contentView.addSubview(borderView)
 
         reviewsButton.setTitle("후기", for: .normal)
         reviewsButton.setTitleColor(.white, for: .normal)
@@ -559,15 +589,20 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
             make.width.equalTo(reviewsButton.snp.width)  // 너비 동일하게 설정
         }
 
-        borderView.snp.makeConstraints { make in
-            make.top.equalTo(reviewsButton.snp.bottom)
-            make.width.equalToSuperview()
-            make.height.equalTo(1) // 경계선 뷰의 너비를 1로 설정하여 얇은 선 만들기
+        borderView.snp.makeConstraints{ make in
+            make.top.equalTo(exhibitionInfoButton.snp.bottom)
+            make.width.equalTo(contentView)
+            make.height.equalTo(1)
+
         }
 
-        borderView.backgroundColor = .lightGray  // 경계선 색상 설정
+        selectedBorderView.backgroundColor = .white  // 경계선 색상 설정
+        borderView.backgroundColor = .lightGray
 
     }
+
+    
+
 
     // 버튼으로 보여지는 뷰의 레이아웃을 정하는 함수.
     private func setupViews() {
