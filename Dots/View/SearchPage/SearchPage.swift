@@ -37,7 +37,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         super.viewDidAppear(animated)
         selectButton(popularButton)
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -107,14 +107,14 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
 
         // 탭 제스처 인식기를 추가하여 키보드를 숨기는 기능을 구현합니다.
-               let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-               coverView.addGestureRecognizer(tapGestureRecognizer)
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        coverView.addGestureRecognizer(tapGestureRecognizer)
     }
 
     @objc func dismissKeyboard() {
-         searchBar.resignFirstResponder() // 키보드 숨기기
-         coverView.isHidden = true // 커버 뷰 숨기기
-     }
+        searchBar.resignFirstResponder() // 키보드 숨기기
+        coverView.isHidden = true // 커버 뷰 숨기기
+    }
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         coverView.isHidden = false // 검색 시작 시 커버 뷰를 보여줌
@@ -234,17 +234,6 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
     }
 
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        searchBar.resignFirstResponder()  // 키보드 숨기기
-//        print("Search: \(searchBar.text ?? "")")
-//        // 검색 로직을 여기에 추가하세요.
-//    }
-//
-//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-//        searchBar.text = ""
-//        searchBar.resignFirstResponder()  // 키보드 숨기기
-//    }
-
     func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -345,7 +334,7 @@ class ArtistCollectionViewCell: UICollectionViewCell {
     private func setupViews() {
         // Set the background color of the cell
         self.backgroundColor = .black
-        
+
 
         // 원형 뷰 설정
         circleView.backgroundColor = .gray
