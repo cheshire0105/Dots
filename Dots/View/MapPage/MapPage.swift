@@ -23,12 +23,15 @@ class CustomAnnotation: NSObject, MKAnnotation {
 }
 
 
-class MapPage: UIViewController,CLLocationManagerDelegate {
+class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
 
     var mapView: MKMapView!  // 애플의 MKMapView
     var customSearchField: UITextField!
     var currentLocationButton: UIButton! // 현재 위치 아이콘
     var locationManager: CLLocationManager!
+
+    var collectionView: UICollectionView!
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +66,7 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
 
             // 주석 설정 함수 호출
             setupAnnotations()
+        setupCollectionView()
     }
 
     func addDoneButtonOnKeyboard() {
@@ -122,6 +126,41 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
 
     @objc func currentLocationButtonTapped() {
         locationManager.startUpdatingLocation() // 위치 업데이트 시작
+    }
+
+    func setupCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal // 가로 스크롤 설정
+        layout.itemSize = CGSize(width: 160, height: 230) // 셀 크기 설정
+
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: "CustomCell")
+        collectionView.backgroundColor = .clear
+
+        view.addSubview(collectionView)
+
+        collectionView.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(view)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-65)
+            make.height.equalTo(250)
+        }
+    }
+
+
+     // MARK: - UICollectionViewDataSource
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // 표시할 아이템의 수를 반환
+        return 10 // 여기에 실제 아이템의 수를 입력합니다.
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // 컬렉션 뷰 셀 구성
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! CustomCollectionViewCell
+        // CustomCollectionViewCell의 추가 설정을 수행할 수 있습니다.
+        return cell
     }
 
 
@@ -186,5 +225,32 @@ extension UIImage {
         }
 
         return newImage
+    }
+}
+
+
+// CustomCollectionViewCell.swift 파일 생성
+import UIKit
+
+class CustomCollectionViewCell: UICollectionViewCell {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        commonInit()
+    }
+
+    private func commonInit() {
+        // 셀 기본 설정
+        self.backgroundColor = .gray // 셀의 배경색을 회색으로 설정
+        // 추가적인 레이아웃 구성 및 사용자 정의는 여기서 수행합니다.
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // 레이아웃 관련 변경 사항이 있을 경우 여기서 조정
     }
 }
