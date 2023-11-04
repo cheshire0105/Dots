@@ -10,7 +10,7 @@ import MapKit
 import SnapKit
 import CoreLocation
 
-// 1. MKAnnotation 프로토콜을 준수하는 사용자 정의 클래스 정의
+// MKAnnotation 프로토콜을 준수하는 사용자 정의 클래스 정의
 class CustomAnnotation: NSObject, MKAnnotation {
     var coordinate: CLLocationCoordinate2D
     var title: String?
@@ -128,7 +128,7 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
 
 }
 
-// 2. MapPage 클래스에 주석을 추가하고 MKMapViewDelegate 설정
+// MapPage 클래스에 주석을 추가하고 MKMapViewDelegate 설정
 extension MapPage: MKMapViewDelegate {
 
     func setupAnnotations() {
@@ -156,8 +156,8 @@ extension MapPage: MKMapViewDelegate {
         }
 
         // 사용자 정의 이미지 설정
-        // 이미지를 로드하고 크기를 조절합니다
-           if let resizedImage = UIImage(named: "morningStar")?.resize(to: CGSize(width: 50, height: 50)) { // 원하는 크기로 조절하세요
+        // 이미지를 로드하고 크기를 조절
+           if let resizedImage = UIImage(named: "morningStar")?.resize(to: CGSize(width: 50, height: 50)) {
                annotationView!.image = resizedImage
            }
 
@@ -166,6 +166,7 @@ extension MapPage: MKMapViewDelegate {
 
 }
 
+// 사진 이미지의 크기를 지정 할 수 있는 extension입니다.
 extension UIImage {
     func resize(to targetSize: CGSize) -> UIImage {
         let size = self.size
