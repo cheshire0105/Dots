@@ -1,4 +1,4 @@
-//커밋 테스트 스타트 포인트  마이페이지 브랜치
+//커밋 테스트 스타트 포인트 설정
 import UIKit
 import SnapKit
 import RxSwift
