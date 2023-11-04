@@ -23,6 +23,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     let tableView = UITableView()
     var currentData: [String] = []
 
+    let coverView = UIView() // 검색을 위한 커버 뷰
+
+
     var isCollectionViewSetupDone = false
 
 
@@ -88,7 +91,47 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupHighlightView()
         setupTableView()
         setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
+        setupCoverView() // 커버 뷰 설정 추가
+
     }
+
+    func setupCoverView() {
+        coverView.backgroundColor = .black
+        coverView.isHidden = true // 기본적으로 숨겨짐
+        view.addSubview(coverView)
+
+        // 커버 뷰를 전체 화면에 맞춰 제약 조건 설정
+        coverView.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom)
+            make.left.right.bottom.equalToSuperview()
+        }
+
+        // 탭 제스처 인식기를 추가하여 키보드를 숨기는 기능을 구현합니다.
+               let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+               coverView.addGestureRecognizer(tapGestureRecognizer)
+    }
+
+    @objc func dismissKeyboard() {
+         searchBar.resignFirstResponder() // 키보드 숨기기
+         coverView.isHidden = true // 커버 뷰 숨기기
+     }
+
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        coverView.isHidden = false // 검색 시작 시 커버 뷰를 보여줌
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder() // 키보드 숨기기
+        coverView.isHidden = true // 검색 취소 시 커버 뷰를 숨김
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder() // 키보드 숨기기
+        coverView.isHidden = true // 검색 완료 시 커버 뷰를 숨김
+        // 검색 로직을 여기에 추가하세요.
+    }
+
 
 
     func setupHighlightView() {
@@ -191,16 +234,16 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
     }
 
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()  // 키보드 숨기기
-        print("Search: \(searchBar.text ?? "")")
-        // 검색 로직을 여기에 추가하세요.
-    }
-
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.text = ""
-        searchBar.resignFirstResponder()  // 키보드 숨기기
-    }
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        searchBar.resignFirstResponder()  // 키보드 숨기기
+//        print("Search: \(searchBar.text ?? "")")
+//        // 검색 로직을 여기에 추가하세요.
+//    }
+//
+//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+//        searchBar.text = ""
+//        searchBar.resignFirstResponder()  // 키보드 숨기기
+//    }
 
     func setupTableView() {
         tableView.delegate = self
