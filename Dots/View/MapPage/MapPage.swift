@@ -32,6 +32,13 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
 
     var collectionView: UICollectionView!
 
+    // 전시 데이터 목록을 추가합니다.
+        var exhibitions: [Exhibition] = [
+            Exhibition(name: "Modern Art Collection", museum: "Museum of Modern Art", imageName: "art1"),
+            Exhibition(name: "Impressionists", museum: "Louvre", imageName: "art2"),
+            Exhibition(name: "Impressionists", museum: "Louvre", imageName: "art2")
+        ]
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,11 +69,14 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
         addDoneButtonOnKeyboard()
 
         // MKMapViewDelegate 설정
-            mapView.delegate = self
+        mapView.delegate = self
 
-            // 주석 설정 함수 호출
-            setupAnnotations()
+        // 주석 설정 함수 호출
+        setupAnnotations()
+        // 컬렉션 뷰 설정을 마친 후에 숨깁니다.
         setupCollectionView()
+        collectionView.isHidden = true // collectionView를 숨깁니다
+        collectionView.alpha = 0 // collectionView를 투명하게 만듭니다
     }
 
     func addDoneButtonOnKeyboard() {
@@ -131,7 +141,7 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
     func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal // 가로 스크롤 설정
-        layout.itemSize = CGSize(width: 160, height: 230) // 셀 크기 설정
+        layout.itemSize = CGSize(width: 161, height: 260) // 셀 크기 설정
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
@@ -142,9 +152,9 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
         view.addSubview(collectionView)
 
         collectionView.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(view)
+            make.leading.trailing.equalTo(view).offset(20)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-65)
-            make.height.equalTo(250)
+            make.height.equalTo(270)
         }
     }
 
@@ -152,16 +162,17 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
      // MARK: - UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // 표시할 아이템의 수를 반환
-        return 10 // 여기에 실제 아이템의 수를 입력합니다.
-    }
+           return exhibitions.count // 실제 전시 목록의 수에 따라 반환합니다.
+       }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // 컬렉션 뷰 셀 구성
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! CustomCollectionViewCell
-        // CustomCollectionViewCell의 추가 설정을 수행할 수 있습니다.
-        return cell
-    }
+       func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+           // 컬렉션 뷰 셀 구성
+           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! CustomCollectionViewCell
+           // 셀에 전시 데이터를 설정합니다.
+           let exhibition = exhibitions[indexPath.item]
+           cell.configure(with: exhibition)
+           return cell
+       }
 
 
 
@@ -172,8 +183,8 @@ extension MapPage: MKMapViewDelegate {
 
     func setupAnnotations() {
         let annotation = CustomAnnotation(coordinate: CLLocationCoordinate2D(latitude: 37.579198, longitude: 126.975405)) // 여기에 원하는 좌표를 입력
-        annotation.title = "San Francisco" // 필요에 따라 타이틀 설정
-        annotation.subtitle = "California" // 필요에 따라 서브타이틀 설정
+        annotation.title = "한국의 전시 이름" // 필요에 따라 타이틀 설정
+        annotation.subtitle = "한국의 미술관" // 필요에 따라 서브타이틀 설정
         mapView.addAnnotation(annotation)
     }
 
@@ -203,6 +214,40 @@ extension MapPage: MKMapViewDelegate {
         return annotationView
     }
 
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let annotation = view.annotation as? CustomAnnotation {
+            // 필요한 경우 annotation 정보를 사용하여 컬렉션 뷰 데이터 업데이트
+            updateCollectionViewForAnnotation(annotation)
+            showCollectionView()
+        }
+    }
+
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        hideCollectionView()
+    }
+
+    private func updateCollectionViewForAnnotation(_ annotation: CustomAnnotation) {
+        // 컬렉션 뷰의 데이터 소스를 업데이트 하는 코드를 여기에 추가합니다.
+        // 예: collectionView.reloadData()
+    }
+
+    private func showCollectionView() {
+        // 컬렉션 뷰를 애니메이션과 함께 보여줍니다.
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.alpha = 1.0
+            self.collectionView.isHidden = false
+        }
+    }
+
+    private func hideCollectionView() {
+        // 컬렉션 뷰를 애니메이션과 함께 숨깁니다.
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.alpha = 0.0
+        } completion: { _ in
+            self.collectionView.isHidden = true
+        }
+    }
+
 }
 
 // 사진 이미지의 크기를 지정 할 수 있는 extension입니다.
@@ -229,10 +274,12 @@ extension UIImage {
 }
 
 
-// CustomCollectionViewCell.swift 파일 생성
-import UIKit
-
 class CustomCollectionViewCell: UICollectionViewCell {
+
+    let imageView = UIView() // 파란색 네모를 위한 뷰
+    let exhibitionNameLabel = UILabel() // 전시 이름 레이블
+    let museumNameLabel = UILabel() // 미술관 이름 레이블
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -246,11 +293,57 @@ class CustomCollectionViewCell: UICollectionViewCell {
     private func commonInit() {
         // 셀 기본 설정
         self.backgroundColor = .gray // 셀의 배경색을 회색으로 설정
-        // 추가적인 레이아웃 구성 및 사용자 정의는 여기서 수행합니다.
+        setupViews()
+    }
+
+    private func setupViews() {
+        // 이미지 뷰 설정
+        imageView.backgroundColor = .blue // 파란색 배경
+        // 이미지 뷰를 셀의 contentView에 추가하고 제약 조건을 설정합니다.
+        contentView.addSubview(imageView)
+        imageView.snp.makeConstraints { make in
+            make.top.equalTo(contentView.snp.top).offset(10) // 상단 여백
+            make.left.equalTo(contentView.snp.left).offset(10) // 좌측 여백
+            make.right.equalTo(contentView.snp.right).offset(-10) // 우측 여백
+            make.height.equalTo(contentView.snp.width) // 이미지 뷰의 높이를 셀의 너비와 동일하게 설정 (정사각형)
+        }
+
+        // 전시 이름 레이블 설정
+        exhibitionNameLabel.font = .systemFont(ofSize: 16, weight: .bold)
+        exhibitionNameLabel.textAlignment = .center
+        contentView.addSubview(exhibitionNameLabel)
+        exhibitionNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(imageView.snp.bottom).offset(10) // 이미지 뷰 아래에 위치
+            make.left.right.equalTo(imageView) // 이미지 뷰의 좌우 여백과 동일하게 설정
+        }
+
+        // 미술관 이름 레이블 설정
+        museumNameLabel.font = .systemFont(ofSize: 14)
+        museumNameLabel.textAlignment = .center
+        contentView.addSubview(museumNameLabel)
+        museumNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(exhibitionNameLabel.snp.bottom).offset(5) // 전시 이름 레이블 아래에 위치
+            make.left.right.equalTo(exhibitionNameLabel) // 전시 이름 레이블의 좌우 여백과 동일하게 설정
+            make.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-10) // 하단 여백 (최소 여백으로 설정하여 내용에 따라 늘어날 수 있도록 함)
+        }
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        // 레이아웃 관련 변경 사항이 있을 경우 여기서 조정
+        // 여기서 레이아웃 관련 변경 사항을 조정할 수 있습니다.
     }
+
+    // 셀에 데이터를 설정하는 메서드
+    func configure(with exhibition: Exhibition) {
+        exhibitionNameLabel.text = exhibition.name
+        museumNameLabel.text = exhibition.museum
+        // 여기서 imageView에 이미지를 설정할 수 있습니다. 예: imageView.image = UIImage(named: exhibition.imageName)
+    }
+}
+
+// Exhibition 모델을 정의합니다 (이 예시에는 없으므로 가정으로 만듭니다)
+struct Exhibition {
+    let name: String
+    let museum: String
+    let imageName: String // 이미지 파일 이름
 }
