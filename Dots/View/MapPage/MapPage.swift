@@ -183,8 +183,8 @@ extension MapPage: MKMapViewDelegate {
 
     func setupAnnotations() {
         let annotation = CustomAnnotation(coordinate: CLLocationCoordinate2D(latitude: 37.579198, longitude: 126.975405)) // 여기에 원하는 좌표를 입력
-        annotation.title = "San Francisco" // 필요에 따라 타이틀 설정
-        annotation.subtitle = "California" // 필요에 따라 서브타이틀 설정
+        annotation.title = "한국의 전시 이름" // 필요에 따라 타이틀 설정
+        annotation.subtitle = "한국의 미술관" // 필요에 따라 서브타이틀 설정
         mapView.addAnnotation(annotation)
     }
 
