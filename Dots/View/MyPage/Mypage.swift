@@ -9,7 +9,7 @@ class Mypage: UIViewController {
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
-        imageButton.layer.cornerRadius = 35
+        imageButton.layer.cornerRadius = 38
         imageButton.clipsToBounds = true
         imageButton.setImage(UIImage(named: "cabanel"), for: .selected)
         imageButton.setImage(UIImage(named: "cabanel"), for: .normal)
@@ -115,7 +115,10 @@ class Mypage: UIViewController {
         super.viewDidLoad()
         print("My Page")
         view.backgroundColor = UIColor.black
-        
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.backgroundColor = UIColor.clear
         컬렉션뷰_레이아웃()
         UI레이아웃()
 
@@ -135,7 +138,7 @@ class Mypage: UIViewController {
 //            make.top.equalToSuperview().offset(72)
             make.bottom.equalTo(마이페이지_컬렉션뷰.snp.top).offset(-192)
             make.centerX.equalToSuperview()
-            make.size.equalTo(80)
+            make.size.equalTo(76)
         }
         마이페이지_설정_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
