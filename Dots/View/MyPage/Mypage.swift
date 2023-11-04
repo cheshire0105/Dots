@@ -1,10 +1,4 @@
-//
-//  Mypage.swift
-//  Dots
-//
-//  Created by cheshire on 10/23/23.
-//
-
+//커밋 테스트 스타트 포인트  마이페이지 브랜치
 import UIKit
 import SnapKit
 import RxSwift
