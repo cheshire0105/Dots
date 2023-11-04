@@ -31,11 +31,11 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
         mapView.mapType = .standard // or .satellite, .hybrid
 
         // Hide points of interest and traffic
-        mapView.showsPointsOfInterest = false
-        mapView.showsTraffic = false
+        mapView.showsPointsOfInterest = true
+        mapView.showsTraffic = true
 
         // Hide building information
-        mapView.showsBuildings = false
+        mapView.showsBuildings = true
 
         self.view.addSubview(mapView)
         mapView.snp.makeConstraints { make in
