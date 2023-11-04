@@ -27,6 +27,16 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
         mapView = MKMapView(frame: self.view.frame)
         mapView.showsUserLocation = true
 
+        // Set the map type to standard, satellite, or hybrid
+        mapView.mapType = .standard // or .satellite, .hybrid
+
+        // Hide points of interest and traffic
+        mapView.showsPointsOfInterest = false
+        mapView.showsTraffic = false
+
+        // Hide building information
+        mapView.showsBuildings = false
+
         self.view.addSubview(mapView)
         mapView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
