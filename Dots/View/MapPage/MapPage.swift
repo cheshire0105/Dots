@@ -62,11 +62,14 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
         addDoneButtonOnKeyboard()
 
         // MKMapViewDelegate 설정
-            mapView.delegate = self
+        mapView.delegate = self
 
-            // 주석 설정 함수 호출
-            setupAnnotations()
+        // 주석 설정 함수 호출
+        setupAnnotations()
+        // 컬렉션 뷰 설정을 마친 후에 숨깁니다.
         setupCollectionView()
+        collectionView.isHidden = true // collectionView를 숨깁니다
+        collectionView.alpha = 0 // collectionView를 투명하게 만듭니다
     }
 
     func addDoneButtonOnKeyboard() {
@@ -131,7 +134,7 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
     func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal // 가로 스크롤 설정
-        layout.itemSize = CGSize(width: 160, height: 230) // 셀 크기 설정
+        layout.itemSize = CGSize(width: 161, height: 220) // 셀 크기 설정
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
@@ -144,7 +147,7 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
         collectionView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(view)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-65)
-            make.height.equalTo(250)
+            make.height.equalTo(220)
         }
     }
 
@@ -201,6 +204,40 @@ extension MapPage: MKMapViewDelegate {
            }
 
         return annotationView
+    }
+
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let annotation = view.annotation as? CustomAnnotation {
+            // 필요한 경우 annotation 정보를 사용하여 컬렉션 뷰 데이터 업데이트
+            updateCollectionViewForAnnotation(annotation)
+            showCollectionView()
+        }
+    }
+
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        hideCollectionView()
+    }
+
+    private func updateCollectionViewForAnnotation(_ annotation: CustomAnnotation) {
+        // 컬렉션 뷰의 데이터 소스를 업데이트 하는 코드를 여기에 추가합니다.
+        // 예: collectionView.reloadData()
+    }
+
+    private func showCollectionView() {
+        // 컬렉션 뷰를 애니메이션과 함께 보여줍니다.
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.alpha = 1.0
+            self.collectionView.isHidden = false
+        }
+    }
+
+    private func hideCollectionView() {
+        // 컬렉션 뷰를 애니메이션과 함께 숨깁니다.
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.alpha = 0.0
+        } completion: { _ in
+            self.collectionView.isHidden = true
+        }
     }
 
 }
