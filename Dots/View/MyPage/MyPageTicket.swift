@@ -119,6 +119,13 @@ class MyPageTicket: UIViewController {
             make.leading.trailing.equalToSuperview()
         }
     }
+    private func 버튼_클릭() {
+        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+
+    }
+    @objc func 뒤로가기_버튼_클릭() {
+        navigationController?.popViewController(animated: true)
+    }
 }
         extension MyPageTicket: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
             
@@ -141,13 +148,5 @@ class MyPageTicket: UIViewController {
                 return CGSize(width: width, height: height)
             }
             
-            private func 버튼_클릭() {
-                뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
-                
-
-            }
-
-            @objc func 뒤로가기_버튼_클릭() {
-                navigationController?.popViewController(animated: true)
-            }
+            
         }

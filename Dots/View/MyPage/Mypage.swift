@@ -15,7 +15,7 @@ class Mypage: UIViewController {
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
-        imageButton.layer.cornerRadius = 30
+        imageButton.layer.cornerRadius = 35
         imageButton.clipsToBounds = true
         imageButton.setImage(UIImage(named: "cabanel"), for: .selected)
         imageButton.setImage(UIImage(named: "cabanel"), for: .normal)
@@ -83,8 +83,8 @@ class Mypage: UIViewController {
     
     let 마이페이지_좋아요_버튼 = {
         var button = UIButton()
-        button.setImage(UIImage(named:"좋아요"), for: .selected)
-        button.setImage(UIImage(named: "좋아요"), for: .normal)
+        button.setImage(UIImage(named:"heart"), for: .selected)
+        button.setImage(UIImage(named: "heart"), for: .normal)
         button.isSelected = !button.isSelected
         button.isSelected = !button.isSelected
         return button
@@ -122,9 +122,9 @@ class Mypage: UIViewController {
         print("My Page")
         view.backgroundColor = UIColor.black
         
-        UI레이아웃()
         컬렉션뷰_레이아웃()
-        
+        UI레이아웃()
+
         마이페이지_컬렉션뷰.dataSource = self
         마이페이지_컬렉션뷰.delegate = self
         마이페이지_컬렉션뷰.register(MyPageCell.self, forCellWithReuseIdentifier: "MyPageCell")
@@ -138,59 +138,59 @@ class Mypage: UIViewController {
             view.addSubview(UI뷰)
         }
         마이페이지_프로필_이미지_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(77)
-            make.bottom.equalToSuperview().offset(-711)
-            make.leading.equalToSuperview().offset(164)
-            make.trailing.equalToSuperview().offset(-165)
+//            make.top.equalToSuperview().offset(72)
+            make.bottom.equalTo(마이페이지_컬렉션뷰.snp.top).offset(-192)
+            make.centerX.equalToSuperview()
+            make.size.equalTo(80)
         }
         마이페이지_설정_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(97)
-            make.leading.equalToSuperview().offset(353)
-            make.trailing.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(-731)
+            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+            make.trailing.equalTo(마이페이지_컬렉션뷰.snp.trailing).offset(-5)
         }
         마이페이지_프로필_닉네임.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(16)
-            make.centerX.equalTo(마이페이지_프로필_이미지_버튼)
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(15)
+            make.centerX.equalTo(마이페이지_프로필_이미지_버튼.snp.centerX)
+           
         }
         마이페이지_프로필_아이디.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_닉네임.snp.bottom).offset(10)
-            make.centerX.equalTo(마이페이지_프로필_닉네임)
+            make.top.equalTo(마이페이지_프로필_닉네임.snp.bottom).offset(8)
+            make.centerX.equalTo(마이페이지_프로필_이미지_버튼.snp.centerX)
         }
         
         마이페이지_티켓_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(242)
-            make.leading.equalToSuperview().offset(70.4)
-            make.trailing.equalToSuperview().offset(-300)
-            make.bottom.equalToSuperview().offset(-595)
+            make.top.equalTo(마이페이지_체크인_버튼)
+            make.trailing.equalTo(마이페이지_체크인_버튼.snp.leading).offset(-100)
         }
         마이페이지_티켓_택스트.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_티켓_버튼.snp.bottom).offset(5)
+            make.top.equalTo(마이페이지_티켓_버튼.snp.bottom).offset(10)
             make.centerX.equalTo(마이페이지_티켓_버튼)
         }
         마이페이지_체크인_버튼.snp.makeConstraints { make in
-            make.top.bottom.equalTo(마이페이지_티켓_버튼)
-            make.centerX.equalToSuperview()
+            make.top.equalTo(마이페이지_프로필_아이디.snp.bottom).offset(46)
+            make.centerX.equalTo(마이페이지_프로필_이미지_버튼.snp.centerX)
+            
             
         }
         마이페이지_체크인_택스트.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_체크인_버튼.snp.bottom).offset(5)
+            make.top.equalTo(마이페이지_체크인_버튼.snp.bottom).offset(10)
             make.centerX.equalTo(마이페이지_체크인_버튼)
         }
         마이페이지_좋아요_버튼.snp.makeConstraints { make in
-            make.top.bottom.equalTo(마이페이지_티켓_버튼)
-            make.trailing.equalToSuperview().offset(-70.4)
+            make.top.equalTo(마이페이지_체크인_버튼)
+            make.leading.equalTo(마이페이지_체크인_버튼.snp.trailing).offset(100)
         }
         마이페이지_좋아요_택스트.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_좋아요_버튼.snp.bottom).offset(5)
+            make.top.equalTo(마이페이지_좋아요_버튼.snp.bottom).offset(10)
             make.centerX.equalTo(마이페이지_좋아요_버튼)
         }
     }
     func 컬렉션뷰_레이아웃 () {
         view.addSubview(마이페이지_컬렉션뷰)
         마이페이지_컬렉션뷰.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_좋아요_택스트.snp.bottom).offset(20)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalToSuperview().offset(350)
+            make.bottom.equalToSuperview().offset(-5)
+            make.leading.equalToSuperview().offset(5)
+            make.trailing.equalToSuperview().offset(-5)
             
         }
     }

@@ -11,7 +11,7 @@ target 'Dots' do
   pod 'RxCocoa'
   pod 'SnapKit'
   pod 'RxDataSources'
-  pod 'NMapsMap'
+  pod 'PanModal'
 
 
 end
