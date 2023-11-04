@@ -10,6 +10,18 @@ import MapKit
 import SnapKit
 import CoreLocation
 
+// 1. MKAnnotation 프로토콜을 준수하는 사용자 정의 클래스 정의
+class CustomAnnotation: NSObject, MKAnnotation {
+    var coordinate: CLLocationCoordinate2D
+    var title: String?
+    var subtitle: String?
+
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+        super.init()
+    }
+}
+
 
 class MapPage: UIViewController,CLLocationManagerDelegate {
 
@@ -45,6 +57,12 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
         setupCurrentLocationButton()
         setupLocationManager()
         addDoneButtonOnKeyboard()
+
+        // MKMapViewDelegate 설정
+            mapView.delegate = self
+
+            // 주석 설정 함수 호출
+            setupAnnotations()
     }
 
     func addDoneButtonOnKeyboard() {
@@ -90,6 +108,7 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
             currentLocationButton.setImage(iconImage, for: .normal)
             currentLocationButton.imageView?.contentMode = .scaleAspectFit // 이미지가 버튼 내에서 적절하게 맞게 표시되도록 합니다
             currentLocationButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) // 이미지의 여백 설정 (원하는대로 조절 가능)
+
         }
 
         self.view.addSubview(currentLocationButton)
@@ -107,4 +126,64 @@ class MapPage: UIViewController,CLLocationManagerDelegate {
 
 
 
+}
+
+// 2. MapPage 클래스에 주석을 추가하고 MKMapViewDelegate 설정
+extension MapPage: MKMapViewDelegate {
+
+    func setupAnnotations() {
+        let annotation = CustomAnnotation(coordinate: CLLocationCoordinate2D(latitude: 37.579198, longitude: 126.975405)) // 여기에 원하는 좌표를 입력
+        annotation.title = "San Francisco" // 필요에 따라 타이틀 설정
+        annotation.subtitle = "California" // 필요에 따라 서브타이틀 설정
+        mapView.addAnnotation(annotation)
+    }
+
+    // 3. mapView(_:viewFor:) 메서드를 구현하여 사용자 정의 이미지로 주석 뷰를 설정
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        // 사용자 정의 주석이 아닐 경우 nil 반환
+        guard annotation is CustomAnnotation else { return nil }
+
+        let identifier = "CustomAnnotation"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+        if annotationView == nil {
+            // 주석 뷰가 없으면 새로 생성
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView!.canShowCallout = true // 풍선 도움말 표시 설정
+        } else {
+            // 재사용 가능한 주석 뷰를 현재 주석 객체로 업데이트
+            annotationView!.annotation = annotation
+        }
+
+        // 사용자 정의 이미지 설정
+        // 이미지를 로드하고 크기를 조절합니다
+           if let resizedImage = UIImage(named: "morningStar")?.resize(to: CGSize(width: 50, height: 50)) { // 원하는 크기로 조절하세요
+               annotationView!.image = resizedImage
+           }
+
+        return annotationView
+    }
+
+}
+
+extension UIImage {
+    func resize(to targetSize: CGSize) -> UIImage {
+        let size = self.size
+
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+
+        // 더 작은 비율을 선택하여 원본 이미지의 비율을 유지합니다
+        let ratio = min(widthRatio, heightRatio)
+        let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
+        let rect = CGRect(origin: .zero, size: newSize)
+
+        // UIGraphicsImageRenderer를 사용하여 새 이미지를 그립니다
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        let newImage = renderer.image { (context) in
+            self.draw(in: rect)
+        }
+
+        return newImage
+    }
 }
