@@ -367,7 +367,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         reviewsButtonBorder.backgroundColor = .clear
         exhibitionInfoButtonBorder.backgroundColor = .white
     }
-
+ 
     // 버튼 하단 테두리 설정
     private func setupButtonBorders() {
         contentView.addSubview(reviewsButtonBorder)
