@@ -5,7 +5,6 @@ import RxSwift
 import SnapKit
 import UIKit
 
-
 class PopularReviewsPage: UIViewController {
     var 유저정보_인스턴스 = 유저정보(사용자프로필이미지: "", 사용자프로필이름: "")
     var 전시정보_서브셀_인스턴스 = 전시정보_이미지()
