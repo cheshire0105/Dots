@@ -135,8 +135,7 @@ class PopularReviewCell: UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
         layer.cornerRadius = 20
-        layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 10
+      
         인기셀layout()
         인기셀_이미지_묶음_컬렉션뷰.dataSource = self
         인기셀_이미지_묶음_컬렉션뷰.delegate = self
