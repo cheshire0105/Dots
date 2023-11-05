@@ -114,7 +114,7 @@ class GlassTabBar: UITabBarController {
         customTabBarView.addSubview(backgroundView)
         
         // 스택뷰 설정
-        stackView.axis = .horizontal
+        stackView.axis = .horizontal 
         stackView.distribution = .fillEqually
         stackView.alignment = .fill
         stackView.spacing = 0
