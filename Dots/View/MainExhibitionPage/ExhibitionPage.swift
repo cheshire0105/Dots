@@ -353,8 +353,11 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.isHidden = true
         updateScrollViewContentSize()
 
-        reviewsButtonBorder.backgroundColor = .white
-        exhibitionInfoButtonBorder.backgroundColor = .clear
+        // 애니메이션을 사용하여 테두리 색상 변경
+        UIView.animate(withDuration: 0.25) { // 0.25초 동안의 애니메이션 지속 시간
+            self.reviewsButtonBorder.backgroundColor = .white
+            self.exhibitionInfoButtonBorder.backgroundColor = .clear
+        }
     }
 
     // 전시 정보 버튼
@@ -363,9 +366,11 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.isHidden = false
         updateScrollViewContentSizeForExhibitionInfoView()
 
-
-        reviewsButtonBorder.backgroundColor = .clear
-        exhibitionInfoButtonBorder.backgroundColor = .white
+        // 애니메이션을 사용하여 테두리 색상 변경
+        UIView.animate(withDuration: 0.25) { // 0.25초 동안의 애니메이션 지속 시간
+            self.reviewsButtonBorder.backgroundColor = .clear
+            self.exhibitionInfoButtonBorder.backgroundColor = .white
+        }
     }
 
     // 버튼 하단 테두리 설정
@@ -373,21 +378,23 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         contentView.addSubview(reviewsButtonBorder)
         contentView.addSubview(exhibitionInfoButtonBorder)
 
+        // 초기 상태에서는 후기 버튼이 선택된 것으로 가정하고 테두리를 흰색으로 설정합니다.
         reviewsButtonBorder.backgroundColor = .white
         exhibitionInfoButtonBorder.backgroundColor = .clear
 
         reviewsButtonBorder.snp.makeConstraints { make in
-            make.top.equalTo(reviewsButton.snp.bottom)
+            make.bottom.equalTo(reviewsButton.snp.bottom)
             make.left.right.equalTo(reviewsButton)
-            make.height.equalTo(1)
+            make.height.equalTo(2)
         }
 
         exhibitionInfoButtonBorder.snp.makeConstraints { make in
-            make.top.equalTo(exhibitionInfoButton.snp.bottom)
+            make.bottom.equalTo(exhibitionInfoButton.snp.bottom)
             make.left.right.equalTo(exhibitionInfoButton)
-            make.height.equalTo(1)
+            make.height.equalTo(2)
         }
     }
+
 
     // 스크롤 뷰의 레이아웃을 정하는 함수 - 스크롤 뷰 안에 콘텐츠 뷰를 동일하게 추가
     private func setupScrollView() {
@@ -429,7 +436,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
     @objc func backButtonTapped() {
         navigationController?.popViewController(animated: true)
-        
+
     }
 
 
@@ -439,12 +446,34 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         rightButton.tintColor = .white
         navigationItem.rightBarButtonItem = rightButton
 
-        
+
     }
 
     @objc func rightButtonTapped() {
+        // UserDefaults에서 로그인 상태를 false로 설정합니다.
+        UserDefaults.standard.set(false, forKey: "isUserLoggedIn")
+        UserDefaults.standard.synchronize()
 
+        // 로그인 화면으로 전환합니다.
+        switchToLoginScreen()
     }
+
+    func switchToLoginScreen() {
+        // 메인 스레드에서 UI 작업을 수행합니다.
+        DispatchQueue.main.async {
+            // 로그인 뷰 컨트롤러를 생성합니다.
+            let signUpVC = SignUpViewController()
+            let navigationController = UINavigationController(rootViewController: signUpVC)
+
+            // SceneDelegate의 window를 가져옵니다.
+            if let delegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate, let window = delegate.window {
+                // 로그인 뷰 컨트롤러를 rootViewController로 설정합니다.
+                window.rootViewController = navigationController
+                window.makeKeyAndVisible()
+            }
+        }
+    }
+
 
 
 
