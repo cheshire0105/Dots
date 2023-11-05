@@ -26,7 +26,7 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
     private let 댓글_작성자_이미지 = {
         var imageView = UIImageView()
         imageView.image = UIImage(named: "cabanel")
-        imageView.layer.cornerRadius = 20
+        imageView.layer.cornerRadius = 25
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -34,14 +34,12 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
     private let 댓글_입력_블록 = {
       let uiView = UIView()
         uiView.backgroundColor = .darkGray.withAlphaComponent(0.8)
-        uiView.layer.cornerRadius = 25
+        uiView.layer.cornerRadius = 27
         return uiView
     } ()
     private let 판모달_댓글_입력 = {
         let textField = UITextField ()
-        textField.placeholder = "댓글작성..."
-        textField.textColor = UIColor.white
-        textField.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+        textField.attributedPlaceholder = NSAttributedString(string: "댓글작성...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         textField.textColor = UIColor.white
         textField.font = UIFont(name: "HelveticaNeue", size: 16)
         textField.layer.cornerRadius = 25
@@ -112,16 +110,16 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
         view.addSubview(댓글_작성자_이미지)
         댓글_작성자_이미지.snp.makeConstraints { make in
             make.top.equalTo(댓글_입력_블록.snp.top)
-            make.bottom.equalTo(댓글_입력_블록.snp.bottom)
+//            make.bottom.equalTo(댓글_입력_블록.snp.bottom)
             make.leading.equalTo(댓글_입력_블록.snp.leading)
-            make.trailing.equalTo(댓글_입력_블록.snp.trailing).offset(-255)
+            make.size.equalTo(52)
            
         }
         view.addSubview(판모달_댓글_입력)
         판모달_댓글_입력.snp.makeConstraints { make in
             make.top.equalTo(댓글_입력_블록.snp.top)
             make.bottom.equalTo(댓글_입력_블록.snp.bottom)
-            make.leading.equalTo(댓글_입력_블록.snp.leading).offset(55)
+            make.leading.equalTo(댓글_입력_블록.snp.leading).offset(60)
             make.trailing.equalTo(댓글_입력_블록.snp.trailing).offset(0)
         }
         view.addSubview(댓글_버튼)
@@ -129,7 +127,7 @@ class PopularReviewDetailPanModal : UIViewController, UITableViewDelegate {
             make.top.equalTo(댓글_입력_블록.snp.top)
             make.bottom.equalTo(댓글_입력_블록.snp.bottom)
             make.leading.equalTo(댓글_입력_블록.snp.trailing).offset(10)
-            make.trailing.equalTo(판모달_댓글_테이블뷰.snp.trailing).offset(-20)
+            make.trailing.equalTo(판모달_댓글_테이블뷰.snp.trailing).offset(-17)
         }
         
     }
@@ -173,8 +171,11 @@ extension PopularReviewDetailPanModal : PanModalPresentable {
     var topOffset: CGFloat {
         return 100
     }
-    var longFormHeight: PanModalHeight {
+    var shortFormHeight: PanModalHeight {
         return .contentHeight(440)
+    }
+    var longFormHeight: PanModalHeight {
+        return .contentHeight(770)
     }
     var panModalCornerRadius: CGFloat {
         return 20

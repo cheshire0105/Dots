@@ -62,8 +62,8 @@ class PopularReviewDetailPanModalCell: UITableViewCell {
         댓글_작성자_이미지.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(5)
-            make.bottom.equalToSuperview().offset(-10)
-            make.trailing.equalToSuperview().offset(-350)
+            make.size.equalTo(40)
+            
         }
         댓글_작성자_이름.snp.makeConstraints { make in
             make.top.equalTo(댓글_작성자_이미지)
@@ -78,13 +78,13 @@ class PopularReviewDetailPanModalCell: UITableViewCell {
         }
         댓글_좋아요_버튼.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(5)
-            make.trailing.equalToSuperview().offset(-50)
+            make.trailing.equalToSuperview().offset(-25)
             make.bottom.equalToSuperview().offset(-5)
         }
         댓글_좋아요_카운트.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(5)
-            make.trailing.equalToSuperview().offset(-30)
-            make.bottom.equalToSuperview().offset(-5)
+            make.top.equalTo(댓글_좋아요_버튼.snp.bottom).offset(-10)
+            make.centerX.equalTo(댓글_좋아요_버튼.snp.centerX)
+            
         }
     }
     
