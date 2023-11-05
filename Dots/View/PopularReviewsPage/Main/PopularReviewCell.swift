@@ -2,7 +2,6 @@ import RxCocoa
 import RxSwift
 import SnapKit
 import UIKit
-// pull from master branch
 class PopularReviewCell: UICollectionViewCell {
     var 전시정보_서브셀_인스턴스 = 전시정보_이미지()
     
@@ -135,8 +134,7 @@ class PopularReviewCell: UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
         layer.cornerRadius = 20
-        layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 10
+      
         인기셀layout()
         인기셀_이미지_묶음_컬렉션뷰.dataSource = self
         인기셀_이미지_묶음_컬렉션뷰.delegate = self
