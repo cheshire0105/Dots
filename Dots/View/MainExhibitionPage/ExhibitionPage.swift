@@ -450,8 +450,30 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     }
 
     @objc func rightButtonTapped() {
+        // UserDefaults에서 로그인 상태를 false로 설정합니다.
+        UserDefaults.standard.set(false, forKey: "isUserLoggedIn")
+        UserDefaults.standard.synchronize()
 
+        // 로그인 화면으로 전환합니다.
+        switchToLoginScreen()
     }
+
+    func switchToLoginScreen() {
+        // 메인 스레드에서 UI 작업을 수행합니다.
+        DispatchQueue.main.async {
+            // 로그인 뷰 컨트롤러를 생성합니다.
+            let signUpVC = SignUpViewController()
+            let navigationController = UINavigationController(rootViewController: signUpVC)
+
+            // SceneDelegate의 window를 가져옵니다.
+            if let delegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate, let window = delegate.window {
+                // 로그인 뷰 컨트롤러를 rootViewController로 설정합니다.
+                window.rootViewController = navigationController
+                window.makeKeyAndVisible()
+            }
+        }
+    }
+
 
 
 
