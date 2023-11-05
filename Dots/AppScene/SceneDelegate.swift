@@ -11,29 +11,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-       func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-           guard let windowScene = (scene as? UIWindowScene) else { return }
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
 
-           window = UIWindow(windowScene: windowScene)
+        window = UIWindow(windowScene: windowScene)
+        // LaunchScreenViewController를 여기서 초기화합니다.
+        let launchScreenVC = LaunchScreenViewController()
 
-           if isUserLoggedIn() {
-               let mainTabBar = GlassTabBar()
-               window?.rootViewController = mainTabBar
-           } else {
-               let signUpVC = SignUpViewController()
-               let navigationController = UINavigationController(rootViewController: signUpVC)
-               window?.rootViewController = navigationController
-           }
+        // UserDefaults를 검사하여 로그인 여부를 확인합니다.
+        if isUserLoggedIn() {
+            // 로그인이 되어 있으면, 메인 탭 바를 설정합니다.
+            launchScreenVC.completionHandler = { [weak self] in
+                guard let self = self else { return }
+                let mainTabBar = GlassTabBar()
+                self.window?.rootViewController = mainTabBar
+            }
+        } else {
+            // 로그인이 되어 있지 않으면, 로그인/회원가입 뷰를 설정합니다.
+            launchScreenVC.completionHandler = { [weak self] in
+                guard let self = self else { return }
+                let signUpVC = SignUpViewController()
+                let navigationController = UINavigationController(rootViewController: signUpVC)
+                self.window?.rootViewController = navigationController
+            }
+        }
 
-           window?.makeKeyAndVisible()
-       }
+        window?.rootViewController = launchScreenVC
+        window?.makeKeyAndVisible()
+    }
 
     private func isUserLoggedIn() -> Bool {
         return UserDefaults.standard.bool(forKey: "isUserLoggedIn")
     }
-
-
-    
 
 
     func sceneDidDisconnect(_ scene: UIScene) {
