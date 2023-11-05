@@ -54,9 +54,9 @@ class MyPageTicket: UIViewController {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0
+        layout.minimumLineSpacing = 18
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 35, left: 9, bottom: 60, right: 9)
         
         collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
@@ -130,7 +130,7 @@ class MyPageTicket: UIViewController {
         extension MyPageTicket: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
             
             func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-                3
+                10
             }
             
             func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -143,7 +143,7 @@ class MyPageTicket: UIViewController {
             
             
             func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-                let width = collectionView.frame.width * 1
+                let width = collectionView.frame.width * 1 - 18
                 let height = collectionView.frame.height * 0.95
                 return CGSize(width: width, height: height)
             }
