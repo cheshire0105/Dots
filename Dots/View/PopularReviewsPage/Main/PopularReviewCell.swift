@@ -190,19 +190,20 @@ extension PopularReviewCell {
             make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(-20)
             make.bottom.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(30)
-            make.trailing.equalToSuperview().offset(-250)
+            make.trailing.equalToSuperview().offset(-220)
         }
         조회수_블록.snp.makeConstraints { make in
             make.top.equalTo(유저_블록)
             make.bottom.equalTo(유저_블록)
-            make.leading.equalTo(유저_블록.snp.trailing).offset(130)
-            make.trailing.equalToSuperview().offset(-80)
+            make.size.equalTo(좋아요_블록)
+            make.trailing.equalTo(좋아요_블록.snp.leading).offset(-12)
         }
         좋아요_블록.snp.makeConstraints { make in
             make.top.equalTo(유저_블록)
             make.bottom.equalTo(유저_블록)
-            make.leading.equalTo(조회수_블록.snp.trailing).offset(10)
-            make.trailing.equalToSuperview().offset(-30)
+//            make.leading.equalTo(조회수_블록.snp.trailing).offset(20)
+            make.size.equalTo(40)
+            make.trailing.equalToSuperview().offset(-25)
         }
         
         인기셀_작성자_이미지.snp.makeConstraints { make in
