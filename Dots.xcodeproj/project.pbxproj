@@ -25,8 +25,6 @@
 		FF3C97242AE5FEA4006FEF23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF3C97232AE5FEA4006FEF23 /* Assets.xcassets */; };
 		FF3C97272AE5FEA4006FEF23 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF3C97252AE5FEA4006FEF23 /* LaunchScreen.storyboard */; };
 		FF47B5EE2AE61BA5006A5004 /* GlassTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF47B5ED2AE61BA5006A5004 /* GlassTabBar.swift */; };
-		FF58FB262AE6009500853006 /* ExhibitionDetailsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB252AE6009500853006 /* ExhibitionDetailsPage.swift */; };
-		FF58FB282AE600B500853006 /* ReviewDetailsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB272AE600B500853006 /* ReviewDetailsPage.swift */; };
 		FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB292AE600DF00853006 /* AudioGuidePage.swift */; };
 		FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB2B2AE6010F00853006 /* PopularReviewsPage.swift */; };
 		FF58FB2E2AE6013600853006 /* Mypage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB2D2AE6013600853006 /* Mypage.swift */; };
@@ -34,6 +32,8 @@
 		FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58FB362AE60BFB00853006 /* SearchPage.swift */; };
 		FF77BFB42AF27E9C00EA5A1B /* ReviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFB32AF27E9C00EA5A1B /* ReviewTableViewCell.swift */; };
 		FF77BFB82AF3E0DB00EA5A1B /* searchPageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFB72AF3E0DB00EA5A1B /* searchPageTableViewCell.swift */; };
+		FF77BFBB2AF7733F00EA5A1B /* SignUpPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFBA2AF7733F00EA5A1B /* SignUpPage.swift */; };
+		FF77BFBD2AF7736900EA5A1B /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFBC2AF7736900EA5A1B /* LoginPage.swift */; };
 		FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE0C9AE2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift */; };
 		FFE0C9B52AEB413300F3D783 /* ExhibitionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE0C9B42AEB413300F3D783 /* ExhibitionPage.swift */; };
 		FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE23F102AE661880002C479 /* CategotyCell.swift */; };
@@ -62,8 +62,6 @@
 		FF3C97262AE5FEA4006FEF23 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FF3C97282AE5FEA4006FEF23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF47B5ED2AE61BA5006A5004 /* GlassTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassTabBar.swift; sourceTree = "<group>"; };
-		FF58FB252AE6009500853006 /* ExhibitionDetailsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExhibitionDetailsPage.swift; sourceTree = "<group>"; };
-		FF58FB272AE600B500853006 /* ReviewDetailsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewDetailsPage.swift; sourceTree = "<group>"; };
 		FF58FB292AE600DF00853006 /* AudioGuidePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioGuidePage.swift; sourceTree = "<group>"; };
 		FF58FB2B2AE6010F00853006 /* PopularReviewsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewsPage.swift; sourceTree = "<group>"; };
 		FF58FB2D2AE6013600853006 /* Mypage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mypage.swift; sourceTree = "<group>"; };
@@ -71,6 +69,8 @@
 		FF58FB362AE60BFB00853006 /* SearchPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPage.swift; sourceTree = "<group>"; };
 		FF77BFB32AF27E9C00EA5A1B /* ReviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewTableViewCell.swift; sourceTree = "<group>"; };
 		FF77BFB72AF3E0DB00EA5A1B /* searchPageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = searchPageTableViewCell.swift; sourceTree = "<group>"; };
+		FF77BFBA2AF7733F00EA5A1B /* SignUpPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPage.swift; sourceTree = "<group>"; };
+		FF77BFBC2AF7736900EA5A1B /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		FFE0C9AE2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainExhibitionFirstSectionCollectionCell.swift; sourceTree = "<group>"; };
 		FFE0C9B42AEB413300F3D783 /* ExhibitionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExhibitionPage.swift; sourceTree = "<group>"; };
 		FFE23F102AE661880002C479 /* CategotyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategotyCell.swift; sourceTree = "<group>"; };
@@ -163,14 +163,13 @@
 		FF3C972E2AE5FF07006FEF23 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				FF77BFB92AF772AF00EA5A1B /* LoginPage */,
 				FF58FB312AE6029400853006 /* MainExhibitionPage */,
 				FF58FB352AE60BC300853006 /* SearchPage */,
 				FF58FB322AE602BB00853006 /* PopularReviewsPage */,
 				FF58FB332AE602E100853006 /* MapPage */,
 				FF58FB342AE6037600853006 /* MyPage */,
 				FF58FB382AE60C3000853006 /* AudioPage */,
-				FF58FB252AE6009500853006 /* ExhibitionDetailsPage.swift */,
-				FF58FB272AE600B500853006 /* ReviewDetailsPage.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -270,6 +269,15 @@
 				FF58FB292AE600DF00853006 /* AudioGuidePage.swift */,
 			);
 			path = AudioPage;
+			sourceTree = "<group>";
+		};
+		FF77BFB92AF772AF00EA5A1B /* LoginPage */ = {
+			isa = PBXGroup;
+			children = (
+				FF77BFBA2AF7733F00EA5A1B /* SignUpPage.swift */,
+				FF77BFBC2AF7736900EA5A1B /* LoginPage.swift */,
+			);
+			path = LoginPage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -390,15 +398,16 @@
 				377041D92AF3CADF009FE818 /* PopularReviewDetailPanModal.swift in Sources */,
 				FF58FB302AE6025100853006 /* MapPage.swift in Sources */,
 				FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */,
-				FF58FB262AE6009500853006 /* ExhibitionDetailsPage.swift in Sources */,
 				37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */,
 				FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift in Sources */,
 				FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */,
+				FF77BFBD2AF7736900EA5A1B /* LoginPage.swift in Sources */,
 				FF77BFB82AF3E0DB00EA5A1B /* searchPageTableViewCell.swift in Sources */,
 				FF58FB2E2AE6013600853006 /* Mypage.swift in Sources */,
 				FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */,
 				1FF9CB0C2AEAABB9002B0F61 /* PopularReviewDataModel.swift in Sources */,
 				370F3F0A2AEEC11000C4A8F5 /* MyPageCell.swift in Sources */,
+				FF77BFBB2AF7733F00EA5A1B /* SignUpPage.swift in Sources */,
 				FF3C971F2AE5FEA1006FEF23 /* MainExhibitionPage.swift in Sources */,
 				377041DB2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift in Sources */,
 				3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */,
@@ -411,7 +420,6 @@
 				FF77BFB42AF27E9C00EA5A1B /* ReviewTableViewCell.swift in Sources */,
 				377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */,
 				FF47B5EE2AE61BA5006A5004 /* GlassTabBar.swift in Sources */,
-				FF58FB282AE600B500853006 /* ReviewDetailsPage.swift in Sources */,
 				1F9325C22AE67DC400C27F1B /* PopularReviewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
