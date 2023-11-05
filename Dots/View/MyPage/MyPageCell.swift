@@ -30,8 +30,8 @@ class MyPageCell : UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.orange
-        layer.borderWidth = 7
-        layer.cornerRadius = 14
+        
+        layer.cornerRadius = 15
     }
     
     @available(*, unavailable)
