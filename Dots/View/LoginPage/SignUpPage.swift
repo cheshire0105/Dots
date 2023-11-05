@@ -8,20 +8,28 @@
 import UIKit
 import SnapKit
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: UIViewController, UITextFieldDelegate {
     // UI 컴포넌트 선언
     private let emailTextField = UITextField()
     private let passwordTextField = UITextField()
     private let signUpButton = UIButton()
     private let sloganLable = UILabel()
+    private weak var activeTextField: UITextField?
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         layoutViews()
+        setupKeyboardNotifications()
+
     }
 
     private func setupViews() {
+
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+
         view.backgroundColor = .black
 
         emailTextField.borderStyle = .roundedRect
@@ -88,10 +96,62 @@ class SignUpViewController: UIViewController {
 
     // 가입 버튼이 탭되었을 때 실행할 메소드
     @objc private func signUpButtonTapped() {
-        // 여기에 가입 로직을 구현하거나, 현재는 단순히 입력값을 출력해볼 수 있습니다.
         print("이메일: \(emailTextField.text ?? "")")
         print("비밀번호: \(passwordTextField.text ?? "")")
     }
+
+    // Set up the keyboard notification observers
+    private func setupKeyboardNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+
+    // Text Field Delegate methods to track the active text field
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        activeTextField = nil
+    }
+
+    // Adjust the view when the keyboard is shown
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            let bottomOfButton = signUpButton.frame.origin.y + signUpButton.frame.size.height
+            let topOfKeyboard = self.view.frame.height - keyboardSize.height
+
+            if bottomOfButton > topOfKeyboard {
+                if self.view.frame.origin.y == 0 {
+                    self.view.frame.origin.y -= (bottomOfButton - topOfKeyboard + 20)
+                }
+            }
+        }
+    }
+
+
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        self.view.frame.origin.y = 0
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+
 }
 
 import SwiftUI
@@ -99,12 +159,10 @@ import SwiftUI
 // SwiftUI 뷰에서 UIViewController를 사용하기 위한 구조체
 struct SignUpViewControllerPreview: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> SignUpViewController {
-        // ViewController 인스턴스를 생성하고 반환합니다.
         return SignUpViewController()
     }
 
     func updateUIViewController(_ uiViewController: SignUpViewController, context: Context) {
-        // 뷰 컨트롤러를 업데이트할 때 필요한 작업을 여기에 구현합니다.
     }
 }
 
@@ -112,6 +170,6 @@ struct SignUpViewControllerPreview: UIViewControllerRepresentable {
 struct SignUpViewController_Previews: PreviewProvider {
     static var previews: some View {
         SignUpViewControllerPreview()
-            .edgesIgnoringSafeArea(.all) // 전체 화면을 사용하는 경우
+            .edgesIgnoringSafeArea(.all) 
     }
 }
