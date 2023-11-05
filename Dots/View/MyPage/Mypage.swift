@@ -1,5 +1,4 @@
-//커밋 테스트 스타트 시작
-//커밋 테스트 스타트 포인트 설정
+//셀관련 이슈 해결 - 스타트 포인트 설정
 import UIKit
 import SnapKit
 import RxSwift
