@@ -70,13 +70,13 @@ class PopularReviewsPage: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.scrollDirection = .vertical
         layout.collectionView?.showsVerticalScrollIndicator = false
-        layout.minimumLineSpacing = 30
+        layout.minimumLineSpacing = 25
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 130, left: 0, bottom: 50, right: 0)
         
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
-        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.decelerationRate = UIScrollView.DecelerationRate.normal
         return collectionView
     }()
@@ -109,8 +109,8 @@ extension PopularReviewsPage {
 
         인기_컬렉션_뷰.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(12)
-            make.trailing.equalToSuperview().offset(-12)
+            make.leading.equalToSuperview().offset(13)
+            make.trailing.equalToSuperview().offset(-13)
             make.bottom.equalToSuperview()
             make.centerX.equalToSuperview()
         }
