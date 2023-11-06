@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
-
+ 
     // MARK: - 변수
 
     let scrollView = UIScrollView()
