@@ -5,6 +5,13 @@ import UIKit
 class PopularReviewCell: UICollectionViewCell {
     var 전시정보_서브셀_인스턴스 = 전시정보_이미지()
     
+    var 백_블록 = {
+        let uiView = UIView()
+        uiView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.8)
+        uiView.layer.cornerRadius = 20
+        return uiView
+    } ()
+    
     var 유저_블록 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor.white.withAlphaComponent(0.8)
@@ -132,9 +139,10 @@ class PopularReviewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
+        backgroundColor = UIColor.black
+//        backgroundColor = UIColor.darkGray
         layer.cornerRadius = 20
-      
+        백layout()
         인기셀layout()
         인기셀_이미지_묶음_컬렉션뷰.dataSource = self
         인기셀_이미지_묶음_컬렉션뷰.delegate = self
@@ -152,6 +160,13 @@ class PopularReviewCell: UICollectionViewCell {
 
 extension PopularReviewCell {
     
+    func 백layout () {
+        contentView.addSubview(백_블록)
+        백_블록.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().offset(1)
+            make.bottom.trailing.equalToSuperview().offset(-1)
+        }
+    }
     func 인기셀layout() {
       
         contentView.addSubview(인기셀_이미지_묶음_컬렉션뷰)
