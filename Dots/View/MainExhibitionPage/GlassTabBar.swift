@@ -59,9 +59,9 @@ class GlassTabBar: UITabBarController {
         
         
         let secondVC = SearchPage()
-
+        
         secondVC.view.backgroundColor = .black
-
+        
         let thirdVC = PopularReviewsPage()
         let thirdNavController = UINavigationController(rootViewController: thirdVC)
         
@@ -90,6 +90,19 @@ class GlassTabBar: UITabBarController {
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
         customTabBarView.addSubview(visualEffectView)
         
+        // 글래스 모피즘 효과를 강화하기 위해 블러 뷰의 알파 값을 조정할 수 있습니다.
+        visualEffectView.alpha = 0.8 // 이 값을 조정하여 불투명도를 변경하세요.
+        
+        // 반사 효과를 추가하고 싶다면, 여기에 그라디언트 레이어를 추가하거나 반사 이미지를 사용할 수 있습니다.
+        // 예를 들어, 그라디언트 레이어를 추가하는 코드는 다음과 같습니다.
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = visualEffectView.bounds
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.white.withAlphaComponent(0.2).cgColor, UIColor.clear.cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        gradientLayer.locations = [0, 0.5, 1] // 이 값들을 조정하여 그라디언트의 위치를 변경하세요.
+        visualEffectView.layer.addSublayer(gradientLayer)
+        
         // 스택뷰의 백그라운드 뷰 설정
         backgroundView.layer.cornerRadius = 25
         backgroundView.backgroundColor = .clear // 변경: 배경을 투명하게 설정
@@ -101,7 +114,7 @@ class GlassTabBar: UITabBarController {
         customTabBarView.addSubview(backgroundView)
         
         // 스택뷰 설정
-        stackView.axis = .horizontal
+        stackView.axis = .horizontal 
         stackView.distribution = .fillEqually
         stackView.alignment = .fill
         stackView.spacing = 0
@@ -147,10 +160,10 @@ class GlassTabBar: UITabBarController {
     }
     
     @objc func tabBarButtonTapped(_ sender: UIButton) {
-          selectedIndex = sender.tag
-          updateTabBarAppearance()
-      }
-
+        selectedIndex = sender.tag
+        updateTabBarAppearance()
+    }
+    
     func updateTabBarAppearance() {
         for (index, button) in buttons.enumerated() {
             if index == selectedIndex {
@@ -162,6 +175,6 @@ class GlassTabBar: UITabBarController {
             }
         }
     }
-
-
+    
+    
 }
