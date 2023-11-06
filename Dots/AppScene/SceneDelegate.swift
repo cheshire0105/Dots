@@ -11,20 +11,37 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        // MainTabBarController 초기화
-        let tabBarController = GlassTabBar()
-
-        // 윈도우 초기화 및 설정
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = tabBarController
+        // LaunchScreenViewController를 여기서 초기화합니다.
+        let launchScreenVC = LaunchScreenViewController()
+
+        // UserDefaults를 검사하여 로그인 여부를 확인합니다.
+        if isUserLoggedIn() {
+            // 로그인이 되어 있으면, 메인 탭 바를 설정합니다.
+            launchScreenVC.completionHandler = { [weak self] in
+                guard let self = self else { return }
+                let mainTabBar = GlassTabBar()
+                self.window?.rootViewController = mainTabBar
+            }
+        } else {
+            // 로그인이 되어 있지 않으면, 로그인/회원가입 뷰를 설정합니다.
+            launchScreenVC.completionHandler = { [weak self] in
+                guard let self = self else { return }
+                let signUpVC = SignUpViewController()
+                let navigationController = UINavigationController(rootViewController: signUpVC)
+                self.window?.rootViewController = navigationController
+            }
+        }
+
+        window?.rootViewController = launchScreenVC
         window?.makeKeyAndVisible()
+    }
+
+    private func isUserLoggedIn() -> Bool {
+        return UserDefaults.standard.bool(forKey: "isUserLoggedIn")
     }
 
 
