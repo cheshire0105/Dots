@@ -4,7 +4,12 @@ import SnapKit
 
 class MyPageCell : UICollectionViewCell {
     
-    
+    var 백_블록 = {
+        let uiView = UIView()
+        uiView.backgroundColor = UIColor.orange
+        uiView.layer.cornerRadius = 15
+        return uiView
+    } ()
     var 마이페이지_셀_이미지 = {
         let image = UIImage()
         
@@ -29,9 +34,18 @@ class MyPageCell : UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.orange
-        
+        backgroundColor = UIColor.black
         layer.cornerRadius = 15
+        마이페이지셀_레이아웃()
+    }
+    
+    func 마이페이지셀_레이아웃() {
+        contentView.addSubview(백_블록)
+        
+        백_블록.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().offset(1)
+            make.bottom.trailing.equalToSuperview().offset(-1)
+        }
     }
     
     @available(*, unavailable)
