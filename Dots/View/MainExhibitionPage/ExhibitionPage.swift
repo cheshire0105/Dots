@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
- 
+
     // MARK: - 변수
 
     let scrollView = UIScrollView()
@@ -41,7 +41,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     var reviewTableViewHeightConstraint: Constraint?
     var exhibitionInfoViewHeightConstraint: Constraint?
 
-    let exhibitionInfoTextView = UITextView()
+    let exhibitionInfoTextView = UILabel()
     let museumHomepageButton = UIButton(type: .system)
 
     // 더미 데이터
@@ -102,30 +102,28 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     // MARK: - 함수들
 
     private func setupExhibitionInfoTextView() {
-        exhibitionInformationView.addSubview(exhibitionInfoTextView)
+        
+        let exhibitionInfoLabel = UILabel()
+        exhibitionInfoLabel.numberOfLines = 0
+        exhibitionInfoLabel.font = UIFont.systemFont(ofSize: 14)
+        exhibitionInfoLabel.textColor = .white
 
-        // 스타일 설정
-        exhibitionInfoTextView.backgroundColor = .darkGray // 배경색 설정
-        exhibitionInfoTextView.textColor = .white // 글자색 설정
-        exhibitionInfoTextView.font = .systemFont(ofSize: 14)
-        exhibitionInfoTextView.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) // 패딩 값 설정
-        exhibitionInfoTextView.isEditable = false // 편집 불가능하게 설정
-        exhibitionInfoTextView.isSelectable = false // 선택 불가능하게 설정
-        exhibitionInfoTextView.layer.cornerRadius = 10 // 모서리를 둥글게 하는 정도 설정
-        exhibitionInfoTextView.clipsToBounds = true // 모서리를 둥글게 잘라내기
-        exhibitionInfoTextView.isScrollEnabled = false
+        // 이 부분에 "더보기" 및 "접기" 기능을 적용합니다.
+        // 'longText'는 전시에 대한 전체 설명입니다.
+        let longText = """
+«김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다. 이번 전시는 1950년대부터 현재까지 다양한 매체, 장르, 주제를 넘나들며 예술의 최전선에서 독자적인 영역을 구축해 온 작가의 전위적인 면모를 확인할 수 있다. 비디오 아트, 설치, 판화, 퍼포먼스, 회화 등 미술의 범주를 넘어 무용, 연극, 영화, 음악에 이르기까지 다양한 분야에서 활발한 활동을 펼쳐 온 작가를 입체적으로 만나볼 수 있는 자리이기도 하다. 한국 현대미술사에서 중요한 위치를 차지하는 작가임에도 불구하고 김구림의 작품을 설명하거나 깊이 있게 경험할 기회는 충분치 않았기에 이번 전시를 통해 김구림의 미술사적 성과를 재확인하고, 현재진행형 작가로서 오늘날 그의 행보를 살펴보고자 한다. 전시는 1960년대 초 한국전쟁 이후 실존적인 문제에 매달리며 제작한 초기 회화, 1960-70년대 한국 실험미술의 중심에서 발표했던 퍼포먼스와 설치, 1980년대 중반부터 지속하는 <음과 양> 시리즈 등을 고루 소개한다. 또한 김구림 작가의 동시대적 면모를 확인할 수 있는 대형 설치와 함께 영화-무용-음악-연극을 한데 모은 공연을 새롭게 선보인다. 1950년대부터 이어진 김구림의 전방위적 활동과 거침없는 도전은 시대에 대한 반응이었고, 관습에 대한 저항이었던 바 그와 다른 시간대를 영위하는 이들이 단숨에 파악하기에는 어려운 낯선 영역일 것이다. 따라서 이번 전시는 부분적으로 밖에 파악할 수밖에 없었던 김구림의 세계를 최대한 온전하게 전달하는 데 초점을 두었다. 김구림과 함께 그의 결정적 순간들을 재방문해 보길 바라며, 김구림의 발자취를 경유하는 가운데 한국 미술사에 대한 이해의 폭을 넓히는 기회가 되길 바란다.
+"""
+        exhibitionInfoLabel.setTruncatedText(longText) // 여기에서 확장 기능을 사용하여 텍스트를 설정합니다.
 
-
-        // 레이아웃 설정
-        exhibitionInfoTextView.snp.makeConstraints { make in
+        // exhibitionInfoLabel의 레이아웃을 설정합니다.
+        exhibitionInformationView.addSubview(exhibitionInfoLabel)
+        exhibitionInfoLabel.snp.makeConstraints { make in
             make.top.equalTo(reviewsButton.snp.bottom).offset(10)
             make.left.equalTo(contentView).offset(10)
             make.right.equalTo(contentView).offset(-10)
-            make.height.equalTo(150)
+            make.height.greaterThanOrEqualTo(60) // 레이블의 최소 높이를 설정합니다.
         }
 
-        // 텍스트 설정
-        exhibitionInfoTextView.text = "«김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다. 이번 전시는 1950년대부터 현재까지 다양한 매체, 장르, 주제를 넘나들며 예술의 최전선에서 독자적인 영역을 구축해 온 작가의 전위적인 면모를 확인할 수 있다. 비디오 아트, 설치, 판화, 퍼포먼스, 회화 등 미술의 범주를 넘어 무용, 연극, 영화, 음악에 이르기까지 다양한 분야에서 활발한 활동을 펼쳐 온 작가를 입체적으로 만나볼 수 있는 자리이기도 하다. 한국 현대미술사에서 중요한 위치를 차지하는 작가임에도 불구하고 김구림의 작품을 설명하거나 깊이 있게 경험할 기회는 충분치 않았기에 이번 전시를 통해 김구림의 미술사적 성과를 재확인하고, 현재진행형 작가로서 오늘날 그의 행보를 살펴보고자 한다. 전시는 1960년대 초 한국전쟁 이후 실존적인 문제에 매달리며 제작한 초기 회화, 1960-70년대 한국 실험미술의 중심에서 발표했던 퍼포먼스와 설치, 1980년대 중반부터 지속하는 <음과 양> 시리즈 등을 고루 소개한다. 또한 김구림 작가의 동시대적 면모를 확인할 수 있는 대형 설치와 함께 영화-무용-음악-연극을 한데 모은 공연을 새롭게 선보인다. 1950년대부터 이어진 김구림의 전방위적 활동과 거침없는 도전은 시대에 대한 반응이었고, 관습에 대한 저항이었던 바 그와 다른 시간대를 영위하는 이들이 단숨에 파악하기에는 어려운 낯선 영역일 것이다. 따라서 이번 전시는 부분적으로 밖에 파악할 수밖에 없었던 김구림의 세계를 최대한 온전하게 전달하는 데 초점을 두었다. 김구림과 함께 그의 결정적 순간들을 재방문해 보길 바라며, 김구림의 발자취를 경유하는 가운데 한국 미술사에 대한 이해의 폭을 넓히는 기회가 되길 바란다."
 
         // 라인을 추가하기 위한 UIView 생성
         let lineView = UIView()
@@ -134,8 +132,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         // 라인 뷰의 레이아웃 제약 조건 설정
         lineView.snp.makeConstraints { make in
-            make.top.equalTo(exhibitionInfoTextView.snp.bottom).offset(10)  // 텍스트뷰의 바닥에서 10 포인트 아래에 위치
-            make.left.right.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 좌우에 맞춤
+            make.top.equalTo(exhibitionInformationView.snp.bottom).offset(10)  // 텍스트뷰의 바닥에서 10 포인트 아래에 위치
+            make.left.right.equalTo(exhibitionInformationView)  // 텍스트뷰의 좌우에 맞춤
             make.height.equalTo(1)  // 높이를 1로 설정하여 얇은 선 만들기
         }
 
@@ -149,8 +147,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 레이블의 레이아웃 제약 조건 설정
         infoLabel.snp.makeConstraints { make in
             make.top.equalTo(lineView.snp.bottom).offset(15)  // 라인 뷰의 바닥에서 10 포인트 아래에 위치
-            make.left.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 왼쪽에 맞춤
-            make.right.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 오른쪽에 맞춤
+            make.left.equalTo(exhibitionInformationView)  // 텍스트뷰의 왼쪽에 맞춤
+            make.right.equalTo(exhibitionInformationView)  // 텍스트뷰의 오른쪽에 맞춤
         }
 
         // "기간" 레이블 생성
@@ -175,7 +173,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 스택 뷰의 레이아웃 제약 조건 설정
         stackView.snp.makeConstraints { make in
             make.top.equalTo(infoLabel.snp.bottom).offset(15)  // "관람 정보" 레이블의 바닥에서 10 포인트 아래에 위치
-            make.left.equalTo(exhibitionInfoTextView)  // 텍스트뷰의 좌우에 맞춤
+            make.left.equalTo(exhibitionInformationView)  // 텍스트뷰의 좌우에 맞춤
 
         }
 
@@ -218,7 +216,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         locationStackView.snp.makeConstraints { make in
             make.top.equalTo(stackView.snp.bottom).offset(15)
-            make.left.equalTo(exhibitionInfoTextView)
+            make.left.equalTo(exhibitionInformationView)
         }
 
         // 버튼 생성
@@ -268,7 +266,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 경계선 레이아웃 설정
         bottomLineView.snp.makeConstraints { make in
             make.top.equalTo(button.snp.bottom).offset(15)
-            make.left.right.equalTo(exhibitionInfoTextView)
+            make.left.right.equalTo(exhibitionInformationView)
             make.height.equalTo(1)
         }
 
@@ -294,7 +292,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 관람료 스택 뷰 레이아웃 설정
         admissionFeeStackView.snp.makeConstraints { make in
             make.top.equalTo(bottomLineView.snp.bottom).offset(15)
-            make.left.equalTo(exhibitionInfoTextView)
+            make.left.equalTo(exhibitionInformationView)
         }
 
         // "영업시간" 레이블 생성
@@ -319,7 +317,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 영업시간 스택 뷰 레이아웃 설정
         openingHoursStackView.snp.makeConstraints { make in
             make.top.equalTo(admissionFeeStackView.snp.bottom).offset(15)
-            make.left.equalTo(exhibitionInfoTextView)
+            make.left.equalTo(exhibitionInformationView)
         }
 
         // 영업시간 스택 뷰 밑에 경계선 추가
@@ -329,7 +327,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         secondLineView.snp.makeConstraints { make in
             make.top.equalTo(openingHoursStackView.snp.bottom).offset(15)
-            make.left.right.equalTo(exhibitionInfoTextView)
+            make.left.right.equalTo(exhibitionInformationView)
             make.height.equalTo(1)
         }
 
@@ -341,7 +339,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         museumHomepageButton.snp.makeConstraints { make in
             make.top.equalTo(secondLineView.snp.bottom).offset(15)
-            make.left.equalTo(exhibitionInfoTextView)
+            make.left.equalTo(exhibitionInformationView)
             make.height.equalTo(40)
         }
 
@@ -698,4 +696,107 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         }
     }
 
+}
+
+// '더보기' 및 '접기' 기능을 가진 UILabel의 확장
+extension UILabel {
+    // '더보기' 텍스트와 함께 레이블에 텍스트를 설정합니다.
+    func setTruncatedText(_ text: String, readMoreText: String = "더보기", readLessText: String = "접기") {
+        let attributedString = NSMutableAttributedString(string: text)
+        let readMoreAttributedText = NSAttributedString(string: " \(readMoreText)", attributes: [.foregroundColor: UIColor.blue])
+        let readLessAttributedText = NSAttributedString(string: " \(readLessText)", attributes: [.foregroundColor: UIColor.blue])
+
+        // 현재 UI 상황에 따라 텍스트 크기를 조정합니다.
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.attributedText = attributedString
+
+            // '더보기' 텍스트를 표시할 지 결정합니다.
+            if strongSelf.isTruncated() {
+                let truncatedString = NSMutableAttributedString(attributedString: attributedString)
+                truncatedString.append(readMoreAttributedText)
+                strongSelf.attributedText = truncatedString
+                strongSelf.numberOfLines = 3 // 예를 들어 기본적으로 3줄만 표시
+            } else {
+                strongSelf.numberOfLines = 0 // 모든 줄을 표시합니다.
+                strongSelf.attributedText = attributedString
+            }
+            strongSelf.isUserInteractionEnabled = true
+            let tapGesture = UITapGestureRecognizer(target: strongSelf, action: #selector(strongSelf.toggleReadMore(gesture:)))
+            strongSelf.addGestureRecognizer(tapGesture)
+            
+        }
+    }
+
+    // '더보기' 또는 '접기'를 토글하는 메서드입니다.
+    @objc func toggleReadMore(gesture: UITapGestureRecognizer) {
+        // '더보기' 또는 '접기' 문자열을 확인합니다.
+        guard let text = self.text else { return }
+
+        // '더보기' 또는 '접기' 기능을 수행하고 레이아웃을 업데이트합니다.
+        if text.contains("더보기") {
+            // 전체 텍스트를 표시합니다.
+            let newLabelText = text.replacingOccurrences(of: " 더보기", with: " 접기")
+            self.numberOfLines = 0 // 제한 없이 모든 줄을 표시합니다.
+            self.text = newLabelText
+        } else if text.contains("접기") {
+            // 텍스트를 잘라서 '더보기'로 전환합니다.
+            let newLabelText = text.replacingOccurrences(of: " 접기", with: " 더보기")
+            self.numberOfLines = 3 // 3줄로 제한합니다.
+            self.text = newLabelText
+        }
+
+        // 레이아웃 업데이트를 트리거합니다.
+        self.superview?.layoutIfNeeded() // 필요하면 상위 뷰의 레이아웃도 업데이트합니다.
+        // 또는
+        self.superview?.setNeedsLayout() // 상위 뷰에 레이아웃 업데이트를 요청합니다.
+    }
+
+    // 레이블의 텍스트가 잘릴 때 true를 반환합니다.
+    func isTruncated() -> Bool {
+        guard let labelText = text else {
+            return false
+        }
+
+        let labelSize = (labelText as NSString).boundingRect(
+            with: CGSize(width: self.frame.size.width, height: .greatestFiniteMagnitude),
+            options: .usesLineFragmentOrigin,
+            attributes: [.font: self.font!],
+            context: nil).size
+
+        return labelSize.height > self.bounds.size.height
+    }
+
+    // '더보기' 텍스트를 탭했을 때의 동작을 정의합니다.
+    @objc func readMoreDidTapGesture(gesture: UITapGestureRecognizer) {
+        // 탭된 위치가 '더보기' 텍스트 영역 내에 있는지 확인합니다.
+        let tapLocation = gesture.location(in: self)
+        let tapIndex = self.indexOfAttributedTextCharacterAtPoint(point: tapLocation)
+
+        guard let text = self.text, tapIndex >= text.count - "더보기".count else { return }
+
+        // 전체 텍스트를 표시하도록 'numberOfLines'를 조정합니다.
+        self.numberOfLines = 0
+        self.text = text
+    }
+
+    // 특정 포인트에 있는 문자의 인덱스를 찾는 메서드입니다.
+    func indexOfAttributedTextCharacterAtPoint(point: CGPoint) -> Int {
+        guard let text = self.attributedText else {
+            return NSNotFound
+        }
+
+        let textStorage = NSTextStorage(attributedString: text)
+        let layoutManager = NSLayoutManager()
+        textStorage.addLayoutManager(layoutManager)
+
+        let textContainer = NSTextContainer(size: self.frame.size)
+        textContainer.lineFragmentPadding = 0
+        textContainer.lineBreakMode = self.lineBreakMode
+        textContainer.maximumNumberOfLines = self.numberOfLines
+        layoutManager.addTextContainer(textContainer)
+
+        let index = layoutManager.characterIndex(for: point, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+        return index
+    }
 }
