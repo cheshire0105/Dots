@@ -107,6 +107,13 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInfoLabel.numberOfLines = 0
         exhibitionInfoLabel.font = UIFont.systemFont(ofSize: 14)
         exhibitionInfoLabel.textColor = .white
+        exhibitionInfoLabel.backgroundColor = .black
+
+        exhibitionInfoLabel.onToggleExpansion = { [weak self] in
+            self?.updateScrollViewContentSizeForExhibitionInfoView()
+        }
+
+
 
         // 이 부분에 "더보기" 및 "접기" 기능을 적용합니다.
         // 'longText'는 전시에 대한 전체 설명입니다.
@@ -119,9 +126,8 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         exhibitionInformationView.addSubview(exhibitionInfoLabel)
         exhibitionInfoLabel.snp.makeConstraints { make in
             make.top.equalTo(reviewsButton.snp.bottom).offset(10)
-            make.left.equalTo(contentView).offset(10)
-            make.right.equalTo(contentView).offset(-10)
-            make.height.greaterThanOrEqualTo(60) // 레이블의 최소 높이를 설정합니다.
+            make.left.equalTo(exhibitionInformationView.snp.left).offset(10)
+            make.right.equalTo(exhibitionInformationView.snp.right).offset(-10)
         }
 
 
@@ -132,7 +138,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
         // 라인 뷰의 레이아웃 제약 조건 설정
         lineView.snp.makeConstraints { make in
-            make.top.equalTo(exhibitionInformationView.snp.bottom).offset(10)  // 텍스트뷰의 바닥에서 10 포인트 아래에 위치
+            make.top.equalTo(exhibitionInfoLabel.snp.bottom).offset(10)  // 텍스트뷰의 바닥에서 10 포인트 아래에 위치
             make.left.right.equalTo(exhibitionInformationView)  // 텍스트뷰의 좌우에 맞춤
             make.height.equalTo(1)  // 높이를 1로 설정하여 얇은 선 만들기
         }
@@ -415,11 +421,17 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
     }
 
     // 스크롤 뷰의 사이즈를 재조정 하는 함수
+    // 스크롤 뷰의 사이즈를 재조정하는 함수
     func updateScrollViewContentSizeForExhibitionInfoView() {
-        // exhibitionInformationView의 높이를 계산하지 않고, homepageButton의 bottom까지의 높이를 사용합니다.
-        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + museumHomepageButton.frame.maxY + 32 + 16 // 16은 버튼과 스크롤 뷰 하단의 여백
+        // UILabel의 현재 높이를 계산합니다.
+        let labelSize = exhibitionInfoTextView.sizeThatFits(CGSize(width: exhibitionInfoTextView.frame.width, height: CGFloat.greatestFiniteMagnitude))
+
+        // 전체 뷰의 높이를 계산할 때 UILabel의 높이를 포함합니다.
+        let totalHeight = exhibitionImageView.frame.height + reviewsButton.frame.height + museumHomepageButton.frame.maxY + labelSize.height + 32 + 16 // 16은 버튼과 스크롤 뷰 하단의 여백
+
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
     }
+
 
     private func setupBackButton() {
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
@@ -700,6 +712,22 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
 
 // '더보기' 및 '접기' 기능을 가진 UILabel의 확장
 extension UILabel {
+
+    // 클로저를 저장할 수 있게 속성을 추가합니다.
+    private struct AssociatedKeys {
+        static var onToggleExpansion: Void?
+    }
+
+    // 클로저를 설정하고 가져오기 위한 computed property
+    var onToggleExpansion: (() -> Void)? {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.onToggleExpansion) as? (() -> Void)
+        }
+        set(value) {
+            objc_setAssociatedObject(self, &AssociatedKeys.onToggleExpansion, value, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+
     // '더보기' 텍스트와 함께 레이블에 텍스트를 설정합니다.
     func setTruncatedText(_ text: String, readMoreText: String = "더보기", readLessText: String = "접기") {
         let attributedString = NSMutableAttributedString(string: text)
@@ -729,28 +757,28 @@ extension UILabel {
     }
 
     // '더보기' 또는 '접기'를 토글하는 메서드입니다.
+    // UILabel 확장의 '더보기'/'접기' 토글 메서드
     @objc func toggleReadMore(gesture: UITapGestureRecognizer) {
-        // '더보기' 또는 '접기' 문자열을 확인합니다.
         guard let text = self.text else { return }
 
-        // '더보기' 또는 '접기' 기능을 수행하고 레이아웃을 업데이트합니다.
+        // 텍스트를 전환하고, 레이아웃을 바로 업데이트합니다.
         if text.contains("더보기") {
-            // 전체 텍스트를 표시합니다.
             let newLabelText = text.replacingOccurrences(of: " 더보기", with: " 접기")
-            self.numberOfLines = 0 // 제한 없이 모든 줄을 표시합니다.
+            self.numberOfLines = 0
             self.text = newLabelText
         } else if text.contains("접기") {
-            // 텍스트를 잘라서 '더보기'로 전환합니다.
             let newLabelText = text.replacingOccurrences(of: " 접기", with: " 더보기")
-            self.numberOfLines = 3 // 3줄로 제한합니다.
+            self.numberOfLines = 3
             self.text = newLabelText
         }
 
-        // 레이아웃 업데이트를 트리거합니다.
-        self.superview?.layoutIfNeeded() // 필요하면 상위 뷰의 레이아웃도 업데이트합니다.
-        // 또는
-        self.superview?.setNeedsLayout() // 상위 뷰에 레이아웃 업데이트를 요청합니다.
+        self.superview?.setNeedsLayout()
+        self.superview?.layoutIfNeeded()
+
+        // 스크롤 뷰의 contentSize를 조정해야 할 때 클로저를 호출합니다.
+        onToggleExpansion?()
     }
+
 
     // 레이블의 텍스트가 잘릴 때 true를 반환합니다.
     func isTruncated() -> Bool {
