@@ -70,7 +70,7 @@ class PopularReviewsPage: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.scrollDirection = .vertical
         layout.collectionView?.showsVerticalScrollIndicator = false
-        layout.minimumLineSpacing = 25
+        layout.minimumLineSpacing = 3
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 130, left: 0, bottom: 50, right: 0)
         
