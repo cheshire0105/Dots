@@ -92,7 +92,26 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         
         
         self.view.backgroundColor = .black
-        
+
+        // ExhibitionModel 배열을 가져오는 함수를 구독하고 결과를 출력한다.
+        fetchExhibitions()
+            .subscribe(
+                onNext: { exhibitions in
+                    // 데이터 배열을 받으면 출력한다.
+                    print("Received exhibition data: \(exhibitions)")
+                },
+                onError: { error in
+                    // 에러가 발생하면 에러 메시지를 출력한다.
+                    print("An error occurred: \(error)")
+                },
+                onCompleted: {
+                    // 데이터 가져오기 작업이 완료되면 완료 메시지를 출력한다.
+                    print("Fetch completed.")
+                }
+            )
+            .disposed(by: disposeBag) // 메모리 누수를 방지하기 위해 disposeBag에 추가한다.
+
+
     }
     
     private func setupCollectionView() {
@@ -376,3 +395,73 @@ class SectionHeader: UICollectionReusableView {
     }
 }
 
+import Foundation
+
+// 전시회 정보를 나타내는 모델
+struct ExhibitionModel {
+    var documentID: String    // Firestore에서 자동 생성된 문서 ID
+    var museumName: String    // 미술관 이름
+    var price: String         // 전시 가격
+    var summary: String       // 전시 개요
+    var duration: String      // 전시 기간
+    var location: String      // 전시 장소
+    var title: String         // 전시 제목
+    var poster: String        // 전시 포스터의 URL
+
+    // 딕셔너리에서 모델 인스턴스를 생성하기 위한 이니셜라이저.
+    // Firestore에서 가져온 데이터를 이용해 초기화한다.
+    init?(dictionary: [String: Any]) {
+        guard let documentID = dictionary["서울_전시_1"] as? String, // 문서 ID 확인
+              let museumName = dictionary["미술관_이름"] as? String, // 미술관 이름 확인
+              let price = dictionary["전시_가격"] as? String, // 전시 가격 확인
+              let summary = dictionary["전시_개요"] as? String, // 전시 개요 확인
+              let duration = dictionary["전시_기간"] as? String, // 전시 기간 확인
+              let location = dictionary["전시_장소"] as? String, // 전시 장소 확인
+              let title = dictionary["전시_제목"] as? String, // 전시 제목 확인
+              let poster = dictionary["전시_포스터"] as? String else { // 전시 포스터 URL 확인
+            return nil // 하나라도 누락되면 nil을 반환하여 초기화 실패 처리
+        }
+
+        // 모든 값이 제대로 있으면 초기화를 진행한다.
+        self.documentID = documentID
+        self.museumName = museumName
+        self.price = price
+        self.summary = summary
+        self.duration = duration
+        self.location = location
+        self.title = title
+        self.poster = poster
+    }
+}
+
+import FirebaseFirestore
+import RxSwift
+
+// Firestore에서 전시회 데이터를 가져와서 ExhibitionModel 배열로 변환하는 함수
+func fetchExhibitions() -> Observable<[ExhibitionModel]> {
+    // RxSwift의 Observable을 생성하여 비동기 작업을 관리한다.
+    return Observable.create { observer in
+        // Firestore의 'exhibitions' 컬렉션에 대한 참조를 생성한다.
+        let collectionRef = Firestore.firestore().collection("전시")
+
+        // 컬렉션에서 문서 스냅샷을 비동기적으로 가져온다.
+        collectionRef.getDocuments { (snapshot, error) in
+            if let error = error {
+                // 에러가 발생하면 Observable에 에러를 방출한다.
+                observer.onError(error)
+            } else if let snapshot = snapshot {
+                // 스냅샷에서 문서들을 가져와 ExhibitionModel로 매핑한다.
+                let exhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
+                    var data = doc.data() // 문서의 데이터를 가져온다.
+                    data["서울_전시_1"] = doc.documentID // 문서의 ID를 데이터에 추가한다.
+                    return ExhibitionModel(dictionary: data) // 데이터를 이용해 모델을 생성한다.
+                }
+                observer.onNext(exhibitions) // 생성된 모델 배열을 Observable에 방출한다.
+                observer.onCompleted() // 작업이 완료되었음을 알린다.
+            }
+        }
+
+        // Observable이 해제될 때 실행될 정리(clean-up) 작업을 설정한다.
+        return Disposables.create()
+    }
+}
