@@ -112,7 +112,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
     }
     @objc func 회원가입_버튼_클릭() {
         print("회원가입 페이지로 이동")
-        let 인기리뷰페이지_디테일_화면 = 회원가입_뷰컨트롤러()
+        let 인기리뷰페이지_디테일_화면 = 회원가입_첫번째_뷰컨트롤러()
         self.navigationController?.pushViewController(인기리뷰페이지_디테일_화면, animated: true)
     }
     @objc func 로그인_버튼_클릭() {

@@ -11,6 +11,15 @@ class 로그인_뷰컨트롤러 : UIViewController {
         
         return label
     } ()
+    let 뒤로가기_버튼 = {
+       let button = UIButton()
+       button.setImage(UIImage(named: "loginBack"), for: .selected)
+       button.setImage(UIImage(named: ""), for: .normal)
+       button.isSelected = !button.isSelected
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 20
+       return button
+   } ()
     //이메일 텍스트필드
     private let 로그인_이메일_텍스트필드 = { ()
         let textField = UITextField()
@@ -73,11 +82,17 @@ class 로그인_뷰컨트롤러 : UIViewController {
 //레이아웃
 extension 로그인_뷰컨트롤러 {
     func UI레이아웃() {
+        view.addSubview(뒤로가기_버튼)
         view.addSubview(제목_라벨)
         view.addSubview(로그인_이메일_텍스트필드)
         view.addSubview(로그인_비밀번호_텍스트필드)
         view.addSubview(로그인_버튼)
         
+        뒤로가기_버튼.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(75)
+            make.leading.equalToSuperview().offset(24)
+            make.size.equalTo(40)
+        }
         
         제목_라벨.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(275)
@@ -110,8 +125,13 @@ extension 로그인_뷰컨트롤러 {
 extension 로그인_뷰컨트롤러 {
     
     private func 버튼_클릭() {
-        
+        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
+    }
+    @objc func 뒤로가기_버튼_클릭() {
+        print("뒤로가기")
+        navigationController?.popViewController(animated: true)
+
     }
     @objc func 로그인_버튼_클릭() {
         print("메인 전시 페이지로 이동")
