@@ -64,10 +64,6 @@
 		FFAFCB5D2AFA23E30030C3C9 /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB5C2AFA23E30030C3C9 /* FirebaseRemoteConfigSwift */; };
 		FFAFCB5F2AFA23E30030C3C9 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB5E2AFA23E30030C3C9 /* FirebaseStorage */; };
 		FFAFCB612AFA23E30030C3C9 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB602AFA23E30030C3C9 /* FirebaseStorageCombine-Community */; };
-		FFAFCB642AFB317D0030C3C9 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB632AFB317D0030C3C9 /* Nuke */; };
-		FFAFCB662AFB317D0030C3C9 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB652AFB317D0030C3C9 /* NukeExtensions */; };
-		FFAFCB682AFB317D0030C3C9 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB672AFB317D0030C3C9 /* NukeUI */; };
-		FFAFCB6A2AFB317D0030C3C9 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB692AFB317D0030C3C9 /* NukeVideo */; };
 		FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE0C9AE2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift */; };
 		FFE0C9B52AEB413300F3D783 /* ExhibitionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE0C9B42AEB413300F3D783 /* ExhibitionPage.swift */; };
 		FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE23F102AE661880002C479 /* CategotyCell.swift */; };
@@ -121,9 +117,7 @@
 				FFAFCB4B2AFA23E30030C3C9 /* FirebaseFunctions in Frameworks */,
 				FFAFCB412AFA23E30030C3C9 /* FirebaseDatabaseSwift in Frameworks */,
 				FFAFCB512AFA23E30030C3C9 /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
-				FFAFCB642AFB317D0030C3C9 /* Nuke in Frameworks */,
 				FFAFCB572AFA23E30030C3C9 /* FirebaseMessaging in Frameworks */,
-				FFAFCB682AFB317D0030C3C9 /* NukeUI in Frameworks */,
 				FFAFCB372AFA23E30030C3C9 /* FirebaseAppDistribution-Beta in Frameworks */,
 				FFAFCB3B2AFA23E30030C3C9 /* FirebaseAuthCombine-Community in Frameworks */,
 				FFAFCB472AFA23E30030C3C9 /* FirebaseFirestoreCombine-Community in Frameworks */,
@@ -137,7 +131,6 @@
 				FFAFCB592AFA23E30030C3C9 /* FirebasePerformance in Frameworks */,
 				FFAFCB4F2AFA23E30030C3C9 /* FirebaseInAppMessaging-Beta in Frameworks */,
 				FFAFCB4D2AFA23E30030C3C9 /* FirebaseFunctionsCombine-Community in Frameworks */,
-				FFAFCB6A2AFB317D0030C3C9 /* NukeVideo in Frameworks */,
 				FFAFCB3D2AFA23E30030C3C9 /* FirebaseCrashlytics in Frameworks */,
 				FFAFCB532AFA23E30030C3C9 /* FirebaseInstallations in Frameworks */,
 				FFAFCB5B2AFA23E30030C3C9 /* FirebaseRemoteConfig in Frameworks */,
@@ -149,7 +142,6 @@
 				FFAFCB432AFA23E30030C3C9 /* FirebaseDynamicLinks in Frameworks */,
 				FFAFCB452AFA23E30030C3C9 /* FirebaseFirestore in Frameworks */,
 				FFAFCB5D2AFA23E30030C3C9 /* FirebaseRemoteConfigSwift in Frameworks */,
-				FFAFCB662AFB317D0030C3C9 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,10 +389,6 @@
 				FFAFCB5C2AFA23E30030C3C9 /* FirebaseRemoteConfigSwift */,
 				FFAFCB5E2AFA23E30030C3C9 /* FirebaseStorage */,
 				FFAFCB602AFA23E30030C3C9 /* FirebaseStorageCombine-Community */,
-				FFAFCB632AFB317D0030C3C9 /* Nuke */,
-				FFAFCB652AFB317D0030C3C9 /* NukeExtensions */,
-				FFAFCB672AFB317D0030C3C9 /* NukeUI */,
-				FFAFCB692AFB317D0030C3C9 /* NukeVideo */,
 			);
 			productName = Dots;
 			productReference = FF3C97172AE5FEA1006FEF23 /* Dots.app */;
@@ -432,7 +420,6 @@
 			mainGroup = FF3C970E2AE5FEA1006FEF23;
 			packageReferences = (
 				FFAFCB2B2AFA23E30030C3C9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				FFAFCB622AFB317D0030C3C9 /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = FF3C97182AE5FEA1006FEF23 /* Products */;
 			projectDirPath = "";
@@ -778,14 +765,6 @@
 				minimumVersion = 10.17.0;
 			};
 		};
-		FFAFCB622AFB317D0030C3C9 /* XCRemoteSwiftPackageReference "Nuke" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kean/Nuke.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.1.6;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -923,26 +902,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FFAFCB2B2AFA23E30030C3C9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
-		};
-		FFAFCB632AFB317D0030C3C9 /* Nuke */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FFAFCB622AFB317D0030C3C9 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = Nuke;
-		};
-		FFAFCB652AFB317D0030C3C9 /* NukeExtensions */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FFAFCB622AFB317D0030C3C9 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = NukeExtensions;
-		};
-		FFAFCB672AFB317D0030C3C9 /* NukeUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FFAFCB622AFB317D0030C3C9 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = NukeUI;
-		};
-		FFAFCB692AFB317D0030C3C9 /* NukeVideo */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FFAFCB622AFB317D0030C3C9 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = NukeVideo;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
