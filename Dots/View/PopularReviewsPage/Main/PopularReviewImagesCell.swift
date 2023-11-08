@@ -1,4 +1,3 @@
-// 최신화 커밋--
 import RxCocoa
 import RxSwift
 import SnapKit
@@ -10,7 +9,6 @@ class 인기셀_이미지_묶음_셀: UICollectionViewCell {
         imageView.layer.cornerRadius = 10
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.borderWidth = 10
         imageView.layer.borderColor = UIColor.darkGray.withAlphaComponent(0.7).cgColor
 
         return imageView

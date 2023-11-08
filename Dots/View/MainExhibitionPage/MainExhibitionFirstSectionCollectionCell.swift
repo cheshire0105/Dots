@@ -7,9 +7,12 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 // 새로운 셀 클래스를 정의합니다.
 class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
+    var disposeBag = DisposeBag()
+
 
     var label: UILabel!
     var imageView: UIImageView!
@@ -54,4 +57,6 @@ class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
     func setImage(image: UIImage?) {
         imageView.image = image
     }
+
+    
 }

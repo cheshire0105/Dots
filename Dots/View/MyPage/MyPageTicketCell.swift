@@ -15,8 +15,7 @@ class MyPageTicketCell : UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.orange
-        layer.borderWidth = 30
-        layer.cornerRadius = 60
+        layer.cornerRadius = 20
         
         
         

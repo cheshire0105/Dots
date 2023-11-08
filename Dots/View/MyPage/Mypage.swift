@@ -1,4 +1,4 @@
-//커밋 테스트 스타트 시작
+//23 . 11 . 6. 6:38 am  최신화 완료-  브랜치 스타팅 포인트
 import UIKit
 import SnapKit
 import RxSwift
@@ -98,15 +98,14 @@ class Mypage: UIViewController {
     lazy var 마이페이지_컬렉션뷰 = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        layout.minimumLineSpacing = 1
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 8
+        layout.minimumInteritemSpacing = 1
         layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
         
         collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
-        collectionView.isPagingEnabled = true
+        collectionView.decelerationRate = UIScrollView.DecelerationRate.normal
         return collectionView
     }()
     
@@ -206,7 +205,7 @@ extension Mypage : UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width * 0.5
+        let width = collectionView.frame.width * 0.49
         let height = collectionView.frame.height * 0.5
         return CGSize(width: width, height: height)
     }
