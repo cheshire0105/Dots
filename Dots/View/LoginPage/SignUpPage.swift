@@ -1,173 +1,101 @@
-// 23. 11. 8  12:28 pm dev에서 풀 완료 - 최신화 커밋 - > 로그인 페이지 작업 시작 
+// 23. 11. 8  12:28 pm dev에서 풀 완료 - 최신화 커밋 - > 로그인 페이지 작업 시작
 
 import UIKit
 import SnapKit
 
-class SignUpViewController: UIViewController, UITextFieldDelegate {
-    // UI 컴포넌트 선언
-    private let emailTextField = UITextField()
-    private let passwordTextField = UITextField()
-    private let signUpButton = UIButton()
-    private let sloganLable = UILabel()
-    private weak var activeTextField: UITextField?
+class SignUpViewController: UIViewController {
     
+    //    도트 로고&슬로건
+    private let 로고_이미지 = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "AppIcon")
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    } ()
+    private let 슬로건_라벨 = {
+        let label = UILabel()
+        label.text = """
+전시의 시작은 당신의 눈길,
+깊이는 우리의 목소리
+"""
+        label.numberOfLines = 2
+        label.font = UIFont(name: "HelveticaNeue", size: 14)
+        label.textColor = UIColor.white
+        label.textAlignment = .justified
+        return label
+    } ()
+    //
+    //회원가입 -
+    private let 회원가입_버튼 = {
+        let button = UIButton()
+        button.layer.cornerRadius = 20
+        button.backgroundColor = UIColor(named: "neon")
+        button.isSelected = !button.isSelected
+        button.setTitle("회원가입", for: .normal)
+        button.setTitle("회원가입", for: .selected)
+        button.setTitleColor(UIColor(named: "neon"), for: .normal)
+        button.setTitleColor(UIColor.black, for: .selected)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.titleLabel?.textAlignment = .center
+        return button
+    }()
+    
+    //로그인 _
+    private let 로그인_버튼 = {
+        let button = UIButton()
+        button.layer.cornerRadius = 20
+        button.backgroundColor = UIColor.white
+        button.isSelected = !button.isSelected
+        button.setTitle("로그인", for: .normal)
+        button.setTitle("로그인", for: .selected)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.black, for: .selected)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.titleLabel?.textAlignment = .center
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
-        layoutViews()
-        setupKeyboardNotifications()
-        
-    }
-    
-    private func setupViews() {
-        
-        emailTextField.delegate = self
-        passwordTextField.delegate = self
-        
         view.backgroundColor = .black
-        
-        emailTextField.borderStyle = .roundedRect
-        emailTextField.placeholder = "이메일을 입력하세요"
-        emailTextField.keyboardType = .emailAddress
-        emailTextField.autocapitalizationType = .none
-        emailTextField.backgroundColor = .lightGray
-        
-        passwordTextField.borderStyle = .roundedRect
-        passwordTextField.placeholder = "비밀번호를 입력하세요"
-        passwordTextField.isSecureTextEntry = true
-        passwordTextField.autocapitalizationType = .none
-        passwordTextField.backgroundColor = .lightGray
-        
-        signUpButton.setTitle("가입하기", for: .normal)
-        signUpButton.backgroundColor = .darkGray
-        signUpButton.layer.cornerRadius = 5
-        signUpButton.addTarget(self, action: #selector(signUpButtonTapped), for: .touchUpInside)
-        
-        sloganLable.text = "전시의 시작은 당신의 눈길, 깊이는 우리의 목소리"
-        sloganLable.backgroundColor = .black
-        sloganLable.textColor = .darkGray
-        sloganLable.font = .boldSystemFont(ofSize: 30)
-        sloganLable.textAlignment = .center
-        sloganLable.numberOfLines = 0 // 무제한 줄 수를 허용합니다.
-        sloganLable.lineBreakMode = .byWordWrapping // 단어 단위로 줄 바꿈합니다.
-        
-        
+        UI레이아웃()
     }
     
-    private func layoutViews() {
+    func UI레이아웃() {
         
-        view.addSubview(sloganLable)
-        view.addSubview(emailTextField)
-        view.addSubview(passwordTextField)
-        view.addSubview(signUpButton)
+        view.addSubview(로고_이미지)
+        view.addSubview(슬로건_라벨)
+        view.addSubview(회원가입_버튼)
+        view.addSubview(로그인_버튼)
         
-        sloganLable.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(120)
-            make.left.equalToSuperview().offset(30)
-            make.right.equalToSuperview().offset(-30)
-            
-        }
-        
-        emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(sloganLable.safeAreaLayoutGuide.snp.bottom).offset(120)
-            make.left.right.equalToSuperview().inset(20)
-            make.height.equalTo(44)
-        }
-        
-        passwordTextField.snp.makeConstraints { make in
-            make.top.equalTo(emailTextField.snp.bottom).offset(12)
-            make.left.right.equalTo(emailTextField)
-            make.height.equalTo(44)
-        }
-        
-        signUpButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom).offset(20)
-            make.left.right.equalTo(passwordTextField)
+        로고_이미지.snp.makeConstraints { make in
             make.height.equalTo(50)
+            make.top.equalToSuperview().offset(258)
+            make.leading.equalToSuperview().offset(109)
+            make.trailing.equalToSuperview().offset(-109)
         }
         
-    }
-    
-    // 가입 버튼이 탭되었을 때 실행할 메소드
-    @objc private func signUpButtonTapped() {
-        print("이메일: \(emailTextField.text ?? "")")
-        print("비밀번호: \(passwordTextField.text ?? "")")
-        // Assuming you're within a navigation controller, push the new view controller
-        let profileInfoVC = ProfileInfoViewController()
-        self.navigationController?.pushViewController(profileInfoVC, animated: true)
-    }
-    
-    // Set up the keyboard notification observers
-    private func setupKeyboardNotifications() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
-    }
-    
-    // Text Field Delegate methods to track the active text field
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        activeTextField = textField
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        activeTextField = nil
-    }
-    
-    // Adjust the view when the keyboard is shown
-    @objc private func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            let bottomOfButton = signUpButton.frame.origin.y + signUpButton.frame.size.height
-            let topOfKeyboard = self.view.frame.height - keyboardSize.height
-            
-            if bottomOfButton > topOfKeyboard {
-                if self.view.frame.origin.y == 0 {
-                    self.view.frame.origin.y -= (bottomOfButton - topOfKeyboard + 20)
-                }
-            }
+        슬로건_라벨.snp.makeConstraints { make in
+            make.top.equalTo(로고_이미지.snp.bottom).offset(32)
+            make.leading.equalTo(로고_이미지.snp.leading).offset(5)
+            make.trailing.equalTo(로고_이미지.snp.trailing).offset(-5)
         }
-    }
-    
-    
-    @objc private func keyboardWillHide(notification: NSNotification) {
-        self.view.frame.origin.y = 0
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
-}
-
-import SwiftUI
-
-// SwiftUI 뷰에서 UIViewController를 사용하기 위한 구조체
-struct SignUpViewControllerPreview: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> SignUpViewController {
-        return SignUpViewController()
-    }
-    
-    func updateUIViewController(_ uiViewController: SignUpViewController, context: Context) {
-    }
-}
-
-// Xcode 프리뷰 제공을 위한 구조체
-struct SignUpViewController_Previews: PreviewProvider {
-    static var previews: some View {
-        SignUpViewControllerPreview()
-            .edgesIgnoringSafeArea(.all)
+        
+        회원가입_버튼.snp.makeConstraints { make in
+            make.height.equalTo(64)
+            make.top.equalTo(슬로건_라벨.snp.bottom).offset(170)
+            make.leading.equalToSuperview().offset(45)
+            make.trailing.equalToSuperview().offset(-44)
+        }
+        
+        로그인_버튼.snp.makeConstraints { make in
+            make.height.equalTo(64)
+            make.top.equalTo(회원가입_버튼.snp.bottom).offset(24)
+            make.leading.equalToSuperview().offset(45)
+            make.trailing.equalToSuperview().offset(-44)
+        }
+        
+        
+        
     }
 }
