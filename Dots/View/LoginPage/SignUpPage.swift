@@ -1,9 +1,4 @@
-//
-//  signUpPage.swift
-//  Dots
-//
-//  Created by cheshire on 11/5/23.
-//
+//테스트 커밋
 
 import UIKit
 import SnapKit
