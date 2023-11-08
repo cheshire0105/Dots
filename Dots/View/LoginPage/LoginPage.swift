@@ -1,8 +1,10 @@
-//
-//  LoginPage.swift
-//  Dots
-//
-//  Created by cheshire on 11/5/23.
-//
+import UIKit
+import SnapKit
 
-import Foundation
+class 로그인_뷰컨트롤러 : UIViewController {
+    
+    override func viewDidLoad() {
+        view.backgroundColor = .black
+        title = "로그인"
+    }
+}

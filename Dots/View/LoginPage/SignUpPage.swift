@@ -3,7 +3,7 @@
 import UIKit
 import SnapKit
 
-class SignUpViewController: UIViewController {
+class 로그인_회원가입_뷰컨트롤러: UIViewController {
     
     //    도트 로고&슬로건
     private let 로고_이미지 = {
@@ -59,6 +59,7 @@ class SignUpViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black
         UI레이아웃()
+        버튼_클릭()
     }
     
     func UI레이아웃() {
@@ -94,8 +95,22 @@ class SignUpViewController: UIViewController {
             make.leading.equalToSuperview().offset(45)
             make.trailing.equalToSuperview().offset(-44)
         }
-        
-        
-        
+    }
+}
+
+extension 로그인_회원가입_뷰컨트롤러 {
+    
+    private func 버튼_클릭() {
+        회원가입_버튼.addTarget(self, action: #selector(회원가입_버튼_클릭), for: .touchUpInside)
+        로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
+    }
+    @objc func 회원가입_버튼_클릭() {
+        let 인기리뷰페이지_디테일_화면 = 회원가입_뷰컨트롤러()
+        self.navigationController?.pushViewController(인기리뷰페이지_디테일_화면, animated: true)
+    }
+    @objc func 로그인_버튼_클릭() {
+        let 로그인_뷰컨트롤러_이동 = 로그인_뷰컨트롤러()
+        self.navigationController?.pushViewController(로그인_뷰컨트롤러_이동, animated: true)
+ 
     }
 }
