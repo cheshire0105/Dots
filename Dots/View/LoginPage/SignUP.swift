@@ -5,6 +5,8 @@ class 회원가입_뷰컨트롤러 : UIViewController {
     
     override func viewDidLoad() {
         view.backgroundColor = .black
+        navigationItem.hidesBackButton = true
+        navigationController?.isNavigationBarHidden = true 
     }
     
 }

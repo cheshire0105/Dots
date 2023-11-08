@@ -28,7 +28,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
     //회원가입 -
     private let 회원가입_버튼 = {
         let button = UIButton()
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = 30
         button.backgroundColor = UIColor(named: "neon")
         button.isSelected = !button.isSelected
         button.setTitle("회원가입", for: .normal)
@@ -43,7 +43,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
     //로그인 _
     private let 로그인_버튼 = {
         let button = UIButton()
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = 30
         button.backgroundColor = UIColor.white
         button.isSelected = !button.isSelected
         button.setTitle("로그인", for: .normal)
@@ -58,10 +58,16 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+        navigationItem.hidesBackButton = true
+        navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
     }
     
+  
+}
+// 레이아웃
+extension 로그인_회원가입_뷰컨트롤러 {
     func UI레이아웃() {
         
         view.addSubview(로고_이미지)
@@ -97,7 +103,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         }
     }
 }
-
+// 버튼 클릭
 extension 로그인_회원가입_뷰컨트롤러 {
     
     private func 버튼_클릭() {
@@ -105,10 +111,12 @@ extension 로그인_회원가입_뷰컨트롤러 {
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
     }
     @objc func 회원가입_버튼_클릭() {
+        print("회원가입 페이지로 이동")
         let 인기리뷰페이지_디테일_화면 = 회원가입_뷰컨트롤러()
         self.navigationController?.pushViewController(인기리뷰페이지_디테일_화면, animated: true)
     }
     @objc func 로그인_버튼_클릭() {
+        print("로그인 페이지로 이동")
         let 로그인_뷰컨트롤러_이동 = 로그인_뷰컨트롤러()
         self.navigationController?.pushViewController(로그인_뷰컨트롤러_이동, animated: true)
  
