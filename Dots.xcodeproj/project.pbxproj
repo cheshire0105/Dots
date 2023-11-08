@@ -18,7 +18,6 @@
 		377130222AFB88B00018D4C1 /* SignUPsecond.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130212AFB88B00018D4C1 /* SignUPsecond.swift */; };
 		377130242AFB88C40018D4C1 /* SignUPthird.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130232AFB88C40018D4C1 /* SignUPthird.swift */; };
 		377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130252AFB88FA0018D4C1 /* SignUPfourth.swift */; };
-		377130282AFB89130018D4C1 /* SignUPfifth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130272AFB89130018D4C1 /* SignUPfifth.swift */; };
 		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
 		37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */; };
 		B2CE169A506AD7C5CC83404E /* Pods_Dots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7463B6322E0941141F04DE43 /* Pods_Dots.framework */; };
@@ -90,7 +89,6 @@
 		377130212AFB88B00018D4C1 /* SignUPsecond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecond.swift; sourceTree = "<group>"; };
 		377130232AFB88C40018D4C1 /* SignUPthird.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPthird.swift; sourceTree = "<group>"; };
 		377130252AFB88FA0018D4C1 /* SignUPfourth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfourth.swift; sourceTree = "<group>"; };
-		377130272AFB89130018D4C1 /* SignUPfifth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfifth.swift; sourceTree = "<group>"; };
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
 		37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicket.swift; sourceTree = "<group>"; };
 		7463B6322E0941141F04DE43 /* Pods_Dots.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Dots.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -357,7 +355,6 @@
 				377130212AFB88B00018D4C1 /* SignUPsecond.swift */,
 				377130232AFB88C40018D4C1 /* SignUPthird.swift */,
 				377130252AFB88FA0018D4C1 /* SignUPfourth.swift */,
-				377130272AFB89130018D4C1 /* SignUPfifth.swift */,
 				FF77BFBC2AF7736900EA5A1B /* LogIN.swift */,
 			);
 			path = LoginPage;
@@ -535,7 +532,6 @@
 				FF77BFBB2AF7733F00EA5A1B /* SignUPandLogIN.swift in Sources */,
 				FF3C971F2AE5FEA1006FEF23 /* MainExhibitionPage.swift in Sources */,
 				377041DB2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift in Sources */,
-				377130282AFB89130018D4C1 /* SignUPfifth.swift in Sources */,
 				3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */,
 				FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */,
 				1FDD34842AE9A114002A72BB /* PopularReviewImagesCell.swift in Sources */,

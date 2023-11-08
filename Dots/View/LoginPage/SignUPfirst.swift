@@ -47,7 +47,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController {
         textField.tintColor = UIColor.lightGray
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .darkGray
+        textField.backgroundColor = .clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         return textField
@@ -71,12 +71,12 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController {
     private let 회원가입_중복확인_버튼 = {
         let button = UIButton()
         button.layer.cornerRadius = 30
-        button.backgroundColor = UIColor(named: "neon")
+        //button.backgroundColor = UIColor(named: "neon")
         button.isSelected = !button.isSelected
         button.setTitle("중복확인", for: .normal)
         button.setTitle("중복확인", for: .selected)
-        button.setTitleColor(UIColor(named: "neon"), for: .normal)
-        button.setTitleColor(UIColor.black, for: .selected)
+        button.setTitleColor(UIColor(named: "neon"), for: .selected)
+        button.setTitleColor(UIColor.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.titleLabel?.textAlignment = .center
         return button
@@ -110,6 +110,24 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController {
         button.titleLabel?.textAlignment = .center
         return button
     }()
+    private let 닉네임_백 = {
+        let uiView = UIView()
+        uiView.backgroundColor = .darkGray
+        uiView.layer.cornerRadius = 25
+        return uiView
+    }()
+    private let 이메일_백 = {
+        let uiView = UIView()
+        uiView.backgroundColor = .darkGray
+        uiView.layer.cornerRadius = 25
+        return uiView
+    }()
+    private let 비밀번호_백 = {
+        let uiView = UIView()
+        uiView.backgroundColor = .darkGray
+        uiView.layer.cornerRadius = 25
+        return uiView
+    }()
     
     override func viewDidLoad() {
         view.backgroundColor = .black
@@ -126,6 +144,9 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     func UI레이아웃 () {
         view.addSubview(뒤로가기_버튼)
         view.addSubview(제목_라벨)
+        view.addSubview(닉네임_백)
+        view.addSubview(이메일_백)
+        view.addSubview(비밀번호_백)
         view.addSubview(회원가입_이미지_선택_버튼)
         view.addSubview(회원가입_닉네임_텍스트필드)
         view.addSubview(회원가입_이메일_텍스트필드)
@@ -148,26 +169,45 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.centerX.equalToSuperview()
             make.size.equalTo(150)
         }
-        회원가입_닉네임_텍스트필드.snp.makeConstraints { make in
+        닉네임_백.snp.makeConstraints { make in
             make.top.equalTo(회원가입_이미지_선택_버튼.snp.bottom).offset(33)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(58)
+        }
+        회원가입_닉네임_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(닉네임_백)
+            make.leading.equalTo(닉네임_백).offset(30)
+            make.trailing.equalTo(닉네임_백).offset(-80)
+            make.height.equalTo(58)
 
         }
-        회원가입_이메일_텍스트필드.snp.makeConstraints { make in
+        이메일_백.snp.makeConstraints { make in
             make.top.equalTo(회원가입_닉네임_텍스트필드.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(58)
         }
-        회원가입_중복확인_버튼.snp.makeConstraints { make in
-            
+        회원가입_이메일_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(이메일_백)
+            make.leading.equalTo(이메일_백).offset(30)
+            make.trailing.equalTo(이메일_백).offset(-80)
+            make.height.equalTo(58)
         }
-        회원가입_비밀번호_텍스트필드.snp.makeConstraints { make in
+        비밀번호_백.snp.makeConstraints { make in
             make.top.equalTo(회원가입_이메일_텍스트필드.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
+            make.height.equalTo(58)
+        }
+        회원가입_중복확인_버튼.snp.makeConstraints { make in
+            make.centerY.equalTo(이메일_백.snp.centerY)
+            make.trailing.equalTo(이메일_백.snp.trailing).offset(-30)
+        }
+        회원가입_비밀번호_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(비밀번호_백)
+            make.leading.equalTo(비밀번호_백).offset(30)
+            make.trailing.equalTo(비밀번호_백).offset(-80)
             make.height.equalTo(58)
         }
         회원가입_다음_버튼.snp.makeConstraints { make in
