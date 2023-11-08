@@ -5,14 +5,11 @@
 //  Created by cheshire on 10/23/23.
 //
 
-import Foundation
 import UIKit
-import RxSwift
+import SDWebImage
 
 // 새로운 셀 클래스를 정의합니다.
 class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
-    var disposeBag = DisposeBag()
-
 
     var label: UILabel!
     var imageView: UIImageView!
@@ -23,6 +20,15 @@ class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
         self.backgroundColor = .black  // 셀의 배경색을 검은색으로 설정
         contentView.backgroundColor = .black  // contentView의 배경색도 검은색으로 설정
 
+        setupImageView()
+        setupLabel()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupImageView() {
         imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -34,7 +40,9 @@ class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
             make.width.equalTo(200)
             make.height.equalTo(370)
         }
+    }
 
+    private func setupLabel() {
         label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 40)
         label.numberOfLines = 0
@@ -50,13 +58,8 @@ class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
         }
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    // 이미지를 로드하는 메소드를 추가합니다.
+    func loadImage(with url: URL) {
+        imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), options: .continueInBackground, completed: nil)
     }
-
-    func setImage(image: UIImage?) {
-        imageView.image = image
-    }
-
-    
 }
