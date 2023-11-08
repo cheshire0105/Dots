@@ -18,7 +18,7 @@ class 회원가입_네번째_뷰컨트롤러 : UIViewController {
         imageView.backgroundColor = .white
         imageView.layer.cornerRadius = 45
         imageView.clipsToBounds = true
-
+        
         imageView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         return imageView
     }()
@@ -29,7 +29,7 @@ class 회원가입_네번째_뷰컨트롤러 : UIViewController {
         imageView.backgroundColor = .white
         imageView.layer.cornerRadius = 45
         imageView.clipsToBounds = true
-
+        
         
         return imageView
     }()
@@ -39,28 +39,28 @@ class 회원가입_네번째_뷰컨트롤러 : UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .white
         imageView.clipsToBounds = true
-
-      
+        
+        
         let combinedMaskLayer = CALayer()
-
+        
         let maskLayer1 = CAShapeLayer()
         maskLayer1.bounds = CGRect(x: 0, y: 0, width: 94, height: 94)
         let maskPath1 = UIBezierPath(rect: maskLayer1.bounds).cgPath
         maskLayer1.path = maskPath1
         maskLayer1.position = CGPoint(x: 47 , y: 0)
-
+        
         let maskLayer2 = CAShapeLayer()
         maskLayer2.bounds = CGRect(x: 0, y: 0, width: 47, height: 188)
         let maskPath2 = UIBezierPath(rect: maskLayer2.bounds).cgPath
         maskLayer2.path = maskPath2
-
+        
         maskLayer2.position = CGPoint(x: 47 , y: 0)
-
+        
         combinedMaskLayer.addSublayer(maskLayer1)
         combinedMaskLayer.addSublayer(maskLayer2)
-
+        
         imageView.layer.mask = combinedMaskLayer
-
+        
         
         
         return imageView
@@ -71,25 +71,25 @@ class 회원가입_네번째_뷰컨트롤러 : UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .white
         imageView.clipsToBounds = true
-
+        
         let combinedMaskLayer = CALayer()
-
-           let maskLayer1 = CAShapeLayer()
-           maskLayer1.bounds = CGRect(x: 0, y: 0, width: 94, height: 47)
+        
+        let maskLayer1 = CAShapeLayer()
+        maskLayer1.bounds = CGRect(x: 0, y: 0, width: 94, height: 47)
         let maskPath1 = UIBezierPath(roundedRect: maskLayer1.bounds, byRoundingCorners: [.topLeft, .bottomLeft, .bottomRight], cornerRadii: CGSize(width: 20, height: 20)).cgPath
-           maskLayer1.path = maskPath1
-           maskLayer1.position = CGPoint(x: 47, y: 23.5)
-
-           let maskLayer2 = CAShapeLayer()
-           maskLayer2.bounds = CGRect(x: 0, y: 0, width: 94, height: 47)
+        maskLayer1.path = maskPath1
+        maskLayer1.position = CGPoint(x: 47, y: 23.5)
+        
+        let maskLayer2 = CAShapeLayer()
+        maskLayer2.bounds = CGRect(x: 0, y: 0, width: 94, height: 47)
         let maskPath2 = UIBezierPath(roundedRect: maskLayer2.bounds, byRoundingCorners: [.topLeft,.topRight, .bottomRight], cornerRadii: CGSize(width: 20, height: 20)).cgPath
-           maskLayer2.path = maskPath2
-           maskLayer2.position = CGPoint(x: 47, y: 70.5)
-
-           combinedMaskLayer.addSublayer(maskLayer1)
-           combinedMaskLayer.addSublayer(maskLayer2)
-
-           imageView.layer.mask = combinedMaskLayer
+        maskLayer2.path = maskPath2
+        maskLayer2.position = CGPoint(x: 47, y: 70.5)
+        
+        combinedMaskLayer.addSublayer(maskLayer1)
+        combinedMaskLayer.addSublayer(maskLayer2)
+        
+        imageView.layer.mask = combinedMaskLayer
         return imageView
     }()
     
@@ -166,7 +166,7 @@ extension 회원가입_네번째_뷰컨트롤러 {
         로그인페이지로_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
     }
     @objc func 로그인_버튼_클릭() {
-        print("로그인 하러가시죠")
+        print("생성한 계정을 이용할수있게 로그인 페이지로 이동")
         let 로그인하러가기 = 로그인_뷰컨트롤러()
         self.navigationController?.pushViewController(로그인하러가기, animated: true)
         navigationItem.hidesBackButton = true
