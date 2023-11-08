@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import SnapKit
 import RxDataSources
+import Nuke
 
 // 1. Section Model을 정의합니다.
 struct SectionItem {
