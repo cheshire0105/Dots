@@ -212,28 +212,29 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         ]
 
         let dataSource = RxCollectionViewSectionedReloadDataSource<SectionItem>(
-                configureCell: { [weak self] (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
-                    if indexPath.section == 0 {
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
-                        cell.label.text = item
-                        cell.contentView.clipsToBounds = true
+            configureCell: { [weak self] (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
+                if indexPath.section == 0 {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
+                    cell.label.text = item
+                    cell.contentView.clipsToBounds = true
 
-                        // 셀에 대한 전시회 데이터를 가져옵니다.
-                        if let exhibition = self?.exhibitionData(forIndexPath: indexPath) {
-                            let storagePath = "images/서울_전시_1.png" // 전시회 모델에서 포스터 이름을 가져옵니다.
-                            let storageRef = Storage.storage().reference(withPath: storagePath)
-                            storageRef.downloadURL { (url, error) in
-                                if let error = error {
-                                    print("Error getting download URL: \(error)")
-                                } else if let url = url {
-                                    DispatchQueue.main.async {
-                                        // SDWebImage를 사용하여 이미지 로드
-                                        cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-                                    }
+                    // 셀에 대한 전시회 데이터를 가져옵니다.
+                    if let exhibition = self?.exhibitionData(forIndexPath: indexPath) {
+                        let storagePath = "images/\(exhibition.poster).png" // 전시회 모델에서 포스터 이름을 가져옵니다.
+                        print(storagePath)
+                        let storageRef = Storage.storage().reference(withPath: storagePath)
+                        storageRef.downloadURL { (url, error) in
+                            if let error = error {
+                                print("Error getting download URL: \(error)")
+                            } else if let url = url {
+                                DispatchQueue.main.async {
+                                    // SDWebImage를 사용하여 이미지 로드
+                                    cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
                                 }
                             }
                         }
-                        return cell
+                    }
+                    return cell
                 } else {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GraySquareCell", for: indexPath) as! GraySquareCell
                     // 필요한 설정을 추가할 수 있습니다.
