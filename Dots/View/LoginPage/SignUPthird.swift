@@ -2,7 +2,8 @@ import UIKit
 import SnapKit
 
 class 회원가입_세번째_뷰컨트롤러 : UIViewController {
-    
+    let tastes = ["국립현대미술관 서울", "백남준 아트센터", "리움미술관", "호암미술관", "뮤지엄 산", "서울시립미술관", "아르떼뮤지엄 제주", "국립현대미술관 과천", "국립중앙박물관", "대림미술관","예술의전당","서울미술관","청주시립미술관","포항시립미술관","북서울미술관","수원시립아트스페이스광교", "부산현대미술관","석파정 서울미술관","디뮤지엄", "경기도미술관","일민미술관","sfasfsafsfaasfaffsfsafasffasfsafasf","asfsfsafsafsafsafsfasfsafsafsfas"]
+
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -67,6 +68,23 @@ class 회원가입_세번째_뷰컨트롤러 : UIViewController {
         return button
     }()
     
+    lazy var collectionView: UICollectionView = {
+           let layout = UICollectionViewFlowLayout()
+           layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 15
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 30)
+
+           let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+           collectionView.translatesAutoresizingMaskIntoConstraints = false
+           collectionView.backgroundColor = .white
+           collectionView.dataSource = self
+           collectionView.delegate = self
+           collectionView.register(TasteCell.self, forCellWithReuseIdentifier: "TasteCell")
+           return collectionView
+       }()
+    
+    
     override func viewDidLoad() {
         view.backgroundColor = .black
         UI레이아웃 ()
@@ -83,7 +101,8 @@ extension 회원가입_세번째_뷰컨트롤러 {
         view.addSubview(검색_백)
         view.addSubview(검색_텍스트필드)
         view.addSubview(다음_버튼)
-        
+        view.addSubview(collectionView)
+
         뒤로가기_버튼.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(75)
             make.leading.equalToSuperview().offset(24)
@@ -119,6 +138,12 @@ extension 회원가입_세번째_뷰컨트롤러 {
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(64)
         }
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(검색_백.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(15)
+            make.trailing.equalToSuperview().offset(15)
+            make.bottom.equalTo(다음_버튼.snp.top).offset(-5)
+        }
     }
 }
 
@@ -148,5 +173,37 @@ extension 회원가입_세번째_뷰컨트롤러 {
         let 다음화면_이동 = 회원가입_네번째_뷰컨트롤러()
         self.navigationController?.pushViewController(다음화면_이동, animated: true)
         navigationItem.hidesBackButton = true
+    }
+}
+extension 회원가입_세번째_뷰컨트롤러 : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout  {
+   
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return tastes.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TasteCell", for: indexPath) as! TasteCell
+        cell.titleLabel.text = tastes[indexPath.item]
+        return cell
+    }
+
+    // MARK: - UICollectionViewDelegate
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Handle taste selection
+        print("Selected Taste: \(tastes[indexPath.item])")
+    }
+
+    // MARK: - UICollectionViewDelegateFlowLayout
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let text = tastes[indexPath.item]
+        let font = UIFont.systemFont(ofSize: 15)
+        let size = text.size(withAttributes: [NSAttributedString.Key.font: font])
+
+        // Add some padding for a better visual appearance
+        // 패딩 값 동적 조절
+                let padding: CGFloat = 16 + (size.width / 10)  // 조절 가능한 값
+        return CGSize(width: size.width + padding, height: 30)
     }
 }

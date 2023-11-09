@@ -13,7 +13,7 @@ class 회원가입_네번째_뷰컨트롤러 : UIViewController {
     } ()
     private let D = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "morningStar")
+        imageView.image = UIImage(named: "help")
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .white
         imageView.layer.cornerRadius = 45
@@ -106,6 +106,7 @@ class 회원가입_네번째_뷰컨트롤러 : UIViewController {
         button.titleLabel?.textAlignment = .center
         return button
     }()
+    
     
     override func viewDidLoad() {
         view.backgroundColor = .black
