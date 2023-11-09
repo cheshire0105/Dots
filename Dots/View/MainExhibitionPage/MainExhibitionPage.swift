@@ -14,7 +14,6 @@ import SDWebImage
 import Firebase
 import FirebaseStorage
 
-
 // 1. Section Model을 정의합니다.
 struct 메인페이지_전체_전시_섹션 {
     var header: String
@@ -36,7 +35,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
     var collectionViewTopConstraint: Constraint?
     let items = ["전시회", "미술관", "갤러리", "박물관", "비엔날레"]
     var exhibitions = [ExhibitionModel]()
-
 
     lazy var CategoryCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -63,7 +61,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         collectionView.register(MainExhibitionFirstSectionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
         collectionView.register(선별_전시_컬렉션_셀.self, forCellWithReuseIdentifier: "선별_전시_컬렉션_셀")
         collectionView.register(선별_전시_컬렉션_셀_헤더.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더")
-
         collectionView.isScrollEnabled = true
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
@@ -80,8 +77,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-
-
     }
 
 
@@ -90,37 +85,105 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
 
         // 네비게이션 바의 아이템들을 숨깁니다.
         navigationController?.setNavigationBarHidden(true, animated: false)
+
         setupCollectionView()
         bindCollectionView()
-
         setupNewCollectionView()
-        bindNewCollectionView()
-
         fetchExhibitionData()
 
-
-
         self.view.backgroundColor = .black
-
-
 
     }
 
     private func fetchExhibitionData() {
-        API.shared.fetchExhibitions()
-            .subscribe(onNext: { [weak self] exhibitions in
-                self?.exhibitions = exhibitions
-                self?.MainExhibitionCollectionView.reloadData()
-            }, onError: { error in
-                print("An error occurred: \(error)")
-            }, onCompleted: {
-                print("Fetch completed.")
-            })
-            .disposed(by: disposeBag)
-    }
+           API.shared.fetchExhibitions() // 이 메소드는 RxSwift Observable을 반환해야 합니다.
+               .subscribe(onNext: { [weak self] newExhibitions in
+                   self?.exhibitions = newExhibitions
+                   self?.updateSections() // 새로운 섹션 데이터로 업데이트합니다.
+               }, onError: { error in
+                   print("An error occurred: \(error)")
+               }).disposed(by: disposeBag)
+       }
 
+    private func updateSections() {
+         let firstSectionItems = exhibitions.map { $0.title } // 전시 타이틀을 배열로 변환합니다.
+         // 나머지 섹션의 아이템도 각각 필요한 데이터로 업데이트합니다.
+         // 예제 데이터로 두 번째, 세 번째, 네 번째 섹션을 설정합니다.
+         let secondSectionItems = Array(repeating: "GraySquare", count: 10)
+         let thirdSectionItems = Array(repeating: "GraySquare", count: 10)
+         let fourthSectionItems = Array(repeating: "GraySquare", count: 10)
 
+         let sections = [
+             메인페이지_전체_전시_섹션(header: "MainExhibition", items: firstSectionItems),
+             메인페이지_전체_전시_섹션(header: "GraySquare", items: secondSectionItems),
+             메인페이지_전체_전시_섹션(header: "GraySquare", items: thirdSectionItems),
+             메인페이지_전체_전시_섹션(header: "GraySquare", items: fourthSectionItems)
+         ]
 
+         // 데이터 소스 설정을 업데이트합니다. 여기에 이전에 정의된 dataSource를 사용합니다.
+        let dataSource = RxCollectionViewSectionedReloadDataSource<메인페이지_전체_전시_섹션>(
+            configureCell: { [weak self] (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
+                if indexPath.section == 0 {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
+                    // 셀에 대한 전시회 데이터를 가져옵니다.
+                    if let exhibition = self?.exhibitionData(forIndexPath: indexPath) {
+                        // 셀에 타이틀을 서버에서 가져온 데이터로 설정합니다.
+                        cell.label.text = exhibition.title // 가정한 'title'은 ExhibitionModel의 실제 제목 필드에 맞춰져야 합니다.
+
+                        let storagePath = "images/\(exhibition.poster).png" // 전시회 모델에서 포스터 이름을 가져옵니다.
+                        let storageRef = Storage.storage().reference(withPath: storagePath)
+                        storageRef.downloadURL { (url, error) in
+                            if let error = error {
+                                print("Error getting download URL: \(error)")
+                            } else if let url = url {
+                                DispatchQueue.main.async {
+                                    // SDWebImage를 사용하여 이미지 로드
+                                    cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                                }
+                            }
+                        }
+                    } else {
+                        // 서버에서 가져온 데이터가 없을 경우, 기본 텍스트를 설정하거나 다른 처리를 할 수 있습니다.
+                        cell.label.text = "Default Title or Empty State"
+                    }
+                    cell.contentView.clipsToBounds = true
+                    cell.configureCellLayout(isEven: indexPath.row % 2 == 0)
+                    return cell
+                } else {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
+                    // 필요한 설정을 추가할 수 있습니다.
+                    return cell
+                }
+            },
+            configureSupplementaryView: { (dataSource, collectionView, kind, indexPath) -> UICollectionReusableView in
+                if kind == UICollectionView.elementKindSectionHeader {
+                    let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
+                    if indexPath.section == 1 {
+                        header.label.text = "용인 근처의 전시"
+                    } else if indexPath.section == 2 {
+                        header.label.text = "도트 님의 취향 저격 콘텐츠"
+                    } else if indexPath.section == 3 {
+                        header.label.text = "도트 님의 가까운 전시"
+                    }
+                    return header
+                }
+                return UICollectionReusableView()
+
+            }
+
+        )
+         Observable.just(sections)
+             .bind(to: MainExhibitionCollectionView.rx.items(dataSource: dataSource))
+             .disposed(by: disposeBag)
+         MainExhibitionCollectionView.reloadData() // 컬렉션 뷰를 리로드합니다.
+
+        MainExhibitionCollectionView.rx.itemSelected.subscribe(onNext: { indexPath in
+            print("Selected new item at \(indexPath.row)")
+
+            let exhibitionPage = ExhibitionPage()
+            self.navigationController?.pushViewController(exhibitionPage, animated: true)
+        }).disposed(by: disposeBag)
+     }
 
     private func setupCollectionView() {
         view.addSubview(CategoryCollectionView)
@@ -178,7 +241,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         }
     }
 
-
     private func bindCollectionView() {
         Observable.just(items)
             .bind(to: CategoryCollectionView.rx.items(cellIdentifier: "CategoryCollectionCell", cellType: CategotyCell.self)) { (row, text, cell) in
@@ -202,91 +264,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         }
     }
 
-    private func bindNewCollectionView() {
-        // 예제 데이터
-        let firstSectionItems = Array(repeating: "리암 길릭: \n The Alterants", count: 10)
-        let secondSectionItems = Array(repeating: "GraySquare", count: 10)
-        let thirdSectionItems = Array(repeating: "GraySquare", count: 10) // 세 번째 섹션 데이터
-        let tirthSectionItems = Array(repeating: "GraySquare", count: 10) // 네 번째 섹션 데이터
-
-        let sections = [
-            메인페이지_전체_전시_섹션(header: "MainExhibition", items: firstSectionItems),
-            메인페이지_전체_전시_섹션(header: "GraySquare", items: secondSectionItems),
-            메인페이지_전체_전시_섹션(header: "GraySquare", items: thirdSectionItems), // 세 번째 섹션 추가
-            메인페이지_전체_전시_섹션(header: "GraySquare", items: tirthSectionItems) // 세 번째 섹션 추가
-
-        ]
-
-        let dataSource = RxCollectionViewSectionedReloadDataSource<메인페이지_전체_전시_섹션>(
-            configureCell: { [weak self] (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
-                if indexPath.section == 0 {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
-                    // 셀에 대한 전시회 데이터를 가져옵니다.
-                    if let exhibition = self?.exhibitionData(forIndexPath: indexPath) {
-                        // 셀에 타이틀을 서버에서 가져온 데이터로 설정합니다.
-                        cell.label.text = exhibition.title // 가정한 'title'은 ExhibitionModel의 실제 제목 필드에 맞춰져야 합니다.
-
-                        let storagePath = "images/\(exhibition.poster).png" // 전시회 모델에서 포스터 이름을 가져옵니다.
-                        let storageRef = Storage.storage().reference(withPath: storagePath)
-                        storageRef.downloadURL { (url, error) in
-                            if let error = error {
-                                print("Error getting download URL: \(error)")
-                            } else if let url = url {
-                                DispatchQueue.main.async {
-                                    // SDWebImage를 사용하여 이미지 로드
-                                    cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-                                }
-                            }
-                        }
-                    } else {
-                        // 서버에서 가져온 데이터가 없을 경우, 기본 텍스트를 설정하거나 다른 처리를 할 수 있습니다.
-                        cell.label.text = "Default Title or Empty State"
-                    }
-                    cell.contentView.clipsToBounds = true
-                    cell.configureCellLayout(isEven: indexPath.row % 2 == 0)
-                    return cell
-                } else {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
-                    // 필요한 설정을 추가할 수 있습니다.
-                    return cell
-                }
-            },
-            configureSupplementaryView: { (dataSource, collectionView, kind, indexPath) -> UICollectionReusableView in
-                if kind == UICollectionView.elementKindSectionHeader {
-                    let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
-                    if indexPath.section == 1 {
-                        header.label.text = "용인 근처의 전시"
-                    } else if indexPath.section == 2 {
-                        header.label.text = "도트 님의 취향 저격 콘텐츠"
-                    } else if indexPath.section == 3 {
-                        header.label.text = "도트 님의 가까운 전시"
-                    }
-                    return header
-                }
-                return UICollectionReusableView()
-
-            }
-
-        )
-
-        Observable.just(sections)
-            .bind(to: MainExhibitionCollectionView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-
-        MainExhibitionCollectionView.rx.itemSelected.subscribe(onNext: { indexPath in
-            print("Selected new item at \(indexPath.row)")
-
-            let exhibitionPage = ExhibitionPage()
-            self.navigationController?.pushViewController(exhibitionPage, animated: true)
-        }).disposed(by: disposeBag)
-
-        MainExhibitionCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
-
-        if let flowLayout = MainExhibitionCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            flowLayout.minimumLineSpacing = 0
-        }
-    }
-
     // 기존의 sizeForItemAt 메소드를 수정하여, 새로운 컬렉션뷰의 사이즈도 설정해줍니다.
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == CategoryCollectionView {
@@ -301,8 +278,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         return CGSize.zero
     }
 
-
-
     func exhibitionData(forIndexPath indexPath: IndexPath) -> ExhibitionModel? {
         // 첫 번째 섹션에만 전시회 데이터가 표시되므로, 첫 번째 섹션의 인덱스 경로만 처리합니다.
         if indexPath.section == 0 {
@@ -315,8 +290,6 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         // 다른 섹션 또는 잘못된 인덱스에 대해서는 nil을 반환합니다.
         return nil
     }
-
-
 
 }
 
@@ -333,6 +306,8 @@ extension MainExhibitionPage: UIScrollViewDelegate {
         }
     }
 }
+
+
 
 
 class API {
@@ -361,7 +336,6 @@ class API {
             return Disposables.create()
         }
     }
-
 
     func downloadImage(withPath imagePath: String, completion: @escaping (UIImage?) -> Void) {
         // Firebase Storage의 참조를 얻습니다.
