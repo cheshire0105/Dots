@@ -3,7 +3,7 @@
 //  Dots
 //
 //  Created by cheshire on 10/23/23.
-//
+//  2023.11.9 - 목 10: 19일 최신화 푸쉬
 
 import UIKit
 import RxSwift
