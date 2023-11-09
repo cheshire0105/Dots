@@ -472,7 +472,7 @@ class ExhibitionPage: UIViewController, UIScrollViewDelegate, UIGestureRecognize
         // 메인 스레드에서 UI 작업을 수행합니다.
         DispatchQueue.main.async {
             // 로그인 뷰 컨트롤러를 생성합니다.
-            let signUpVC = SignUpViewController()
+            let signUpVC = 로그인_뷰컨트롤러()
             let navigationController = UINavigationController(rootViewController: signUpVC)
 
             // SceneDelegate의 window를 가져옵니다.

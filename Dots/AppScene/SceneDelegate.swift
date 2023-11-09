@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // 로그인이 되어 있지 않으면, 로그인/회원가입 뷰를 설정합니다.
             launchScreenVC.completionHandler = { [weak self] in
                 guard let self = self else { return }
-                let signUpVC = SignUpViewController()
+                let signUpVC = 로그인_회원가입_뷰컨트롤러()
                 let navigationController = UINavigationController(rootViewController: signUpVC)
                 self.window?.rootViewController = navigationController
             }
