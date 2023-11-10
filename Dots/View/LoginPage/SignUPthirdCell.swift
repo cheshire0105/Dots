@@ -1,24 +1,15 @@
 import UIKit
 import SnapKit
 
-class 미술관_리스트_셀: UICollectionViewCell {
-    let titleLabel: UILabel = {
+class 아티스트_리스트_셀: UICollectionViewCell {
+    let 아티스트_이름: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         return label
     }()
     
-    let 미술관_버튼 = {
-        let button = UIButton()
-        button.setTitle("", for: .selected)
-        button.setTitle("", for: .normal)
-        button.setTitleColor(UIColor(named: "neon"), for: .selected)
-        button.setTitleColor(UIColor(named: "neon"), for: .normal)
-        button.titleLabel?.textAlignment = .center
-        button.layer.cornerRadius = 15
-        return button
-    } ()
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,8 +22,8 @@ class 미술관_리스트_셀: UICollectionViewCell {
     }
     
     func 셀_레이아웃() {
-        addSubview(미술관_버튼)
-        미술관_버튼.snp.makeConstraints { make in
+        addSubview(아티스트_이름)
+        아티스트_이름.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
@@ -41,3 +32,4 @@ class 미술관_리스트_셀: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
