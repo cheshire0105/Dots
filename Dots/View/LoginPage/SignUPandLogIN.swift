@@ -155,21 +155,21 @@ extension 로그인_회원가입_뷰컨트롤러 {
             make.width.equalTo(40)
             make.height.equalTo(40)
             make.top.equalToSuperview().offset(258)
-            make.leading.equalToSuperview().offset(95)
+            make.trailing.equalTo(로그인_버튼.snp.centerX).offset(-50)
             
         }
         O.snp.makeConstraints { make in
             make.width.equalTo(40)
             make.height.equalTo(40)
             make.top.equalToSuperview().offset(258)
-            make.leading.equalTo(D.snp.trailing).offset(8)
+            make.trailing.equalTo(로그인_버튼.snp.centerX).offset(-4)
 
         }
         T.snp.makeConstraints { make in
             make.width.equalTo(40)
             make.height.equalTo(40)
             make.top.equalToSuperview().offset(258)
-            make.leading.equalTo(O.snp.trailing).offset(8)
+            make.leading.equalTo(로그인_버튼.snp.centerX).offset(4)
 
 
         }
@@ -177,7 +177,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
             make.width.equalTo(40)
             make.height.equalTo(40)
             make.top.equalToSuperview().offset(258)
-            make.trailing.equalToSuperview().offset(-95)
+            make.leading.equalTo(로그인_버튼.snp.centerX).offset(50)
 
         }
 //        로고_이미지.snp.makeConstraints { make in

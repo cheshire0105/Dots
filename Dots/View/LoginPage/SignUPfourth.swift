@@ -126,29 +126,29 @@ extension 회원가입_네번째_뷰컨트롤러 {
         view.addSubview(로그인페이지로_버튼)
         제목_라벨.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(238)
-            make.leading.equalToSuperview().offset(57)
+            make.centerX.equalToSuperview()
         }
         D.snp.makeConstraints { make in
             make.top.equalTo(제목_라벨.snp.bottom).offset(72)
-            make.leading.equalToSuperview().offset(90)
+            make.trailing.equalTo(로그인페이지로_버튼.snp.centerX).offset(-3)
             make.height.equalTo(94)
             make.width.equalTo(94)
         }
         O.snp.makeConstraints { make in
             make.top.equalTo(제목_라벨.snp.bottom).offset(72)
-            make.trailing.equalToSuperview().offset(-90)
+            make.leading.equalTo(로그인페이지로_버튼.snp.centerX).offset(3)
             make.height.equalTo(94)
             make.width.equalTo(94)
         }
         T.snp.makeConstraints { make in
             make.top.equalTo(D.snp.bottom).offset(6)
-            make.leading.equalToSuperview().offset(90)
+            make.trailing.equalTo(로그인페이지로_버튼.snp.centerX).offset(-3)
             make.height.equalTo(94)
             make.width.equalTo(94)
         }
         S.snp.makeConstraints { make in
             make.top.equalTo(O.snp.bottom).offset(6)
-            make.trailing.equalToSuperview().offset(-90)
+            make.leading.equalTo(로그인페이지로_버튼.snp.centerX).offset(3)
             make.height.equalTo(94)
             make.width.equalTo(94)
         }
