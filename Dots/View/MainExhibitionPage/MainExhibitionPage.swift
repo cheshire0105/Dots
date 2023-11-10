@@ -180,7 +180,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         MainExhibitionCollectionView.rx.itemSelected.subscribe(onNext: { indexPath in
             print("Selected new item at \(indexPath.row)")
 
-            let exhibitionPage = ExhibitionPage()
+            let exhibitionPage = BackgroundImageViewController()
             self.navigationController?.pushViewController(exhibitionPage, animated: true)
         }).disposed(by: disposeBag)
      }
