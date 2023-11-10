@@ -20,7 +20,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
-    
+
     lazy var headsetIcon: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "headset help_"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
@@ -114,13 +114,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 // safe area bottom을 구하기 위한 선언.
                 let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
                 let safeAreaBottom = windowScene?.windows.first?.safeAreaInsets.bottom ?? 0
-                
+
 
                 // 모든 기기에서 항상 높이가 700인 detent를 만들어낼 수 있다.
                 return 700 - safeAreaBottom
             }
 
-            
+
 
             // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
             sheetController.detents = [.medium(), customDetent]
@@ -144,23 +144,23 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     let segmentControl = UISegmentedControl(items: ["후기", "상세정보"])
     var reviewsTableView = UITableView()
-       var reviews: [String] = [] // 후기 데이터 배열
+    var reviews: [String] = [] // 후기 데이터 배열
 
 
     override func viewDidLoad() {
-            super.viewDidLoad()
+        super.viewDidLoad()
         view.backgroundColor = .black
-            isModalInPresentation = true
+        isModalInPresentation = true
 
         // 세그먼트 컨트롤 설정
-                configureSegmentControl()
+        configureSegmentControl()
 
-                // 테이블 뷰 설정
-                configureTableView()
+        // 테이블 뷰 설정
+        configureTableView()
         loadSampleReviews()
 
 
-        }
+    }
 
     func configureSegmentControl() {
 
@@ -209,23 +209,27 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         reviewsTableView.backgroundColor = .black
 
+
+        reviewsTableView.separatorStyle = .none  // 셀 사이의 구분선을 없애고 싶다면 이 속성을 설정합니다.
+
         // 테이블 뷰에 대한 SnapKit 레이아웃 설정
         reviewsTableView.snp.makeConstraints { make in
             make.top.equalTo(segmentControl.snp.bottom).offset(10)
-            make.left.right.equalTo(view).inset(10)
+            make.left.right.equalTo(view) // 여기에서 양쪽에 20포인트의 inset을 추가합니다.
             make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
 
+
     @objc func segmentChanged(_ sender: UISegmentedControl) {
-          reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
-          // 상세 정보 뷰의 표시 상태를 업데이트하는 코드를 여기에 추가합니다.
-      }
+        reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
+        // 상세 정보 뷰의 표시 상태를 업데이트하는 코드를 여기에 추가합니다.
+    }
 
     // UITableViewDataSource 메서드
-     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-         return reviews.count // 후기 배열의 길이 반환
-     }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return reviews.count // 후기 배열의 길이 반환
+    }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "새로운_ReviewTableViewCell", for: indexPath) as? 새로운_ReviewTableViewCell else {
@@ -241,98 +245,147 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 셀에 정보를 설정하는 부분
         cell.setReview(title: reviewTitle, content: reviewContent, profileImage: profileImage, nickname: nickname)
 
+
+
         return cell
     }
 
+    // UITableViewDelegate 메서드
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension // 자동으로 셀의 높이를 계산합니다.
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100 // 추정 높이를 설정합니다. 셀의 내용에 따라 실제 높이는 달라질 수 있습니다.
+    }
+
+
 
     private func loadSampleReviews() {
-           reviews = ["정말 좋았어요!", "멋진 전시였습니다.", "다시 방문하고 싶어요.", "추천합니다!", "생각보다 별로였어요.", "인상적인 작품이 많았습니다.", "전시가 너무 혼잡했어요.", "작품 설명이 잘 되어 있어서 좋았습니다.", "아이와 같이 가기 좋은 전시였어요.", "주차 공간이 넉넉해서 좋았어요.","정말 좋았어요!", "멋진 전시였습니다.", "다시 방문하고 싶어요.", "추천합니다!", "생각보다 별로였어요.", "인상적인 작품이 많았습니다.", "전시가 너무 혼잡했어요.", "작품 설명이 잘 되어 있어서 좋았습니다.", "아이와 같이 가기 좋은 전시였어요.", "주차 공간이 넉넉해서 좋았어요."]
-           reviewsTableView.reloadData()
-       }
+        reviews = ["이번 한국 명화 전시는 정말 감동적이었습니다. 작품들은 아름다운 색채와 섬세한 선으로 구성되어 있어 예술의 아름다움을 느낄 수 있었습니다.", "다시 방문하고 싶어요.", "추천합니다!", "생각보다 별로였어요.", "인상적인 작품이 많았습니다.", "전시장은 조용하고 아름다웠고, 명화들은 고요한 분위기를 자아냈습니다. 화가들의 정성이 느껴지는 작품들을 감상하면서 시간이 흘렀습니다.", "작품 설명이 잘 되어 있어서 좋았습니다.", "아이와 같이 가기 좋은 전시였어요.", "주차 공간이 넉넉해서 좋았어요.","정말 좋았어요!", "멋진 전시였습니다.", "다시 방문하고 싶어요.", "추천합니다!", "생각보다 별로였어요.", "전시를 통해 한국의 아름다운 풍경과 역사를 더 깊이 이해할 수 있었습니다. 명화들은 과거와 현재의 연결고리가 된 느낌이었습니다.", "전시가 너무 혼잡했어요.", "작품 설명이 잘 되어 있어서 좋았습니다.", "아이와 같이 가기 좋은 전시였어요.", "주차 공간이 넉넉해서 좋았어요."]
+        reviewsTableView.reloadData()
+    }
 
 }
 
-
-
-
-
-
 class 새로운_ReviewTableViewCell: UITableViewCell {
-    private let containerView = UIView()
-    private let titleLabel = UILabel()
-    private let contentLabel = UILabel()
-    private let profileImageView = UIImageView()
-    private let nicknameLabel = UILabel()
 
+
+
+    
+
+
+    // UI 컴포넌트 선언
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.textColor = .white
+        return label
+    }()
+
+    private lazy var contentLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .white
+        label.numberOfLines = 0 // 멀티라인을 허용합니다.
+        return label
+    }()
+
+    private lazy var profileImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 15
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    private lazy var nicknameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .white
+        return label
+    }()
+
+    private let container = UIView()
+
+
+    // 초기화 메서드
+    // 초기화 메서드
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = .black // contentView 배경색을 검은색으로 설정
+
+        // 컨테이너 뷰 설정
+        container.backgroundColor = .darkGray
+        container.layer.cornerRadius = 10
+        container.clipsToBounds = true
+
+        contentView.backgroundColor = .black
+        selectionStyle = .none
+
+        // 컨테이너 뷰를 contentView에 추가합니다.
+        contentView.addSubview(container)
+
+        // 모든 서브뷰를 컨테이너 뷰에 추가합니다.
+        container.addSubview(titleLabel)
+        container.addSubview(contentLabel)
+        container.addSubview(profileImageView)
+        container.addSubview(nicknameLabel)
+
+        // 컨테이너 뷰에 대한 제약조건을 설정합니다.
+        container.snp.makeConstraints { make in
+            make.top.equalTo(contentView.snp.top).offset(10) // 상단에 10포인트의 여백을 추가합니다.
+            make.bottom.equalTo(contentView.snp.bottom).offset(-10) // 하단에 10포인트의 여백을 추가합니다.
+            make.left.equalTo(contentView.snp.left).offset(10) // 좌측에 10포인트의 여백을 추가합니다.
+            make.right.equalTo(contentView.snp.right).offset(-10) // 우측에 10포인트의 여백을 추가합니다.
+        }
+
+        // 다른 UI 컴포넌트들의 레이아웃 설정을 업데이트합니다. (titleLabel, contentLabel, profileImageView, nicknameLabel 제약조건은 container 기준으로 업데이트합니다)
         setupLayout()
     }
 
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // 레이아웃 설정 메서드
     private func setupLayout() {
-        // containerView 설정
-        containerView.layer.cornerRadius = 10
-        containerView.clipsToBounds = true
-        containerView.backgroundColor = .gray
-        contentView.addSubview(containerView)
+        // 세부 레이아웃 설정을 위한 코드를 추가하였습니다.
+//        addSubview(titleLabel)
+//        addSubview(contentLabel)
+//        addSubview(profileImageView)
+//        addSubview(nicknameLabel)
 
-        // titleLabel 설정
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        titleLabel.textColor = .white
-
-        // contentLabel 설정
-        contentLabel.font = UIFont.systemFont(ofSize: 14)
-        contentLabel.textColor = .white
-        contentLabel.numberOfLines = 0
-
-        // profileImageView 설정
-        profileImageView.contentMode = .scaleAspectFill
-        profileImageView.clipsToBounds = true
-        profileImageView.layer.cornerRadius = 15 // 이미지의 둥근 모서리 반경 설정
-
-        // nicknameLabel 설정
-        nicknameLabel.font = UIFont.systemFont(ofSize: 12)
-        nicknameLabel.textColor = .white
-
-        // 컨테이너 뷰에 추가
-        containerView.addSubview(titleLabel)
-        containerView.addSubview(contentLabel)
-        containerView.addSubview(profileImageView)
-        containerView.addSubview(nicknameLabel)
-
-        // Auto Layout 설정
-        profileImageView.snp.makeConstraints { make in
-            make.top.left.equalTo(containerView).offset(8) // 상단과 왼쪽에 여백을 줍니다.
-            make.width.height.equalTo(30) // 프로필 이미지의 너비와 높이 설정
-        }
-
-        nicknameLabel.snp.makeConstraints { make in
-            make.left.equalTo(profileImageView.snp.right).offset(8) // 프로필 이미지 오른쪽에 위치
-            make.centerY.equalTo(profileImageView.snp.centerY) // 프로필 이미지와 중앙을 맞춥니다.
-        }
-
+        // 제목 레이블의 레이아웃 설정
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(8) // 프로필 이미지 아래에 위치
-            make.left.right.equalTo(containerView).inset(8) // 좌우 여백 설정
+            make.top.equalToSuperview().offset(10) // 상단 여백 설정
+            make.left.equalToSuperview().offset(10) // 좌측 여백 설정
+            make.right.equalToSuperview().offset(-10) // 우측 여백 설정
         }
 
+        // 내용 레이블의 레이아웃 설정
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(4) // 타이틀 레이블 아래에 위치
-            make.left.right.bottom.equalTo(containerView).inset(8) // 컨테이너 뷰의 내부 여백 설정
+            make.top.equalTo(titleLabel.snp.bottom).offset(5) // 제목 레이블 아래 간격을 둡니다.
+            make.left.right.equalTo(titleLabel)
         }
 
-        containerView.snp.makeConstraints { make in
-            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
+        // 프로필 이미지 뷰의 레이아웃 설정
+        profileImageView.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(10) // 내용 레이블 아래로 간격을 둡니다.
+            make.left.equalToSuperview().offset(10) // 좌측 여백 설정
+            make.width.height.equalTo(30) // 이미지 크기를 30x30으로 설정
+            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정
+        }
+
+        // 닉네임 레이블의 레이아웃 설정
+        nicknameLabel.snp.makeConstraints { make in
+            make.left.equalTo(profileImageView.snp.right).offset(10) // 프로필 이미지 오른쪽에 위치
+            make.centerY.equalTo(profileImageView.snp.centerY) // 프로필 이미지와 중앙 정렬
+            make.right.lessThanOrEqualToSuperview().offset(-10) // 우측 여백 설정, 내용이 길어질 경우를 대비하여 lessThanOrEqualTo를 사용
         }
     }
 
-    // 셀의 데이터를 설정하는 메서드
+    // 셀에 리뷰 정보를 설정하는 메서드
     func setReview(title: String, content: String, profileImage: UIImage?, nickname: String) {
         titleLabel.text = title
         contentLabel.text = content
