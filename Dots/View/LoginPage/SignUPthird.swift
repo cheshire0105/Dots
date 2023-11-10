@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 
 class 회원가입_세번째_뷰컨트롤러 : UIViewController {
-    
+    let 아티스트_리스트 : [String] = ["살바도르 달리", "파블로 피카소", "뱅크시" , "클로드 모네","빈센트 반 고흐", "램브란트", "레오나르도 다 빈치","미켈란젤로", "뒤샹", "앤디 워홀" , "폴 세잔"]
 
     let 뒤로가기_버튼 = {
         let button = UIButton()
@@ -67,7 +67,16 @@ class 회원가입_세번째_뷰컨트롤러 : UIViewController {
         button.titleLabel?.textAlignment = .center
         return button
     }()
-    
+    lazy var 아티스트_리스트_컬렉션뷰: UICollectionView = {
+           let layout = UICollectionViewFlowLayout()
+           layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 5
+        layout.sectionInset = UIEdgeInsets(top: 15, left: 15, bottom: 10, right: 15)
+           let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+           collectionView.backgroundColor = .black
+           return collectionView
+       }()
     
     
     
@@ -75,6 +84,9 @@ class 회원가입_세번째_뷰컨트롤러 : UIViewController {
         view.backgroundColor = .black
         UI레이아웃 ()
         버튼_클릭()
+        아티스트_리스트_컬렉션뷰.dataSource = self
+        아티스트_리스트_컬렉션뷰.delegate = self
+        아티스트_리스트_컬렉션뷰.register(아티스트_리스트_셀.self, forCellWithReuseIdentifier: "아티스트_리스트_셀")
     }
 }
 
@@ -87,6 +99,7 @@ extension 회원가입_세번째_뷰컨트롤러 {
         view.addSubview(검색_백)
         view.addSubview(검색_텍스트필드)
         view.addSubview(다음_버튼)
+        view.addSubview(아티스트_리스트_컬렉션뷰)
 
         뒤로가기_버튼.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(75)
@@ -123,6 +136,12 @@ extension 회원가입_세번째_뷰컨트롤러 {
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(64)
         }
+        아티스트_리스트_컬렉션뷰.snp.makeConstraints { make in
+            make.top.equalTo(검색_백.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(15)
+            make.trailing.equalToSuperview().offset(-15)
+            make.bottom.equalTo(다음_버튼.snp.top).offset(-5)
+        }
         
     }
 }
@@ -153,5 +172,30 @@ extension 회원가입_세번째_뷰컨트롤러 {
         let 다음화면_이동 = 회원가입_네번째_뷰컨트롤러()
         self.navigationController?.pushViewController(다음화면_이동, animated: true)
         navigationItem.hidesBackButton = true
+    }
+}
+
+
+extension 회원가입_세번째_뷰컨트롤러 : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout  {
+   
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 아티스트_리스트.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "아티스트_리스트_셀", for: indexPath) as! 아티스트_리스트_셀
+        cell.아티스트_이름.text = 아티스트_리스트[indexPath.item]
+        cell.아티스트_이름.text = 아티스트_리스트[indexPath.item]
+        
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        print("Selected Taste: \(아티스트_리스트[indexPath.item])")
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let randomWidth = CGFloat(arc4random_uniform(50) + 50)
+                let randomHeight = randomWidth
+                return CGSize(width: randomWidth, height: randomHeight)
     }
 }
