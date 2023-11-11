@@ -145,7 +145,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     let segmentControl = UISegmentedControl(items: ["후기", "상세정보"])
     var reviewsTableView = UITableView()
     var reviews: [String] = [] // 후기 데이터 배열
-
+    // 새로운 스크롤 뷰 프로퍼티 추가
+      var detailScrollView: UIScrollView!
+      var detailContentView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -159,6 +161,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         configureTableView()
         loadSampleReviews()
 
+        configureDetailScrollView()
 
     }
 
@@ -220,11 +223,69 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
 
+    func configureDetailScrollView() {
+          // 스크롤 뷰 초기화
+          detailScrollView = UIScrollView()
+          detailScrollView.backgroundColor = .gray // 배경색 설정
+          view.addSubview(detailScrollView)
+          detailScrollView.isHidden = true // 초기 상태는 숨겨져 있음
+
+          // 스크롤 뷰에 들어갈 컨텐츠 뷰 초기화
+          detailContentView = UIView()
+          detailScrollView.addSubview(detailContentView)
+
+        // 전시 제목 레이블 초기화
+            let exhibitionTitleLabel = UILabel()
+            exhibitionTitleLabel.text = "갤러리바톤의 전시"
+            exhibitionTitleLabel.textColor = .white
+            exhibitionTitleLabel.font = UIFont.boldSystemFont(ofSize: 18)
+
+            // 미술관 주소 레이블 초기화
+            let galleryAddressLabel = UILabel()
+            galleryAddressLabel.text = "서울 종로구 삼청로 30"
+            galleryAddressLabel.textColor = .lightGray
+            galleryAddressLabel.font = UIFont.systemFont(ofSize: 14)
+
+            // 컨텐츠 뷰에 레이블 추가
+            detailContentView.addSubview(exhibitionTitleLabel)
+            detailContentView.addSubview(galleryAddressLabel)
+
+          // 스크롤 뷰 제약 조건 설정
+          detailScrollView.snp.makeConstraints { make in
+              make.top.equalTo(segmentControl.snp.bottom).offset(10)
+              make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+          }
+
+
+
+        // 전시 제목 레이블 레이아웃 설정
+           exhibitionTitleLabel.snp.makeConstraints { make in
+               make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
+               make.leading.equalTo(detailContentView.snp.leading).offset(20) // 좌측 여백
+               make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 우측 여백
+           }
+
+           // 미술관 주소 레이블 레이아웃 설정
+           galleryAddressLabel.snp.makeConstraints { make in
+               make.top.equalTo(exhibitionTitleLabel.snp.bottom).offset(8) // 전시 제목 레이블 아래 간격
+               make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
+               make.trailing.equalTo(exhibitionTitleLabel.snp.trailing) // 우측 정렬
+           }
+
+           // 컨텐츠 뷰의 높이를 내부 컨텐츠에 맞게 조정
+           detailContentView.snp.makeConstraints { make in
+               // 마지막 추가된 요소의 하단에 대한 제약 조건을 설정하여 스크롤 뷰의 컨텐츠 크기를 결정
+               make.bottom.equalTo(galleryAddressLabel.snp.bottom).offset(20)
+           }
+
+      }
+
 
     @objc func segmentChanged(_ sender: UISegmentedControl) {
-        reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
-        // 상세 정보 뷰의 표시 상태를 업데이트하는 코드를 여기에 추가합니다.
-    }
+          reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
+          detailScrollView.isHidden = sender.selectedSegmentIndex != 1
+          // 상세 정보 뷰의 표시 상태를 업데이트하는 코드를 여기에 추가합니다.
+      }
 
     // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -269,11 +330,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 }
 
 class 새로운_ReviewTableViewCell: UITableViewCell {
-
-
-
-    
-
 
     // UI 컴포넌트 선언
     private lazy var titleLabel: UILabel = {
@@ -350,11 +406,6 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
 
     // 레이아웃 설정 메서드
     private func setupLayout() {
-        // 세부 레이아웃 설정을 위한 코드를 추가하였습니다.
-//        addSubview(titleLabel)
-//        addSubview(contentLabel)
-//        addSubview(profileImageView)
-//        addSubview(nicknameLabel)
 
         // 제목 레이블의 레이아웃 설정
         titleLabel.snp.makeConstraints { make in
