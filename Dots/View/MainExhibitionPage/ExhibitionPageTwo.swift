@@ -234,7 +234,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     func configureDetailScrollView() {
         // 스크롤 뷰 초기화
         detailScrollView = UIScrollView()
-        detailScrollView.backgroundColor = .gray // 배경색 설정
+        detailScrollView.backgroundColor = .black // 배경색 설정
         view.addSubview(detailScrollView)
         detailScrollView.isHidden = true // 초기 상태는 숨겨져 있음
 
@@ -245,23 +245,73 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 개별 사각형 뷰를 생성하고 detailContentView에 추가합니다.
         let squareView1 = UIView()
         squareView1.backgroundColor = .lightGray
+        squareView1.layer.cornerRadius = 10
+        squareView1.clipsToBounds = true
+        let imageView1 = UIImageView(image: UIImage(named: "calenderE"))
+        imageView1.contentMode = .scaleAspectFill
+        squareView1.addSubview(imageView1)
         detailContentView.addSubview(squareView1)
+        imageView1.snp.makeConstraints { make in
+            make.center.equalTo(squareView1) // 사각형 뷰의 중앙에 배치
+            make.width.height.lessThanOrEqualTo(squareView1).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
+        }
+
 
         let squareView2 = UIView()
         squareView2.backgroundColor = .lightGray
+        squareView2.layer.cornerRadius = 10
+        squareView2.clipsToBounds = true
+        let imageView2 = UIImageView(image: UIImage(named: "Group 50"))
+        imageView2.contentMode = .scaleAspectFill
+        squareView2.addSubview(imageView2)
         detailContentView.addSubview(squareView2)
+        imageView2.snp.makeConstraints { make in
+            make.center.equalTo(squareView2) // 사각형 뷰의 중앙에 배치
+            make.width.height.lessThanOrEqualTo(squareView2).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
+        }
 
         let squareView3 = UIView()
         squareView3.backgroundColor = .lightGray
+        squareView3.layer.cornerRadius = 10
+        squareView3.clipsToBounds = true
+        let imageView3 = UIImageView(image: UIImage(named: "Group 48"))
+        imageView3.contentMode = .scaleAspectFill
+        squareView3.addSubview(imageView3)
         detailContentView.addSubview(squareView3)
+        // 이미지 뷰의 제약 조건 설정
+        imageView3.snp.makeConstraints { make in
+            make.center.equalTo(squareView3) // 사각형 뷰의 중앙에 배치
+            make.width.height.lessThanOrEqualTo(squareView3).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
+        }
 
         let squareView4 = UIView()
         squareView4.backgroundColor = .lightGray
+        squareView4.layer.cornerRadius = 10
+        squareView4.clipsToBounds = true
+        let imageView4 = UIImageView(image: UIImage(named: "Union 1"))
+        imageView4.contentMode = .scaleAspectFill
+        squareView4.addSubview(imageView4)
         detailContentView.addSubview(squareView4)
+        // 이미지 뷰의 제약 조건 설정
+        imageView4.snp.makeConstraints { make in
+            make.center.equalTo(squareView4) // 사각형 뷰의 중앙에 배치
+            make.width.height.lessThanOrEqualTo(squareView4).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
+        }
 
         let squareView5 = UIView()
         squareView5.backgroundColor = .lightGray
+        squareView5.layer.cornerRadius = 10
+        squareView5.clipsToBounds = true
+        let imageView5 = UIImageView(image: UIImage(named: "Group 125"))
+        imageView5.contentMode = .scaleAspectFill
+        squareView5.addSubview(imageView5)
         detailContentView.addSubview(squareView5)
+        // 이미지 뷰의 제약 조건 설정
+        imageView5.snp.makeConstraints { make in
+            make.center.equalTo(squareView5) // 사각형 뷰의 중앙에 배치
+            make.width.height.lessThanOrEqualTo(squareView5).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
+        }
+
 
         // 전시 제목 레이블 초기화
         let exhibitionTitleLabel = UILabel()
@@ -317,14 +367,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         exhibitionTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
             make.leading.equalTo(detailContentView.snp.leading).offset(20) // 좌측 여백
-            //               make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 우측 여백
         }
 
         // 미술관 주소 레이블 레이아웃 설정
         galleryAddressLabel.snp.makeConstraints { make in
             make.top.equalTo(exhibitionTitleLabel.snp.bottom).offset(8) // 전시 제목 레이블 아래 간격
             make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
-            //            make.right.lessThanOrEqualTo(mapView.snp.left).offset(-40) // 지도 뷰와의 간격을 설정
         }
 
 
