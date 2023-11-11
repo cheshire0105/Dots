@@ -71,8 +71,8 @@ class 회원가입_두번째_뷰컨트롤러 : UIViewController {
     lazy var 미술관_리스트_컬렉션뷰: UICollectionView = {
            let layout = UICollectionViewFlowLayout()
            layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 5
+//        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 53
         layout.sectionInset = UIEdgeInsets(top: 15, left: 15, bottom: 10, right: 15)
            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
            collectionView.backgroundColor = .black
@@ -178,7 +178,9 @@ extension 회원가입_두번째_뷰컨트롤러 : UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 미술관_리스트.count
     }
-
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+           return 0 // 최소 행의 간격
+       }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "미술관_리스트_셀", for: indexPath) as! 미술관_리스트_셀
         cell.미술관_버튼.setTitle(미술관_리스트[indexPath.item], for: .selected)

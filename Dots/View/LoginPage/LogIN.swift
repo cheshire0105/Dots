@@ -1,4 +1,5 @@
 import UIKit
+import FirebaseAuth
 import SnapKit
 
 class 로그인_뷰컨트롤러 : UIViewController {
@@ -12,14 +13,14 @@ class 로그인_뷰컨트롤러 : UIViewController {
         return label
     } ()
     let 뒤로가기_버튼 = {
-       let button = UIButton()
-       button.setImage(UIImage(named: "loginBack"), for: .selected)
-       button.setImage(UIImage(named: ""), for: .normal)
-       button.isSelected = !button.isSelected
+        let button = UIButton()
+        button.setImage(UIImage(named: "loginBack"), for: .selected)
+        button.setImage(UIImage(named: ""), for: .normal)
+        button.isSelected = !button.isSelected
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-       return button
-   } ()
+        return button
+    } ()
     //이메일 텍스트필드
     private let 로그인_이메일_텍스트필드 = { ()
         let textField = UITextField()
@@ -83,7 +84,7 @@ class 로그인_뷰컨트롤러 : UIViewController {
     override func viewDidLoad() {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
-        navigationController?.isNavigationBarHidden = true 
+        navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
     }
@@ -141,7 +142,7 @@ extension 로그인_뷰컨트롤러 {
             make.leading.equalToSuperview().offset(102)
             make.trailing.equalToSuperview().offset(-103)
             make.height.equalTo(64)
-
+            
         }
     }
 }
@@ -160,10 +161,23 @@ extension 로그인_뷰컨트롤러 {
     }
     @objc func 로그인_버튼_클릭() {
         print("메인 전시 페이지로 이동")
-        let 메인화면_이동 = GlassTabBar()
-        self.navigationController?.pushViewController(메인화면_이동, animated: true)
-        navigationItem.hidesBackButton = true
+        guard let 이메일 = 로그인_이메일_텍스트필드.text, let 비밀번호 = 로그인_비밀번호_텍스트필드.text else {
+            return
+        }
         
- 
+        Auth.auth().signIn(withEmail: 이메일, password: 비밀번호) { [weak self] authResult, 에러 in
+            guard let self = self else { return }
+            
+            if let 로그인_실패 = 에러 {
+                print("로그인 실패: \(로그인_실패.localizedDescription)")
+            } else {
+                print("로그인 성공")
+                
+                let 메인화면_이동 = GlassTabBar()
+                self.navigationController?.pushViewController(메인화면_이동, animated: true)
+                self.navigationItem.hidesBackButton = true
+            }
+        }
     }
+    
 }
