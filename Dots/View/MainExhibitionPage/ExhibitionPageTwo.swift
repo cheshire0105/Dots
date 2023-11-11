@@ -139,6 +139,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 }
 
+import MapKit // MapKit 프레임워크를 임포트합니다.
+
 
 class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -146,8 +148,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var reviewsTableView = UITableView()
     var reviews: [String] = [] // 후기 데이터 배열
     // 새로운 스크롤 뷰 프로퍼티 추가
-      var detailScrollView: UIScrollView!
-      var detailContentView: UIView!
+    var detailScrollView: UIScrollView!
+    var detailContentView: UIView!
+
+    var mapView: MKMapView! // MKMapView 프로퍼티 추가
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -164,6 +169,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         configureDetailScrollView()
 
     }
+
+
+
 
     func configureSegmentControl() {
 
@@ -224,68 +232,144 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func configureDetailScrollView() {
-          // 스크롤 뷰 초기화
-          detailScrollView = UIScrollView()
-          detailScrollView.backgroundColor = .gray // 배경색 설정
-          view.addSubview(detailScrollView)
-          detailScrollView.isHidden = true // 초기 상태는 숨겨져 있음
+        // 스크롤 뷰 초기화
+        detailScrollView = UIScrollView()
+        detailScrollView.backgroundColor = .gray // 배경색 설정
+        view.addSubview(detailScrollView)
+        detailScrollView.isHidden = true // 초기 상태는 숨겨져 있음
 
-          // 스크롤 뷰에 들어갈 컨텐츠 뷰 초기화
-          detailContentView = UIView()
-          detailScrollView.addSubview(detailContentView)
+        // 스크롤 뷰에 들어갈 컨텐츠 뷰 초기화
+        detailContentView = UIView()
+        detailScrollView.addSubview(detailContentView)
+
+        // 개별 사각형 뷰를 생성하고 detailContentView에 추가합니다.
+        let squareView1 = UIView()
+        squareView1.backgroundColor = .lightGray
+        detailContentView.addSubview(squareView1)
+
+        let squareView2 = UIView()
+        squareView2.backgroundColor = .lightGray
+        detailContentView.addSubview(squareView2)
+
+        let squareView3 = UIView()
+        squareView3.backgroundColor = .lightGray
+        detailContentView.addSubview(squareView3)
+
+        let squareView4 = UIView()
+        squareView4.backgroundColor = .lightGray
+        detailContentView.addSubview(squareView4)
+
+        let squareView5 = UIView()
+        squareView5.backgroundColor = .lightGray
+        detailContentView.addSubview(squareView5)
 
         // 전시 제목 레이블 초기화
-            let exhibitionTitleLabel = UILabel()
-            exhibitionTitleLabel.text = "갤러리바톤의 전시"
-            exhibitionTitleLabel.textColor = .white
-            exhibitionTitleLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        let exhibitionTitleLabel = UILabel()
+        exhibitionTitleLabel.text = "갤러리바톤"
+        exhibitionTitleLabel.textColor = .white
+        exhibitionTitleLabel.font = UIFont.boldSystemFont(ofSize: 22)
 
-            // 미술관 주소 레이블 초기화
-            let galleryAddressLabel = UILabel()
-            galleryAddressLabel.text = "서울 종로구 삼청로 30"
-            galleryAddressLabel.textColor = .lightGray
-            galleryAddressLabel.font = UIFont.systemFont(ofSize: 14)
+        // 미술관 주소 레이블 초기화
+        let galleryAddressLabel = UILabel()
+        galleryAddressLabel.text = "서울 종로구 삼청로 30"
+        galleryAddressLabel.textColor = .white
+        galleryAddressLabel.font = UIFont.systemFont(ofSize: 18)
 
-            // 컨텐츠 뷰에 레이블 추가
-            detailContentView.addSubview(exhibitionTitleLabel)
-            detailContentView.addSubview(galleryAddressLabel)
+        // 컨텐츠 뷰에 레이블 추가
+        detailContentView.addSubview(exhibitionTitleLabel)
+        detailContentView.addSubview(galleryAddressLabel)
 
-          // 스크롤 뷰 제약 조건 설정
-          detailScrollView.snp.makeConstraints { make in
-              make.top.equalTo(segmentControl.snp.bottom).offset(10)
-              make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
-          }
+        mapView = MKMapView()
+        detailContentView.addSubview(mapView)
+        // 지도 뷰 모서리 둥글게 설정
+        mapView.layer.cornerRadius = 10
+        mapView.clipsToBounds = true
+
+
+        // 지도 뷰 제약 조건 설정
+        mapView.snp.makeConstraints { make in
+            make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
+            make.trailing.equalTo(detailContentView.snp.trailing).inset(10) // 여기를 조정하여 오른쪽 여백을 설정
+            make.width.equalTo(130)
+            make.height.equalTo(80)
+        }
+
+        // 지도 위치 설정
+        let coordinate = CLLocationCoordinate2D(latitude: 37.582691, longitude: 127.00175) // 갤러리바톤의 위치 좌표로 가정
+        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+        mapView.setRegion(region, animated: true)
+
+        // 지도에 핀 추가
+        let pin = MKPointAnnotation()
+        pin.coordinate = coordinate
+        pin.title = "갤러리바톤"
+        mapView.addAnnotation(pin)
+
+        // 스크롤 뷰 제약 조건 설정
+        detailScrollView.snp.makeConstraints { make in
+            make.top.equalTo(segmentControl.snp.bottom).offset(10)
+            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
 
 
 
         // 전시 제목 레이블 레이아웃 설정
-           exhibitionTitleLabel.snp.makeConstraints { make in
-               make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
-               make.leading.equalTo(detailContentView.snp.leading).offset(20) // 좌측 여백
-               make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 우측 여백
-           }
+        exhibitionTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
+            make.leading.equalTo(detailContentView.snp.leading).offset(20) // 좌측 여백
+            //               make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 우측 여백
+        }
 
-           // 미술관 주소 레이블 레이아웃 설정
-           galleryAddressLabel.snp.makeConstraints { make in
-               make.top.equalTo(exhibitionTitleLabel.snp.bottom).offset(8) // 전시 제목 레이블 아래 간격
-               make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
-               make.trailing.equalTo(exhibitionTitleLabel.snp.trailing) // 우측 정렬
-           }
+        // 미술관 주소 레이블 레이아웃 설정
+        galleryAddressLabel.snp.makeConstraints { make in
+            make.top.equalTo(exhibitionTitleLabel.snp.bottom).offset(8) // 전시 제목 레이블 아래 간격
+            make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
+            //            make.right.lessThanOrEqualTo(mapView.snp.left).offset(-40) // 지도 뷰와의 간격을 설정
+        }
 
-           // 컨텐츠 뷰의 높이를 내부 컨텐츠에 맞게 조정
-           detailContentView.snp.makeConstraints { make in
-               // 마지막 추가된 요소의 하단에 대한 제약 조건을 설정하여 스크롤 뷰의 컨텐츠 크기를 결정
-               make.bottom.equalTo(galleryAddressLabel.snp.bottom).offset(20)
-           }
 
-      }
+        // 각 사각형 뷰의 제약 조건을 설정합니다.
+        squareView1.snp.makeConstraints { make in
+            make.top.equalTo(mapView.snp.bottom).offset(20)
+            make.leading.equalTo(detailContentView.snp.leading).offset(20)
+            make.width.height.equalTo(60)
+        }
+
+        squareView2.snp.makeConstraints { make in
+            make.top.width.height.equalTo(squareView1)
+            make.leading.equalTo(squareView1.snp.trailing).offset(13)
+        }
+
+        squareView3.snp.makeConstraints { make in
+            make.top.width.height.equalTo(squareView1)
+            make.leading.equalTo(squareView2.snp.trailing).offset(13)
+        }
+
+        squareView4.snp.makeConstraints { make in
+            make.top.width.height.equalTo(squareView1)
+            make.leading.equalTo(squareView3.snp.trailing).offset(13)
+        }
+
+        squareView5.snp.makeConstraints { make in
+            make.top.width.height.equalTo(squareView1)
+            make.leading.equalTo(squareView4.snp.trailing).offset(13)
+            make.trailing.lessThanOrEqualTo(detailContentView.snp.trailing).offset(-20)
+        }
+
+        // 컨텐츠 뷰의 높이를 내부 컨텐츠에 맞게 조정합니다.
+        detailContentView.snp.makeConstraints { make in
+            make.bottom.equalTo(squareView1.snp.bottom).offset(20)
+        }
+
+
+    }
 
 
     @objc func segmentChanged(_ sender: UISegmentedControl) {
-          reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
-          detailScrollView.isHidden = sender.selectedSegmentIndex != 1
-          // 상세 정보 뷰의 표시 상태를 업데이트하는 코드를 여기에 추가합니다.
-      }
+        reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
+        detailScrollView.isHidden = sender.selectedSegmentIndex != 1
+        // 상세 정보 뷰의 표시 상태를 업데이트하는 코드를 여기에 추가합니다.
+    }
 
     // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
