@@ -234,7 +234,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     func configureDetailScrollView() {
         // 스크롤 뷰 초기화
         detailScrollView = UIScrollView()
-        detailScrollView.backgroundColor = .gray // 배경색 설정
+        detailScrollView.backgroundColor = .black // 배경색 설정
         view.addSubview(detailScrollView)
         detailScrollView.isHidden = true // 초기 상태는 숨겨져 있음
 
@@ -244,7 +244,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         // 개별 사각형 뷰를 생성하고 detailContentView에 추가합니다.
         let squareView1 = UIView()
-        squareView1.backgroundColor = .lightGray
+        squareView1.backgroundColor = .darkGray
         squareView1.layer.cornerRadius = 10
         squareView1.clipsToBounds = true
         let imageView1 = UIImageView(image: UIImage(named: "calenderE"))
@@ -258,7 +258,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
         let squareView2 = UIView()
-        squareView2.backgroundColor = .lightGray
+        squareView2.backgroundColor = .darkGray
         squareView2.layer.cornerRadius = 10
         squareView2.clipsToBounds = true
         let imageView2 = UIImageView(image: UIImage(named: "Group 50"))
@@ -271,7 +271,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         let squareView3 = UIView()
-        squareView3.backgroundColor = .lightGray
+        squareView3.backgroundColor = .darkGray
         squareView3.layer.cornerRadius = 10
         squareView3.clipsToBounds = true
         let imageView3 = UIImageView(image: UIImage(named: "Group 48"))
@@ -285,7 +285,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         let squareView4 = UIView()
-        squareView4.backgroundColor = .lightGray
+        squareView4.backgroundColor = .darkGray
         squareView4.layer.cornerRadius = 10
         squareView4.clipsToBounds = true
         let imageView4 = UIImageView(image: UIImage(named: "Union 1"))
@@ -299,7 +299,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         let squareView5 = UIView()
-        squareView5.backgroundColor = .lightGray
+        squareView5.backgroundColor = .darkGray
         squareView5.layer.cornerRadius = 10
         squareView5.clipsToBounds = true
         let imageView5 = UIImageView(image: UIImage(named: "Group 125"))
@@ -316,7 +316,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
            let stackView = UIStackView(arrangedSubviews: [squareView1, squareView2, squareView3, squareView4, squareView5])
            stackView.axis = .horizontal
            stackView.distribution = .fillEqually
-           stackView.spacing = 15
+           stackView.spacing = 13
            stackView.alignment = .center
 
            detailContentView.addSubview(stackView)
@@ -390,9 +390,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 스택뷰의 제약 조건 설정
         stackView.snp.makeConstraints { make in
              make.top.equalTo(mapView.snp.bottom).offset(20)
-             make.left.equalTo(detailContentView.snp.left).offset(18)
-             make.right.equalTo(detailContentView.snp.right).offset(-18)
-             make.height.equalTo(stackView.snp.width).dividedBy(5) // 각 뷰가 정사각형이 되도록 너비의 1/5로 설정
+             make.left.right.equalTo(detailContentView).inset(16)
+             make.height.equalTo(stackView.snp.width).dividedBy(5 + (4 * stackView.spacing / view.frame.size.width)) // 여백을 고려한 높이 설정
          }
 
 
@@ -410,7 +409,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
             // 정사각형 뷰의 너비와 높이 제약 조건을 설정합니다.
             squareView.snp.makeConstraints { make in
-                make.width.height.equalTo(80) // 또는 특정 비율에 따른 제약 조건으로 변경 가능
+                make.width.height.equalTo(60) // 또는 특정 비율에 따른 제약 조건으로 변경 가능
             }
         }
 
