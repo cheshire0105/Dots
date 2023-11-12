@@ -234,7 +234,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     func configureDetailScrollView() {
         // 스크롤 뷰 초기화
         detailScrollView = UIScrollView()
-        detailScrollView.backgroundColor = .black // 배경색 설정
+        detailScrollView.backgroundColor = .gray // 배경색 설정
         view.addSubview(detailScrollView)
         detailScrollView.isHidden = true // 초기 상태는 숨겨져 있음
 
@@ -311,6 +311,16 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.center.equalTo(squareView5) // 사각형 뷰의 중앙에 배치
             make.width.height.lessThanOrEqualTo(squareView5).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
         }
+        
+        // 스택뷰 초기화 및 설정
+           let stackView = UIStackView(arrangedSubviews: [squareView1, squareView2, squareView3, squareView4, squareView5])
+           stackView.axis = .horizontal
+           stackView.distribution = .fillEqually
+           stackView.spacing = 15
+           stackView.alignment = .center
+
+           detailContentView.addSubview(stackView)
+
 
 
         // 전시 제목 레이블 초기화
@@ -338,11 +348,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         // 지도 뷰 제약 조건 설정
         mapView.snp.makeConstraints { make in
-            make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
-            make.trailing.equalTo(detailContentView.snp.trailing).inset(10) // 여기를 조정하여 오른쪽 여백을 설정
-            make.width.equalTo(130)
-            make.height.equalTo(80)
-        }
+              make.top.equalTo(detailContentView.snp.top).offset(20)
+            make.right.equalTo(detailContentView.snp.right).offset(-18)
+              make.width.equalTo(130) // 지도 뷰의 너비를 지정합니다.
+              make.height.equalTo(mapView.snp.width).multipliedBy(0.6) // 지도의 높이를 너비의 0.6배로 설정합니다.
+          }
 
         // 지도 위치 설정
         let coordinate = CLLocationCoordinate2D(latitude: 37.582691, longitude: 127.00175) // 갤러리바톤의 위치 좌표로 가정
@@ -356,10 +366,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         mapView.addAnnotation(pin)
 
         // 스크롤 뷰 제약 조건 설정
+        // 스크롤 뷰의 제약 조건 설정
         detailScrollView.snp.makeConstraints { make in
-            make.top.equalTo(segmentControl.snp.bottom).offset(10)
-            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(segmentControl.snp.bottom).offset(10) // 세그먼트 컨트롤 바로 아래에 위치
+            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide) // 양 옆 및 하단을 safeArea에 맞춤
         }
+
 
 
 
@@ -374,41 +386,33 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.top.equalTo(exhibitionTitleLabel.snp.bottom).offset(8) // 전시 제목 레이블 아래 간격
             make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
         }
+        
+        // 스택뷰의 제약 조건 설정
+        stackView.snp.makeConstraints { make in
+             make.top.equalTo(mapView.snp.bottom).offset(20)
+             make.left.equalTo(detailContentView.snp.left).offset(18)
+             make.right.equalTo(detailContentView.snp.right).offset(-18)
+             make.height.equalTo(stackView.snp.width).dividedBy(5) // 각 뷰가 정사각형이 되도록 너비의 1/5로 설정
+         }
 
 
-        // 각 사각형 뷰의 제약 조건을 설정합니다.
-        squareView1.snp.makeConstraints { make in
-            make.top.equalTo(mapView.snp.bottom).offset(20)
-            make.leading.equalTo(detailContentView.snp.leading).offset(20)
-            make.width.height.equalTo(60)
-        }
-
-        squareView2.snp.makeConstraints { make in
-            make.top.width.height.equalTo(squareView1)
-            make.leading.equalTo(squareView1.snp.trailing).offset(13)
-        }
-
-        squareView3.snp.makeConstraints { make in
-            make.top.width.height.equalTo(squareView1)
-            make.leading.equalTo(squareView2.snp.trailing).offset(13)
-        }
-
-        squareView4.snp.makeConstraints { make in
-            make.top.width.height.equalTo(squareView1)
-            make.leading.equalTo(squareView3.snp.trailing).offset(13)
-        }
-
-        squareView5.snp.makeConstraints { make in
-            make.top.width.height.equalTo(squareView1)
-            make.leading.equalTo(squareView4.snp.trailing).offset(13)
-            make.trailing.lessThanOrEqualTo(detailContentView.snp.trailing).offset(-20)
-        }
-
-        // 컨텐츠 뷰의 높이를 내부 컨텐츠에 맞게 조정합니다.
+        // contentView의 bottom constraint를 마지막 사각형 뷰에 맞춰 설정합니다.
         detailContentView.snp.makeConstraints { make in
-            make.bottom.equalTo(squareView1.snp.bottom).offset(20)
+            make.top.leading.trailing.equalTo(detailScrollView) // 스크롤 뷰에 맞춤
+            make.width.equalTo(detailScrollView) // contentView의 너비를 스크롤 뷰의 너비와 동일하게 설정
         }
 
+        // 사각형 뷰들을 스택뷰에 추가하기 전에 제약 조건을 설정합니다.
+        let squareViews = [squareView1, squareView2, squareView3, squareView4, squareView5]
+        for squareView in squareViews {
+            squareView.translatesAutoresizingMaskIntoConstraints = false
+            stackView.addArrangedSubview(squareView)
+
+            // 정사각형 뷰의 너비와 높이 제약 조건을 설정합니다.
+            squareView.snp.makeConstraints { make in
+                make.width.height.equalTo(80) // 또는 특정 비율에 따른 제약 조건으로 변경 가능
+            }
+        }
 
     }
 
@@ -460,6 +464,30 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
 }
+
+import SwiftUI
+
+// SwiftUI에서 UIKit 뷰 컨트롤러를 표현할 수 있게 해주는 구조체를 정의합니다.
+struct DetailViewControllerPreview: UIViewControllerRepresentable {
+    // UIViewControllerRepresentable 프로토콜을 준수하기 위한 메서드를 구현합니다.
+    func makeUIViewController(context: Context) -> DetailViewController {
+        // 여기서 DetailViewController의 인스턴스를 생성하고 설정합니다.
+        return DetailViewController()
+    }
+
+    func updateUIViewController(_ uiViewController: DetailViewController, context: Context) {
+        // 뷰 컨트롤러를 업데이트할 때 필요한 코드를 여기에 작성합니다.
+        // 프리뷰에서는 일반적으로 필요하지 않습니다.
+    }
+}
+
+// Xcode 프리뷰를 위한 구조체를 정의합니다.
+struct DetailViewControllerPreview_Previews: PreviewProvider {
+    static var previews: some View {
+        DetailViewControllerPreview().edgesIgnoringSafeArea(.all) // 모든 안전 영역을 무시하고 뷰를 확장합니다.
+    }
+}
+
 
 class 새로운_ReviewTableViewCell: UITableViewCell {
 
