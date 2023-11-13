@@ -7,7 +7,8 @@ class PopularReviewCell: UICollectionViewCell {
     
     var 백_블록 = {
         let uiView = UIView()
-        uiView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.8)
+//        uiView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.8)
+        uiView.backgroundColor = UIColor.black
         uiView.layer.cornerRadius = 20
         return uiView
     } ()
