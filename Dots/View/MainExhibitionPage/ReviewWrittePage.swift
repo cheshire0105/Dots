@@ -153,28 +153,32 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     @objc func deleteImage(_ sender: UIButton) {
         let index = sender.tag
-
-        // Index가 배열 범위 내에 있는지 확인합니다.
         guard index < selectedImages.count else {
             return
         }
 
-        // 메인 스레드에서 실행을 보장합니다.
-        DispatchQueue.main.async {
-            // 이미지 배열에서 해당 인덱스의 이미지를 삭제합니다.
-            self.selectedImages.remove(at: index)
+        // 배열에서 먼저 삭제
+        selectedImages.remove(at: index)
 
-            // 컬렉션 뷰에서 삭제 애니메이션을 수행합니다.
-            self.collectionView.performBatchUpdates({
-                self.collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
-            }, completion: { finished in
-                if finished {
-                    // 삭제 후 레이아웃을 업데이트합니다.
-                    self.updateCollectionViewLayout()
+        // 콜렉션 뷰의 데이터 소스를 업데이트하는 대신, 즉시 레이아웃을 갱신합니다.
+        collectionView.performBatchUpdates({
+            // 컬렉션 뷰에서 해당 인덱스의 셀을 삭제합니다.
+            self.collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
+        }, completion: { finished in
+            // 삭제가 끝난 후, 남아있는 셀의 인덱스가 바뀌었을 수 있으므로, 태그를 재할당합니다.
+            if finished {
+                for case let cell as ImageCollectionViewCell in self.collectionView.visibleCells {
+                    if let indexPath = self.collectionView.indexPath(for: cell) {
+                        cell.deleteButton.tag = indexPath.row
+                    }
                 }
-            })
-        }
+                // 레이아웃을 업데이트합니다.
+                self.updateCollectionViewLayout()
+            }
+        })
     }
+
+
 
 
 
