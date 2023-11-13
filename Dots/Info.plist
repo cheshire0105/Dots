@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>사진을 찍어 전시 후기를 남길 수 있습니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>현 위치로 주변 미술관을 추천 합니다.</string>
 	<key>NMFClientId</key>

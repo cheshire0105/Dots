@@ -9,7 +9,9 @@ import Foundation
 import UIKit
 
 
-class ReviewWritePage: UIViewController, UITextViewDelegate {
+
+
+class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     // 텍스트 필드 속성 정의
     let titleTextField = UITextField()
@@ -62,6 +64,8 @@ class ReviewWritePage: UIViewController, UITextViewDelegate {
 
 
     }
+
+    
 
     func configureInputAccessoryView() {
         let accessoryView = UIView(frame: .zero)
@@ -126,12 +130,62 @@ class ReviewWritePage: UIViewController, UITextViewDelegate {
     @objc func button1Action() {
         // 첫 번째 버튼 액션
         print("Button 1 Tapped")
+        presentCamera()
+
     }
+
+    func presentCamera() {
+        // 카메라 사용 가능 여부 확인
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            print("Camera is not available on this device.")
+            return
+        }
+
+        // 카메라 접근 권한 상태 확인 (iOS 14 이상을 위한 코드, 더 낮은 버전은 다른 방식으로 처리해야 할 수 있습니다.)
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized: // 이미 권한이 있을 때
+            showCameraPicker()
+        case .notDetermined: // 권한 요청이 아직 안 된 경우
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    DispatchQueue.main.async {
+                        self.showCameraPicker()
+                    }
+                }
+            }
+        case .denied, .restricted: // 권한이 없거나 제한된 경우
+            // 사용자에게 설정에서 권한을 변경하도록 안내
+            break
+        default: // 기타 상황
+            break
+        }
+    }
+
+    func showCameraPicker() {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = self // UIImagePickerControllerDelegate와 UINavigationControllerDelegate 설정
+        self.present(picker, animated: true)
+    }
+
+    // UIImagePickerControllerDelegate 메서드
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        // 선택한 또는 찍은 사진 처리
+        picker.dismiss(animated: true)
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        // 사용자가 취소했을 때의 처리
+        picker.dismiss(animated: true)
+    }
+
 
     @objc func button2Action() {
         // 두 번째 버튼 액션
         print("Button 2 Tapped")
     }
+
+    
 
 
     // UITextViewDelegate 메서드를 사용하여 플레이스홀더 처리
@@ -218,6 +272,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate {
 
 
 import SwiftUI
+import AVFoundation
 
 // ReviewWritePage를 SwiftUI에서 미리 보기 위한 래퍼
 struct ReviewWritePagePreview: UIViewControllerRepresentable {
