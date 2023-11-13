@@ -30,8 +30,51 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         loadSampleReviews()
 
         configureDetailScrollView()
+        configureFloatingActionButton()
+
 
     }
+
+    func configureFloatingActionButton() {
+        let floatingActionButton = UIButton(type: .custom)
+        floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
+        floatingActionButton.backgroundColor = .white
+        floatingActionButton.setTitle("후기 작성", for: .normal)
+        floatingActionButton.setTitleColor(.black, for: .normal)
+        floatingActionButton.layer.cornerRadius = 23
+        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 16) // 타이틀 폰트 크기 설정
+
+        // 이미지 설정
+        let buttonImage = UIImage(named: "Union 2") // 'reviewIcon'은 프로젝트에 포함된 이미지 이름이어야 합니다.
+        floatingActionButton.setImage(buttonImage, for: .normal)
+
+        // 타이틀의 여백을 설정하여 이미지와 텍스트 사이에 간격을 줍니다.
+        floatingActionButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+
+        // 이미지의 여백을 설정하여 이미지와 버튼의 왼쪽 가장자리 사이에 간격을 줍니다.
+        floatingActionButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+
+        // 버튼에 액션 추가
+        floatingActionButton.addTarget(self, action: #selector(floatingActionButtonTapped), for: .touchUpInside)
+
+        view.addSubview(floatingActionButton)
+
+        // 버튼의 제약 조건 설정
+        floatingActionButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-10)
+            make.width.equalTo(124)
+            make.height.equalTo(46)
+        }
+    }
+
+    @objc func floatingActionButtonTapped() {
+        // 버튼 탭 액션 처리
+        print("Floating action button tapped")
+    }
+
+
+
 
     func configureSegmentControl() {
 
