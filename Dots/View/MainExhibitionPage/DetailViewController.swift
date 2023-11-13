@@ -38,9 +38,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     }
 
-
-
-
     func configureSegmentControl() {
 
         // 타이틀 레이블을 설정합니다.
@@ -100,6 +97,16 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func configureDetailScrollView() {
+
+        let totalHorizontalPadding: CGFloat = 40 // 양쪽의 여백 합계
+        let spacingBetweenItems: CGFloat = 10 // 아이템 사이의 간격
+        let numberOfItems: CGFloat = 5 // 스택 뷰 내의 아이템 수
+        let totalSpacing: CGFloat = (numberOfItems - 1) * spacingBetweenItems // 아이템 사이의 총 간격
+
+        // 스택 뷰의 각 요소에 대한 너비를 계산합니다.
+        let itemWidth = (view.frame.width - totalHorizontalPadding - totalSpacing) / numberOfItems
+
+
         // 스크롤 뷰 초기화
         detailScrollView = UIScrollView()
         detailScrollView.backgroundColor = .black // 배경색 설정
@@ -109,87 +116,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 스크롤 뷰에 들어갈 컨텐츠 뷰 초기화
         detailContentView = UIView()
         detailScrollView.addSubview(detailContentView)
-
-        // 개별 사각형 뷰를 생성하고 detailContentView에 추가합니다.
-        let squareView1 = UIView()
-        squareView1.backgroundColor = .darkGray
-        squareView1.layer.cornerRadius = 10
-        squareView1.clipsToBounds = true
-        let imageView1 = UIImageView(image: UIImage(named: "calenderE"))
-        imageView1.contentMode = .scaleAspectFill
-        squareView1.addSubview(imageView1)
-        detailContentView.addSubview(squareView1)
-        imageView1.snp.makeConstraints { make in
-            make.center.equalTo(squareView1) // 사각형 뷰의 중앙에 배치
-            make.width.height.lessThanOrEqualTo(squareView1).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
-        }
-
-
-        let squareView2 = UIView()
-        squareView2.backgroundColor = .darkGray
-        squareView2.layer.cornerRadius = 10
-        squareView2.clipsToBounds = true
-        let imageView2 = UIImageView(image: UIImage(named: "Group 50"))
-        imageView2.contentMode = .scaleAspectFill
-        squareView2.addSubview(imageView2)
-        detailContentView.addSubview(squareView2)
-        imageView2.snp.makeConstraints { make in
-            make.center.equalTo(squareView2) // 사각형 뷰의 중앙에 배치
-            make.width.height.lessThanOrEqualTo(squareView2).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
-        }
-
-        let squareView3 = UIView()
-        squareView3.backgroundColor = .darkGray
-        squareView3.layer.cornerRadius = 10
-        squareView3.clipsToBounds = true
-        let imageView3 = UIImageView(image: UIImage(named: "Group 48"))
-        imageView3.contentMode = .scaleAspectFill
-        squareView3.addSubview(imageView3)
-        detailContentView.addSubview(squareView3)
-        // 이미지 뷰의 제약 조건 설정
-        imageView3.snp.makeConstraints { make in
-            make.center.equalTo(squareView3) // 사각형 뷰의 중앙에 배치
-            make.width.height.lessThanOrEqualTo(squareView3).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
-        }
-
-        let squareView4 = UIView()
-        squareView4.backgroundColor = .darkGray
-        squareView4.layer.cornerRadius = 10
-        squareView4.clipsToBounds = true
-        let imageView4 = UIImageView(image: UIImage(named: "Union 1"))
-        imageView4.contentMode = .scaleAspectFill
-        squareView4.addSubview(imageView4)
-        detailContentView.addSubview(squareView4)
-        // 이미지 뷰의 제약 조건 설정
-        imageView4.snp.makeConstraints { make in
-            make.center.equalTo(squareView4) // 사각형 뷰의 중앙에 배치
-            make.width.height.lessThanOrEqualTo(squareView4).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
-        }
-
-        let squareView5 = UIView()
-        squareView5.backgroundColor = .darkGray
-        squareView5.layer.cornerRadius = 10
-        squareView5.clipsToBounds = true
-        let imageView5 = UIImageView(image: UIImage(named: "Group 125"))
-        imageView5.contentMode = .scaleAspectFill
-        squareView5.addSubview(imageView5)
-        detailContentView.addSubview(squareView5)
-        // 이미지 뷰의 제약 조건 설정
-        imageView5.snp.makeConstraints { make in
-            make.center.equalTo(squareView5) // 사각형 뷰의 중앙에 배치
-            make.width.height.lessThanOrEqualTo(squareView5).multipliedBy(0.8) // 사각형 뷰 크기의 80%를 최대 크기로 설정
-        }
-
-        // 스택뷰 초기화 및 설정
-        let stackView = UIStackView(arrangedSubviews: [squareView1, squareView2, squareView3, squareView4, squareView5])
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.spacing = 13
-        stackView.alignment = .center
-
-        detailContentView.addSubview(stackView)
-
-
 
         // 전시 제목 레이블 초기화
         let exhibitionTitleLabel = UILabel()
@@ -212,7 +138,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 지도 뷰 모서리 둥글게 설정
         mapView.layer.cornerRadius = 10
         mapView.clipsToBounds = true
-
 
         // 지도 뷰 제약 조건 설정
         mapView.snp.makeConstraints { make in
@@ -240,9 +165,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide) // 양 옆 및 하단을 safeArea에 맞춤
         }
 
-
-
-
         // 전시 제목 레이블 레이아웃 설정
         exhibitionTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
@@ -255,13 +177,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
         }
 
-        // 스택뷰의 제약 조건 설정
-        stackView.snp.makeConstraints { make in
-            make.top.equalTo(mapView.snp.bottom).offset(20)
-            make.left.right.equalTo(detailContentView).inset(16)
-            make.height.equalTo(stackView.snp.width).dividedBy(5 + (4 * stackView.spacing / view.frame.size.width)) // 여백을 고려한 높이 설정
-        }
-
 
         // contentView의 bottom constraint를 마지막 사각형 뷰에 맞춰 설정합니다.
         detailContentView.snp.makeConstraints { make in
@@ -269,17 +184,85 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.width.equalTo(detailScrollView) // contentView의 너비를 스크롤 뷰의 너비와 동일하게 설정
         }
 
-        // 사각형 뷰들을 스택뷰에 추가하기 전에 제약 조건을 설정합니다.
-        let squareViews = [squareView1, squareView2, squareView3, squareView4, squareView5]
-        for squareView in squareViews {
-            squareView.translatesAutoresizingMaskIntoConstraints = false
-            stackView.addArrangedSubview(squareView)
+        // 스택 뷰 생성 및 구성
+          let squaresStackView = UIStackView()
+        squaresStackView.axis = .horizontal
+        squaresStackView.distribution = .fillEqually
+        squaresStackView.alignment = .fill
+        squaresStackView.spacing = 10 // 또는 원하는 간격
 
-            // 정사각형 뷰의 너비와 높이 제약 조건을 설정합니다.
+        let labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
+        // 각 이미지 뷰에 설정할 이미지 이름 배열
+        let imageNames = ["calenderE", "Group 50", "Group 48", "Union 1", "Group 125"]
+
+
+
+        // 스택 뷰의 각 요소 내에 정사각형 검정 뷰 추가 및 그 아래 레이블 추가
+        // 스택 뷰에 이미지 뷰와 레이블을 추가하는 코드
+        // 상위 컨테이너 뷰와 각각의 스택을 만들어서 그 안에 이미지와 레이블을 넣습니다.
+        for index in 0..<5 {
+            // 컨테이너 뷰 생성
+            let containerView = UIView()
+            containerView.clipsToBounds = true // 모서리가 둥근 하위 뷰를 클리핑하기 위함
+            squaresStackView.addArrangedSubview(containerView)
+
+            containerView.snp.makeConstraints { make in
+                make.width.equalTo(itemWidth) // 계산된 너비 설정
+                make.height.equalTo(150) // 설정된 높이
+            }
+
+            // 정사각형 뷰 생성 및 설정
+            let squareView = UIView()
+            squareView.backgroundColor = .gray // 배경색 설정
+            squareView.layer.cornerRadius = 10 // 모서리 둥글게 설정
+            containerView.addSubview(squareView) // 컨테이너 뷰에 squareView 추가
+
             squareView.snp.makeConstraints { make in
-                make.width.height.equalTo(60) // 또는 특정 비율에 따른 제약 조건으로 변경 가능
+                make.top.equalTo(containerView.snp.top) // 상단 맞춤
+                make.width.equalTo(containerView.snp.width) // 너비 맞춤
+                make.height.equalTo(squareView.snp.width) // 높이를 너비와 동일하게 설정하여 정사각형 만듬
+                make.centerX.equalTo(containerView.snp.centerX) // 가운데 맞춤
+            }
+
+            // 이미지 뷰 설정
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFit
+            imageView.image = UIImage(named: imageNames[index])
+            squareView.addSubview(imageView) // squareView에 imageView 추가
+
+            imageView.snp.makeConstraints { make in
+                make.size.equalTo(squareView.snp.size).multipliedBy(0.5) // squareView 대비 80% 크기로 설정
+                make.center.equalTo(squareView.snp.center) // squareView 중앙에 위치
+            }
+
+            // 레이블 설정
+            let label = UILabel()
+            label.text = labelContents[index]
+            label.textColor = .white
+            label.textAlignment = .center
+            label.font = UIFont.systemFont(ofSize: 14)
+            label.numberOfLines = 0 // 최대 두 줄로 설정
+            containerView.addSubview(label) // containerView에 label 추가
+
+            label.snp.makeConstraints { make in
+                make.top.equalTo(squareView.snp.bottom).offset(10) // squareView 아래에 위치
+                make.centerX.equalTo(containerView.snp.centerX) // containerView 중앙에 위치
+                make.leading.trailing.equalTo(containerView) // containerView의 leading과 trailing에 맞춤
             }
         }
+
+          // 스크롤 뷰 내 컨텐츠 뷰에 스택 뷰 추가
+          detailContentView.addSubview(squaresStackView)
+
+          // 스택 뷰의 제약 조건 설정
+        // 스택 뷰의 제약 조건 설정
+        squaresStackView.snp.makeConstraints { make in
+            make.top.equalTo(mapView.snp.bottom).offset(20) // mapView 아래에 위치
+            make.leading.equalTo(detailContentView.snp.leading).offset(20) // detailContentView의 leading에 맞춤
+            make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // detailContentView의 trailing에 맞춤
+        }
+
+
 
     }
 
