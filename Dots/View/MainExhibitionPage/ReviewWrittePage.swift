@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위해 필요합니다.
+import SnapKit
 
 class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource {
 
@@ -72,6 +73,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         
         setupCollectionView()
         updateCollectionViewLayout()
+        collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCollectionViewCell")
 
 
     }
@@ -109,14 +111,15 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         collectionViewHeightConstraint?.update(offset: shouldShowCollectionView ? 100 : 0)
         collectionView.isHidden = !shouldShowCollectionView
 
-        // 제목 텍스트 필드의 위치를 업데이트합니다.
         if shouldShowCollectionView {
+            // 이미지가 있을 경우 컬렉션 뷰 아래로 제목 텍스트 필드의 위치를 조정합니다.
             titleTextField.snp.remakeConstraints { make in
                 make.top.equalTo(collectionView.snp.bottom).offset(20)
                 make.left.right.equalTo(view).inset(15)
                 make.height.equalTo(40)
             }
         } else {
+            // 이미지가 없을 경우 제목 텍스트 필드의 위치를 원래대로 복원합니다.
             titleTextField.snp.remakeConstraints { make in
                 make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
                 make.left.right.equalTo(view).inset(15)
@@ -139,27 +142,41 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
        }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .white
-
-        // 기존의 이미지 뷰 제거 (재사용 시 오래된 이미지 뷰가 겹치지 않도록)
-        for subview in cell.contentView.subviews {
-            subview.removeFromSuperview()
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else {
+            return UICollectionViewCell()
         }
-
-        // 이미지 뷰 설정
-        let imageView = UIImageView(image: selectedImages[indexPath.row])
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        cell.contentView.addSubview(imageView)
-
-        // 이미지 뷰 스냅킷을 사용하여 제약 조건 설정
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview() // imageView가 cell.contentView의 모든 에지에 맞춰지도록 설정합니다.
-        }
-
+        cell.imageView.image = selectedImages[indexPath.row]
+        cell.deleteButton.tag = indexPath.row // 태그를 사용하여 어떤 셀의 'x' 버튼이 탭되었는지 식별합니다.
+        cell.deleteButton.addTarget(self, action: #selector(deleteImage(_:)), for: .touchUpInside)
         return cell
     }
+
+    @objc func deleteImage(_ sender: UIButton) {
+        let index = sender.tag
+
+        // Index가 배열 범위 내에 있는지 확인합니다.
+        guard index < selectedImages.count else {
+            return
+        }
+
+        // 메인 스레드에서 실행을 보장합니다.
+        DispatchQueue.main.async {
+            // 이미지 배열에서 해당 인덱스의 이미지를 삭제합니다.
+            self.selectedImages.remove(at: index)
+
+            // 컬렉션 뷰에서 삭제 애니메이션을 수행합니다.
+            self.collectionView.performBatchUpdates({
+                self.collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
+            }, completion: { finished in
+                if finished {
+                    // 삭제 후 레이아웃을 업데이트합니다.
+                    self.updateCollectionViewLayout()
+                }
+            })
+        }
+    }
+
+
 
 
     
@@ -424,28 +441,66 @@ extension ReviewWritePage: PHPickerViewControllerDelegate {
     }
 }
 
+class ImageCollectionViewCell: UICollectionViewCell {
+    let imageView = UIImageView()
+    let deleteButton = UIButton()
+    
 
-
-import SwiftUI
-import AVFoundation
-import SnapKit
-
-// ReviewWritePage를 SwiftUI에서 미리 보기 위한 래퍼
-struct ReviewWritePagePreview: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        // UINavigationController를 반환합니다.
-        return UINavigationController(rootViewController: ReviewWritePage())
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
     }
 
-    func updateUIViewController(_ uiViewController: some UIViewController, context: Context) {
-        // 뷰 컨트롤러 업데이트 시 수행할 작업, 필요한 경우에만 구현합니다.
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
+
+    func setupViews() {
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10 // 셀의 모서리를 둥글게 합니다.
+        contentView.addSubview(imageView)
+
+
+        deleteButton.setImage(UIImage(named: "xbutton"), for: .normal)
+        contentView.addSubview(deleteButton)
+
+        imageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
+        deleteButton.snp.makeConstraints { make in
+            make.top.right.equalToSuperview().inset(8)
+            make.width.height.equalTo(25)
+        }
+    }
+
+
 }
 
-// SwiftUI 프리뷰
-struct ReviewWritePagePreview_Previews: PreviewProvider {
-    static var previews: some View {
-        ReviewWritePagePreview()
-    }
-}
 
+
+//
+//import SwiftUI
+//import AVFoundation
+//import SnapKit
+//
+//// ReviewWritePage를 SwiftUI에서 미리 보기 위한 래퍼
+//struct ReviewWritePagePreview: UIViewControllerRepresentable {
+//    func makeUIViewController(context: Context) -> some UIViewController {
+//        // UINavigationController를 반환합니다.
+//        return UINavigationController(rootViewController: ReviewWritePage())
+//    }
+//
+//    func updateUIViewController(_ uiViewController: some UIViewController, context: Context) {
+//        // 뷰 컨트롤러 업데이트 시 수행할 작업, 필요한 경우에만 구현합니다.
+//    }
+//}
+//
+//// SwiftUI 프리뷰
+//struct ReviewWritePagePreview_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ReviewWritePagePreview()
+//    }
+//}
+//
