@@ -178,11 +178,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
 
-        // contentView의 bottom constraint를 마지막 사각형 뷰에 맞춰 설정합니다.
-        detailContentView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(detailScrollView) // 스크롤 뷰에 맞춤
-            make.width.equalTo(detailScrollView) // contentView의 너비를 스크롤 뷰의 너비와 동일하게 설정
-        }
+
 
         // 스택 뷰 생성 및 구성
         let squaresStackView = UIStackView()
@@ -268,7 +264,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         borderLineView.backgroundColor = UIColor(red: 0.162, green: 0.162, blue: 0.162, alpha: 1) // 보더 라인의 색상 설정
         detailContentView.addSubview(borderLineView) // 스택 뷰를 포함하는 detailContentView에 추가
 
-        borderLineView.snp.makeConstraints { make in
+        borderLineView.snp.remakeConstraints { make in
             make.top.equalTo(squaresStackView.snp.bottom).offset(10) // 스택 뷰 바로 아래에 위치
             make.leading.equalTo(detailContentView.snp.leading)
             make.trailing.equalTo(detailContentView.snp.trailing)
@@ -293,7 +289,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.top.equalTo(borderLineView.snp.bottom).offset(10) // 보더 라인 바로 아래에 위치
             make.leading.equalTo(detailContentView.snp.leading).offset(20) // 컨텐츠 뷰의 leading에 여백을 주어 설정
             make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 컨텐츠 뷰의 trailing에 여백을 주어 설정
+
         }
+
+        // contentView의 bottom constraint를 마지막 사각형 뷰에 맞춰 설정합니다.
+        // contentView의 제약 조건 설정을 업데이트
+        // contentView의 bottom constraint를 마지막 사각형 뷰에 맞춰 설정합니다.
+        detailContentView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(detailScrollView) // 스크롤 뷰에 맞춤
+            make.width.equalTo(detailScrollView) // contentView의 너비를 스크롤 뷰의 너비와 동일하게 설정
+        }
+
 
     }
 
@@ -346,25 +352,3 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 }
 
-import SwiftUI
-
-// SwiftUI에서 UIKit 뷰 컨트롤러를 표현할 수 있게 해주는 구조체를 정의합니다.
-struct DetailViewControllerPreview: UIViewControllerRepresentable {
-    // UIViewControllerRepresentable 프로토콜을 준수하기 위한 메서드를 구현합니다.
-    func makeUIViewController(context: Context) -> DetailViewController {
-        // 여기서 DetailViewController의 인스턴스를 생성하고 설정합니다.
-        return DetailViewController()
-    }
-
-    func updateUIViewController(_ uiViewController: DetailViewController, context: Context) {
-        // 뷰 컨트롤러를 업데이트할 때 필요한 코드를 여기에 작성합니다.
-        // 프리뷰에서는 일반적으로 필요하지 않습니다.
-    }
-}
-
-// Xcode 프리뷰를 위한 구조체를 정의합니다.
-struct DetailViewControllerPreview_Previews: PreviewProvider {
-    static var previews: some View {
-        DetailViewControllerPreview().edgesIgnoringSafeArea(.all) // 모든 안전 영역을 무시하고 뷰를 확장합니다.
-    }
-}
