@@ -1,8 +1,12 @@
 import UIKit
+import FirebaseDatabaseInternal
+import FirebaseStorage
+import FirebaseAuth
+import FirebaseFirestore
 import SnapKit
 
 class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
-    
+    var 이메일: String = ""
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
@@ -227,19 +231,106 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         회원가입_다음_버튼.addTarget(self, action: #selector(회원가입_다음_버튼_클릭), for: .touchUpInside)
         회원가입_이미지_선택_버튼.addTarget(self, action: #selector(회원가입_이미지_선택_버튼_클릭), for: .touchUpInside)
+        회원가입_중복확인_버튼.addTarget(self, action: #selector(회원가입_중복확인_버튼_클릭), for: .touchUpInside)
         
+    }
+    private func 회원가입_이미지_업로드(_ 이미지: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
+        guard let 이미지데이터 = 이미지.jpegData(compressionQuality: 0.5) else {
+            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to data"])))
+            return
+        }
+        
+        let 이미지생성 = "\(UUID().uuidString).jpg"
+        
+        let 스토리지_참조 = Storage.storage().reference().child("profile_images/\(이미지생성)")
+        스토리지_참조.putData(이미지데이터, metadata: nil) { (metadata, 에러) in
+            if let 이미지업로드실패 = 에러 {
+                completion(.failure(이미지업로드실패))
+            } else {
+                스토리지_참조.downloadURL { (url, error) in
+                    if let url = url {
+                        completion(.success(url))
+                    } else {
+                        completion(.failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get image URL"])))
+                    }
+                }
+            }
+        }
+    }
+    private func 회원가입_유저정보_업로드(닉네임: String, 이메일: String, 비밀번호: String, 프로필이미지URL: String) {
+        let 데이터베이스 = Firestore.firestore()
+            let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+            
+            let userData: [String: Any] = [
+                "닉네임": 닉네임,
+                "이메일": 이메일,
+                "비밀번호": 비밀번호,
+                "프로필이미지URL": 프로필이미지URL
+            ]
+            
+            유저컬렉션.addDocument(data: userData) { 에러 in
+                if let 유저데이터_실패 = 에러 {
+                    print("Firestore에 사용자 정보 저장 실패: \(유저데이터_실패.localizedDescription)")
+                } else {
+                    print("Firestore에 사용자 정보 저장 성공")
+            }
+        }
     }
     @objc func 뒤로가기_버튼_클릭() {
         print("뒤로가기")
         navigationController?.popViewController(animated: true)
         
     }
+    @objc func 회원가입_중복확인_버튼_클릭() {
+        Auth.auth().fetchSignInMethods(forEmail: self.이메일) { [weak self] (methods, 에러) in
+            guard let self = self else { return }
+            
+            if let error = 에러 {
+                print("이메일 중복 확인 실패: \(error.localizedDescription)")
+                return
+            }
+            
+            if let 중복확인 = methods {
+                print("중복된 이메일")
+            } else {
+                print("사용 가능한 이메일")
+            }
+        }
+    }
     @objc func 회원가입_다음_버튼_클릭() {
         print("다음 페이지로 이동")
-        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
-        self.navigationController?.pushViewController(다음화면_이동, animated: true)
-        navigationItem.hidesBackButton = true
+        guard let 이메일 = 회원가입_이메일_텍스트필드.text,
+              let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
+              let 닉네임 = 회원가입_닉네임_텍스트필드.text,
+              let 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
+            return
+        }
+        회원가입_이미지_업로드(프로필이미지) { [weak self] 결과 in
+            guard let self = self else { return }
+            
+            switch 결과 {
+            case .success(let 이미지Url):
+                Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { (authResult, 에러) in
+                    if let 회원가입_실패 = 에러 {
+                        print("회원가입 실패: \(회원가입_실패.localizedDescription)")
+                        return
+                    }
+                    
+                    print("회원가입 성공")
+                    
+                    self.회원가입_유저정보_업로드(닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 프로필이미지URL: 이미지Url.absoluteString)
+                    
+                    let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+                    self.navigationController?.pushViewController(다음화면_이동, animated: true)
+                    self.navigationItem.hidesBackButton = true
+                }
+            case .failure(let 업로드_실패):
+                print("이미지 업로드 실패: \(업로드_실패.localizedDescription)")
+            }
+        }
+        
     }
+    
     @objc func 회원가입_이미지_선택_버튼_클릭() {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
@@ -266,48 +357,9 @@ extension 회원가입_첫번째_뷰컨트롤러: UIImagePickerControllerDelegat
     }
 }
 
-
-
-//extension 회원가입_첫번째_뷰컨트롤러 {
-//    
-//    @objc func presentModalViewController() {
-//        // 상세 내용을 담은 뷰 컨트롤러를 생성하고 모달로 표시합니다.
-//        let detailViewController = DetailViewController()
-//        presentDetailViewController(detailViewController)
-//    }
-//    
-//    private func presentDetailViewController(_ detailViewController: DetailViewController) {
-//        if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
-//            // 사용자 정의 detent 생성
-//            let detentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
-//            let customDetent = UISheetPresentationController.Detent.custom(identifier: detentIdentifier) { _ in
-//                // safe area bottom을 구하기 위한 선언.
-//                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-//                let safeAreaBottom = windowScene?.windows.first?.safeAreaInsets.bottom ?? 0
-//                
-//                // 모든 기기에서 항상 높이가 700인 detent를 만들어낼 수 있다.
-//                return 700 - safeAreaBottom
-//            }
-//            
-//            // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
-//            sheetController.detents = [.medium(), customDetent]
-//            sheetController.largestUndimmedDetentIdentifier = detentIdentifier // 최대 높이를 커스텀 detent로 설정합니다.
-//            sheetController.prefersScrollingExpandsWhenScrolledToEdge = true // 스크롤할 때 시트가 확장되도록 설정합니다.
-//            sheetController.preferredCornerRadius = 30 // 둥근 모서리 설정을 유지합니다.
-//        }
-//        
-//        // 모달 표시 설정
-//        detailViewController.modalPresentationStyle = .pageSheet
-//        self.present(detailViewController, animated: true, completion: nil)
-//    }
-//    
-//    
-//}
-
 class 사진_라이브: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        // 여기에 상세 내용을 나타내는 UI 구성 요소를 추가합니다.
     }
 }

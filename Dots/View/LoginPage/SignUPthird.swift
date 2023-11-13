@@ -70,8 +70,8 @@ class 회원가입_세번째_뷰컨트롤러 : UIViewController {
     lazy var 아티스트_리스트_컬렉션뷰: UICollectionView = {
            let layout = UICollectionViewFlowLayout()
            layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 15, left: 15, bottom: 10, right: 15)
            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
            collectionView.backgroundColor = .black
@@ -177,7 +177,15 @@ extension 회원가입_세번째_뷰컨트롤러 {
 
 
 extension 회원가입_세번째_뷰컨트롤러 : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout  {
-   
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+           return 0
+       }
+
+       // 한 라인 내의 간격을 0으로 설정
+       func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+           return 0
+       }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 아티스트_리스트.count
     }
@@ -194,7 +202,7 @@ extension 회원가입_세번째_뷰컨트롤러 : UICollectionViewDelegate, UIC
         print("Selected Taste: \(아티스트_리스트[indexPath.item])")
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let randomWidth = CGFloat(arc4random_uniform(50) + 50)
+        let randomWidth = CGFloat(arc4random_uniform(170) + 40)
                 let randomHeight = randomWidth
                 return CGSize(width: randomWidth, height: randomHeight)
     }
