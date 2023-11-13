@@ -50,15 +50,89 @@ class ReviewWritePage: UIViewController, UITextViewDelegate {
         navigationController?.navigationBar.tintColor = .white
 
         // 텍스트 필드 설정
-        setupTextField(titleTextField, placeholder: "제목...", fontSize: 28)
-        setupTextView(contentTextView, text: "자유롭게 후기를 작성해주세요.", fontSize: 20)
+        setupTextField(titleTextField, placeholder: "제목...", fontSize: 18)
+        setupTextView(contentTextView, text: "자유롭게 후기를 작성해주세요.", fontSize: 16)
         contentTextView.delegate = self // UITextViewDelegate 지정
 
 
         // 레이아웃 설정
         setupLayout()
 
+        configureInputAccessoryView()
+
+
     }
+
+    func configureInputAccessoryView() {
+        let accessoryView = UIView(frame: .zero)
+        accessoryView.backgroundColor = .black
+        accessoryView.autoresizingMask = .flexibleHeight
+
+
+        // 상단 라인 뷰 설정
+        let topLineView = UIView()
+        topLineView.backgroundColor = UIColor(red: 0.158, green: 0.158, blue: 0.158, alpha: 1)
+
+        accessoryView.addSubview(topLineView) // accessoryView에 라인 뷰 추가
+
+        topLineView.snp.makeConstraints { make in
+            make.top.equalTo(accessoryView.snp.top)
+            make.left.equalTo(accessoryView.snp.left)
+            make.right.equalTo(accessoryView.snp.right)
+            make.height.equalTo(1) // 라인 뷰 높이
+        }
+
+        // 첫 번째 버튼 설정
+        let button1 = UIButton(type: .custom)
+        button1.setImage(UIImage(named: "Union 3"), for: .normal) // 버튼 이미지 설정
+        button1.imageView?.contentMode = .scaleAspectFit // 이미지 콘텐츠 모드 설정
+        button1.addTarget(self, action: #selector(button1Action), for: .touchUpInside) // 버튼 액션 추가
+
+        // 두 번째 버튼 설정
+        let button2 = UIButton(type: .custom)
+        button2.setImage(UIImage(named: "Group 131"), for: .normal) // 버튼 이미지 설정
+        button2.imageView?.contentMode = .scaleAspectFit // 이미지 콘텐츠 모드 설정
+        button2.addTarget(self, action: #selector(button2Action), for: .touchUpInside) // 버튼 액션 추가
+
+        // 버튼들을 Accessory View에 추가합니다.
+        accessoryView.addSubview(button1)
+        accessoryView.addSubview(button2)
+
+        // 첫 번째 버튼의 레이아웃 제약 조건 설정
+        button1.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.left.equalToSuperview().offset(20)
+            make.height.equalTo(44)
+            make.width.equalTo(button1.snp.height).multipliedBy(0.6) // 버튼 너비는 높이의 0.6배
+        }
+
+        // 두 번째 버튼의 레이아웃 제약 조건 설정
+        button2.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.left.equalTo(button1.snp.right).offset(20)
+            make.height.equalTo(44)
+            make.width.equalTo(button2.snp.height).multipliedBy(0.5) // 버튼 너비는 높이의 0.5배
+        }
+
+        // Accessory View의 높이 설정
+        let accessoryHeight: CGFloat = 44
+        accessoryView.frame.size.height = accessoryHeight
+
+        // 텍스트 뷰에 Accessory View 할당
+        contentTextView.inputAccessoryView = accessoryView
+        contentTextView.reloadInputViews() // 액세서리 뷰 변경 적용
+    }
+
+    @objc func button1Action() {
+        // 첫 번째 버튼 액션
+        print("Button 1 Tapped")
+    }
+
+    @objc func button2Action() {
+        // 두 번째 버튼 액션
+        print("Button 2 Tapped")
+    }
+
 
     // UITextViewDelegate 메서드를 사용하여 플레이스홀더 처리
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -117,8 +191,8 @@ class ReviewWritePage: UIViewController, UITextViewDelegate {
     func setupLayout() {
         titleTextField.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
-            make.left.equalTo(view).offset(20)
-            make.right.equalTo(view).offset(-20)
+            make.left.equalTo(view).offset(15)
+            make.right.equalTo(view).offset(-10)
         }
 
         // 선 추가
@@ -126,18 +200,18 @@ class ReviewWritePage: UIViewController, UITextViewDelegate {
         view.addSubview(separatorView)
 
         separatorView.snp.makeConstraints { make in
-            make.top.equalTo(titleTextField.snp.bottom).offset(30) // 조정 가능한 간격
+            make.top.equalTo(titleTextField.snp.bottom).offset(10) // 조정 가능한 간격
             make.left.equalTo(view).offset(10)
             make.right.equalTo(view).offset(-10)
             make.height.equalTo(1) // 선의 높이
         }
 
         contentTextView.snp.makeConstraints { make in
-               make.top.equalTo(separatorView.snp.bottom).offset(8) // 선 아래로부터의 간격
-               make.left.equalTo(view).offset(10)
-               make.right.equalTo(view).offset(-10)
-               make.height.equalTo(200) // 내용 입력 뷰의 높이
-           }
+            make.top.equalTo(separatorView.snp.bottom).offset(10) // 선 아래로부터의 간격
+            make.left.equalTo(view).offset(10)
+            make.right.equalTo(view).offset(-10)
+            make.height.equalTo(200) // 내용 입력 뷰의 높이
+        }
     }
 
 }
