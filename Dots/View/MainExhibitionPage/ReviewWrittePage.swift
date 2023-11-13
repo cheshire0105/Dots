@@ -18,13 +18,13 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     let separatorView = UIView() // 선을 위한 뷰
 
     // 선택된 이미지를 저장할 배열
-       var selectedImages = [UIImage]()
+    var selectedImages = [UIImage]()
 
     // UICollectionView 속성 정의
-      var collectionView: UICollectionView!
+    var collectionView: UICollectionView!
 
     // 컬렉션 뷰 높이 제약 조건을 위한 변수 선언
-       var collectionViewHeightConstraint: Constraint?
+    var collectionViewHeightConstraint: Constraint?
 
 
     override func viewDidLoad() {
@@ -70,7 +70,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         setupLayout()
 
         configureInputAccessoryView()
-        
+
         setupCollectionView()
         updateCollectionViewLayout()
         collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCollectionViewCell")
@@ -137,9 +137,9 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
 
     // 컬렉션 뷰 데이터 소스 메서드
-       func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-           return selectedImages.count
-       }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return selectedImages.count
+    }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else {
@@ -183,7 +183,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
 
 
-    
+
 
     func configureInputAccessoryView() {
         let accessoryView = UIView(frame: .zero)
@@ -448,7 +448,7 @@ extension ReviewWritePage: PHPickerViewControllerDelegate {
 class ImageCollectionViewCell: UICollectionViewCell {
     let imageView = UIImageView()
     let deleteButton = UIButton()
-    
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
