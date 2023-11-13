@@ -7,9 +7,7 @@
 
 import Foundation
 import UIKit
-
-
-
+import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위해 필요합니다.
 
 class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -52,7 +50,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         navigationController?.navigationBar.tintColor = .white
 
         // 텍스트 필드 설정
-        setupTextField(titleTextField, placeholder: "제목...", fontSize: 18)
+        setupTextField(titleTextField, placeholder: "제목", fontSize: 18)
         setupTextView(contentTextView, text: "자유롭게 후기를 작성해주세요.", fontSize: 16)
         contentTextView.delegate = self // UITextViewDelegate 지정
 
@@ -168,25 +166,59 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         self.present(picker, animated: true)
     }
 
+    @objc func button2Action() {
+        // 두 번째 버튼 액션
+        print("Button 2 Tapped")
+        presentPhotoPicker()
+
+    }
+
+    func presentPhotoPicker() {
+        // 사진 라이브러리 사용 가능 여부 확인
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
+            print("Photo library is not available on this device.")
+            return
+        }
+
+        // 사진 라이브러리 접근 권한 상태 확인
+        let status = PHPhotoLibrary.authorizationStatus()
+        if status == .authorized || status == .limited { // 이미 접근 권한이 있거나, 제한적 접근이 허용된 경우
+            showPhotoLibraryPicker()
+        } else if status == .notDetermined { // 권한 요청이 아직 안 된 경우
+            PHPhotoLibrary.requestAuthorization { newStatus in
+                if newStatus == .authorized || newStatus == .limited {
+                    DispatchQueue.main.async {
+                        self.showPhotoLibraryPicker()
+                    }
+                }
+            }
+        } else { // 권한이 없거나 제한된 경우
+            // 사용자에게 설정에서 권한을 변경하도록 안내
+            print("Photo library access denied or restricted.")
+        }
+    }
+
+    func showPhotoLibraryPicker() {
+        let picker = UIImagePickerController()
+        picker.sourceType = .photoLibrary
+        picker.delegate = self // UIImagePickerControllerDelegate와 UINavigationControllerDelegate 설정
+        self.present(picker, animated: true, completion: nil)
+    }
+
     // UIImagePickerControllerDelegate 메서드
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        // 선택한 또는 찍은 사진 처리
-        picker.dismiss(animated: true)
+        // 선택한 사진을 처리합니다.
+        if let image = info[.originalImage] as? UIImage {
+            // 여기에서 선택된 이미지를 사용할 수 있습니다.
+            // 예를 들어 이미지를 이미지 뷰에 표시하거나 변수에 저장할 수 있습니다.
+        }
+        picker.dismiss(animated: true, completion: nil)
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         // 사용자가 취소했을 때의 처리
-        picker.dismiss(animated: true)
+        picker.dismiss(animated: true, completion: nil)
     }
-
-
-    @objc func button2Action() {
-        // 두 번째 버튼 액션
-        print("Button 2 Tapped")
-    }
-
-    
-
 
     // UITextViewDelegate 메서드를 사용하여 플레이스홀더 처리
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -202,8 +234,6 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             textView.textColor = .lightGray
         }
     }
-
-
 
     // 텍스트 필드 설정을 위한 메서드
     func setupTextField(_ textField: UITextField, placeholder: String, fontSize: CGFloat) {
@@ -244,7 +274,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     // SnapKit을 사용한 레이아웃 설정 메서드
     func setupLayout() {
         titleTextField.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(40)
             make.left.equalTo(view).offset(15)
             make.right.equalTo(view).offset(-10)
         }
@@ -264,7 +294,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             make.top.equalTo(separatorView.snp.bottom).offset(10) // 선 아래로부터의 간격
             make.left.equalTo(view).offset(10)
             make.right.equalTo(view).offset(-10)
-            make.height.equalTo(200) // 내용 입력 뷰의 높이
+            make.height.equalTo(300) // 내용 입력 뷰의 높이
         }
     }
 
