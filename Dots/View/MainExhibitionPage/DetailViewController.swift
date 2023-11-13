@@ -51,11 +51,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 세그먼트 컨트롤을 설정합니다.
         segmentControl.selectedSegmentIndex = 0 // 기본 선택 인덱스를 설정합니다.
         segmentControl.backgroundColor = UIColor.black // 배경색 설정
-        segmentControl.selectedSegmentTintColor = UIColor.white // 선택된 아이템의 배경색 설정
+        segmentControl.selectedSegmentTintColor = UIColor(red: 0.388, green: 0.388, blue: 0.4, alpha: 1)// 선택된 아이템의 배경색 설정
 
         // 텍스트 색상 변경을 위한 설정
-        let normalTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
-        let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+        let normalTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 
         segmentControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
         segmentControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
@@ -72,8 +72,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         segmentControl.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.centerX.equalTo(view.snp.centerX)
-            make.leading.equalTo(view.snp.leading).offset(50)
-            make.trailing.equalTo(view.snp.trailing).offset(-50)
+            make.leading.equalTo(view.snp.leading).offset(110)
+            make.trailing.equalTo(view.snp.trailing).offset(-110)
         }
     }
 
@@ -127,7 +127,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let galleryAddressLabel = UILabel()
         galleryAddressLabel.text = "서울 종로구 삼청로 30"
         galleryAddressLabel.textColor = .white
-        galleryAddressLabel.font = UIFont.systemFont(ofSize: 18)
+        galleryAddressLabel.font = UIFont.systemFont(ofSize: 16)
 
         // 컨텐츠 뷰에 레이블 추가
         detailContentView.addSubview(exhibitionTitleLabel)
@@ -167,7 +167,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         // 전시 제목 레이블 레이아웃 설정
         exhibitionTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(detailContentView.snp.top).offset(20) // 상단 여백
+            make.top.equalTo(detailContentView.snp.top).offset(30) // 상단 여백
             make.leading.equalTo(detailContentView.snp.leading).offset(20) // 좌측 여백
         }
 
@@ -213,7 +213,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
             // 정사각형 뷰 생성 및 설정
             let squareView = UIView()
-            squareView.backgroundColor = .gray // 배경색 설정
+            squareView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2) // 20% 투명도의 흰색 배경 설정
+
             squareView.layer.cornerRadius = 10 // 모서리 둥글게 설정
             containerView.addSubview(squareView) // 컨테이너 뷰에 squareView 추가
 
