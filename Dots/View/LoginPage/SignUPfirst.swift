@@ -6,7 +6,7 @@ import FirebaseFirestore
 import SnapKit
 
 class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
-    
+    var 이메일: String = ""
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
@@ -231,6 +231,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         회원가입_다음_버튼.addTarget(self, action: #selector(회원가입_다음_버튼_클릭), for: .touchUpInside)
         회원가입_이미지_선택_버튼.addTarget(self, action: #selector(회원가입_이미지_선택_버튼_클릭), for: .touchUpInside)
+        회원가입_중복확인_버튼.addTarget(self, action: #selector(회원가입_중복확인_버튼_클릭), for: .touchUpInside)
         
     }
     private func 회원가입_이미지_업로드(_ 이미지: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
@@ -238,17 +239,14 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to data"])))
             return
         }
-
-        // 이미지 파일명을 유니크하게 생성
+        
         let 이미지생성 = "\(UUID().uuidString).jpg"
-
-        // Firebase Storage에 이미지 업로드
+        
         let 스토리지_참조 = Storage.storage().reference().child("profile_images/\(이미지생성)")
         스토리지_참조.putData(이미지데이터, metadata: nil) { (metadata, 에러) in
             if let 이미지업로드실패 = 에러 {
                 completion(.failure(이미지업로드실패))
             } else {
-                // 업로드 성공 시 이미지 다운로드 URL 획득
                 스토리지_참조.downloadURL { (url, error) in
                     if let url = url {
                         completion(.success(url))
@@ -260,22 +258,21 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         }
     }
     private func 회원가입_유저정보_업로드(닉네임: String, 이메일: String, 비밀번호: String, 프로필이미지URL: String) {
-        let 데이터베이스 = Database.database().reference()
-        
-        let 유저데이터 = 데이터베이스.child("users").childByAutoId()
-        
-        let userData: [String: Any] = [
-            "닉네임": 닉네임,
-            "이메일": 이메일,
-            "비밀번호": 비밀번호,
-            "프로필이미지URL": 프로필이미지URL
-        ]
-        
-        유저데이터.setValue(userData) { 에러, 참조 in
-            if let 유저데이터_실패 = 에러 {
-                print("Realtime Database에 사용자 정보 저장 실패: \(유저데이터_실패.localizedDescription)")
-            } else {
-                print("Realtime Database에 사용자 정보 저장 성공")
+        let 데이터베이스 = Firestore.firestore()
+            let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+            
+            let userData: [String: Any] = [
+                "닉네임": 닉네임,
+                "이메일": 이메일,
+                "비밀번호": 비밀번호,
+                "프로필이미지URL": 프로필이미지URL
+            ]
+            
+            유저컬렉션.addDocument(data: userData) { 에러 in
+                if let 유저데이터_실패 = 에러 {
+                    print("Firestore에 사용자 정보 저장 실패: \(유저데이터_실패.localizedDescription)")
+                } else {
+                    print("Firestore에 사용자 정보 저장 성공")
             }
         }
     }
@@ -284,38 +281,56 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         navigationController?.popViewController(animated: true)
         
     }
+    @objc func 회원가입_중복확인_버튼_클릭() {
+        Auth.auth().fetchSignInMethods(forEmail: self.이메일) { [weak self] (methods, 에러) in
+            guard let self = self else { return }
+            
+            if let error = 에러 {
+                print("이메일 중복 확인 실패: \(error.localizedDescription)")
+                return
+            }
+            
+            if let 중복확인 = methods {
+                print("중복된 이메일")
+            } else {
+                print("사용 가능한 이메일")
+            }
+        }
+    }
     @objc func 회원가입_다음_버튼_클릭() {
         print("다음 페이지로 이동")
         guard let 이메일 = 회원가입_이메일_텍스트필드.text,
-                 let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
-                 let 닉네임 = 회원가입_닉네임_텍스트필드.text,
-                 let 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
-               return
-           }
-           회원가입_이미지_업로드(프로필이미지) { [weak self] 결과 in
-               guard let self = self else { return }
-
-               switch 결과 {
-               case .success(let 이미지Url):
-                   Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { (authResult, 에러) in
-                       if let 회원가입_실패 = 에러 {
-                           print("회원가입 실패: \(회원가입_실패.localizedDescription)")
-                           return
-                       }
-
-                       print("회원가입 성공")
-
-                       self.회원가입_유저정보_업로드(닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 프로필이미지URL: 이미지Url.absoluteString)
-
-                       let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
-                       self.navigationController?.pushViewController(다음화면_이동, animated: true)
-                       self.navigationItem.hidesBackButton = true
-                   }
-               case .failure(let 업로드_실패):
-                   print("이미지 업로드 실패: \(업로드_실패.localizedDescription)")
-               }
-           }
+              let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
+              let 닉네임 = 회원가입_닉네임_텍스트필드.text,
+              let 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
+            return
+        }
+        회원가입_이미지_업로드(프로필이미지) { [weak self] 결과 in
+            guard let self = self else { return }
+            
+            switch 결과 {
+            case .success(let 이미지Url):
+                Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { (authResult, 에러) in
+                    if let 회원가입_실패 = 에러 {
+                        print("회원가입 실패: \(회원가입_실패.localizedDescription)")
+                        return
+                    }
+                    
+                    print("회원가입 성공")
+                    
+                    self.회원가입_유저정보_업로드(닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 프로필이미지URL: 이미지Url.absoluteString)
+                    
+                    let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+                    self.navigationController?.pushViewController(다음화면_이동, animated: true)
+                    self.navigationItem.hidesBackButton = true
+                }
+            case .failure(let 업로드_실패):
+                print("이미지 업로드 실패: \(업로드_실패.localizedDescription)")
+            }
+        }
+        
     }
+    
     @objc func 회원가입_이미지_선택_버튼_클릭() {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
