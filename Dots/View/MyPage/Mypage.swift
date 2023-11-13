@@ -118,6 +118,7 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = UIColor.clear
+        버튼_클릭()
         컬렉션뷰_레이아웃()
         UI레이아웃()
 
@@ -190,6 +191,16 @@ class Mypage: UIViewController {
             
         }
     }
+}
+extension Mypage {
+    func 버튼_클릭() {
+        마이페이지_설정_버튼.addTarget(self, action: #selector(마이페이지_설정_버튼_클릭), for: .touchUpInside)
+    }
+
+       @objc func 마이페이지_설정_버튼_클릭() {
+           let settingsModalVC = 마이페이지_유저_설정_모달()
+           present(settingsModalVC, animated: true, completion: nil)
+       }
 }
 
 extension Mypage : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
