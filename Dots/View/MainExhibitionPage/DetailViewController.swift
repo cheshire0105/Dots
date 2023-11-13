@@ -17,6 +17,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var reviews: [String] = []
     var detailScrollView: UIScrollView!
     var detailContentView: UIView!
+    let floatingActionButton = UIButton(type: .custom)
+
 
     var mapView: MKMapView!
 
@@ -36,13 +38,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func configureFloatingActionButton() {
-        let floatingActionButton = UIButton(type: .custom)
         floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
         floatingActionButton.backgroundColor = .white
         floatingActionButton.setTitle("후기 작성", for: .normal)
         floatingActionButton.setTitleColor(.black, for: .normal)
         floatingActionButton.layer.cornerRadius = 23
-        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 16) // 타이틀 폰트 크기 설정
+        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
+        // Initially hide the floating action button until the first segment is selected
+//               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
+
 
         // 이미지 설정
         let buttonImage = UIImage(named: "Union 2") // 'reviewIcon'은 프로젝트에 포함된 이미지 이름이어야 합니다.
@@ -343,9 +347,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
     @objc func segmentChanged(_ sender: UISegmentedControl) {
-        reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
-        detailScrollView.isHidden = sender.selectedSegmentIndex != 1
-    }
+         // Only show the floating action button when the first segment ("Reviews") is selected
+         floatingActionButton.isHidden = sender.selectedSegmentIndex != 0
+         reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
+         detailScrollView.isHidden = sender.selectedSegmentIndex != 1
+     }
 
     // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
