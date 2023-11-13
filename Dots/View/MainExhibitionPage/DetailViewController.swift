@@ -14,23 +14,18 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     let segmentControl = UISegmentedControl(items: ["후기", "상세정보"])
     var reviewsTableView = UITableView()
-    var reviews: [String] = [] // 후기 데이터 배열
-    // 새로운 스크롤 뷰 프로퍼티 추가
+    var reviews: [String] = []
     var detailScrollView: UIScrollView!
     var detailContentView: UIView!
 
-    var mapView: MKMapView! // MKMapView 프로퍼티 추가
+    var mapView: MKMapView!
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         isModalInPresentation = true
-
-        // 세그먼트 컨트롤 설정
         configureSegmentControl()
-
-        // 테이블 뷰 설정
         configureTableView()
         loadSampleReviews()
 
@@ -63,7 +58,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         segmentControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         view.addSubview(segmentControl)
 
-        // SnapKit을 사용하여 레이아웃을 적용합니다.
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.centerX.equalTo(view.snp.centerX)
@@ -86,12 +80,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         reviewsTableView.backgroundColor = .black
 
 
-        reviewsTableView.separatorStyle = .none  // 셀 사이의 구분선을 없애고 싶다면 이 속성을 설정합니다.
+        reviewsTableView.separatorStyle = .none
 
         // 테이블 뷰에 대한 SnapKit 레이아웃 설정
         reviewsTableView.snp.makeConstraints { make in
             make.top.equalTo(segmentControl.snp.bottom).offset(10)
-            make.left.right.equalTo(view) // 여기에서 양쪽에 20포인트의 inset을 추가합니다.
+            make.left.right.equalTo(view)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
@@ -289,27 +283,18 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.top.equalTo(borderLineView.snp.bottom).offset(10) // 보더 라인 바로 아래에 위치
             make.leading.equalTo(detailContentView.snp.leading).offset(20) // 컨텐츠 뷰의 leading에 여백을 주어 설정
             make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 컨텐츠 뷰의 trailing에 여백을 주어 설정
-            // 추가: 레이블이 스크롤 뷰의 맨 아래 요소인 경우, 레이블의 bottom constraint를 추가합니다.
-            // 이는 스크롤 뷰의 contentSize를 적절하게 설정하는 데 중요합니다.
+            make.bottom.equalTo(detailContentView.snp.bottom).offset(-20)
+
+
         }
 
         // contentView의 제약 조건 설정을 업데이트합니다.
         detailContentView.snp.makeConstraints { make in
             make.top.leading.bottom.trailing.equalTo(detailScrollView) // 스크롤 뷰에 맞춤
             make.width.equalTo(detailScrollView) // contentView의 너비를 스크롤 뷰의 너비와 일치시킴
-            // 여기에 높이 제약을 추가합니다. 이는 스크롤 뷰의 contentSize를 결정하는데 중요합니다.
-            // 만약 특정 높이를 설정하지 않는다면, 최소한 마지막 뷰의 하단 제약을 scrollView의 하단에 관련지어야 합니다.
-//            make.bottom.equalTo(additionalInfoLabel.snp.bottom).offset(20) // additionalInfoLabel 아래에 20포인트의 여백을 둡니다.
+
+            //            make.bottom.equalTo(additionalInfoLabel.snp.bottom).offset(20) // 이걸 주석 처리 했더니 스크롤 문제 해결
         }
-
-
-        // 아래에 contentView와 additionalInfoLabel의 bottom 조건을 새로 추가합니다.
-        // 이렇게 하면 스크롤 뷰가 추가 정보 레이블의 아래쪽 여백을 contentSize로 계산할 수 있습니다.
-        additionalInfoLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(detailContentView.snp.bottom).offset(-20) // additionalInfoLabel의 아래에 여백을 둡니다.
-        }
-
-        
 
     }
 
@@ -317,12 +302,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     @objc func segmentChanged(_ sender: UISegmentedControl) {
         reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
         detailScrollView.isHidden = sender.selectedSegmentIndex != 1
-        // 상세 정보 뷰의 표시 상태를 업데이트하는 코드를 여기에 추가합니다.
     }
 
     // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return reviews.count // 후기 배열의 길이 반환
+        return reviews.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
