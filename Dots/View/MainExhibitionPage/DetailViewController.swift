@@ -185,7 +185,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         // 스택 뷰 생성 및 구성
-          let squaresStackView = UIStackView()
+        let squaresStackView = UIStackView()
         squaresStackView.axis = .horizontal
         squaresStackView.distribution = .fillEqually
         squaresStackView.alignment = .fill
@@ -208,7 +208,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
             containerView.snp.makeConstraints { make in
                 make.width.equalTo(itemWidth) // 계산된 너비 설정
-                make.height.equalTo(150) // 설정된 높이
+                make.height.equalTo(130) // 설정된 높이
             }
 
             // 정사각형 뷰 생성 및 설정
@@ -252,10 +252,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             }
         }
 
-          // 스크롤 뷰 내 컨텐츠 뷰에 스택 뷰 추가
-          detailContentView.addSubview(squaresStackView)
+        // 스크롤 뷰 내 컨텐츠 뷰에 스택 뷰 추가
+        detailContentView.addSubview(squaresStackView)
 
-          // 스택 뷰의 제약 조건 설정
+        // 스택 뷰의 제약 조건 설정
         // 스택 뷰의 제약 조건 설정
         squaresStackView.snp.makeConstraints { make in
             make.top.equalTo(mapView.snp.bottom).offset(20) // mapView 아래에 위치
@@ -263,7 +263,37 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // detailContentView의 trailing에 맞춤
         }
 
+        // 스택 뷰 아래에 보더 라인 추가
+        let borderLineView = UIView()
+        borderLineView.backgroundColor = UIColor(red: 0.162, green: 0.162, blue: 0.162, alpha: 1) // 보더 라인의 색상 설정
+        detailContentView.addSubview(borderLineView) // 스택 뷰를 포함하는 detailContentView에 추가
 
+        borderLineView.snp.makeConstraints { make in
+            make.top.equalTo(squaresStackView.snp.bottom).offset(10) // 스택 뷰 바로 아래에 위치
+            make.leading.equalTo(detailContentView.snp.leading)
+            make.trailing.equalTo(detailContentView.snp.trailing)
+            make.height.equalTo(1) // 보더 라인의 높이 설정
+        }
+
+
+        // 보더 라인 아래에 추가할 레이블 생성
+        let additionalInfoLabel = UILabel()
+        additionalInfoLabel.text = """
+«김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다. 이번 전시는 1950년대부터 현재까지 다양한 매체, 장르, 주제를 넘나들며 예술의 최전선에서 독자적인 영역을 구축해 온 작가의 전위적인 면모를 확인할 수 있다. 비디오 아트, 설치, 판화, 퍼포먼스, 회화 등 미술의 범주를 넘어 무용, 연극, 영화, 음악에 이르기까지 다양한 분야에서 활발한 활동을 펼쳐 온 작가를 입체적으로 만나볼 수 있는 자리이기도 하다. 한국 현대미술사에서 중요한 위치를 차지하는 작가임에도 불구하고 김구림의 작품을 설명하거나 깊이 있게 경험할 기회는 충분치 않았기에 이번 전시를 통해 김구림의 미술사적 성과를 재확인하고, 현재진행형 작가로서 오늘날 그의 행보를 살펴보고자 한다. 전시는 1960년대 초 한국전쟁 이후 실존적인 문제에 매달리며 제작한 초기 회화, 1960-70년대 한국 실험미술의 중심에서 발표했던 퍼포먼스와 설치, 1980년대 중반부터 지속하는 <음과 양> 시리즈 등을 고루 소개한다. 또한 김구림 작가의 동시대적 면모를 확인할 수 있는 대형 설치와 함께 영화-무용-음악-연극을 한데 모은 공연을 새롭게 선보인다. 1950년대부터 이어진 김구림의 전방위적 활동과 거침없는 도전은 시대에 대한 반응이었고, 관습에 대한 저항이었던 바 그와 다른 시간대를 영위하는 이들이 단숨에 파악하기에는 어려운 낯선 영역일 것이다. 따라서 이번 전시는 부분적으로 밖에 파악할 수밖에 없었던 김구림의 세계를 최대한 온전하게 전달하는 데 초점을 두었다. 김구림과 함께 그의 결정적 순간들을 재방문해 보길 바라며, 김구림의 발자취를 경유하는 가운데 한국 미술사에 대한 이해의 폭을 넓히는 기회가 되길 바란다.
+"""
+        additionalInfoLabel.textColor = .white
+        additionalInfoLabel.font = UIFont.systemFont(ofSize: 16)
+        additionalInfoLabel.numberOfLines = 0 // 제한 없이 여러 줄 표시 가능
+
+        // contentView에 추가 정보 레이블 추가
+        detailContentView.addSubview(additionalInfoLabel)
+
+        // 추가 정보 레이블에 대한 제약 조건 설정
+        additionalInfoLabel.snp.makeConstraints { make in
+            make.top.equalTo(borderLineView.snp.bottom).offset(10) // 보더 라인 바로 아래에 위치
+            make.leading.equalTo(detailContentView.snp.leading).offset(20) // 컨텐츠 뷰의 leading에 여백을 주어 설정
+            make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 컨텐츠 뷰의 trailing에 여백을 주어 설정
+        }
 
     }
 
