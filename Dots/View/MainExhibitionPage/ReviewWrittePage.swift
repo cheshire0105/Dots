@@ -9,12 +9,22 @@ import Foundation
 import UIKit
 import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위해 필요합니다.
 
-class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource {
 
     // 텍스트 필드 속성 정의
     let titleTextField = UITextField()
     let contentTextView = UITextView()
     let separatorView = UIView() // 선을 위한 뷰
+
+    // 선택된 이미지를 저장할 배열
+       var selectedImages = [UIImage]()
+
+    // UICollectionView 속성 정의
+      var collectionView: UICollectionView!
+
+    // 컬렉션 뷰 높이 제약 조건을 위한 변수 선언
+       var collectionViewHeightConstraint: Constraint?
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,9 +69,98 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         setupLayout()
 
         configureInputAccessoryView()
+        
+        setupCollectionView()
+        updateCollectionViewLayout()
 
 
     }
+
+    func setupCollectionView() {
+        // 레이아웃 설정
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 100, height: 100)
+
+        // 컬렉션 뷰 초기화 및 설정
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.backgroundColor = .black
+
+        // 컬렉션 뷰를 뷰의 서브뷰로 추가합니다.
+        view.addSubview(collectionView)
+
+        // 컬렉션 뷰 오토레이아웃 설정 (스냅킷 사용)
+        collectionView.snp.makeConstraints { (make) -> Void in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.left.equalTo(view).offset(10)
+            make.right.equalTo(view).offset(-10)
+            make.height.equalTo(100) // 여기서는 높이를 100으로 설정했습니다.
+            self.collectionViewHeightConstraint = make.height.equalTo(0).constraint // 초기 높이를 0으로 설정
+
+        }
+    }
+
+    func updateCollectionViewLayout() {
+        // selectedImages 배열의 내용에 따라 컬렉션 뷰의 높이를 업데이트합니다.
+        let shouldShowCollectionView = !selectedImages.isEmpty
+        collectionViewHeightConstraint?.update(offset: shouldShowCollectionView ? 100 : 0)
+        collectionView.isHidden = !shouldShowCollectionView
+
+        // 제목 텍스트 필드의 위치를 업데이트합니다.
+        if shouldShowCollectionView {
+            titleTextField.snp.remakeConstraints { make in
+                make.top.equalTo(collectionView.snp.bottom).offset(20)
+                make.left.right.equalTo(view).inset(15)
+                make.height.equalTo(40)
+            }
+        } else {
+            titleTextField.snp.remakeConstraints { make in
+                make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+                make.left.right.equalTo(view).inset(15)
+                make.height.equalTo(40)
+            }
+        }
+
+        // 애니메이션과 함께 레이아웃 변경을 적용합니다.
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+    }
+
+
+
+
+    // 컬렉션 뷰 데이터 소스 메서드
+       func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+           return selectedImages.count
+       }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = .white
+
+        // 기존의 이미지 뷰 제거 (재사용 시 오래된 이미지 뷰가 겹치지 않도록)
+        for subview in cell.contentView.subviews {
+            subview.removeFromSuperview()
+        }
+
+        // 이미지 뷰 설정
+        let imageView = UIImageView(image: selectedImages[indexPath.row])
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        cell.contentView.addSubview(imageView)
+
+        // 이미지 뷰 스냅킷을 사용하여 제약 조건 설정
+        imageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview() // imageView가 cell.contentView의 모든 에지에 맞춰지도록 설정합니다.
+        }
+
+        return cell
+    }
+
 
     
 
@@ -167,10 +266,14 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     }
 
     @objc func button2Action() {
-        // 두 번째 버튼 액션
-        print("Button 2 Tapped")
-        presentPhotoPicker()
+        // PHPickerViewController 설정과 표시
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 0  // 0은 제한 없음을 의미합니다.
+        configuration.filter = .images  // 이미지만 선택 가능하도록 설정
 
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        self.present(picker, animated: true)
     }
 
     func presentPhotoPicker() {
@@ -300,9 +403,32 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
 }
 
+// PHPickerViewControllerDelegate 메서드
+extension ReviewWritePage: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+
+        selectedImages.removeAll() // 기존 이미지를 제거합니다.
+
+        for result in results {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
+                if let image = object as? UIImage {
+                    DispatchQueue.main.async {
+                        self.selectedImages.append(image)
+                        self.collectionView.reloadData()
+                        self.updateCollectionViewLayout() // 레이아웃 업데이트 호출
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 
 import SwiftUI
 import AVFoundation
+import SnapKit
 
 // ReviewWritePage를 SwiftUI에서 미리 보기 위한 래퍼
 struct ReviewWritePagePreview: UIViewControllerRepresentable {
