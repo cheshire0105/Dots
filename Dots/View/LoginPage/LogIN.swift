@@ -86,43 +86,11 @@ class 로그인_뷰컨트롤러 : UIViewController {
         label.text = "간편 로그인"
         label.textColor = UIColor.darkGray
         label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.textAlignment = .center
         
         return label
     } ()
-    private let 왼쪽구분선: UIView = {
-        let view = UIView()
-        
-        let 점선 = CAShapeLayer()
-        점선.strokeColor = UIColor.darkGray.cgColor
-        점선.lineDashPattern = [10, 2] // 점선의 길이 및 간격을 설정합니다.
-        
-        let 경로 = CGMutablePath()
-        경로.addLines(between: [CGPoint(x: 0, y: 0), CGPoint(x: 110, y: 0)]) // 좌표값 변경
-
-        점선.path = 경로
-        점선.lineWidth = 1
-        
-        view.layer.addSublayer(점선)
-        
-        return view
-    }()
-    private let 오른쪽구분선: UIView = {
-        let view = UIView()
-        
-        let 점선 = CAShapeLayer()
-        점선.strokeColor = UIColor.darkGray.cgColor
-        점선.lineDashPattern = [10, 2] // 점선의 길이 및 간격을 설정합니다.
-        
-        let 경로 = CGMutablePath()
-        경로.addLines(between: [CGPoint(x: 0, y: 0), CGPoint(x: 110, y: 0)]) // 좌표값 변경
-
-        점선.path = 경로
-        점선.lineWidth = 1
-        
-        view.layer.addSublayer(점선)
-        
-        return view
-    }()
+   
     let 구글_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "google"), for: .selected)
@@ -177,8 +145,6 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(로그인_비밀번호_텍스트필드)
         view.addSubview(로그인_버튼)
         view.addSubview(간편로그인_라벨)
-        view.addSubview(왼쪽구분선)
-        view.addSubview(오른쪽구분선)
         view.addSubview(구글_버튼)
         view.addSubview(애플_버튼)
         view.addSubview(트위터_버튼)
@@ -228,25 +194,13 @@ extension 로그인_뷰컨트롤러 {
             make.top.equalTo(로그인_버튼.snp.bottom).offset(46)
             make.centerX.equalToSuperview()
         }
-        왼쪽구분선.snp.makeConstraints { make in
-            make.top.equalTo(간편로그인_라벨.snp.centerY)
-            make.leading.equalToSuperview().offset(24)
-            make.trailing.equalTo(간편로그인_라벨.snp.leading ).offset(-10)
-            make.height.equalTo(1)
-        }
-        오른쪽구분선.snp.makeConstraints { make in
-            make.top.equalTo(간편로그인_라벨.snp.centerY)
-            make.trailing.equalToSuperview().offset(-24)
-            make.leading.equalTo(간편로그인_라벨.snp.trailing).offset(10)
-            make.height.equalTo(1)
-        }
         구글_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(애플_버튼)
             make.trailing.equalTo(애플_버튼.snp.leading).offset(-20)
             make.size.equalTo(60)
         }
         애플_버튼.snp.makeConstraints { make in
-            make.top.equalTo(간편로그인_라벨).offset(30)
+            make.top.equalTo(간편로그인_라벨.snp.bottom).offset(30)
             make.centerX.equalToSuperview()
             make.size.equalTo(60)
         }
@@ -255,7 +209,6 @@ extension 로그인_뷰컨트롤러 {
             make.leading.equalTo(애플_버튼.snp.trailing).offset(20)
             make.size.equalTo(60)
         }
-        
     }
 }
 //버튼클릭
