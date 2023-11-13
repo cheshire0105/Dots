@@ -289,17 +289,27 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.top.equalTo(borderLineView.snp.bottom).offset(10) // 보더 라인 바로 아래에 위치
             make.leading.equalTo(detailContentView.snp.leading).offset(20) // 컨텐츠 뷰의 leading에 여백을 주어 설정
             make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 컨텐츠 뷰의 trailing에 여백을 주어 설정
-
+            // 추가: 레이블이 스크롤 뷰의 맨 아래 요소인 경우, 레이블의 bottom constraint를 추가합니다.
+            // 이는 스크롤 뷰의 contentSize를 적절하게 설정하는 데 중요합니다.
         }
 
-        // contentView의 bottom constraint를 마지막 사각형 뷰에 맞춰 설정합니다.
-        // contentView의 제약 조건 설정을 업데이트
-        // contentView의 bottom constraint를 마지막 사각형 뷰에 맞춰 설정합니다.
+        // contentView의 제약 조건 설정을 업데이트합니다.
         detailContentView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(detailScrollView) // 스크롤 뷰에 맞춤
-            make.width.equalTo(detailScrollView) // contentView의 너비를 스크롤 뷰의 너비와 동일하게 설정
+            make.top.leading.bottom.trailing.equalTo(detailScrollView) // 스크롤 뷰에 맞춤
+            make.width.equalTo(detailScrollView) // contentView의 너비를 스크롤 뷰의 너비와 일치시킴
+            // 여기에 높이 제약을 추가합니다. 이는 스크롤 뷰의 contentSize를 결정하는데 중요합니다.
+            // 만약 특정 높이를 설정하지 않는다면, 최소한 마지막 뷰의 하단 제약을 scrollView의 하단에 관련지어야 합니다.
+//            make.bottom.equalTo(additionalInfoLabel.snp.bottom).offset(20) // additionalInfoLabel 아래에 20포인트의 여백을 둡니다.
         }
 
+
+        // 아래에 contentView와 additionalInfoLabel의 bottom 조건을 새로 추가합니다.
+        // 이렇게 하면 스크롤 뷰가 추가 정보 레이블의 아래쪽 여백을 contentSize로 계산할 수 있습니다.
+        additionalInfoLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(detailContentView.snp.bottom).offset(-20) // additionalInfoLabel의 아래에 여백을 둡니다.
+        }
+
+        
 
     }
 
