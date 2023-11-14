@@ -110,7 +110,7 @@ class Mypage: UIViewController {
     } ()
 
     let 구분선 = {
-        let view = UIView()ㅈ
+        let view = UIView()
         view.backgroundColor = .darkGray
         return view
     }()
