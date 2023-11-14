@@ -21,8 +21,9 @@ class 마이페이지_전시 : UIViewController {
     
     let 마이페이지_전시_카운팅 = {
         let label = UILabel()
-        label.text = ""
+        label.text = "xx개"
         label.textColor = UIColor.darkGray
+        label.font = UIFont(name: "HelveticaNeue", size: 15)
         label.textAlignment = .right
         return label
     } ()
@@ -30,7 +31,7 @@ class 마이페이지_전시 : UIViewController {
     lazy var 마이페이지_전시_컬렉션뷰 = {
           let layout = UICollectionViewFlowLayout()
           let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-          layout.minimumLineSpacing = 8
+          layout.minimumLineSpacing = 20
           layout.minimumInteritemSpacing = 1
           layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
           
@@ -55,6 +56,7 @@ override func viewDidLoad() {
 func UI레이아웃() {
     view.addSubview(뒤로가기_버튼)
     view.addSubview(페이지_제목)
+    view.addSubview(마이페이지_전시_카운팅)
     view.addSubview(마이페이지_전시_컬렉션뷰)
     뒤로가기_버튼.snp.makeConstraints { make in
         make.centerY.equalTo(페이지_제목.snp.centerY)
@@ -65,6 +67,11 @@ func UI레이아웃() {
         
         make.top.equalToSuperview().offset(60)
         make.centerX.equalToSuperview()
+    }
+    마이페이지_전시_카운팅.snp.makeConstraints { make in
+        make.bottom.equalTo(마이페이지_전시_컬렉션뷰.snp.top).offset(-5)
+        make.leading.equalTo(뒤로가기_버튼.snp.leading).offset(10)
+        make.height.equalTo(24)
     }
     마이페이지_전시_컬렉션뷰.snp.makeConstraints { make in
         make.top.equalToSuperview().offset(170)

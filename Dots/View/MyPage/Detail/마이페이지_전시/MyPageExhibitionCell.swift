@@ -4,22 +4,21 @@ import SnapKit
 
 class 마이페이지_전시_셀 : UICollectionViewCell {
     
-    var 백_블록 = {
-        let uiView = UIView()
-        uiView.backgroundColor = UIColor.orange
-        uiView.layer.cornerRadius = 15
-        return uiView
-    } ()
-    var 마이페이지_셀_이미지 = {
-        let image = UIImage()
-        
-        
-        return image
-    } ()
+   
+    var 전시_셀_이미지 = {
+            var imageView = UIImageView()
+            imageView.layer.cornerRadius = 10
+            imageView.clipsToBounds = true
+            imageView.contentMode = .scaleAspectFill
+        imageView.layer.borderWidth = 0.3
+        imageView.layer.borderColor = UIColor(named: "neon")?.cgColor
+
+            return imageView
+        }()
     
-    var 마이페이지_셀_제목 = {
+    var 전시_셀_제목 = {
         let label = UILabel()
-        label.text = ""
+        label.text = "준비중인 전시 제목"
         label.textColor = UIColor.white
         label.font = UIFont.boldSystemFont(ofSize: 16)
         return label
@@ -36,15 +35,19 @@ class 마이페이지_전시_셀 : UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor = UIColor.black
         layer.cornerRadius = 15
-        마이페이지셀_레이아웃()
+        마이페이지_전시_셀_레이아웃()
     }
     
-    func 마이페이지셀_레이아웃() {
-        contentView.addSubview(백_블록)
-        
-        백_블록.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(1)
-            make.bottom.trailing.equalToSuperview().offset(-1)
+    func 마이페이지_전시_셀_레이아웃() {
+        contentView.addSubview(전시_셀_이미지)
+        contentView.addSubview(전시_셀_제목)
+        전시_셀_이미지.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-30)
+        }
+        전시_셀_제목.snp.makeConstraints { make in
+            make.top.equalTo(전시_셀_이미지.snp.bottom)
+            make.leading.trailing.bottom.equalToSuperview()
         }
     }
     
