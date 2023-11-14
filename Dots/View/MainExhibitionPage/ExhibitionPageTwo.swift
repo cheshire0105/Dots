@@ -239,30 +239,30 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
 
         // 제목 레이블의 레이아웃 설정
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10) // 상단 여백 설정
+            make.top.equalToSuperview().offset(15) // 상단 여백 설정
             make.left.equalToSuperview().offset(10) // 좌측 여백 설정
             make.right.equalToSuperview().offset(-10) // 우측 여백 설정
         }
 
         // 내용 레이블의 레이아웃 설정
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5) // 제목 레이블 아래 간격을 둡니다.
+            make.top.equalTo(profileImageView.snp.bottom).offset(10) // 제목 레이블 아래 간격을 둡니다.
             make.left.right.equalTo(titleLabel)
+            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정
+
         }
 
         // 프로필 이미지 뷰의 레이아웃 설정
         profileImageView.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(10) // 내용 레이블 아래로 간격을 둡니다.
-            make.left.equalToSuperview().offset(10) // 좌측 여백 설정
+            make.top.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10) // 좌측 여백 설정
             make.width.height.equalTo(30) // 이미지 크기를 30x30으로 설정
-            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정
         }
 
         // 닉네임 레이블의 레이아웃 설정
         nicknameLabel.snp.makeConstraints { make in
-            make.left.equalTo(profileImageView.snp.right).offset(10) // 프로필 이미지 오른쪽에 위치
+            make.right.equalTo(profileImageView.snp.left).offset(-10) // 프로필 이미지 오른쪽에 위치
             make.centerY.equalTo(profileImageView.snp.centerY) // 프로필 이미지와 중앙 정렬
-            make.right.lessThanOrEqualToSuperview().offset(-10) // 우측 여백 설정, 내용이 길어질 경우를 대비하여 lessThanOrEqualTo를 사용
         }
     }
 
