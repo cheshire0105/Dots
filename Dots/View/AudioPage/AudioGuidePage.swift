@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class AudioGuideViewController: UIViewController {
+class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     lazy var backButton: UIButton = {
         let button = UIButton()
@@ -48,6 +48,17 @@ class AudioGuideViewController: UIViewController {
         return segmentControl
     }()
 
+    // 테이블 뷰 선언
+     lazy var tableView: UITableView = {
+         let tableView = UITableView()
+         tableView.delegate = self
+         tableView.dataSource = self
+         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "CustomTableViewCell")
+         tableView.separatorStyle = .none // 셀 사이의 구분선을 없앱니다.
+         tableView.backgroundColor = .black
+         return tableView
+     }()
+
 
 
 
@@ -62,8 +73,35 @@ class AudioGuideViewController: UIViewController {
         setupCustomBackButton()
         setupTitleLabel() // 타이틀 레이블 설정 메서드 호출
         setupSegmentControl()
+        setupTableView() // 테이블 뷰 설정 메서드 호출
 
 
+
+    }
+
+    // 테이블 뷰 설정 메서드
+    private func setupTableView() {
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(segmentControl.snp.bottom).offset(20) // 세그먼트 컨트롤 아래에 20포인트 간격을 둡니다.
+            make.left.right.bottom.equalTo(view.safeAreaLayoutGuide) // 좌우 및 하단 여백 설정
+        }
+    }
+
+    // UITableViewDataSource 메서드 구현
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10 // 예시로 10개의 셀을 반환하도록 설정합니다.
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTableViewCell", for: indexPath) as! CustomTableViewCell
+        // 셀의 커스텀 설정을 여기에 추가합니다.
+        return cell
+    }
+
+    // UITableViewDelegate 메서드 구현
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100 // 셀의 높이를 100포인트로 설정합니다.
     }
 
     private func setupCustomBackButton() {
@@ -108,6 +146,51 @@ class AudioGuideViewController: UIViewController {
     @objc private func backButtonPressed() {
         // 현재 뷰 컨트롤러를 네비게이션 스택에서 제거합니다.
         navigationController?.popViewController(animated: true)
+    }
+}
+
+import UIKit
+
+class CustomTableViewCell: UITableViewCell {
+    private let paddingView = UIView()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        // 셀의 contentView 배경색을 검은색으로 설정합니다.
+        contentView.backgroundColor = .black
+
+        // paddingView의 배경색을 다른 색으로 설정해 더 잘 보이게 합니다.
+        paddingView.backgroundColor = .darkGray // 패딩 뷰의 배경색 설정
+        paddingView.layer.cornerRadius = 10
+        paddingView.clipsToBounds = true
+
+        // paddingView를 contentView에 추가합니다.
+        contentView.addSubview(paddingView)
+        paddingView.snp.makeConstraints { make in
+            // paddingView의 제약 조건을 contentView의 가장자리로부터 설정합니다.
+            make.top.equalTo(contentView.snp.top).offset(10) // contentView 위쪽 여백
+            make.bottom.equalTo(contentView.snp.bottom).offset(-10) // contentView 아래쪽 여백
+            make.left.equalTo(contentView.snp.left).offset(10) // contentView 왼쪽 여백
+            make.right.equalTo(contentView.snp.right).offset(-10) // contentView 오른쪽 여백
+        }
+
+        setupLayout()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupLayout() {
+
+        let myLabel = UILabel()
+        myLabel.textColor = .white // 레이블 텍스트 색상 설정
+        myLabel.text = "내용"
+        paddingView.addSubview(myLabel)
+        myLabel.snp.makeConstraints { make in
+            make.edges.equalTo(paddingView).inset(10) // paddingView 내부 여백 설정
+        }
     }
 }
 
