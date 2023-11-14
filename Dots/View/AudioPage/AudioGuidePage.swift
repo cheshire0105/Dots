@@ -101,7 +101,7 @@ class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableVi
 
     // UITableViewDelegate 메서드 구현
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100 // 셀의 높이를 100포인트로 설정합니다.
+        return 110 // 셀의 높이를 100포인트로 설정합니다.
     }
 
     private func setupCustomBackButton() {
@@ -150,47 +150,117 @@ class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableVi
 }
 
 import UIKit
+import SnapKit
 
 class CustomTableViewCell: UITableViewCell {
+    private let thumbnailImageView = UIImageView()
+    private let titleLabel = UILabel()
+    private let timeLabel = UILabel()
     private let paddingView = UIView()
+    private let accessoryButton = UIButton()
+
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-        // 셀의 contentView 배경색을 검은색으로 설정합니다.
         contentView.backgroundColor = .black
 
-        // paddingView의 배경색을 다른 색으로 설정해 더 잘 보이게 합니다.
-        paddingView.backgroundColor = .darkGray // 패딩 뷰의 배경색 설정
-        paddingView.layer.cornerRadius = 10
-        paddingView.clipsToBounds = true
+        setupPaddingView()
+        setupThumbnailImageView()
+        setupTitleLabel()
+        setupTimeLabel()
+        setupAccessoryButton() // 버튼 설정 메서드 호출
 
-        // paddingView를 contentView에 추가합니다.
-        contentView.addSubview(paddingView)
-        paddingView.snp.makeConstraints { make in
-            // paddingView의 제약 조건을 contentView의 가장자리로부터 설정합니다.
-            make.top.equalTo(contentView.snp.top).offset(10) // contentView 위쪽 여백
-            make.bottom.equalTo(contentView.snp.bottom).offset(-10) // contentView 아래쪽 여백
-            make.left.equalTo(contentView.snp.left).offset(10) // contentView 왼쪽 여백
-            make.right.equalTo(contentView.snp.right).offset(-10) // contentView 오른쪽 여백
-        }
-
-        setupLayout()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupLayout() {
+    private func setupAccessoryButton() {
+        accessoryButton.setImage(UIImage(named: "Group 46"), for: .normal) // 버튼에 이미지를 설정합니다.
+        accessoryButton.contentMode = .scaleAspectFit // 컨텐츠를 비율에 맞게 채우도록 설정합니다.
+        accessoryButton.backgroundColor = .clear // 배경색을 투명하게 설정합니다.
+        accessoryButton.addTarget(self, action: #selector(accessoryButtonTapped), for: .touchUpInside) // 버튼 탭 액션을 추가합니다.
 
-        let myLabel = UILabel()
-        myLabel.textColor = .white // 레이블 텍스트 색상 설정
-        myLabel.text = "내용"
-        paddingView.addSubview(myLabel)
-        myLabel.snp.makeConstraints { make in
-            make.edges.equalTo(paddingView).inset(10) // paddingView 내부 여백 설정
+        paddingView.addSubview(accessoryButton)
+        accessoryButton.snp.makeConstraints { make in
+            make.right.equalTo(paddingView.snp.right).offset(-20)
+            make.centerY.equalTo(paddingView.snp.centerY)
+            make.width.height.equalTo(40) // 버튼의 크기를 설정합니다.
         }
     }
-}
 
+
+
+    func setAccessoryImage(_ image: UIImage) {
+        // 버튼에 이미지를 설정합니다. 이미지가 .alwaysOriginal 렌더링 모드로 설정되어
+        // 버튼에 이미지의 원래 색상이 유지되도록 합니다.
+        accessoryButton.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
+    }
+
+    @objc private func accessoryButtonTapped() {
+        // 여기에 버튼 탭시 호출될 코드를 구현합니다.
+    }
+
+    private func setupPaddingView() {
+        paddingView.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 0.7)
+        paddingView.layer.cornerRadius = 20
+        paddingView.clipsToBounds = true
+        contentView.addSubview(paddingView)
+        paddingView.snp.makeConstraints { make in
+            make.top.equalTo(contentView.snp.top).offset(10)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            make.left.equalTo(contentView.snp.left).offset(10)
+            make.right.equalTo(contentView.snp.right).offset(-10)
+        }
+    }
+
+    private func setupThumbnailImageView() {
+        thumbnailImageView.layer.cornerRadius = 15
+        thumbnailImageView.clipsToBounds = true
+        thumbnailImageView.contentMode = .scaleAspectFill // 이미지가 뷰에 꽉 차도록 설정
+        thumbnailImageView.backgroundColor = .lightGray // Placeholder color
+
+        paddingView.addSubview(thumbnailImageView)
+        thumbnailImageView.snp.makeConstraints { make in
+            make.left.equalTo(paddingView.snp.left).offset(10)
+            make.centerY.equalTo(paddingView.snp.centerY)
+            make.width.height.equalTo(paddingView.snp.height).multipliedBy(0.8) // 정사각형으로 설정
+        }
+    }
+
+    private func setupTitleLabel() {
+        titleLabel.textColor = .white
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        titleLabel.text = "Signal Projection, 2023"
+
+        paddingView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(thumbnailImageView.snp.right).offset(10)
+            make.right.equalTo(paddingView.snp.right).offset(-10)
+            make.top.equalTo(thumbnailImageView.snp.top).offset(10)
+        }
+    }
+
+    private func setupTimeLabel() {
+        timeLabel.textColor = .lightGray
+        timeLabel.font = UIFont.systemFont(ofSize: 14)
+        timeLabel.text = "03:44"
+
+        paddingView.addSubview(timeLabel)
+        timeLabel.snp.makeConstraints { make in
+            make.left.equalTo(thumbnailImageView.snp.right).offset(10)
+            make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.bottom.lessThanOrEqualTo(thumbnailImageView.snp.bottom) // 시간 레이블의 바텀이 이미지 바텀에 걸치지 않도록 설정
+        }
+    }
+
+    // Configure cell with data
+    func configure(with title: String, time: String, image: UIImage?, accessoryButtonImage: UIImage?) {
+        titleLabel.text = title
+        timeLabel.text = time
+        thumbnailImageView.image = image ?? UIImage(named: "placeholder") // Use a placeholder image if none provided
+        accessoryButton.setImage(accessoryButtonImage, for: .normal) // 버튼 이미지 설정
+
+    }
+}
