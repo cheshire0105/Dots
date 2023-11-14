@@ -12,6 +12,6 @@ target 'Dots' do
   pod 'SnapKit'
   pod 'RxDataSources'
   pod 'PanModal'
-
+  pod 'SDWebImage'
 
 end
