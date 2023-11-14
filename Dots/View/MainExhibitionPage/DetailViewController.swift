@@ -331,7 +331,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         // 추가 정보 레이블에 대한 제약 조건 설정
         additionalInfoLabel.snp.makeConstraints { make in
-            make.top.equalTo(borderLineView.snp.bottom).offset(10) // 보더 라인 바로 아래에 위치
+            make.top.equalTo(borderLineView.snp.bottom).offset(25) // 보더 라인 바로 아래에 위치
             make.leading.equalTo(detailContentView.snp.leading).offset(20) // 컨텐츠 뷰의 leading에 여백을 주어 설정
             make.trailing.equalTo(detailContentView.snp.trailing).offset(-20) // 컨텐츠 뷰의 trailing에 여백을 주어 설정
             make.bottom.equalTo(detailContentView.snp.bottom).offset(-20)

@@ -248,7 +248,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(profileImageView.snp.bottom).offset(10) // 제목 레이블 아래 간격을 둡니다.
             make.left.right.equalTo(titleLabel)
-            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정
+            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
 
         }
 
