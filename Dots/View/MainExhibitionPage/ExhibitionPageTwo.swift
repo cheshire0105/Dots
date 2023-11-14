@@ -26,7 +26,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "headset help_"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
     lazy var heartIcon: UIButton = {
@@ -116,6 +116,20 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
         navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
     }
+
+    // 오디오 가이드 페이지로 이동하는 메서드
+    // AudioGuideViewController를 표시하는 버튼 액션 또는 메서드 내부
+    @objc func presentAudioGuideViewController() {
+        // 현재 모달을 닫고, 완료 콜백에서 AudioGuideViewController를 푸시합니다.
+        self.dismiss(animated: true) {
+            if let navigationController = self.navigationController {
+                let audioGuideViewController = AudioGuideViewController()
+                navigationController.pushViewController(audioGuideViewController, animated: true)
+            }
+        }
+    }
+
+
 
     @objc func presentModalViewController() {
         // 상세 내용을 담은 뷰 컨트롤러를 생성하고 모달로 표시합니다.
