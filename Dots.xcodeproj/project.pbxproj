@@ -22,6 +22,10 @@
 		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
 		37DE8F882AFE38260086FC58 /* SignUPthirdCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F872AFE38260086FC58 /* SignUPthirdCell.swift */; };
 		37DE8F8A2B026EBA0086FC58 /* MypageUserSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F892B026EBA0086FC58 /* MypageUserSetting.swift */; };
+		37DE8F8C2B0396CF0086FC58 /* MypageExhibition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */; };
+		37DE8F8E2B0396DF0086FC58 /* MypageReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F8D2B0396DF0086FC58 /* MypageReview.swift */; };
+		37DE8F902B0396EA0086FC58 /* MypageSaved.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F8F2B0396EA0086FC58 /* MypageSaved.swift */; };
+		37DE8F922B039C8E0086FC58 /* MypageNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F912B039C8E0086FC58 /* MypageNotification.swift */; };
 		37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */; };
 		B2CE169A506AD7C5CC83404E /* Pods_Dots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7463B6322E0941141F04DE43 /* Pods_Dots.framework */; };
 		FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3C971A2AE5FEA1006FEF23 /* AppDelegate.swift */; };
@@ -98,6 +102,10 @@
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
 		37DE8F872AFE38260086FC58 /* SignUPthirdCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPthirdCell.swift; sourceTree = "<group>"; };
 		37DE8F892B026EBA0086FC58 /* MypageUserSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageUserSetting.swift; sourceTree = "<group>"; };
+		37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageExhibition.swift; sourceTree = "<group>"; };
+		37DE8F8D2B0396DF0086FC58 /* MypageReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageReview.swift; sourceTree = "<group>"; };
+		37DE8F8F2B0396EA0086FC58 /* MypageSaved.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageSaved.swift; sourceTree = "<group>"; };
+		37DE8F912B039C8E0086FC58 /* MypageNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageNotification.swift; sourceTree = "<group>"; };
 		37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicket.swift; sourceTree = "<group>"; };
 		7463B6322E0941141F04DE43 /* Pods_Dots.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Dots.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75A67AE9D70EFBEEF526F19F /* Pods-Dots.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.debug.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.debug.xcconfig"; sourceTree = "<group>"; };
@@ -339,10 +347,14 @@
 			isa = PBXGroup;
 			children = (
 				FF58FB2D2AE6013600853006 /* Mypage.swift */,
+				37DE8F912B039C8E0086FC58 /* MypageNotification.swift */,
+				37DE8F8F2B0396EA0086FC58 /* MypageSaved.swift */,
 				37DE8F892B026EBA0086FC58 /* MypageUserSetting.swift */,
 				370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */,
 				37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */,
 				377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */,
+				37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */,
+				37DE8F8D2B0396DF0086FC58 /* MypageReview.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -529,6 +541,7 @@
 			files = (
 				377041D92AF3CADF009FE818 /* PopularReviewDetailPanModal.swift in Sources */,
 				3771302A2AFCAB0A0018D4C1 /* SignUPsecondCell.swift in Sources */,
+				37DE8F8E2B0396DF0086FC58 /* MypageReview.swift in Sources */,
 				FF58FB302AE6025100853006 /* MapPage.swift in Sources */,
 				FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */,
 				37DE8F882AFE38260086FC58 /* SignUPthirdCell.swift in Sources */,
@@ -538,6 +551,8 @@
 				FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift in Sources */,
 				FFAFCB7A2AFD2D200030C3C9 /* ExhibitionPageTwo.swift in Sources */,
 				FF77BFC12AF79D3A00EA5A1B /* LaunchScreenViewController.swift in Sources */,
+				37DE8F8C2B0396CF0086FC58 /* MypageExhibition.swift in Sources */,
+				37DE8F922B039C8E0086FC58 /* MypageNotification.swift in Sources */,
 				FFAFCB822B01DCE00030C3C9 /* ReviewWrittePage.swift in Sources */,
 				FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */,
 				FF77BFBD2AF7736900EA5A1B /* LogIN.swift in Sources */,
@@ -547,6 +562,7 @@
 				377130242AFB88C40018D4C1 /* SignUPthird.swift in Sources */,
 				FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */,
 				1FF9CB0C2AEAABB9002B0F61 /* PopularReviewDataModel.swift in Sources */,
+				37DE8F902B0396EA0086FC58 /* MypageSaved.swift in Sources */,
 				370F3F0A2AEEC11000C4A8F5 /* MyPageCell.swift in Sources */,
 				377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */,
 				FF77BFBB2AF7733F00EA5A1B /* SignUPandLogIN.swift in Sources */,

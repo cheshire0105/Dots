@@ -210,10 +210,28 @@ extension Mypage {
     func 버튼_클릭() {
         마이페이지_설정_버튼.addTarget(self, action: #selector(마이페이지_설정_버튼_클릭), for: .touchUpInside)
     }
-
        @objc func 마이페이지_설정_버튼_클릭() {
            let settingsModalVC = 마이페이지_유저_설정_모달()
            present(settingsModalVC, animated: true, completion: nil)
        }
-   
+    @objc func 마이페이지_알림_버튼_클릭() {
+        let 알림_이동 = 마이페이지_알림()
+        self.navigationController?.pushViewController(알림_이동, animated: true)
+        self.navigationItem.hidesBackButton = true
+    }
+    @objc func 마이페이지_전시_버튼_클릭 () {
+        let 전시_이동 = 마이페이지_전시()
+        self.navigationController?.pushViewController(전시_이동, animated: true)
+        self.navigationItem.hidesBackButton = true
+    }
+    @objc func 마이페이지_후기_버튼_클릭 () {
+        let 후기_이동 = 마이페이지_리뷰()
+        self.navigationController?.pushViewController(후기_이동, animated: true)
+        self.navigationItem.hidesBackButton = true
+    }
+    @objc func 마이페이지_보관함_버튼_클릭 () {
+        let 보관함_이동 = 마이페이지_보관함()
+        self.navigationController?.pushViewController(보관함_이동, animated: true)
+        self.navigationItem.hidesBackButton = true
+    }
 }
