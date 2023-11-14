@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CustomTableViewCellDelegate {
 
     lazy var backButton: UIButton = {
         let button = UIButton()
@@ -96,6 +96,8 @@ class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTableViewCell", for: indexPath) as! CustomTableViewCell
         // 셀의 커스텀 설정을 여기에 추가합니다.
+        cell.delegate = self // 셀의 delegate로 self를 할당합니다.
+
         return cell
     }
 
@@ -147,10 +149,22 @@ class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableVi
         // 현재 뷰 컨트롤러를 네비게이션 스택에서 제거합니다.
         navigationController?.popViewController(animated: true)
     }
+
+    func accessoryButtonTapped(inCell cell: CustomTableViewCell) {
+         let fullScreenModalVC = DetailAudioPage()
+         fullScreenModalVC.modalPresentationStyle = .fullScreen // 풀 스크린 스타일을 설정합니다.
+         present(fullScreenModalVC, animated: true) // 모달 뷰 컨트롤러를 표시합니다.
+     }
 }
+
+
 
 import UIKit
 import SnapKit
+
+protocol CustomTableViewCellDelegate: AnyObject {
+    func accessoryButtonTapped(inCell cell: CustomTableViewCell)
+}
 
 class CustomTableViewCell: UITableViewCell {
     private let thumbnailImageView = UIImageView()
@@ -158,6 +172,8 @@ class CustomTableViewCell: UITableViewCell {
     private let timeLabel = UILabel()
     private let paddingView = UIView()
     private let accessoryButton = UIButton()
+    weak var delegate: CustomTableViewCellDelegate?
+
 
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -199,8 +215,8 @@ class CustomTableViewCell: UITableViewCell {
     }
 
     @objc private func accessoryButtonTapped() {
-        // 여기에 버튼 탭시 호출될 코드를 구현합니다.
-    }
+         delegate?.accessoryButtonTapped(inCell: self) // 델리게이트에게 버튼 탭 이벤트를 알립니다.
+     }
 
     private func setupPaddingView() {
         paddingView.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 0.7)
