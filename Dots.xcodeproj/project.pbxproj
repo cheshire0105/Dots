@@ -201,6 +201,56 @@
 			path = Detail;
 			sourceTree = "<group>";
 		};
+		37DE8F932B03A4390086FC58 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				37DE8F912B039C8E0086FC58 /* MypageNotification.swift */,
+				37DE8F892B026EBA0086FC58 /* MypageUserSetting.swift */,
+				FF58FB2D2AE6013600853006 /* Mypage.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		37DE8F942B03A44E0086FC58 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				37DE8F972B03A49B0086FC58 /* 마이페이지_전시 */,
+				37DE8F962B03A4850086FC58 /* 마이페이지_리뷰 */,
+				37DE8F952B03A4750086FC58 /* 마이페이지_보관함 */,
+				370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */,
+				37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */,
+				377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		37DE8F952B03A4750086FC58 /* 마이페이지_보관함 */ = {
+			isa = PBXGroup;
+			children = (
+				37DE8F8F2B0396EA0086FC58 /* MypageSaved.swift */,
+			);
+			name = "마이페이지_보관함";
+			path = "보관함";
+			sourceTree = "<group>";
+		};
+		37DE8F962B03A4850086FC58 /* 마이페이지_리뷰 */ = {
+			isa = PBXGroup;
+			children = (
+				37DE8F8D2B0396DF0086FC58 /* MypageReview.swift */,
+			);
+			name = "마이페이지_리뷰";
+			path = "리뷰";
+			sourceTree = "<group>";
+		};
+		37DE8F972B03A49B0086FC58 /* 마이페이지_전시 */ = {
+			isa = PBXGroup;
+			children = (
+				37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */,
+			);
+			name = "마이페이지_전시";
+			path = "마이페이지_전시";
+			sourceTree = "<group>";
+		};
 		DD990FCAE10E39EBF355D09F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,15 +396,8 @@
 		FF58FB342AE6037600853006 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
-				FF58FB2D2AE6013600853006 /* Mypage.swift */,
-				37DE8F912B039C8E0086FC58 /* MypageNotification.swift */,
-				37DE8F8F2B0396EA0086FC58 /* MypageSaved.swift */,
-				37DE8F892B026EBA0086FC58 /* MypageUserSetting.swift */,
-				370F3F092AEEC11000C4A8F5 /* MyPageCell.swift */,
-				37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */,
-				377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */,
-				37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */,
-				37DE8F8D2B0396DF0086FC58 /* MypageReview.swift */,
+				37DE8F942B03A44E0086FC58 /* Detail */,
+				37DE8F932B03A4390086FC58 /* Main */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
