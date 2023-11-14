@@ -5,7 +5,6 @@ import RxSwift
 import RxCocoa
 
 class Mypage: UIViewController {
-    var 유저정보_인스턴스 = 유저정보(사용자프로필이미지: "", 사용자프로필이름: "")
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
@@ -23,6 +22,12 @@ class Mypage: UIViewController {
         button.isSelected = !button.isSelected
         return button
     } ()
+    let 마이페이지_알림_버튼 = {
+        var button = UIButton()
+        button.setImage(UIImage(named: "알림" ), for: .normal)
+        button.isSelected = !button.isSelected
+        return button
+    } ()
     
     let 마이페이지_프로필_닉네임: UILabel = {
         let label = UILabel()
@@ -32,83 +37,83 @@ class Mypage: UIViewController {
         return label
     }()
     
-    let 마이페이지_프로필_아이디: UILabel = {
+    let 마이페이지_프로필_이메일: UILabel = {
         let label = UILabel()
-        label.text = "유저 아이디"
+        label.text = "유저 이메일"
         label.textColor = UIColor.white
         label.font = UIFont(name: "HelveticaNeue", size: 14)
         return label
     }()
     
-    let 마이페이지_티켓_버튼 = {
-        var button = UIButton()
-        button.setImage(UIImage(named:"ticket"), for: .selected)
-        button.setImage(UIImage(named: "ticket"), for: .normal)
+    let 마이페이지_전시_버튼 = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.darkGray
+        button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
         return button
     } ()
-    
-    let 마이페이지_티켓_택스트: UILabel = {
+    let 마이페이지_전시_아이콘 = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "전시")
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    } ()
+    let 마이페이지_전시_라벨 = {
         let label = UILabel()
-        label.text = "티켓"
+        label.text = "전시"
+        label.font = UIFont(name: "HelveticaNeue", size: 15)
         label.textColor = UIColor.white
-        label.font = UIFont(name: "HelveticaNeue", size: 14)
-        label.textAlignment = .center
         return label
-    }()
-    
-    let 마이페이지_체크인_버튼 = {
-        var button = UIButton()
-        button.setImage(UIImage(named:"home"), for: .selected)
-        button.setImage(UIImage(named: "home"), for: .normal)
-        button.isSelected = !button.isSelected
+    } ()
+
+    let 마이페이지_후기_버튼 = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.darkGray
+        button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
         return button
     } ()
-    
-    let 마이페이지_체크인_택스트: UILabel = {
+
+    let 마이페이지_후기_아이콘 = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "후기")
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    } ()
+    let 마이페이지_후기_라벨 = {
         let label = UILabel()
-        label.text = "체크인"
+        label.text = "리뷰"
+        label.font = UIFont(name: "HelveticaNeue", size: 15)
         label.textColor = UIColor.white
-        label.font = UIFont(name: "HelveticaNeue", size: 14)
-        label.textAlignment = .center
         return label
-    }()
-    
-    let 마이페이지_좋아요_버튼 = {
-        var button = UIButton()
-        button.setImage(UIImage(named:"heart"), for: .selected)
-        button.setImage(UIImage(named: "heart"), for: .normal)
-        button.isSelected = !button.isSelected
+    } ()
+
+    let 마이페이지_보관함_버튼 = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.darkGray
+        button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
         return button
     } ()
-    
-    let 마이페이지_좋아요_택스트: UILabel = {
-        
+    let 마이페이지_보관함_아이콘 = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "보관함")
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    } ()
+    let 마이페이지_보관함_라벨 = {
         let label = UILabel()
-        label.text = "좋아요"
+        label.text = "보관함"
+        label.font = UIFont(name: "HelveticaNeue", size: 15)
         label.textColor = UIColor.white
-        label.font = UIFont(name: "HelveticaNeue", size: 14)
-        label.textAlignment = .center
         return label
-        
+    } ()
+
+    let 구분선 = {
+        let view = UIView()
+        view.backgroundColor = .darkGray
+        return view
     }()
-    
-    lazy var 마이페이지_컬렉션뷰 = {
-        let layout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        layout.minimumLineSpacing = 8
-        layout.minimumInteritemSpacing = 1
-        layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
-        
-        collectionView.backgroundColor = .black
-        collectionView.layer.cornerRadius = 10
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.decelerationRate = UIScrollView.DecelerationRate.normal
-        return collectionView
-    }()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -119,79 +124,88 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = UIColor.clear
         버튼_클릭()
-        컬렉션뷰_레이아웃()
         UI레이아웃()
-
-        마이페이지_컬렉션뷰.dataSource = self
-        마이페이지_컬렉션뷰.delegate = self
-        마이페이지_컬렉션뷰.register(MyPageCell.self, forCellWithReuseIdentifier: "MyPageCell")
     }
-    override func viewDidAppear(_ animated: Bool) {
-        
-    }
+    
     private func UI레이아웃 () {
         
-        for UI뷰 in [마이페이지_프로필_이미지_버튼,마이페이지_설정_버튼,마이페이지_프로필_닉네임,마이페이지_프로필_아이디,마이페이지_티켓_버튼,마이페이지_티켓_택스트,마이페이지_체크인_버튼,마이페이지_체크인_택스트,마이페이지_좋아요_버튼,마이페이지_좋아요_택스트]{
+        for UI뷰 in [마이페이지_프로필_이미지_버튼,마이페이지_설정_버튼,마이페이지_알림_버튼,마이페이지_프로필_닉네임,마이페이지_프로필_이메일,마이페이지_전시_버튼,마이페이지_후기_버튼,마이페이지_보관함_버튼,마이페이지_전시_아이콘,마이페이지_후기_아이콘,마이페이지_보관함_아이콘,마이페이지_전시_라벨,마이페이지_후기_라벨,마이페이지_보관함_라벨,구분선]{
             view.addSubview(UI뷰)
         }
         마이페이지_프로필_이미지_버튼.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(72)
-            make.bottom.equalTo(마이페이지_컬렉션뷰.snp.top).offset(-192)
-            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().offset(80)
+            make.leading.equalToSuperview().offset(28)
             make.size.equalTo(76)
         }
         마이페이지_설정_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
-            make.trailing.equalTo(마이페이지_컬렉션뷰.snp.trailing).offset(-5)
+            make.trailing.equalToSuperview().offset(-26)
+        }
+        마이페이지_알림_버튼.snp.makeConstraints { make in
+            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+            make.trailing.equalTo(마이페이지_설정_버튼.snp.leading ).offset(-20)
         }
         마이페이지_프로필_닉네임.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(15)
-            make.centerX.equalTo(마이페이지_프로필_이미지_버튼.snp.centerX)
-           
+            make.leading.equalTo(마이페이지_프로필_이미지_버튼.snp.trailing).offset(16)
+            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY).offset(-10)
         }
-        마이페이지_프로필_아이디.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_닉네임.snp.bottom).offset(8)
-            make.centerX.equalTo(마이페이지_프로필_이미지_버튼.snp.centerX)
+        마이페이지_프로필_이메일.snp.makeConstraints { make in
+            make.leading.equalTo(마이페이지_프로필_이미지_버튼.snp.trailing).offset(16)
+            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY).offset(10)
         }
-        
-        마이페이지_티켓_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_체크인_버튼)
-            make.trailing.equalTo(마이페이지_체크인_버튼.snp.leading).offset(-100)
+        마이페이지_전시_버튼.snp.makeConstraints { make in
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(37)
+            make.leading.equalToSuperview().offset(24)
+            make.width.equalTo(95)
+            make.height.equalTo(85)
         }
-        마이페이지_티켓_택스트.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_티켓_버튼.snp.bottom).offset(10)
-            make.centerX.equalTo(마이페이지_티켓_버튼)
+        마이페이지_전시_아이콘.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
+            make.bottom.equalTo(마이페이지_전시_버튼.snp.centerY)
+            make.size.equalTo(25)
         }
-        마이페이지_체크인_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_아이디.snp.bottom).offset(46)
-            make.centerX.equalTo(마이페이지_프로필_이미지_버튼.snp.centerX)
-            
-            
+        마이페이지_전시_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_전시_버튼.snp.centerY).offset(6)
         }
-        마이페이지_체크인_택스트.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_체크인_버튼.snp.bottom).offset(10)
-            make.centerX.equalTo(마이페이지_체크인_버튼)
+        마이페이지_후기_버튼.snp.makeConstraints { make in
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(37)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(95)
+            make.height.equalTo(85)
         }
-        마이페이지_좋아요_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_체크인_버튼)
-            make.leading.equalTo(마이페이지_체크인_버튼.snp.trailing).offset(100)
+        마이페이지_후기_아이콘.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
+            make.bottom.equalTo(마이페이지_후기_버튼.snp.centerY)
+            make.size.equalTo(25)
         }
-        마이페이지_좋아요_택스트.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_좋아요_버튼.snp.bottom).offset(10)
-            make.centerX.equalTo(마이페이지_좋아요_버튼)
+        마이페이지_후기_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_후기_버튼.snp.centerY).offset(6)
         }
-    }
-    func 컬렉션뷰_레이아웃 () {
-        view.addSubview(마이페이지_컬렉션뷰)
-        마이페이지_컬렉션뷰.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(350)
-            make.bottom.equalToSuperview().offset(-5)
-            make.leading.equalToSuperview().offset(5)
-            make.trailing.equalToSuperview().offset(-5)
-            
+        마이페이지_보관함_버튼.snp.makeConstraints { make in
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(37)
+            make.trailing.equalToSuperview().offset(-24)
+            make.width.equalTo(95)
+            make.height.equalTo(85)
+        }
+        마이페이지_보관함_아이콘.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
+            make.bottom.equalTo(마이페이지_보관함_버튼.snp.centerY)
+            make.size.equalTo(25)
+        }
+        마이페이지_보관함_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_보관함_버튼.snp.centerY).offset(6)
+        }
+        구분선.snp.makeConstraints { make in
+            make.top.equalTo(마이페이지_전시_버튼.snp.bottom).offset(30)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(1)
         }
     }
 }
+    
 extension Mypage {
     func 버튼_클릭() {
         마이페이지_설정_버튼.addTarget(self, action: #selector(마이페이지_설정_버튼_클릭), for: .touchUpInside)
@@ -201,28 +215,5 @@ extension Mypage {
            let settingsModalVC = 마이페이지_유저_설정_모달()
            present(settingsModalVC, animated: true, completion: nil)
        }
-}
-
-extension Mypage : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyPageCell", for: indexPath) as? MyPageCell else {
-            return UICollectionViewCell()
-        }
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width * 0.49
-        let height = collectionView.frame.height * 0.5
-        return CGSize(width: width, height: height)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-       let 마이페이지_티켓_화면 = MyPageTicket()
-        self.navigationController?.pushViewController(마이페이지_티켓_화면, animated: true)
-    }
+   
 }
