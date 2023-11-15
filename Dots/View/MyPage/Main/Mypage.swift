@@ -201,7 +201,7 @@ class Mypage: UIViewController {
         마이페이지_보관함_라벨.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
             make.top.equalTo(마이페이지_보관함_버튼.snp.centerY).offset(6)
-        }
+         }
         구분선.snp.makeConstraints { make in
             make.top.equalTo(마이페이지_전시_버튼.snp.bottom).offset(30)
             make.leading.trailing.equalToSuperview()
@@ -212,15 +212,11 @@ class Mypage: UIViewController {
     
 extension Mypage {
     func 버튼_클릭() {
-        마이페이지_설정_버튼.addTarget(self, action: #selector(마이페이지_설정_버튼_클릭), for: .touchUpInside)
         마이페이지_전시_버튼.addTarget(self, action: #selector(마이페이지_전시_버튼_클릭), for: .touchUpInside)
         마이페이지_후기_버튼.addTarget(self, action: #selector(마이페이지_후기_버튼_클릭), for: .touchUpInside)
         마이페이지_보관함_버튼.addTarget(self, action: #selector(마이페이지_보관함_버튼_클릭), for: .touchUpInside)
     }
-       @objc func 마이페이지_설정_버튼_클릭() {
-           let settingsModalVC = 마이페이지_유저_설정_모달()
-           present(settingsModalVC, animated: true, completion: nil)
-       }
+
     @objc func 마이페이지_알림_버튼_클릭() {
         let 알림_이동 = 마이페이지_알림()
         self.navigationController?.pushViewController(알림_이동, animated: true)
