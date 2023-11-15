@@ -3,6 +3,7 @@ import SnapKit
 import Highcharts
 
 
+
 class 회원가입_세번째_뷰컨트롤러 : UIViewController {
     let 아티스트_리스트 : [String] = ["살바도르 달리", "파블로 피카소", "뱅크시" , "클로드 모네","빈센트 반 고흐", "램브란트", "레오나르도 다 빈치","미켈란젤로", "뒤샹", "앤디 워홀" , "폴 세잔"]
 
@@ -136,35 +137,64 @@ class 회원가입_세번째_뷰컨트롤러 : UIViewController {
         legend.enabled = false
         options.legend = legend
 
+        let 아티스트_리스트 : [String] = ["살바도르 달리", "파블로 피카소", "뱅크시" , "클로드 모네","빈센트 반 고흐", "램브란트", "레오나르도 다 빈치","미켈란젤로", "뒤샹", "앤디 워홀" , "폴 세잔"]
 
 
+        // 텍스트 길이에 따라 버블 크기를 계산
+        let bubbleData = 아티스트_리스트.map { artist in
+            let textLength = artist.count // 텍스트의 길이
+            // 원하는 크기 계산 로직을 적용하고 상수 값을 더합니다.
+            let bubbleSize = (100 + textLength * 10) + 50 // 예: 길이에 비례한 크기 조절 및 상수 추가
+            return [
+                "name": artist,
+                "value": bubbleSize
+            ]
+        }
+
+
+        
 
 
         // 차트 데이터 설정
         let series = HISeries()
-        series.data = (1...14).map { _ in
-            // 세 가지 크기 중 하나를 랜덤으로 선택
-            let size = [10000, 22500, 40000].randomElement()!
-            
-            return [Double.random(in: 0...100), Double.random(in: 0...100), size]
-        }
-        
+        series.data = bubbleData
+
+
         /// 크레딧 자리에 기준날짜 띄우기
         let credits = HICredits()
-        credits.text = "아티스트는 항상 당신 곁에"
+        credits.text = ""
         options.credits = credits
         /// 동그라미 투명도 조절하기
         let marker = HIMarker()
         plotOptions.packedbubble.marker = marker
         plotOptions.packedbubble.marker.fillOpacity = 1
+        plotOptions.packedbubble.marker.fillColor = HIColor(uiColor: .clear)
+        plotOptions.packedbubble.marker.lineColor = HIColor(uiColor: .white)
         
+        let dataLabelCSS = HICSSObject()
 
 
         // 데이터 라벨 설정
         let dataLabels = HIDataLabels()
         dataLabels.enabled = true
-        dataLabels.format = "{point.name}" // 버블 이름으로 표시
+        // 데이터 라벨의 스타일 설정
+        let dataLabelStyle = HIStyle()
+        dataLabelCSS.fontSize = "14px" // 원하는 폰트 크기를 지정하세요
+        dataLabelCSS.color = "white"
+
+
+
+        dataLabels.enabled = true
+        dataLabels.style = dataLabelCSS
+
+        // 데이터 라벨의 포맷 설정 (여기서는 버블의 이름으로 표시)
+        dataLabels.format = "{point.name}"
+
         series.dataLabels = [dataLabels]
+
+
+
+//        series.dataLabels = [dataLabels]
 
         options.series = [series]
 
