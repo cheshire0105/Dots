@@ -212,10 +212,16 @@ class Mypage: UIViewController {
     
 extension Mypage {
     func 버튼_클릭() {
+        마이페이지_설정_버튼.addTarget(self, action: #selector(마이페이지_설정_버튼_클릭), for: .touchUpInside)
         마이페이지_전시_버튼.addTarget(self, action: #selector(마이페이지_전시_버튼_클릭), for: .touchUpInside)
         마이페이지_후기_버튼.addTarget(self, action: #selector(마이페이지_후기_버튼_클릭), for: .touchUpInside)
         마이페이지_보관함_버튼.addTarget(self, action: #selector(마이페이지_보관함_버튼_클릭), for: .touchUpInside)
     }
+    @objc func 마이페이지_설정_버튼_클릭() {
+        let 설정_이동 = 마이페이지_설정_페이지()
+        self.navigationController?.pushViewController(설정_이동, animated: false)
+        self.navigationItem.hidesBackButton = true
+        }
 
     @objc func 마이페이지_알림_버튼_클릭() {
         let 알림_이동 = 마이페이지_알림()
