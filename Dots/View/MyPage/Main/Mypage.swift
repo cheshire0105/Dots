@@ -114,7 +114,11 @@ class Mypage: UIViewController {
         view.backgroundColor = .darkGray
         return view
     }()
-    
+    override func viewWillAppear(_ animated: Bool) {
+        if let glassTabBar = tabBarController as? GlassTabBar {
+            glassTabBar.customTabBarView.isHidden = false
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         print("My Page")
