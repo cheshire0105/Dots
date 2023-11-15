@@ -5,8 +5,10 @@ import FirebaseAuth
 import FirebaseFirestore
 import SnapKit
 
-class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
+class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate, UITextFieldDelegate {
     var 이메일: String = ""
+    var 활성화된텍스트필드: UITextField?
+    
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
@@ -139,6 +141,46 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
+        
+        // 키보드 이벤트 리스너 등록
+        NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        // 텍스트 필드의 delegate 설정
+        회원가입_닉네임_텍스트필드.delegate = self
+        회원가입_이메일_텍스트필드.delegate = self
+        회원가입_비밀번호_텍스트필드.delegate = self
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        self.view.frame.origin.y = 0  // 뷰의 y 위치를 초기 상태로 재설정
+    }
+
+    
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = nil
+    }
+    
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        if let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let 활성화된텍스트필드 = 활성화된텍스트필드 {
+            let 화면끝 = view.frame.size.height
+            let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+            let 키보드시작 = 화면끝 - 키보드크기.height
+            
+            if 텍스트필드끝 > 키보드시작 {
+                view.frame.origin.y = -텍스트필드끝 + 키보드시작
+            }
+        }
+    }
+    
+    deinit {
+        // 메모리 해제 시 리스너 제거
+        NotificationCenter.default.removeObserver(self)
     }
     
 }
@@ -259,20 +301,20 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     }
     private func 회원가입_유저정보_업로드(닉네임: String, 이메일: String, 비밀번호: String, 프로필이미지URL: String) {
         let 데이터베이스 = Firestore.firestore()
-            let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
-            
-            let userData: [String: Any] = [
-                "닉네임": 닉네임,
-                "이메일": 이메일,
-                "비밀번호": 비밀번호,
-                "프로필이미지URL": 프로필이미지URL
-            ]
-            
-            유저컬렉션.addDocument(data: userData) { 에러 in
-                if let 유저데이터_실패 = 에러 {
-                    print("Firestore에 사용자 정보 저장 실패: \(유저데이터_실패.localizedDescription)")
-                } else {
-                    print("Firestore에 사용자 정보 저장 성공")
+        let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+        
+        let userData: [String: Any] = [
+            "닉네임": 닉네임,
+            "이메일": 이메일,
+            "비밀번호": 비밀번호,
+            "프로필이미지URL": 프로필이미지URL
+        ]
+        
+        유저컬렉션.addDocument(data: userData) { 에러 in
+            if let 유저데이터_실패 = 에러 {
+                print("Firestore에 사용자 정보 저장 실패: \(유저데이터_실패.localizedDescription)")
+            } else {
+                print("Firestore에 사용자 정보 저장 성공")
             }
         }
     }

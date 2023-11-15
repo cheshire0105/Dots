@@ -2,7 +2,10 @@ import UIKit
 import FirebaseAuth
 import SnapKit
 
-class 로그인_뷰컨트롤러 : UIViewController {
+class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate, UITextFieldDelegate {
+
+    var 활성화된텍스트필드: UITextField?
+
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
@@ -130,8 +133,37 @@ class 로그인_뷰컨트롤러 : UIViewController {
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
+
+        로그인_이메일_텍스트필드.delegate = self
+               로그인_비밀번호_텍스트필드.delegate = self
+
+               // 키보드 이벤트 리스너 등록
+               NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
-    
+
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        if let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let 활성화된텍스트필드 = 활성화된텍스트필드 {
+            let 화면끝 = view.frame.size.height
+            let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+            let 키보드시작 = 화면끝 - 키보드크기.height
+
+            if 텍스트필드끝 > 키보드시작 {
+                view.frame.origin.y = -텍스트필드끝 + 키보드시작
+            }
+        }
+    }
+
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+
 }
 
 //레이아웃
