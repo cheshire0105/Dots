@@ -1,6 +1,5 @@
 PODS:
   - Differentiator (5.0.0)
-  - Highcharts (11.1.0)
   - PanModal (1.2.7)
   - RxCocoa (6.6.0):
     - RxRelay (= 6.6.0)
@@ -18,7 +17,6 @@ PODS:
   - SnapKit (5.6.0)
 
 DEPENDENCIES:
-  - Highcharts
   - PanModal
   - RxCocoa
   - RxDataSources
@@ -29,7 +27,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Differentiator
-    - Highcharts
     - PanModal
     - RxCocoa
     - RxDataSources
@@ -40,7 +37,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
-  Highcharts: ebe8a98b9af3c1f653068fbfb49c71e389860547
   PanModal: 3e16ead1a907fb06f4df3f13492fd00149fa4974
   RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
@@ -49,6 +45,6 @@ SPEC CHECKSUMS:
   SDWebImage: 96e0c18ef14010b7485210e92fac888587ebb958
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
 
-PODFILE CHECKSUM: aa7ea0712d74b92d02a4acedb75bbf4aec472ff5
+PODFILE CHECKSUM: 49cda1f260666f48ae68165ded2d9361e2242d5c
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.13.0
