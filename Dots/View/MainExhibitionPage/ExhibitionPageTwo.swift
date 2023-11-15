@@ -26,12 +26,21 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "headset help_"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
     lazy var heartIcon: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "heartIcon"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        return button
+    }()
+
+    lazy var recordButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "Union 4"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
@@ -74,17 +83,25 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(heartIcon)
+        view.addSubview(recordButton)
+
+
 
         backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10) // leading edge로부터 10포인트 떨어진 곳에 위치
             make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
-
+        
+        recordButton.snp.makeConstraints{ make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
+            make.width.height.equalTo(40)
+        }
 
         heartIcon.snp.makeConstraints{ make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
+            make.trailing.equalTo(recordButton.snp.leading).offset(-10)
             make.width.height.equalTo(40)
         }
 
@@ -99,6 +116,20 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
         navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
     }
+
+    // 오디오 가이드 페이지로 이동하는 메서드
+    // AudioGuideViewController를 표시하는 버튼 액션 또는 메서드 내부
+    @objc func presentAudioGuideViewController() {
+        // 현재 모달을 닫고, 완료 콜백에서 AudioGuideViewController를 푸시합니다.
+        self.dismiss(animated: true) {
+            if let navigationController = self.navigationController {
+                let audioGuideViewController = AudioGuideViewController()
+                navigationController.pushViewController(audioGuideViewController, animated: true)
+            }
+        }
+    }
+
+
 
     @objc func presentModalViewController() {
         // 상세 내용을 담은 뷰 컨트롤러를 생성하고 모달로 표시합니다.
@@ -222,30 +253,30 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
 
         // 제목 레이블의 레이아웃 설정
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10) // 상단 여백 설정
+            make.top.equalToSuperview().offset(15) // 상단 여백 설정
             make.left.equalToSuperview().offset(10) // 좌측 여백 설정
             make.right.equalToSuperview().offset(-10) // 우측 여백 설정
         }
 
         // 내용 레이블의 레이아웃 설정
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5) // 제목 레이블 아래 간격을 둡니다.
+            make.top.equalTo(profileImageView.snp.bottom).offset(10) // 제목 레이블 아래 간격을 둡니다.
             make.left.right.equalTo(titleLabel)
+            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
+
         }
 
         // 프로필 이미지 뷰의 레이아웃 설정
         profileImageView.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(10) // 내용 레이블 아래로 간격을 둡니다.
-            make.left.equalToSuperview().offset(10) // 좌측 여백 설정
+            make.top.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10) // 좌측 여백 설정
             make.width.height.equalTo(30) // 이미지 크기를 30x30으로 설정
-            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정
         }
 
         // 닉네임 레이블의 레이아웃 설정
         nicknameLabel.snp.makeConstraints { make in
-            make.left.equalTo(profileImageView.snp.right).offset(10) // 프로필 이미지 오른쪽에 위치
+            make.right.equalTo(profileImageView.snp.left).offset(-10) // 프로필 이미지 오른쪽에 위치
             make.centerY.equalTo(profileImageView.snp.centerY) // 프로필 이미지와 중앙 정렬
-            make.right.lessThanOrEqualToSuperview().offset(-10) // 우측 여백 설정, 내용이 길어질 경우를 대비하여 lessThanOrEqualTo를 사용
         }
     }
 
