@@ -17,7 +17,7 @@ class 회원가입_두번째_뷰컨트롤러 : UIViewController, UICollectionVie
     var 선택된셀인덱스: IndexPath?
 
     let 미술관_리스트 : [String] = ["국립 현대 미술관 서울", "백남준 아트센터", "리움 미술관", "호암 미술관", "뮤지엄 산", "서울 시립 미술관", "아르떼 뮤지엄 제주", "국립 현대 미술관 과천", "국립 중앙 박물관", "대림 미술관","예술의 전당","서울미술관","청주시립미술관","포항 시립 미술관","북서울미술관","수원 시립 아트 스페이스 광교", "부산 현대 미술관","석파정 서울 미술관","디뮤지엄", "경기도 미술관","일민 미술관"]
-    
+
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)

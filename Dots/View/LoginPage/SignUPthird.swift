@@ -1,10 +1,10 @@
 import UIKit
 import SnapKit
-import Highcharts
 
 
 
 class 회원가입_세번째_뷰컨트롤러 : UIViewController {
+    
     let 아티스트_리스트 : [String] = ["살바도르 달리", "파블로 피카소", "뱅크시" , "클로드 모네","빈센트 반 고흐", "램브란트", "레오나르도 다 빈치","미켈란젤로", "뒤샹", "앤디 워홀" , "폴 세잔"]
 
     let 뒤로가기_버튼 = {
@@ -72,145 +72,15 @@ class 회원가입_세번째_뷰컨트롤러 : UIViewController {
     }()
 
 
-
     override func viewDidLoad() {
         view.backgroundColor = .black
         UI레이아웃 ()
         버튼_클릭()
 
-        // Highcharts 차트 뷰 생성
-        let chartView = HIChartView()
-        chartView.backgroundColor = .clear
-        self.view.addSubview(chartView)
-        chartView.snp.makeConstraints { make in
-            make.top.equalTo(검색_텍스트필드.snp.bottom).offset(20) // 텍스트 필드 바로 아래
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalTo(다음_버튼.snp.top).offset(-20) // 다음 버튼 바로 위
-        }
-        let options = HIOptions()
 
-        let chart = HIChart()
-        chart.type = "bubble"
-        chart.type = "packedbubble" // 'packedbubble' 차트 유형 사용
-        chart.backgroundColor = HIColor(uiColor: .black) // 투명한 배경색 설정
-        options.chart = chart
-
-
-        // 레이아웃 알고리즘 커스텀
-        let plotOptions = HIPlotOptions()
-        plotOptions.packedbubble = HIPackedbubble()
-        plotOptions.packedbubble.layoutAlgorithm = HILayoutAlgorithm()
-        plotOptions.packedbubble.layoutAlgorithm.enableSimulation = true
-        plotOptions.packedbubble.minSize = "70%" // 최소 버블 크기
-        plotOptions.packedbubble.maxSize = "100%" // 최대 버블 크기
-        options.plotOptions = plotOptions
-
-        let title = HITitle()
-        title.text = ""
-        options.title = title
-
-        // 축 설정
-        let xAxis = HIXAxis()
-        xAxis.visible = false // X 축 숨기기
-        options.xAxis = [xAxis]
-
-        let yAxis = HIYAxis()
-        yAxis.visible = false // Y 축 숨기기
-        options.yAxis = [yAxis]
-
-        /// 햄버거바 숨기기
-        let exporting = HIExporting()
-        exporting.enabled = false
-        options.exporting = exporting
-
-
-
-        /// 타이틀 디자인
-        let style = HICSSObject()
-        title.style = style
-        title.style.fontSize = "15"
-        title.style.fontWeight = "bold"
-
-        /// 카테고리 숨기기
-        let legend = HILegend()
-        legend.enabled = false
-        options.legend = legend
-
-        let 아티스트_리스트 : [String] = ["살바도르 달리", "파블로 피카소", "뱅크시" , "클로드 모네","빈센트 반 고흐", "램브란트", "레오나르도 다 빈치","미켈란젤로", "뒤샹", "앤디 워홀" , "폴 세잔"]
-
-
-        // 텍스트 길이에 따라 버블 크기를 계산
-        let bubbleData = 아티스트_리스트.map { artist in
-            let textLength = artist.count // 텍스트의 길이
-            // 원하는 크기 계산 로직을 적용하고 상수 값을 더합니다.
-            let bubbleSize = (100 + textLength * 10) + 50 // 예: 길이에 비례한 크기 조절 및 상수 추가
-            return [
-                "name": artist,
-                "value": bubbleSize
-            ]
-        }
-
-
-        
-
-
-        // 차트 데이터 설정
-        let series = HISeries()
-        series.data = bubbleData
-
-
-        /// 크레딧 자리에 기준날짜 띄우기
-        let credits = HICredits()
-        credits.text = ""
-        options.credits = credits
-        /// 동그라미 투명도 조절하기
-        let marker = HIMarker()
-        plotOptions.packedbubble.marker = marker
-        plotOptions.packedbubble.marker.fillOpacity = 1
-        plotOptions.packedbubble.marker.fillColor = HIColor(uiColor: .clear)
-        plotOptions.packedbubble.marker.lineColor = HIColor(uiColor: .white)
-        
-        let dataLabelCSS = HICSSObject()
-
-
-        // 데이터 라벨 설정
-        let dataLabels = HIDataLabels()
-        dataLabels.enabled = true
-        // 데이터 라벨의 스타일 설정
-        let dataLabelStyle = HIStyle()
-        dataLabelCSS.fontSize = "14px" // 원하는 폰트 크기를 지정하세요
-        dataLabelCSS.color = "white"
-
-
-
-        dataLabels.enabled = true
-        dataLabels.style = dataLabelCSS
-
-        // 데이터 라벨의 포맷 설정 (여기서는 버블의 이름으로 표시)
-        dataLabels.format = "{point.name}"
-
-        series.dataLabels = [dataLabels]
-
-
-
-//        series.dataLabels = [dataLabels]
-
-        options.series = [series]
-
-        // 클릭 이벤트 설정
-        let chartFunction = HIFunction(closure: { context in
-            // 클릭 이벤트 처리 로직
-        }, properties: ["this.index"])
-        series.events = HIEvents()
-        series.events.click = chartFunction
-
-
-
-        // 차트 뷰에 옵션 설정 및 뷰에 추가
-        chartView.options = options
-        self.view.addSubview(chartView)
     }
+
+
 }
 
 extension 회원가입_세번째_뷰컨트롤러 {
