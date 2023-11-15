@@ -13,6 +13,7 @@ class 마이페이지_보관함 : UIViewController {
         button.layer.cornerRadius = 20
         return button
     } ()
+    
     let 페이지_제목 = {
         let label = UILabel()
         label.text = "보관함"
@@ -21,21 +22,32 @@ class 마이페이지_보관함 : UIViewController {
         label.textAlignment = .center
         return label
     }()
+    
     let 세그먼트_컨트롤: UISegmentedControl = {
         let 세그먼트_아이탬 = ["전시", "미술관", "작가", "리뷰"]
         let 세그먼트 = UISegmentedControl(items: 세그먼트_아이탬)
         세그먼트.selectedSegmentIndex = 0
-        
         세그먼트.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
         세그먼트.backgroundColor = .black
         세그먼트.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.lightGray], for: .normal)
         세그먼트.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
-        
-        // 언더바 형식 설정
         세그먼트.selectedSegmentTintColor = UIColor.lightGray
-        
         return 세그먼트
     }()
+    
+    lazy var 보관함_컬렉션뷰 = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
+        
+        collectionView.backgroundColor = .black
+        collectionView.layer.cornerRadius = 10
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.decelerationRate = UIScrollView.DecelerationRate.normal
+        return collectionView
+    } ()
     override func viewWillAppear(_ animated: Bool) {
         if let glassTabBar = tabBarController as? GlassTabBar {
             glassTabBar.customTabBarView.isHidden = true
@@ -47,7 +59,8 @@ class 마이페이지_보관함 : UIViewController {
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
-        
+        보관함_컬렉션뷰.delegate = self
+        보관함_컬렉션뷰.dataSource = self
     }
     
     func UI레이아웃() {
@@ -67,6 +80,7 @@ class 마이페이지_보관함 : UIViewController {
             make.top.equalTo(페이지_제목.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
         }
+        
     }
     
     private func 버튼_클릭() {
@@ -79,16 +93,59 @@ class 마이페이지_보관함 : UIViewController {
     }
     @objc func 세그먼트_아이탬_클릭() {
         let 세그먼트_아이탬 = 세그먼트_컨트롤.selectedSegmentIndex
-        print("선택된 세그먼트 아이탬 : \(세그먼트_아이탬)")
+        print("선택된 세그먼트 아이탬 : \(세그먼트_아이탬 + 1)")
         
         switch 세그먼트_아이탬 {
         case 0:
+            보관함_컬렉션뷰.register(보관함_전시_셀.self, forCellWithReuseIdentifier: "보관함_전시_셀")
+            view.addSubview(보관함_컬렉션뷰)
+            보관함_컬렉션뷰.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(200)
+                make.leading.equalToSuperview().offset(20)
+                make.trailing.equalToSuperview().offset(-20)
+                make.bottom.equalToSuperview()
+            }
+            보관함_컬렉션뷰.reloadData()
             break
         case 1:
+            보관함_컬렉션뷰.register(보관함_미술관_셀.self, forCellWithReuseIdentifier: "보관함_미술관_셀")
+            
+            view.addSubview(보관함_컬렉션뷰)
+            보관함_컬렉션뷰.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(200)
+                make.leading.equalToSuperview().offset(20)
+                make.trailing.equalToSuperview().offset(-20)
+                make.bottom.equalToSuperview()
+            }
+            보관함_컬렉션뷰.reloadData()
+
             break
         case 2:
+            보관함_컬렉션뷰.register(보관함_아티스트_셀.self, forCellWithReuseIdentifier: "보관함_아티스트_셀")
+            
+            view.addSubview(보관함_컬렉션뷰)
+            보관함_컬렉션뷰.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(200)
+                make.leading.equalToSuperview().offset(20)
+                make.trailing.equalToSuperview().offset(-20)
+                make.bottom.equalToSuperview()
+            }
+            보관함_컬렉션뷰.reloadData()
+
             break
         case 3:
+            보관함_컬렉션뷰.register(보관함_리뷰_셀.self, forCellWithReuseIdentifier: "보관함_리뷰_셀")
+            
+            
+            view.addSubview(보관함_컬렉션뷰)
+            보관함_컬렉션뷰.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(200)
+                make.leading.equalToSuperview().offset(20)
+                make.trailing.equalToSuperview().offset(-20)
+                make.bottom.equalToSuperview()
+            }
+            보관함_컬렉션뷰.reloadData()
+
             break
         default:
             break
@@ -115,11 +172,22 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch 세그먼트_컨트롤.selectedSegmentIndex {
         case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "", for: indexPath) as! 마이페이지_전시_셀
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "보관함_전시_셀", for: indexPath) as! 보관함_전시_셀
+            
+            
+            return cell
+        case 1:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "보관함_미술관_셀", for: indexPath) as! 보관함_미술관_셀
+            
+            
+            return cell
+        case 2:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "보관함_아티스트_셀", for: indexPath) as! 보관함_아티스트_셀
+            
             
             return cell
         case 3:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "", for: indexPath) as! 마이페이지_리뷰_셀
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "보관함_리뷰_셀", for: indexPath) as! 보관함_리뷰_셀
             
             return cell
         default:
@@ -132,6 +200,14 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
         case 0:
             let width = collectionView.frame.width * 0.49
             let height = collectionView.frame.height * 0.4
+            return CGSize(width: width, height: height)
+        case 1:
+            let width = collectionView.frame.width * 0.33
+            let height = collectionView.frame.height * 0.25
+            return CGSize(width: width, height: height)
+        case 2:
+            let width = collectionView.frame.width * 0.33
+            let height = width
             return CGSize(width: width, height: height)
         case 3:
             let width = collectionView.frame.width * 1
