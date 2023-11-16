@@ -36,7 +36,15 @@ class 보관함_아티스트_셀 : UICollectionViewCell {
     }
     
     func 보관함_아티스트_셀_레이아웃() {
-       
+        contentView.addSubview(보관함_아티스트_이미지)
+        contentView.addSubview(보관함_아티스트_이름)
+        
+        보관함_아티스트_이미지.snp.makeConstraints { make in
+            
+        }
+        보관함_아티스트_이름.snp.makeConstraints { make in
+            
+        }
         
     }
     

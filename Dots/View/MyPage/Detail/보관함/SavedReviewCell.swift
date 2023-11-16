@@ -48,6 +48,7 @@ class 보관함_리뷰_셀 : UICollectionViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 10)
         return label
     } ()
+    
     private var 리뷰_셀_이미지 = {
        var imageView = UIImageView()
         imageView.image = UIImage(named: "morningStar")
