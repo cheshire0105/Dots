@@ -264,7 +264,7 @@
 				37DE8F9A2B04A6760086FC58 /* SavedExhibitionCell.swift */,
 			);
 			name = "마이페이지_보관함";
-			path = "보관함";
+			path = "마이페이지_보관함";
 			sourceTree = "<group>";
 		};
 		37DE8F962B03A4850086FC58 /* 마이페이지_리뷰 */ = {
@@ -274,7 +274,7 @@
 				37DE8F982B03B46A0086FC58 /* MypageReviewCell.swift */,
 			);
 			name = "마이페이지_리뷰";
-			path = "리뷰";
+			path = "마이페이지_리뷰";
 			sourceTree = "<group>";
 		};
 		37DE8F972B03A49B0086FC58 /* 마이페이지_전시폴더 */ = {
@@ -284,7 +284,7 @@
 				370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */,
 			);
 			name = "마이페이지_전시폴더";
-			path = "마이페이지_전시";
+			path = "마이페이지_전시폴더";
 			sourceTree = "<group>";
 		};
 		DD990FCAE10E39EBF355D09F /* Pods */ = {
