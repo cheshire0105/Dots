@@ -12,6 +12,9 @@ class DetailAudioPage: UIViewController {
 
     let closeButton = UIButton(type: .custom)
 
+    private var isButtonExpanded = false
+
+
     let roundedRectangleView = UIView()
     let circleImageView = UIImageView()
     let label1 = UILabel()
@@ -52,28 +55,46 @@ class DetailAudioPage: UIViewController {
         rightButton.backgroundColor = UIColor(red: 0.412, green: 0.412, blue: 0.412, alpha: 1)
         configureButtonAppearance(button: rightButton)
 
+        leftButton.addTarget(self, action: #selector(leftButtonTapped), for: .touchUpInside)
+               rightButton.addTarget(self, action: #selector(rightButtonTapped), for: .touchUpInside)
+
         view.addSubview(leftButton)
-        view.addSubview(centerButton)
         view.addSubview(rightButton)
 
         leftButton.snp.makeConstraints { make in
-            make.left.equalTo(view.safeAreaLayoutGuide).inset(20)
-            make.top.equalTo(textView.snp.bottom).offset(20)
-            make.width.height.equalTo(60) // 버튼 크기
-        }
+               make.left.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.bottom.equalToSuperview().inset(10) // 버튼이 아래로 늘어나는 대신 위로 늘어나도록 변경
+               make.width.height.equalTo(60) // 버튼 크기
+           }
 
-        centerButton.snp.makeConstraints { make in
-            make.centerX.equalTo(view)
-            make.top.equalTo(textView.snp.bottom).offset(20)
-            make.width.height.equalTo(60) // 버튼 크기
-        }
-
-        rightButton.snp.makeConstraints { make in
-            make.right.equalTo(view.safeAreaLayoutGuide).inset(20)
-            make.top.equalTo(textView.snp.bottom).offset(20)
-            make.width.height.equalTo(60) // 버튼 크기
-        }
+           rightButton.snp.makeConstraints { make in
+               make.right.equalTo(view.safeAreaLayoutGuide).inset(20)
+               make.bottom.equalToSuperview().inset(10) // 버튼이 아래로 늘어나는 대신 위로 늘어나도록 변경
+               make.width.height.equalTo(60) // 버튼 크기
+           }
     }
+
+    @objc private func leftButtonTapped() {
+         toggleButtonHeight(for: leftButton)
+     }
+
+     @objc private func rightButtonTapped() {
+         toggleButtonHeight(for: rightButton)
+     }
+
+     private func toggleButtonHeight(for button: UIButton) {
+         isButtonExpanded.toggle()
+
+         let newHeight: CGFloat = isButtonExpanded ? 160 : 60
+
+         UIView.animate(withDuration: 0.3) {
+             button.snp.updateConstraints { make in
+                 make.height.equalTo(newHeight)
+             }
+             self.view.layoutIfNeeded()
+         }
+     }
+
 
     private func configureButtonAppearance(button: UIButton) {
         //           button.backgroundColor = .white
