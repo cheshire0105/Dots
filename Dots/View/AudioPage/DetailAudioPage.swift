@@ -11,10 +11,6 @@ import SnapKit
 class DetailAudioPage: UIViewController {
 
     let closeButton = UIButton(type: .custom)
-
-    private var isButtonExpanded = false
-
-
     let roundedRectangleView = UIView()
     let circleImageView = UIImageView()
     let label1 = UILabel()
@@ -22,11 +18,18 @@ class DetailAudioPage: UIViewController {
     let rightImageView = UIImageView() // 오른쪽에 추가할 이미지 뷰 선언
     let textView = UITextView()
 
-    let leftButton = UIButton(type: .system)
-    let centerButton = UIButton(type: .system)
-    let rightButton = UIButton(type: .system)
+    let leftCircleView = UIView() // 왼쪽 원형 뷰
+      let rightCircleView = UIView() // 오른쪽 원형 뷰
+      let leftButton = UIButton(type: .custom) // 왼쪽 버튼
+      let rightButton = UIButton(type: .custom) // 오른쪽 버튼
 
-
+    // 새로운 버튼 선언
+       let leftButton1 = UIButton(type: .custom)
+       let leftButton2 = UIButton(type: .custom)
+       let leftButton3 = UIButton(type: .custom)
+       let rightButton1 = UIButton(type: .custom)
+       let rightButton2 = UIButton(type: .custom)
+       let rightButton3 = UIButton(type: .custom)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,67 +40,173 @@ class DetailAudioPage: UIViewController {
         setupLabels()
         setupRightImageView() // 이미지 뷰 설정 메서드 호출
         setupTextView()
-
-        setupButtons()
+        setupLeftCircleView() // 새로 추가한 메서드 호출
+               setupRightCircleView() // 새로 추가한 메서드 호출
 
     }
 
-    private func setupButtons() {
-        // 왼쪽 버튼 설정
-        leftButton.setTitle("x1", for: .normal)
-        leftButton.backgroundColor = UIColor(red: 0.412, green: 0.412, blue: 0.412, alpha: 1)
-        configureButtonAppearance(button: leftButton)
+    private func setupLeftCircleView() {
+        leftCircleView.backgroundColor = .darkGray
+        leftCircleView.layer.cornerRadius = 30
+        leftCircleView.clipsToBounds = true
 
+        // 왼쪽 원형 뷰에 세 개의 버튼 추가 및 설정
+        configureAdditionalButton(button: leftButton1, title: "x 0.5", fontSize: 16)
+        configureAdditionalButton(button: leftButton2, title: "x 1", fontSize: 16)
+                configureAdditionalButton(button: leftButton3, title: "x 2", fontSize: 16)
 
+        view.addSubview(leftCircleView)
+        leftCircleView.snp.makeConstraints { make in
+            make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(30)
+            make.bottom.equalTo(view.snp.bottom).inset(10)
+            make.width.height.equalTo(60) // 원의 크기 설정
+        }
 
-        // 오른쪽 버튼 설정
-        rightButton.setTitle("Aa", for: .normal)
-        rightButton.backgroundColor = UIColor(red: 0.412, green: 0.412, blue: 0.412, alpha: 1)
-        configureButtonAppearance(button: rightButton)
-
-        leftButton.addTarget(self, action: #selector(leftButtonTapped), for: .touchUpInside)
-               rightButton.addTarget(self, action: #selector(rightButtonTapped), for: .touchUpInside)
-
-        view.addSubview(leftButton)
-        view.addSubview(rightButton)
-
+        configureCircleButton(button: leftButton)
+        leftCircleView.addSubview(leftButton)
         leftButton.snp.makeConstraints { make in
-               make.left.equalTo(view.safeAreaLayoutGuide).inset(20)
-            make.bottom.equalToSuperview().inset(10) // 버튼이 아래로 늘어나는 대신 위로 늘어나도록 변경
-               make.width.height.equalTo(60) // 버튼 크기
-           }
+            make.center.equalToSuperview()
+            make.width.height.equalToSuperview()
+        }
+        
+        // 왼쪽 원형 뷰에 세 개의 버튼 추가
+             [leftButton1, leftButton2, leftButton3].forEach {
+                 $0.isHidden = true // 초기에는 숨김
+//                 $0.backgroundColor = .red // 색상 예시
+                 leftCircleView.addSubview($0)
+                 $0.snp.makeConstraints { make in
+                     make.centerX.equalToSuperview()
+                     make.height.equalTo(40)
+                     // 각 버튼의 위치 조정 필요
+                 }
+             }
 
-           rightButton.snp.makeConstraints { make in
-               make.right.equalTo(view.safeAreaLayoutGuide).inset(20)
-               make.bottom.equalToSuperview().inset(10) // 버튼이 아래로 늘어나는 대신 위로 늘어나도록 변경
-               make.width.height.equalTo(60) // 버튼 크기
-           }
     }
 
-    @objc private func leftButtonTapped() {
-         toggleButtonHeight(for: leftButton)
-     }
+    private func setupRightCircleView() {
+        rightCircleView.backgroundColor = .darkGray
+        rightCircleView.layer.cornerRadius = 30
+        rightCircleView.clipsToBounds = true
 
-     @objc private func rightButtonTapped() {
-         toggleButtonHeight(for: rightButton)
-     }
+        // 오른쪽 원형 뷰에 세 개의 버튼 추가 및 설정
+        // 각 버튼을 설정할 때 다른 폰트 크기를 지정합니다.
+        configureAdditionalButton(button: rightButton1, title: "Aa", fontSize: 12)
+        configureAdditionalButton(button: rightButton2, title: "Aa", fontSize: 16)
+        configureAdditionalButton(button: rightButton3, title: "Aa", fontSize: 18)
 
-     private func toggleButtonHeight(for button: UIButton) {
-         isButtonExpanded.toggle()
+        view.addSubview(rightCircleView)
+        rightCircleView.snp.makeConstraints { make in
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).offset(-30)
+            make.bottom.equalTo(view.snp.bottom).inset(10)
+            make.width.height.equalTo(60) // 원의 크기 설정
+        }
 
-         let newHeight: CGFloat = isButtonExpanded ? 160 : 60
+        configureCircleButton(button: rightButton)
+        rightCircleView.addSubview(rightButton)
+        rightButton.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.equalToSuperview()
+        }
 
-         UIView.animate(withDuration: 0.3) {
-             button.snp.updateConstraints { make in
-                 make.height.equalTo(newHeight)
-             }
-             self.view.layoutIfNeeded()
-         }
-     }
+        [rightButton1, rightButton2, rightButton3].forEach {
+                $0.isHidden = true // 초기에는 숨김
+//                $0.backgroundColor = .blue // 예시 색상
+                configureButtonAppearance(button: $0)
+                rightCircleView.addSubview($0)
+                $0.snp.makeConstraints { make in
+                    make.centerX.equalToSuperview()
+                    make.height.equalTo(40)
+                    // 각 버튼의 위치 조정 필요
+                }
+            }
+    }
+
+    private func configureAdditionalButton(button: UIButton, title: String, fontSize: CGFloat) {
+        button.setTitle(title, for: .normal)
+        button.backgroundColor = .clear
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: fontSize)
+        button.isHidden = true
+        button.addTarget(self, action: #selector(additionalButtonTapped(_:)), for: .touchUpInside)
+
+        rightCircleView.addSubview(button)
+        // 레이아웃 설정 코드...
+    }
+
+    @objc private func additionalButtonTapped(_ sender: UIButton) {
+        // 버튼이 속한 원형 뷰의 높이를 원래대로 줄입니다.
+        if leftCircleView.subviews.contains(sender) {
+            leftCircleView.snp.updateConstraints { make in
+                make.height.equalTo(60)
+            }
+            [leftButton1, leftButton2, leftButton3].forEach { $0.isHidden = true }
+        } else if rightCircleView.subviews.contains(sender) {
+            rightCircleView.snp.updateConstraints { make in
+                make.height.equalTo(60)
+            }
+            [rightButton1, rightButton2, rightButton3].forEach { $0.isHidden = true }
+        }
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+        leftButton.isHidden = false
+        rightButton.isHidden = false
+    }
+
+    private func configureCircleButton(button: UIButton) {
+        button.backgroundColor = .darkGray
+        button.layer.cornerRadius = button.frame.size.height / 2
+        button.clipsToBounds = true
+
+        // 버튼에 텍스트 추가
+        if button == leftButton {
+            button.setTitle("x1", for: .normal) // 왼쪽 버튼에 텍스트 설정
+        } else if button == rightButton {
+            button.setTitle("Aa", for: .normal) // 오른쪽 버튼에 텍스트 설정
+        }
+
+        // 버튼에 액션 추가
+        button.addTarget(self, action: #selector(circleButtonTapped(sender:)), for: .touchUpInside)
+    }
+
+    @objc private func circleButtonTapped(sender: UIButton) {
+          sender.isHidden = true // 버튼 숨기기
+
+          if sender == leftButton {
+              leftCircleView.snp.updateConstraints { make in
+                  make.height.equalTo(150) // 높이를 늘립니다.
+              }
+              // 왼쪽 버튼들의 위치 조정
+              configureButtonPositions(buttons: [leftButton1, leftButton2, leftButton3], inView: leftCircleView)
+          } else if sender == rightButton {
+              rightCircleView.snp.updateConstraints { make in
+                  make.height.equalTo(150) // 높이를 늘립니다.
+              }
+              // 오른쪽 버튼들의 위치 조정
+              configureButtonPositions(buttons: [rightButton1, rightButton2, rightButton3], inView: rightCircleView)
+          }
+
+          UIView.animate(withDuration: 0.3) {
+              self.view.layoutIfNeeded()
+          }
+      }
+
+
+    private func configureButtonPositions(buttons: [UIButton], inView view: UIView) {
+        // 각 버튼을 숨김 상태에서 보이게 하고 위치를 조정합니다.
+        buttons.enumerated().forEach { (index, button) in
+            button.isHidden = false
+            button.snp.remakeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalToSuperview().offset(10 + (50 * index)) // 버튼간 간격 조정
+                make.width.equalToSuperview().multipliedBy(0.8) // 버튼의 너비
+                make.height.equalTo(40)
+            }
+        }
+    }
 
 
     private func configureButtonAppearance(button: UIButton) {
-        //           button.backgroundColor = .white
         button.layer.cornerRadius = 30 // 반지름 설정으로 원형 버튼 만들기
         button.tintColor = .black
     }
