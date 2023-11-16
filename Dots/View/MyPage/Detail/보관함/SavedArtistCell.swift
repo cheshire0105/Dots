@@ -27,8 +27,8 @@ class 보관함_아티스트_셀 : UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.orange
-        layer.cornerRadius = 60
+        backgroundColor = UIColor.clear
+        layer.cornerRadius = 15
         layer.borderWidth = 0.5
         layer.borderColor = UIColor(named: "neon")?.cgColor
         보관함_아티스트_셀_레이아웃()
@@ -45,7 +45,6 @@ class 보관함_아티스트_셀 : UICollectionViewCell {
         보관함_아티스트_이름.snp.makeConstraints { make in
             
         }
-        
         
     }
     

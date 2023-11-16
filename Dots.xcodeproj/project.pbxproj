@@ -11,6 +11,10 @@
 		1FDD34842AE9A114002A72BB /* PopularReviewImagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */; };
 		1FF9CB0C2AEAABB9002B0F61 /* PopularReviewDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */; };
 		37051B7B2B04F43800D33C07 /* MypageUserSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B7A2B04F43800D33C07 /* MypageUserSetting.swift */; };
+		37051B7E2B05F86B00D33C07 /* SettingProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B7D2B05F86B00D33C07 /* SettingProfile.swift */; };
+		37051B802B05F87700D33C07 /* SettingPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B7F2B05F87700D33C07 /* SettingPassword.swift */; };
+		37051B822B05F88D00D33C07 /* SettingNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B812B05F88D00D33C07 /* SettingNotification.swift */; };
+		37051B842B05F89900D33C07 /* SettingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B832B05F89900D33C07 /* SettingService.swift */; };
 		370F3F0A2AEEC11000C4A8F5 /* MyPageExhibitionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */; };
 		3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */; };
 		3727BE0C2AF293EC0055AD24 /* PopularReviewDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE0B2AF293EC0055AD24 /* PopularReviewDetailCell.swift */; };
@@ -97,6 +101,10 @@
 		1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewImagesCell.swift; sourceTree = "<group>"; };
 		1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDataModel.swift; sourceTree = "<group>"; };
 		37051B7A2B04F43800D33C07 /* MypageUserSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageUserSetting.swift; sourceTree = "<group>"; };
+		37051B7D2B05F86B00D33C07 /* SettingProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfile.swift; sourceTree = "<group>"; };
+		37051B7F2B05F87700D33C07 /* SettingPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingPassword.swift; sourceTree = "<group>"; };
+		37051B812B05F88D00D33C07 /* SettingNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingNotification.swift; sourceTree = "<group>"; };
+		37051B832B05F89900D33C07 /* SettingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingService.swift; sourceTree = "<group>"; };
 		370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageExhibitionCell.swift; sourceTree = "<group>"; };
 		3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetail.swift; sourceTree = "<group>"; };
 		3727BE0B2AF293EC0055AD24 /* PopularReviewDetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetailCell.swift; sourceTree = "<group>"; };
@@ -192,6 +200,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		37051B7C2B05F83F00D33C07 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				37051B7D2B05F86B00D33C07 /* SettingProfile.swift */,
+				37051B832B05F89900D33C07 /* SettingService.swift */,
+				37051B812B05F88D00D33C07 /* SettingNotification.swift */,
+				37051B7F2B05F87700D33C07 /* SettingPassword.swift */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
 		37D0A99E2AF51469000D59AB /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -413,6 +432,7 @@
 		FF58FB342AE6037600853006 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
+				37051B7C2B05F83F00D33C07 /* Setting */,
 				37DE8F942B03A44E0086FC58 /* Detail */,
 				37DE8F932B03A4390086FC58 /* Main */,
 			);
@@ -605,6 +625,8 @@
 				37DE8F8E2B0396DF0086FC58 /* MypageReview.swift in Sources */,
 				FF1EBFEE2B03141E00343619 /* DetailAudioPage.swift in Sources */,
 				FF58FB302AE6025100853006 /* MapPage.swift in Sources */,
+				37051B802B05F87700D33C07 /* SettingPassword.swift in Sources */,
+				37051B7E2B05F86B00D33C07 /* SettingProfile.swift in Sources */,
 				FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */,
 				37DE8F882AFE38260086FC58 /* SignUPthirdCell.swift in Sources */,
 				FF77BFBF2AF780AC00EA5A1B /* SignUPfirst.swift in Sources */,
@@ -617,6 +639,7 @@
 				37DE8F922B039C8E0086FC58 /* MypageNotification.swift in Sources */,
 				FFAFCB822B01DCE00030C3C9 /* ReviewWrittePage.swift in Sources */,
 				FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */,
+				37051B822B05F88D00D33C07 /* SettingNotification.swift in Sources */,
 				FF77BFBD2AF7736900EA5A1B /* LogIN.swift in Sources */,
 				FFAFCB762AFB76220030C3C9 /* ExhibitionModel.swift in Sources */,
 				FF77BFB82AF3E0DB00EA5A1B /* searchPageTableViewCell.swift in Sources */,
@@ -645,6 +668,7 @@
 				FFE0C9B52AEB413300F3D783 /* ExhibitionPage.swift in Sources */,
 				FF77BFB42AF27E9C00EA5A1B /* ReviewTableViewCell.swift in Sources */,
 				37DE8F9F2B04A6AF0086FC58 /* SavedArtistCell.swift in Sources */,
+				37051B842B05F89900D33C07 /* SettingService.swift in Sources */,
 				377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */,
 				377130222AFB88B00018D4C1 /* SignUPsecond.swift in Sources */,
 				FF47B5EE2AE61BA5006A5004 /* GlassTabBar.swift in Sources */,

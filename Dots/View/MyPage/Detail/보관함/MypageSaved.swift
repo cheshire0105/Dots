@@ -61,6 +61,7 @@ class 마이페이지_보관함 : UIViewController {
         버튼_클릭()
         보관함_컬렉션뷰.delegate = self
         보관함_컬렉션뷰.dataSource = self
+        세그먼트_아이탬_클릭()
     }
     
     func UI레이아웃() {
@@ -82,6 +83,15 @@ class 마이페이지_보관함 : UIViewController {
         }
         
     }
+    func 보관함_컬렉션뷰_레이아웃 () {
+        view.addSubview(보관함_컬렉션뷰)
+        보관함_컬렉션뷰.snp.makeConstraints { make in
+            make.top.equalTo(세그먼트_컨트롤.snp.bottom).offset(30)
+            make.bottom.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+    }
     
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
@@ -98,52 +108,24 @@ class 마이페이지_보관함 : UIViewController {
         switch 세그먼트_아이탬 {
         case 0:
             보관함_컬렉션뷰.register(보관함_전시_셀.self, forCellWithReuseIdentifier: "보관함_전시_셀")
-            view.addSubview(보관함_컬렉션뷰)
-            보관함_컬렉션뷰.snp.makeConstraints { make in
-                make.top.equalToSuperview().offset(200)
-                make.leading.equalToSuperview().offset(20)
-                make.trailing.equalToSuperview().offset(-20)
-                make.bottom.equalToSuperview()
-            }
+            보관함_컬렉션뷰_레이아웃 ()
             보관함_컬렉션뷰.reloadData()
             break
         case 1:
             보관함_컬렉션뷰.register(보관함_미술관_셀.self, forCellWithReuseIdentifier: "보관함_미술관_셀")
-            
-            view.addSubview(보관함_컬렉션뷰)
-            보관함_컬렉션뷰.snp.makeConstraints { make in
-                make.top.equalToSuperview().offset(200)
-                make.leading.equalToSuperview().offset(20)
-                make.trailing.equalToSuperview().offset(-20)
-                make.bottom.equalToSuperview()
-            }
+            보관함_컬렉션뷰_레이아웃 ()
             보관함_컬렉션뷰.reloadData()
 
             break
         case 2:
             보관함_컬렉션뷰.register(보관함_아티스트_셀.self, forCellWithReuseIdentifier: "보관함_아티스트_셀")
-            
-            view.addSubview(보관함_컬렉션뷰)
-            보관함_컬렉션뷰.snp.makeConstraints { make in
-                make.top.equalToSuperview().offset(200)
-                make.leading.equalToSuperview().offset(20)
-                make.trailing.equalToSuperview().offset(-20)
-                make.bottom.equalToSuperview()
-            }
+            보관함_컬렉션뷰_레이아웃 ()
             보관함_컬렉션뷰.reloadData()
 
             break
         case 3:
             보관함_컬렉션뷰.register(보관함_리뷰_셀.self, forCellWithReuseIdentifier: "보관함_리뷰_셀")
-            
-            
-            view.addSubview(보관함_컬렉션뷰)
-            보관함_컬렉션뷰.snp.makeConstraints { make in
-                make.top.equalToSuperview().offset(200)
-                make.leading.equalToSuperview().offset(20)
-                make.trailing.equalToSuperview().offset(-20)
-                make.bottom.equalToSuperview()
-            }
+            보관함_컬렉션뷰_레이아웃 ()
             보관함_컬렉션뷰.reloadData()
 
             break
@@ -207,7 +189,7 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
             return CGSize(width: width, height: height)
         case 2:
             let width = collectionView.frame.width * 0.33
-            let height = width
+            let height = collectionView.frame.height * 0.25
             return CGSize(width: width, height: height)
         case 3:
             let width = collectionView.frame.width * 1
