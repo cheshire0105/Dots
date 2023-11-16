@@ -32,7 +32,7 @@ class 마이페이지_전시 : UIViewController {
           let layout = UICollectionViewFlowLayout()
           let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
           layout.minimumLineSpacing = 20
-          layout.minimumInteritemSpacing = 1
+          layout.minimumInteritemSpacing = 12
           layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
           
           collectionView.backgroundColor = .black
@@ -110,7 +110,7 @@ extension 마이페이지_전시 : UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width * 0.49
+        let width = collectionView.frame.width * 0.49 - 12
         let height = collectionView.frame.height * 0.4
         return CGSize(width: width, height: height)
     }
