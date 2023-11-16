@@ -37,9 +37,9 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
 
     // 전시 데이터 목록을 추가합니다.
         var exhibitions: [Exhibition] = [
-            Exhibition(name: "Modern Art Collection", museum: "Museum of Modern Art", imageName: "art1"),
-            Exhibition(name: "Impressionists", museum: "Louvre", imageName: "art2"),
-            Exhibition(name: "Impressionists", museum: "Louvre", imageName: "art2")
+            Exhibition(name: "현대차 시리즈 2023 : 정연두 - 백년여행기", museum: "MMCA 서울", imageName: "art1"),
+            Exhibition(name: "올해의 작가상 2023", museum: "MMCA 서울", imageName: "art2"),
+            Exhibition(name: "어느 수집가의 초대", museum: "서울시립미술관", imageName: "art2")
         ]
 
 
@@ -253,6 +253,33 @@ extension MapPage: MKMapViewDelegate {
 
 }
 
+import SwiftUI
+import UIKit
+
+// MapPage를 SwiftUI에서 사용하기 위한 래퍼 뷰
+struct MapPageWrapper: UIViewControllerRepresentable {
+    typealias UIViewControllerType = MapPage
+
+    func makeUIViewController(context: Context) -> MapPage {
+        // MapPage 인스턴스 생성
+        return MapPage()
+    }
+
+    func updateUIViewController(_ uiViewController: MapPage, context: Context) {
+        // 필요한 업데이트 로직
+    }
+}
+
+// SwiftUI 프리뷰
+struct MapPageWrapper_Previews: PreviewProvider {
+    static var previews: some View {
+        MapPageWrapper()
+    }
+}
+
+
+
+
 // 사진 이미지의 크기를 지정 할 수 있는 extension입니다.
 extension UIImage {
     func resize(to targetSize: CGSize) -> UIImage {
@@ -282,6 +309,9 @@ class CustomCollectionViewCell: UICollectionViewCell {
     let imageView = UIView() // 파란색 네모를 위한 뷰
     let exhibitionNameLabel = UILabel() // 전시 이름 레이블
     let museumNameLabel = UILabel() // 미술관 이름 레이블
+    let imageButton = UIButton() // 새로운 이미지 버튼
+
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -294,15 +324,19 @@ class CustomCollectionViewCell: UICollectionViewCell {
     }
 
     private func commonInit() {
-        // 셀 기본 설정
-        self.backgroundColor = .gray // 셀의 배경색을 회색으로 설정
-        setupViews()
-    }
+          // 셀 기본 설정
+          self.backgroundColor = .white // 셀의 배경색을 하얀색으로 설정
+          self.layer.cornerRadius = 10 // 셀의 모서리를 둥글게 설정
+          self.clipsToBounds = true  // 셀 경계를 넘어가는 내용을 잘라냄
+
+          setupViews()
+      }
 
     private func setupViews() {
         // 이미지 뷰 설정
         imageView.backgroundColor = .blue // 파란색 배경
         // 이미지 뷰를 셀의 contentView에 추가하고 제약 조건을 설정합니다.
+        imageView.layer.cornerRadius = 10
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints { make in
             make.top.equalTo(contentView.snp.top).offset(10) // 상단 여백
@@ -313,22 +347,37 @@ class CustomCollectionViewCell: UICollectionViewCell {
 
         // 전시 이름 레이블 설정
         exhibitionNameLabel.font = .systemFont(ofSize: 16, weight: .bold)
-        exhibitionNameLabel.textAlignment = .center
+        exhibitionNameLabel.textAlignment = .left
+        exhibitionNameLabel.numberOfLines = 2
         contentView.addSubview(exhibitionNameLabel)
         exhibitionNameLabel.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10) // 이미지 뷰 아래에 위치
-            make.left.right.equalTo(imageView) // 이미지 뷰의 좌우 여백과 동일하게 설정
+            make.leading.equalToSuperview().inset(10)
+            make.trailing.equalToSuperview().inset(50)
         }
 
         // 미술관 이름 레이블 설정
         museumNameLabel.font = .systemFont(ofSize: 14)
-        museumNameLabel.textAlignment = .center
+        museumNameLabel.textAlignment = .left
+//        museumNameLabel.numberOfLines = 0
         contentView.addSubview(museumNameLabel)
         museumNameLabel.snp.makeConstraints { make in
             make.top.equalTo(exhibitionNameLabel.snp.bottom).offset(5) // 전시 이름 레이블 아래에 위치
             make.left.right.equalTo(exhibitionNameLabel) // 전시 이름 레이블의 좌우 여백과 동일하게 설정
             make.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-10) // 하단 여백 (최소 여백으로 설정하여 내용에 따라 늘어날 수 있도록 함)
         }
+
+        // 이미지 버튼 설정
+              if let buttonImage = UIImage(named: "heartIcon") { // 'yourImageName'을 실제 이미지 이름으로 교체
+                  imageButton.setImage(buttonImage, for: .normal)
+                  imageButton.imageView?.contentMode = .scaleAspectFit
+              }
+              contentView.addSubview(imageButton)
+              imageButton.snp.makeConstraints { make in
+                  make.centerY.equalTo(exhibitionNameLabel.snp.centerY) // 버튼의 가운데를 레이블의 가운데와 맞춤
+                  make.leading.equalTo(exhibitionNameLabel.snp.trailing).offset(10) // 레이블 뒤에 위치
+                  make.width.height.equalTo(30) // 버튼 크기 설정
+              }
     }
 
     override func layoutSubviews() {
