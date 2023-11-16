@@ -316,11 +316,40 @@ class 마이페이지_설정_페이지 : UIViewController {
             make.trailing.equalTo(서비스설정_버튼.snp.trailing).offset(-16)
         }
     }
+}
+
+
+
+extension 마이페이지_설정_페이지 {
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         로그아웃_버튼.addTarget(self, action: #selector(로그아웃_버튼_클릭), for: .touchUpInside)
         회원탈퇴_버튼.addTarget(self, action: #selector(회원탈퇴_버튼_클릭), for: .touchUpInside)
     }
+    
+    
+    @objc private func 프로필변경_버튼_클릭 () {
+               let 프로필변경_모달 = 프로필변경_모달()
+               present(프로필변경_모달, animated: true, completion: nil)
+    }
+    @objc private func 비밀번호변경_버튼_클릭 () {
+        let 비밀번호변경_모달 = 비밀번호변경_모달()
+        present(비밀번호변경_모달, animated: true, completion: nil)
+    }
+    @objc private func  알림설정_버튼_클릭 () {
+        let 알림설정_모달 = 알림설정_모달()
+        present(알림설정_모달, animated: true, completion: nil)
+    }
+    @objc private func 서비스설정_버튼_클릭 () {
+        let 서비스설정_모달 = 서비스설정_모달()
+        present(서비스설정_모달, animated: true, completion: nil)
+    }
+    
+    
+    
+    
+    
+    
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
     }
