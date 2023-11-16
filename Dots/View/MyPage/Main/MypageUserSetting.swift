@@ -323,6 +323,11 @@ class 마이페이지_설정_페이지 : UIViewController {
 extension 마이페이지_설정_페이지 {
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        프로필변경_버튼.addTarget(self, action: #selector(프로필변경_버튼_클릭), for: .touchUpInside)
+        비밀번호변경_버튼.addTarget(self, action: #selector(비밀번호변경_버튼_클릭), for: .touchUpInside)
+        알림설정_버튼.addTarget(self, action: #selector(알림설정_버튼_클릭), for: .touchUpInside)
+        서비스설정_버튼.addTarget(self, action: #selector(서비스설정_버튼_클릭), for: .touchUpInside)
+        
         로그아웃_버튼.addTarget(self, action: #selector(로그아웃_버튼_클릭), for: .touchUpInside)
         회원탈퇴_버튼.addTarget(self, action: #selector(회원탈퇴_버튼_클릭), for: .touchUpInside)
     }
