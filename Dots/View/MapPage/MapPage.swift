@@ -84,7 +84,7 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
         // 새로운 테스트 애너테이션 추가
            let testCoordinate = CLLocationCoordinate2D(latitude: 37.334722, longitude: -122.000000)
            let newAnnotation = NewCustomAnnotation(coordinate: testCoordinate)
-           newAnnotation.title = "새 위치"
+           newAnnotation.title = "카페 도트"
            newAnnotation.subtitle = "서울"
            mapView.addAnnotation(newAnnotation)
     }
@@ -393,6 +393,21 @@ class NewCustomAnnotationView: MKAnnotationView {
         return label
     }()
 
+    var smallSquareView: UIView = {
+         let view = UIView()
+         view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+         view.layer.cornerRadius = 10 // 모서리를 둥글게
+         return view
+     }()
+
+    var smallSquareLabel: UILabel = {
+          let label = UILabel()
+          label.textAlignment = .center
+          label.font = UIFont.systemFont(ofSize: 12) // 폰트 크기 조정
+          label.textColor = .black // 텍스트 색상 설정
+          return label
+      }()
+
     override var annotation: MKAnnotation? {
         willSet {
             configure(with: newValue?.title ?? "")
@@ -402,8 +417,12 @@ class NewCustomAnnotationView: MKAnnotationView {
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         self.setupView()
+        self.addSubview(smallSquareView) // 작은 네모 뷰 추가
+        self.smallSquareView.addSubview(smallSquareLabel)
+
         configure(with: annotation?.title ?? "")
     }
+
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -476,9 +495,15 @@ class NewCustomAnnotationView: MKAnnotationView {
          }
      }
 
-     override func layoutSubviews() {
+    override func layoutSubviews() {
          super.layoutSubviews()
-         // 레이아웃 업데이트 필요 시 여기서 수행
+
+         // 작은 네모 뷰의 크기와 위치 설정
+         smallSquareView.frame = CGRect(x: 45, y: -10, width: 50, height: 20)
+
+         // 레이블의 크기와 위치를 작은 네모 뷰에 맞춰 조정
+         smallSquareLabel.frame = CGRect(x: 0, y: 0, width: 50, height: 20)
+         smallSquareLabel.text = "AD" // 레이블에 텍스트 설정
      }
 }
 
