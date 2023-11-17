@@ -6,7 +6,7 @@
 //
 // pull from master branch
 // 2023 11월 17일 오전 8시 : 05분 function/mapFunction 생성 테스트 커밋, 푸쉬
-
+// 2023년 11월 17일 오후 3시 10분 dev 최신화
 
 import UIKit
 import MapKit
