@@ -185,37 +185,31 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
 extension MapPage: MKMapViewDelegate {
 
     func setupAnnotations() {
-        let annotation = CustomAnnotation(coordinate: CLLocationCoordinate2D(latitude: 37.579198, longitude: 126.975405)) // 여기에 원하는 좌표를 입력
-        annotation.title = "한국의 전시 이름" // 필요에 따라 타이틀 설정
+        let annotation = CustomAnnotation(coordinate: CLLocationCoordinate2D(latitude: 37.334722, longitude: -122.008889)) // 여기에 원하는 좌표를 입력
+        annotation.title = "3" // 필요에 따라 타이틀 설정
         annotation.subtitle = "한국의 미술관" // 필요에 따라 서브타이틀 설정
         mapView.addAnnotation(annotation)
     }
 
-    // 3. mapView(_:viewFor:) 메서드를 구현하여 사용자 정의 이미지로 주석 뷰를 설정
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        // 사용자 정의 주석이 아닐 경우 nil 반환
-        guard annotation is CustomAnnotation else { return nil }
+        guard let customAnnotation = annotation as? CustomAnnotation else { return nil }
 
-        let identifier = "CustomAnnotation"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        let identifier = "BalloonAnnotation"
+        var view: BalloonAnnotationView
 
-        if annotationView == nil {
-            // 주석 뷰가 없으면 새로 생성
-            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView!.canShowCallout = true // 풍선 도움말 표시 설정
+        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? BalloonAnnotationView {
+            dequeuedView.annotation = annotation
+            view = dequeuedView
         } else {
-            // 재사용 가능한 주석 뷰를 현재 주석 객체로 업데이트
-            annotationView!.annotation = annotation
+            view = BalloonAnnotationView(annotation: annotation, reuseIdentifier: identifier)
         }
 
-        // 사용자 정의 이미지 설정
-        // 이미지를 로드하고 크기를 조절
-           if let resizedImage = UIImage(named: "morningStar")?.resize(to: CGSize(width: 50, height: 50)) {
-               annotationView!.image = resizedImage
-           }
+        // 여기서 커스텀 텍스트 설정
+        view.configure(with: customAnnotation.title ?? "")
 
-        return annotationView
+        return view
     }
+
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let annotation = view.annotation as? CustomAnnotation {
@@ -302,6 +296,97 @@ extension UIImage {
         return newImage
     }
 }
+
+class BalloonAnnotationView: MKAnnotationView {
+    var label: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 24)
+        label.numberOfLines = 0
+        return label
+    }()
+
+    override var annotation: MKAnnotation? {
+        willSet {
+            configure(with: newValue?.title ?? "")
+        }
+    }
+
+    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        self.setupView()
+        configure(with: annotation?.title ?? "")
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.setupView()
+    }
+
+    private func setupBalloonPath() -> UIBezierPath {
+        let balloonPath = UIBezierPath()
+
+        // 원의 경로를 그립니다.
+        balloonPath.addArc(withCenter: CGPoint(x: 24, y: 24),
+                           radius: 24,
+                           startAngle: CGFloat.pi,
+                           endAngle: CGFloat.pi * 2,
+                           clockwise: true)
+
+        // 꼬리의 시작점으로 선을 그립니다.
+        // 원의 오른쪽 하단 부분에서 시작합니다.
+        balloonPath.addLine(to: CGPoint(x: 48, y: 48))
+
+        // 꼬리의 끝점으로 선을 그립니다. (꼬리의 크기와 방향에 따라 조절)
+        balloonPath.addLine(to: CGPoint(x: 60, y: 60))
+
+        // 꼬리의 다른 끝점을 원의 오른쪽으로 연결합니다.
+        balloonPath.addLine(to: CGPoint(x: 48, y: 48))
+
+        // 원의 경로를 닫습니다.
+        balloonPath.close()
+
+        return balloonPath
+    }
+
+
+    private func setupView() {
+        let balloonPath = setupBalloonPath()
+
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = balloonPath.cgPath
+        shapeLayer.fillColor = UIColor.gray.cgColor // 배경색 설정
+
+        // 기존 레이어를 제거하고 새로운 레이어를 추가합니다.
+        self.layer.sublayers?.forEach { if $0 is CAShapeLayer { $0.removeFromSuperlayer() } }
+        self.layer.insertSublayer(shapeLayer, at: 0)
+
+        self.addSubview(label)
+        // 레이블의 위치와 크기를 조정하세요.
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: self.topAnchor, constant: 10), // 말풍선 안쪽 여백 조정
+            label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20), // 말풍선 꼬리 부분을 위한 여백 조정
+            label.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            label.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10)
+        ])
+        self.backgroundColor = .clear // 배경색을 투명하게 설정
+    }
+
+
+    func configure(with text: String?) {
+        label.text = text
+        // 텍스트에 따라 레이블 크기 조정
+        let size = label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: self.frame.height))
+        let width = size.width + 20 // 좌우 패딩을 고려한 너비
+        let height = size.height + 30 // 상하 패딩과 꼬리 부분을 고려한 높이
+        self.frame.size = CGSize(width: max(width, 50), height: max(height, 50)) // 최소 크기를 보장
+        self.setNeedsLayout()
+    }
+}
+
+
 
 
 class CustomCollectionViewCell: UICollectionViewCell {
