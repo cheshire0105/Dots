@@ -1,4 +1,4 @@
-//23 . 11 . 17. 3:08 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 - 세그먼트 콘트롤 을 버튼 커스텀으로 해결 진행하기
+//23 . 11 . 17. 11:50 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 -
 import UIKit
 import SnapKit
 import RxSwift
