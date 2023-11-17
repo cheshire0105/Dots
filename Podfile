@@ -13,5 +13,5 @@ target 'Dots' do
   pod 'RxDataSources'
   pod 'PanModal'
   pod 'SDWebImage'
-
+  pod 'JTAppleCalendar'
 end
