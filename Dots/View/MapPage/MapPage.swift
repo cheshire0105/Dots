@@ -80,6 +80,13 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
         setupCollectionView()
         collectionView.isHidden = true // collectionView를 숨깁니다
         collectionView.alpha = 0 // collectionView를 투명하게 만듭니다
+
+        // 새로운 테스트 애너테이션 추가
+           let testCoordinate = CLLocationCoordinate2D(latitude: 37.334722, longitude: -122.000000)
+           let newAnnotation = NewCustomAnnotation(coordinate: testCoordinate)
+           newAnnotation.title = "새 위치"
+           newAnnotation.subtitle = "서울"
+           mapView.addAnnotation(newAnnotation)
     }
 
     func addDoneButtonOnKeyboard() {
@@ -192,23 +199,38 @@ extension MapPage: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let customAnnotation = annotation as? CustomAnnotation else { return nil }
+        if let annotation = annotation as? CustomAnnotation {
+            let identifier = "BalloonAnnotation"
+            var view: BalloonAnnotationView
 
-        let identifier = "BalloonAnnotation"
-        var view: BalloonAnnotationView
+            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? BalloonAnnotationView {
+                dequeuedView.annotation = annotation
+                view = dequeuedView
+            } else {
+                view = BalloonAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            }
 
-        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? BalloonAnnotationView {
-            dequeuedView.annotation = annotation
-            view = dequeuedView
-        } else {
-            view = BalloonAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            // 여기서 커스텀 텍스트 설정
+            view.configure(with: annotation.title ?? "")
+            return view
+        } else if let annotation = annotation as? NewCustomAnnotation {
+            let newIdentifier = "NewCustomAnnotation"
+            var newView: NewCustomAnnotationView
+
+            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: newIdentifier) as? NewCustomAnnotationView {
+                dequeuedView.annotation = annotation
+                newView = dequeuedView
+            } else {
+                newView = NewCustomAnnotationView(annotation: annotation, reuseIdentifier: newIdentifier)
+                // 새로운 뷰 설정 (예: 색상 변경 등)
+            }
+
+            return newView
         }
 
-        // 여기서 커스텀 텍스트 설정
-        view.configure(with: customAnnotation.title ?? "")
-
-        return view
+        return nil
     }
+
 
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -273,30 +295,6 @@ struct MapPageWrapper_Previews: PreviewProvider {
 
 
 
-
-// 사진 이미지의 크기를 지정 할 수 있는 extension입니다.
-extension UIImage {
-    func resize(to targetSize: CGSize) -> UIImage {
-        let size = self.size
-
-        let widthRatio  = targetSize.width  / size.width
-        let heightRatio = targetSize.height / size.height
-
-        // 더 작은 비율을 선택하여 원본 이미지의 비율을 유지합니다
-        let ratio = min(widthRatio, heightRatio)
-        let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
-        let rect = CGRect(origin: .zero, size: newSize)
-
-        // UIGraphicsImageRenderer를 사용하여 새 이미지를 그립니다
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-        let newImage = renderer.image { (context) in
-            self.draw(in: rect)
-        }
-
-        return newImage
-    }
-}
-
 class BalloonAnnotationView: MKAnnotationView {
     var label: UILabel = {
         let label = UILabel()
@@ -336,11 +334,6 @@ class BalloonAnnotationView: MKAnnotationView {
         return roundedRectanglePath
     }
 
-
-
-
-
-
     private func setupView() {
         let balloonPath = setupBalloonPath()
 
@@ -377,6 +370,117 @@ class BalloonAnnotationView: MKAnnotationView {
 }
 
 
+// 새로운 애너테이션 클래스
+class NewCustomAnnotation: NSObject, MKAnnotation {
+    var coordinate: CLLocationCoordinate2D
+    var title: String?
+    var subtitle: String?
+
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+        super.init()
+    }
+}
+
+// 새로운 애너테이션 뷰 클래스
+class NewCustomAnnotationView: MKAnnotationView {
+    var label: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 24)
+        label.numberOfLines = 0
+        return label
+    }()
+
+    override var annotation: MKAnnotation? {
+        willSet {
+            configure(with: newValue?.title ?? "")
+        }
+    }
+
+    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        self.setupView()
+        configure(with: annotation?.title ?? "")
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.setupView()
+    }
+
+    private func setupBalloonPath() -> UIBezierPath {
+        // 사각형의 경로를 생성하고 모서리를 더 크게 둥글게 만듭니다.
+        let rect = CGRect(x: 0, y: 0, width: 48, height: 48)
+        let cornerRadii = CGSize(width: 28, height: 28) // 둥근 모서리의 크기를 더 크게 설정합니다.
+
+        // 원하는 모서리만 둥글게 설정합니다.
+        let roundedRectanglePath = UIBezierPath(roundedRect: rect,
+                                                byRoundingCorners: [.topLeft, .topRight, .bottomLeft],
+                                                cornerRadii: cornerRadii)
+        return roundedRectanglePath
+    }
+
+    private func setupView() {
+        let balloonPath = setupBalloonPath()
+
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = balloonPath.cgPath
+        shapeLayer.fillColor = UIColor.gray.cgColor // 배경색 설정
+
+        // 기존 레이어를 제거하고 새로운 레이어를 추가합니다.
+        self.layer.sublayers?.forEach { if $0 is CAShapeLayer { $0.removeFromSuperlayer() } }
+        self.layer.insertSublayer(shapeLayer, at: 0)
+
+        self.addSubview(label)
+        // 레이블의 위치와 크기를 조정하세요.
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: self.topAnchor, constant: 10), // 말풍선 안쪽 여백 조정
+            label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20), // 말풍선 꼬리 부분을 위한 여백 조정
+            label.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            label.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10)
+        ])
+        self.backgroundColor = .clear // 배경색을 투명하게 설정
+    }
+
+
+    func configure(with text: String?) {
+         label.text = text
+
+         // 레이블 크기 계산
+         let size = label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+         let maxLabelWidth = self.superview?.bounds.width ?? 200 // 상한선 설정
+         let labelWidth = min(size.width, maxLabelWidth)
+         let labelHeight = size.height
+
+         // 레이블 크기에 맞추어 핀의 모양과 크기를 조정
+         updateBalloonPath(width: labelWidth, height: labelHeight)
+         self.frame.size = CGSize(width: labelWidth + 20, height: labelHeight + 40)
+
+         // 레이블의 위치 조정
+         label.frame = CGRect(x: 10, y: 10, width: labelWidth, height: labelHeight)
+     }
+
+     private func updateBalloonPath(width: CGFloat, height: CGFloat) {
+         let newWidth = width + 20 // 좌우 여백 추가
+         let newHeight = height + 27 // 상하 여백 및 추가 공간 추가
+
+         // 새로운 사각형 크기에 맞는 경로 생성
+         let rect = CGRect(x: 0, y: 0, width: newWidth, height: newHeight)
+         let roundedRectanglePath = UIBezierPath(roundedRect: rect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft], cornerRadii: CGSize(width: 28, height: 28))
+
+         if let shapeLayer = self.layer.sublayers?.first(where: { $0 is CAShapeLayer }) as? CAShapeLayer {
+             shapeLayer.path = roundedRectanglePath.cgPath
+         }
+     }
+
+     override func layoutSubviews() {
+         super.layoutSubviews()
+         // 레이아웃 업데이트 필요 시 여기서 수행
+     }
+}
 
 
 class CustomCollectionViewCell: UICollectionViewCell {
