@@ -3,7 +3,7 @@ import UIKit
 class 마이페이지_보관함 : UIViewController {
     
     var 현재_선택된_버튼: Int = 0
-
+    
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -64,15 +64,15 @@ class 마이페이지_보관함 : UIViewController {
         return button
     } ()
     let 구분선 = {
-           let uiView = UIView()
-           uiView.backgroundColor = .darkGray
-           return uiView
-       }()
+        let uiView = UIView()
+        uiView.backgroundColor = .darkGray
+        return uiView
+    }()
     let 바 = {
-            let uiView = UIView()
+        let uiView = UIView()
         uiView.backgroundColor = .white
-            return uiView
-        }()
+        return uiView
+    }()
     lazy var 보관함_컬렉션뷰 = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -95,7 +95,7 @@ class 마이페이지_보관함 : UIViewController {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
         navigationController?.isNavigationBarHidden = true
-      
+        
         UI레이아웃()
         버튼_클릭()
         보관함_컬렉션뷰.delegate = self
@@ -169,38 +169,70 @@ class 마이페이지_보관함 : UIViewController {
     @objc func 보관함_전시_버튼_클릭() {
         print("마이페이지 : 전시 보관함")
         현재_선택된_버튼 = 0
+        view.addSubview(바)
+        바_위치_업데이트()
         보관함_컬렉션뷰.register(보관함_전시_셀.self, forCellWithReuseIdentifier: "보관함_전시_셀")
-                   보관함_컬렉션뷰_레이아웃 ()
-                   보관함_컬렉션뷰.reloadData()
-      
-               
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
+        
+        
     }
     @objc func 보관함_미술관_버튼_클릭() {
         print("마이페이지 : 미술관 보관함")
         현재_선택된_버튼 = 1
-                    보관함_컬렉션뷰.register(보관함_미술관_셀.self, forCellWithReuseIdentifier: "보관함_미술관_셀")
-                    보관함_컬렉션뷰_레이아웃 ()
-                    보관함_컬렉션뷰.reloadData()
+        view.addSubview(바)
+        바_위치_업데이트()
+        보관함_컬렉션뷰.register(보관함_미술관_셀.self, forCellWithReuseIdentifier: "보관함_미술관_셀")
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
         
     }
     @objc func 보관함_작가_버튼_클릭() {
         print("마이페이지 : 작가 보관함")
         현재_선택된_버튼 = 2
+        view.addSubview(바)
+        바_위치_업데이트()
         보관함_컬렉션뷰.register(보관함_아티스트_셀.self, forCellWithReuseIdentifier: "보관함_아티스트_셀")
-                   보관함_컬렉션뷰_레이아웃 ()
-                   보관함_컬렉션뷰.reloadData()
-       
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
+        
     }
     @objc func 보관함_리뷰_버튼_클릭() {
         print("마이페이지 : 리뷰 보관함")
         현재_선택된_버튼 = 3
+        view.addSubview(바)
+        바_위치_업데이트()
         보관함_컬렉션뷰.register(보관함_리뷰_셀.self, forCellWithReuseIdentifier: "보관함_리뷰_셀")
-                   보관함_컬렉션뷰_레이아웃 ()
-                   보관함_컬렉션뷰.reloadData()
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
+    }
+    private func 바_위치_업데이트() {
+        let 선택된버튼: UIButton
+        switch 현재_선택된_버튼 {
+        case 0:
+            선택된버튼 = 보관함_전시_버튼
+        case 1:
+            선택된버튼 = 보관함_미술관_버튼
+        case 2:
+            선택된버튼 = 보관함_작가_버튼
+        case 3:
+            선택된버튼 = 보관함_리뷰_버튼
+        default:
+            return
+        }
         
+        UIView.animate(withDuration: 0.3) {
+            self.바.snp.remakeConstraints { make in
+                make.top.equalTo(self.보관함_전시_버튼.snp.bottom).offset(11)
+                make.leading.equalTo(선택된버튼.snp.leading)
+                make.trailing.equalTo(선택된버튼.snp.trailing)
+                make.height.equalTo(2)
+            }
+            
+            self.view.layoutIfNeeded()
+        }
     }
 }
-
 extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch 현재_선택된_버튼 {
