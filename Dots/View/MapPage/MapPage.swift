@@ -441,6 +441,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
         // 전시 이름 레이블 설정
         exhibitionNameLabel.font = .systemFont(ofSize: 16, weight: .bold)
         exhibitionNameLabel.textAlignment = .left
+        exhibitionNameLabel.textColor = .black
         exhibitionNameLabel.numberOfLines = 2
         contentView.addSubview(exhibitionNameLabel)
         exhibitionNameLabel.snp.makeConstraints { make in
@@ -452,6 +453,8 @@ class CustomCollectionViewCell: UICollectionViewCell {
         // 미술관 이름 레이블 설정
         museumNameLabel.font = .systemFont(ofSize: 14)
         museumNameLabel.textAlignment = .left
+        museumNameLabel.textColor = .black
+
 //        museumNameLabel.numberOfLines = 0
         contentView.addSubview(museumNameLabel)
         museumNameLabel.snp.makeConstraints { make in
