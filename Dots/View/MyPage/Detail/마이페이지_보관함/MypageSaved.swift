@@ -78,15 +78,17 @@ class 마이페이지_보관함 : UIViewController {
             make.centerX.equalToSuperview()
         }
         세그먼트_컨트롤.snp.makeConstraints { make in
-            make.top.equalTo(페이지_제목.snp.bottom).offset(10)
-            make.centerX.equalToSuperview()
+            make.top.equalTo(페이지_제목.snp.bottom).offset(45)
+//            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-70)
         }
         
     }
     func 보관함_컬렉션뷰_레이아웃 () {
         view.addSubview(보관함_컬렉션뷰)
         보관함_컬렉션뷰.snp.makeConstraints { make in
-            make.top.equalTo(세그먼트_컨트롤.snp.bottom).offset(30)
+            make.top.equalTo(세그먼트_컨트롤.snp.bottom).offset(40)
             make.bottom.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
@@ -177,19 +179,58 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        switch 세그먼트_컨트롤.selectedSegmentIndex {
+        case 0:
+            
+            return 12
+        case 1:
+          
+            return 10
+        case 2:
+           
+            return 10
+        case 3:
+           
+            return 0
+        default:
+            break
+        }
+        return 0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        switch 세그먼트_컨트롤.selectedSegmentIndex {
+        case 0:
+            
+            return 15
+        case 1:
+          
+            return 5
+        case 2:
+           
+            return 5
+        case 3:
+           
+            return 15
+        default:
+            break
+        }
+        return 0
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch 세그먼트_컨트롤.selectedSegmentIndex {
         case 0:
-            let width = collectionView.frame.width * 0.49
+            let width = collectionView.frame.width * 0.49 - 12
             let height = collectionView.frame.height * 0.4
             return CGSize(width: width, height: height)
         case 1:
-            let width = collectionView.frame.width * 0.33
-            let height = collectionView.frame.height * 0.25
+            let width = collectionView.frame.width * 0.33 - 10
+            let height = collectionView.frame.height * 0.22
             return CGSize(width: width, height: height)
         case 2:
-            let width = collectionView.frame.width * 0.33
-            let height = collectionView.frame.height * 0.25
+            let width = collectionView.frame.width * 0.33 - 10
+            let height = collectionView.frame.height * 0.22
             return CGSize(width: width, height: height)
         case 3:
             let width = collectionView.frame.width * 1

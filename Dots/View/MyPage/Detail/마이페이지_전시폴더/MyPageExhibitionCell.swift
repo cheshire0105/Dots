@@ -7,6 +7,7 @@ class 마이페이지_전시_셀 : UICollectionViewCell {
    
     var 전시_셀_이미지 = {
             var imageView = UIImageView()
+        imageView.image = UIImage(named: "Rectangle")
             imageView.layer.cornerRadius = 10
             imageView.clipsToBounds = true
             imageView.contentMode = .scaleAspectFill

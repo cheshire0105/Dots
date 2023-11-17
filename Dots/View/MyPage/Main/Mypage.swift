@@ -1,4 +1,4 @@
-//23 . 11 . 17. 12:15 am  최신화 완료- 보관함 페이지 작업중
+//23 . 11 . 17. 12:43 am  최신화 완료- 폴더 파일 재설정 후 보관함 페이지 작업중
 import UIKit
 import SnapKit
 import RxSwift

@@ -358,7 +358,34 @@ extension 마이페이지_설정_페이지 {
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
     }
+    
     @objc private func 로그아웃_버튼_클릭() {
+        let 로그아웃_알럿 = UIAlertController(title: "로그아웃", message: "지금 사용중인 기기에서 로그아웃을 진행할까요?", preferredStyle: .alert)
+
+            let 로그아웃취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        로그아웃_알럿.addAction(로그아웃취소_버튼)
+
+            let 로그아웃확인_버튼 = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
+                self.로그아웃_유저로그아웃()
+            }
+        로그아웃_알럿.addAction(로그아웃확인_버튼)
+
+            present(로그아웃_알럿, animated: true, completion: nil)
+    }
+    @objc private func 회원탈퇴_버튼_클릭() {
+        let 탈퇴확인_알럿 = UIAlertController(title: "회원 탈퇴", message: "탈퇴하면 모든 정보가 삭제됩니다. 이대로 회원 탈퇴를 진행할까요?", preferredStyle: .alert)
+
+            let 탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        탈퇴확인_알럿.addAction(탈퇴취소_버튼)
+
+            let 탈퇴확인_버튼 = UIAlertAction(title: "탈퇴", style: .destructive) { _ in
+                self.회원탈퇴_데이터삭제()
+            }
+        탈퇴확인_알럿.addAction(탈퇴확인_버튼)
+
+            present(탈퇴확인_알럿, animated: true, completion: nil)
+    }
+     private func 로그아웃_유저로그아웃() {
         do {
             if let 현제접속중인_유저 = Auth.auth().currentUser {
                 print("로그아웃한 사용자 정보:")
@@ -374,19 +401,6 @@ extension 마이페이지_설정_페이지 {
         } catch {
             print("로그아웃 실패: \(error.localizedDescription)")
         }
-    }
-    @objc private func 회원탈퇴_버튼_클릭() {
-        let 탈퇴확인_알럿 = UIAlertController(title: "회원 탈퇴", message: "탈퇴하면 모든 정보가 삭제됩니다. 이대로 회원 탈퇴를 진행할까요?", preferredStyle: .alert)
-
-            let 탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        탈퇴확인_알럿.addAction(탈퇴취소_버튼)
-
-            let 탈퇴확인_버튼 = UIAlertAction(title: "탈퇴", style: .destructive) { _ in
-                self.회원탈퇴_데이터삭제()
-            }
-        탈퇴확인_알럿.addAction(탈퇴확인_버튼)
-
-            present(탈퇴확인_알럿, animated: true, completion: nil)
     }
     private func 회원탈퇴_데이터삭제() {
         if let 현제접속중인_유저 = Auth.auth().currentUser {
