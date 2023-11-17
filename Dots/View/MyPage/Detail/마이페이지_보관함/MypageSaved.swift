@@ -1,8 +1,8 @@
 import UIKit
 
 class 마이페이지_보관함 : UIViewController {
-    let 전시_컬렉션뷰 = 마이페이지_전시().마이페이지_전시_컬렉션뷰
-    let 리뷰_컬렉션뷰 = 마이페이지_리뷰().마이페이지_리뷰_컬렉션뷰
+    
+    var 현재_선택된_버튼: Int = 0
     
     let 뒤로가기_버튼 = {
         let button = UIButton()
@@ -23,18 +23,56 @@ class 마이페이지_보관함 : UIViewController {
         return label
     }()
     
-    let 세그먼트_컨트롤: UISegmentedControl = {
-        let 세그먼트_아이탬 = ["전시", "미술관", "작가", "리뷰"]
-        let 세그먼트 = UISegmentedControl(items: 세그먼트_아이탬)
-        세그먼트.selectedSegmentIndex = 0
-        세그먼트.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
-        세그먼트.backgroundColor = .black
-        세그먼트.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.lightGray], for: .normal)
-        세그먼트.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
-        세그먼트.selectedSegmentTintColor = UIColor.lightGray
-        return 세그먼트
+    let 보관함_전시_버튼 = {
+        let button = UIButton()
+        button.setTitle("전시", for: .normal)
+        button.setTitle("전시", for: .selected)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        button.setTitleColor(UIColor.white, for: .selected)
+        button.isSelected = !button.isSelected
+        button.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 14)
+        return button
+    } ()
+    let 보관함_미술관_버튼 = {
+        let button = UIButton()
+        button.setTitle("미술관", for: .normal)
+        button.setTitle("미술관", for: .selected)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        button.setTitleColor(UIColor.white, for: .selected)
+        button.isSelected = !button.isSelected
+        button.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 14)
+        return button
+    } ()
+    let 보관함_작가_버튼 = {
+        let button = UIButton()
+        button.setTitle("작가", for: .normal)
+        button.setTitle("작가", for: .selected)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        button.setTitleColor(UIColor.white, for: .selected)
+        button.isSelected = !button.isSelected
+        button.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 14)
+        return button
+    } ()
+    let 보관함_리뷰_버튼 = {
+        let button = UIButton()
+        button.setTitle("리뷰", for: .normal)
+        button.setTitle("리뷰", for: .selected)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        button.setTitleColor(UIColor.white, for: .selected)
+        button.isSelected = !button.isSelected
+        button.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 14)
+        return button
+    } ()
+    let 구분선 = {
+        let uiView = UIView()
+        uiView.backgroundColor = .darkGray
+        return uiView
     }()
-    
+    let 바 = {
+        let uiView = UIView()
+        uiView.backgroundColor = .white
+        return uiView
+    }()
     lazy var 보관함_컬렉션뷰 = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -57,17 +95,23 @@ class 마이페이지_보관함 : UIViewController {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
         navigationController?.isNavigationBarHidden = true
+        
         UI레이아웃()
         버튼_클릭()
         보관함_컬렉션뷰.delegate = self
         보관함_컬렉션뷰.dataSource = self
-        세그먼트_아이탬_클릭()
+        보관함_전시_버튼_클릭()
     }
     
     func UI레이아웃() {
         view.addSubview(뒤로가기_버튼)
         view.addSubview(페이지_제목)
-        view.addSubview(세그먼트_컨트롤)
+        view.addSubview(보관함_전시_버튼)
+        view.addSubview(보관함_미술관_버튼)
+        view.addSubview(보관함_작가_버튼)
+        view.addSubview(보관함_리뷰_버튼)
+        view.addSubview(구분선)
+        
         뒤로가기_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(페이지_제목.snp.centerY)
             make.leading.equalToSuperview().offset(16)
@@ -77,18 +121,35 @@ class 마이페이지_보관함 : UIViewController {
             make.top.equalToSuperview().offset(60)
             make.centerX.equalToSuperview()
         }
-        세그먼트_컨트롤.snp.makeConstraints { make in
-            make.top.equalTo(페이지_제목.snp.bottom).offset(45)
-//            make.centerX.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-70)
-        }
         
+        보관함_전시_버튼.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(129)
+            make.leading.equalToSuperview().offset(36)
+        }
+        보관함_미술관_버튼.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(129)
+            make.leading.equalTo(보관함_전시_버튼.snp.trailing).offset(39)
+            
+        }
+        보관함_작가_버튼.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(129)
+            make.leading.equalTo(보관함_미술관_버튼.snp.trailing).offset(39)
+        }
+        보관함_리뷰_버튼.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(129)
+            make.leading.equalTo(보관함_작가_버튼.snp.trailing).offset(39)
+        }
+        구분선.snp.makeConstraints { make in
+            make.top.equalTo(보관함_전시_버튼.snp.bottom).offset(11)
+            make.leading.equalToSuperview().offset(5)
+            make.trailing.equalToSuperview().offset(-5)
+            make.height.equalTo(1)
+        }
     }
     func 보관함_컬렉션뷰_레이아웃 () {
         view.addSubview(보관함_컬렉션뷰)
         보관함_컬렉션뷰.snp.makeConstraints { make in
-            make.top.equalTo(세그먼트_컨트롤.snp.bottom).offset(40)
+            make.top.equalTo(보관함_전시_버튼.snp.bottom).offset(40)
             make.bottom.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
@@ -97,49 +158,84 @@ class 마이페이지_보관함 : UIViewController {
     
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
-        세그먼트_컨트롤.addTarget(self, action: #selector(세그먼트_아이탬_클릭), for: .valueChanged)
-        
+        보관함_전시_버튼.addTarget(self, action: #selector(보관함_전시_버튼_클릭), for: .touchUpInside)
+        보관함_미술관_버튼.addTarget(self, action: #selector(보관함_미술관_버튼_클릭), for: .touchUpInside)
+        보관함_작가_버튼.addTarget(self, action: #selector(보관함_작가_버튼_클릭), for: .touchUpInside)
+        보관함_리뷰_버튼.addTarget(self, action: #selector(보관함_리뷰_버튼_클릭), for: .touchUpInside)
     }
     @objc func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
     }
-    @objc func 세그먼트_아이탬_클릭() {
-        let 세그먼트_아이탬 = 세그먼트_컨트롤.selectedSegmentIndex
-        print("선택된 세그먼트 아이탬 : \(세그먼트_아이탬 + 1)")
+    @objc func 보관함_전시_버튼_클릭() {
+        print("마이페이지 : 전시 보관함")
+        현재_선택된_버튼 = 0
+        view.addSubview(바)
+        바_위치_업데이트()
+        보관함_컬렉션뷰.register(보관함_전시_셀.self, forCellWithReuseIdentifier: "보관함_전시_셀")
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
         
-        switch 세그먼트_아이탬 {
+        
+    }
+    @objc func 보관함_미술관_버튼_클릭() {
+        print("마이페이지 : 미술관 보관함")
+        현재_선택된_버튼 = 1
+        view.addSubview(바)
+        바_위치_업데이트()
+        보관함_컬렉션뷰.register(보관함_미술관_셀.self, forCellWithReuseIdentifier: "보관함_미술관_셀")
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
+        
+    }
+    @objc func 보관함_작가_버튼_클릭() {
+        print("마이페이지 : 작가 보관함")
+        현재_선택된_버튼 = 2
+        view.addSubview(바)
+        바_위치_업데이트()
+        보관함_컬렉션뷰.register(보관함_아티스트_셀.self, forCellWithReuseIdentifier: "보관함_아티스트_셀")
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
+        
+    }
+    @objc func 보관함_리뷰_버튼_클릭() {
+        print("마이페이지 : 리뷰 보관함")
+        현재_선택된_버튼 = 3
+        view.addSubview(바)
+        바_위치_업데이트()
+        보관함_컬렉션뷰.register(보관함_리뷰_셀.self, forCellWithReuseIdentifier: "보관함_리뷰_셀")
+        보관함_컬렉션뷰_레이아웃 ()
+        보관함_컬렉션뷰.reloadData()
+    }
+    private func 바_위치_업데이트() {
+        let 선택된버튼: UIButton
+        switch 현재_선택된_버튼 {
         case 0:
-            보관함_컬렉션뷰.register(보관함_전시_셀.self, forCellWithReuseIdentifier: "보관함_전시_셀")
-            보관함_컬렉션뷰_레이아웃 ()
-            보관함_컬렉션뷰.reloadData()
-            break
+            선택된버튼 = 보관함_전시_버튼
         case 1:
-            보관함_컬렉션뷰.register(보관함_미술관_셀.self, forCellWithReuseIdentifier: "보관함_미술관_셀")
-            보관함_컬렉션뷰_레이아웃 ()
-            보관함_컬렉션뷰.reloadData()
-
-            break
+            선택된버튼 = 보관함_미술관_버튼
         case 2:
-            보관함_컬렉션뷰.register(보관함_아티스트_셀.self, forCellWithReuseIdentifier: "보관함_아티스트_셀")
-            보관함_컬렉션뷰_레이아웃 ()
-            보관함_컬렉션뷰.reloadData()
-
-            break
+            선택된버튼 = 보관함_작가_버튼
         case 3:
-            보관함_컬렉션뷰.register(보관함_리뷰_셀.self, forCellWithReuseIdentifier: "보관함_리뷰_셀")
-            보관함_컬렉션뷰_레이아웃 ()
-            보관함_컬렉션뷰.reloadData()
-
-            break
+            선택된버튼 = 보관함_리뷰_버튼
         default:
-            break
+            return
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            self.바.snp.remakeConstraints { make in
+                make.top.equalTo(self.보관함_전시_버튼.snp.bottom).offset(11)
+                make.leading.equalTo(선택된버튼.snp.leading)
+                make.trailing.equalTo(선택된버튼.snp.trailing)
+                make.height.equalTo(2)
+            }
+            
+            self.view.layoutIfNeeded()
         }
     }
 }
-
 extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch 세그먼트_컨트롤.selectedSegmentIndex {
+        switch 현재_선택된_버튼 {
         case 0:
             return 10
         case 1:
@@ -154,7 +250,7 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch 세그먼트_컨트롤.selectedSegmentIndex {
+        switch 현재_선택된_버튼 {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "보관함_전시_셀", for: indexPath) as! 보관함_전시_셀
             
@@ -180,7 +276,7 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        switch 세그먼트_컨트롤.selectedSegmentIndex {
+        switch 현재_선택된_버튼 {
         case 0:
             
             return 12
@@ -199,7 +295,7 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
         return 0
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        switch 세그먼트_컨트롤.selectedSegmentIndex {
+        switch 현재_선택된_버튼 {
         case 0:
             
             return 15
@@ -219,7 +315,7 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch 세그먼트_컨트롤.selectedSegmentIndex {
+        switch 현재_선택된_버튼 {
         case 0:
             let width = collectionView.frame.width * 0.49 - 12
             let height = collectionView.frame.height * 0.4

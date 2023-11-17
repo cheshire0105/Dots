@@ -169,7 +169,6 @@ class 마이페이지_설정_페이지 : UIViewController {
         버튼_클릭()
         화살표_레이아웃()
     }
-   
 
     private func UI레이아웃() {
         view.addSubview(뒤로가기_버튼)
@@ -250,26 +249,22 @@ class 마이페이지_설정_페이지 : UIViewController {
             make.leading.equalTo(알림설정_버튼.snp.leading).offset(16)
         }
         
-      
         서비스설정_버튼.snp.makeConstraints { make in
             make.top.equalTo(알림설정_버튼.snp.bottom).offset(2)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-
         }
         서비스설정_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(서비스설정_버튼.snp.centerY)
             make.leading.equalTo(서비스설정_버튼.snp.leading).offset(16)
         }
-        
        
         로그아웃_버튼.snp.makeConstraints { make in
             make.top.equalTo(서비스설정_버튼.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-
         }
         로그아웃_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(로그아웃_버튼.snp.centerY)
@@ -280,14 +275,12 @@ class 마이페이지_설정_페이지 : UIViewController {
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-
         }
         회원탈퇴_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(회원탈퇴_버튼.snp.centerY)
             make.leading.equalTo(회원탈퇴_버튼.snp.leading).offset(16)
         }
     }
-    
     private func 화살표_레이아웃() {
         view.addSubview(프로필변경_화살표)
         view.addSubview(비밀번호변경_화살표)
@@ -310,15 +303,12 @@ class 마이페이지_설정_페이지 : UIViewController {
             make.trailing.equalTo(알림설정_버튼.snp.trailing).offset(-16)
         }
         
-        
         서비스설정_화살표.snp.makeConstraints { make in
             make.centerY.equalTo(서비스설정_버튼.snp.centerY)
             make.trailing.equalTo(서비스설정_버튼.snp.trailing).offset(-16)
         }
     }
 }
-
-
 
 extension 마이페이지_설정_페이지 {
     private func 버튼_클릭() {

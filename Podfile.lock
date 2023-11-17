@@ -1,5 +1,6 @@
 PODS:
   - Differentiator (5.0.0)
+  - JTAppleCalendar (8.0.5)
   - PanModal (1.2.7)
   - RxCocoa (6.6.0):
     - RxRelay (= 6.6.0)
@@ -17,6 +18,7 @@ PODS:
   - SnapKit (5.6.0)
 
 DEPENDENCIES:
+  - JTAppleCalendar
   - PanModal
   - RxCocoa
   - RxDataSources
@@ -27,6 +29,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Differentiator
+    - JTAppleCalendar
     - PanModal
     - RxCocoa
     - RxDataSources
@@ -37,6 +40,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
+  JTAppleCalendar: 16c6501b22cb27520372c28b0a2e0b12c8d0cd73
   PanModal: 3e16ead1a907fb06f4df3f13492fd00149fa4974
   RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
@@ -45,6 +49,6 @@ SPEC CHECKSUMS:
   SDWebImage: 96e0c18ef14010b7485210e92fac888587ebb958
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
 
-PODFILE CHECKSUM: 49cda1f260666f48ae68165ded2d9361e2242d5c
+PODFILE CHECKSUM: c5cf327890f25c4e48f69bc6a78878eb1752a5fa
 
 COCOAPODS: 1.13.0

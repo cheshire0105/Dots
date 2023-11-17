@@ -4,7 +4,6 @@ import SnapKit
 
 class 보관함_전시_셀 : UICollectionViewCell {
     
-   
     var 전시_셀_이미지 = {
             var imageView = UIImageView()
         imageView.image = UIImage(named: "Rectangle")
@@ -13,8 +12,7 @@ class 보관함_전시_셀 : UICollectionViewCell {
             imageView.contentMode = .scaleAspectFill
         imageView.layer.borderWidth = 0.3
         imageView.layer.borderColor = UIColor(named: "neon")?.cgColor
-
-            return imageView
+        return imageView
         }()
     
     var 전시_셀_제목 = {
@@ -25,12 +23,9 @@ class 보관함_전시_셀 : UICollectionViewCell {
         return label
     } ()
     
-    
     override func layoutSubviews() {
         super.layoutSubviews()
     }
-    
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
