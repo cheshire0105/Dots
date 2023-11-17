@@ -6,7 +6,7 @@
 //
 // pull from master branch
 // 2023 11월 17일 오전 8시 : 05분 function/mapFunction 생성 테스트 커밋, 푸쉬
-// 2023년 11월 17일 오후 3시 10분 dev 최신화
+// 2023년 11월 17일 오후 3시 10분 dev 최신ㅇ
 
 import UIKit
 import MapKit
@@ -325,37 +325,19 @@ class BalloonAnnotationView: MKAnnotationView {
     }
 
     private func setupBalloonPath() -> UIBezierPath {
-        let balloonPath = UIBezierPath()
+        // 사각형의 경로를 생성하고 모서리를 더 크게 둥글게 만듭니다.
+        let rect = CGRect(x: 0, y: 0, width: 48, height: 48)
+        let cornerRadii = CGSize(width: 28, height: 28) // 둥근 모서리의 크기를 더 크게 설정합니다.
 
-        // 원의 경로를 그립니다.
-        // 시작 각도를 조금 더 위로 올려서 밑 부분이 더 동그랗게 됩니다.
-        balloonPath.addArc(withCenter: CGPoint(x: 24, y: 24),
-                           radius: 24,
-                           startAngle: CGFloat.pi * 5 / 4,
-                           endAngle: CGFloat.pi / 4,
-                           clockwise: true)
-
-        // 꼬리의 시작점으로 선을 그립니다.
-        // 원의 오른쪽 하단 부분에서 시작합니다.
-        balloonPath.addLine(to: CGPoint(x: 48, y: 48))
-
-        // 꼬리의 끝점으로 선을 그립니다. (꼬리의 크기와 방향에 따라 조절)
-        balloonPath.addLine(to: CGPoint(x: 60, y: 60))
-
-        // 꼬리의 다른 끝점을 원의 아래쪽으로 연결합니다.
-        balloonPath.addLine(to: CGPoint(x: 48, y: 48))
-
-        // 원의 아래쪽 경로를 닫습니다.
-        balloonPath.addArc(withCenter: CGPoint(x: 24, y: 24),
-                           radius: 24,
-                           startAngle: CGFloat.pi / 4,
-                           endAngle: CGFloat.pi * 5 / 4,
-                           clockwise: true)
-
-        balloonPath.close()
-
-        return balloonPath
+        // 원하는 모서리만 둥글게 설정합니다.
+        let roundedRectanglePath = UIBezierPath(roundedRect: rect,
+                                                byRoundingCorners: [.topLeft, .topRight, .bottomRight],
+                                                cornerRadii: cornerRadii)
+        return roundedRectanglePath
     }
+
+
+
 
 
 
@@ -454,7 +436,6 @@ class CustomCollectionViewCell: UICollectionViewCell {
         museumNameLabel.font = .systemFont(ofSize: 14)
         museumNameLabel.textAlignment = .left
         museumNameLabel.textColor = .black
-
 //        museumNameLabel.numberOfLines = 0
         contentView.addSubview(museumNameLabel)
         museumNameLabel.snp.makeConstraints { make in
