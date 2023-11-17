@@ -1,4 +1,4 @@
-//23 . 11 . 17. 12:43 am  최신화 완료- 폴더 파일 재설정 후 보관함 페이지 작업중
+//23 . 11 . 17. 3:08 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 - 세그먼트 콘트롤 을 버튼 커스텀으로 해결 진행하기
 import UIKit
 import SnapKit
 import RxSwift
