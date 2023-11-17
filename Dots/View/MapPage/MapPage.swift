@@ -328,10 +328,11 @@ class BalloonAnnotationView: MKAnnotationView {
         let balloonPath = UIBezierPath()
 
         // 원의 경로를 그립니다.
+        // 시작 각도를 조금 더 위로 올려서 밑 부분이 더 동그랗게 됩니다.
         balloonPath.addArc(withCenter: CGPoint(x: 24, y: 24),
                            radius: 24,
-                           startAngle: CGFloat.pi,
-                           endAngle: CGFloat.pi * 2,
+                           startAngle: CGFloat.pi * 5 / 4,
+                           endAngle: CGFloat.pi / 4,
                            clockwise: true)
 
         // 꼬리의 시작점으로 선을 그립니다.
@@ -341,14 +342,21 @@ class BalloonAnnotationView: MKAnnotationView {
         // 꼬리의 끝점으로 선을 그립니다. (꼬리의 크기와 방향에 따라 조절)
         balloonPath.addLine(to: CGPoint(x: 60, y: 60))
 
-        // 꼬리의 다른 끝점을 원의 오른쪽으로 연결합니다.
+        // 꼬리의 다른 끝점을 원의 아래쪽으로 연결합니다.
         balloonPath.addLine(to: CGPoint(x: 48, y: 48))
 
-        // 원의 경로를 닫습니다.
+        // 원의 아래쪽 경로를 닫습니다.
+        balloonPath.addArc(withCenter: CGPoint(x: 24, y: 24),
+                           radius: 24,
+                           startAngle: CGFloat.pi / 4,
+                           endAngle: CGFloat.pi * 5 / 4,
+                           clockwise: true)
+
         balloonPath.close()
 
         return balloonPath
     }
+
 
 
     private func setupView() {
