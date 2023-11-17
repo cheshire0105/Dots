@@ -33,6 +33,7 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
     var customSearchField: UITextField!
     var currentLocationButton: UIButton! // 현재 위치 아이콘
     var locationManager: CLLocationManager!
+    let floatingActionButton = UIButton(type: .custom)
 
     var collectionView: UICollectionView!
 
@@ -88,6 +89,8 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
            newAnnotation.title = "카페 도트"
            newAnnotation.subtitle = "서울"
            mapView.addAnnotation(newAnnotation)
+
+        configureFloatingActionButton()
     }
 
     func addDoneButtonOnKeyboard() {
@@ -167,6 +170,46 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-65)
             make.height.equalTo(270)
         }
+    }
+
+
+    func configureFloatingActionButton() {
+        floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
+        floatingActionButton.backgroundColor = .white
+        floatingActionButton.setTitle("근처 전시 7개", for: .normal)
+        floatingActionButton.setTitleColor(.black, for: .normal)
+        floatingActionButton.layer.cornerRadius = 23
+        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
+        // Initially hide the floating action button until the first segment is selected
+//               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
+
+
+        // 이미지 설정
+        let buttonImage = UIImage(named: "write") // 'reviewIcon'은 프로젝트에 포함된 이미지 이름이어야 합니다.
+        floatingActionButton.setImage(buttonImage, for: .normal)
+
+        // 타이틀의 여백을 설정하여 이미지와 텍스트 사이에 간격을 줍니다.
+        floatingActionButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+
+        // 이미지의 여백을 설정하여 이미지와 버튼의 왼쪽 가장자리 사이에 간격을 줍니다.
+        floatingActionButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+
+        // 버튼에 액션 추가
+        floatingActionButton.addTarget(self, action: #selector(floatingActionButtonTapped), for: .touchUpInside)
+
+        view.addSubview(floatingActionButton)
+
+        // 버튼의 제약 조건 설정
+        floatingActionButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(90)
+            make.width.equalTo(124)
+            make.height.equalTo(46)
+        }
+    }
+
+    @objc func floatingActionButtonTapped() {
+
     }
 
 
