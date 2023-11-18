@@ -6,7 +6,9 @@
 //
 // pull from master branch
 // 2023 11월 17일 오전 8시 : 05분 function/mapFunction 생성 테스트 커밋, 푸쉬
-// 2023년 11월 17일 오후 3시 10분 dev 최신ㅇ
+// 2023년 11월 17일 오후 3시 10분 dev 최신
+// 2023년 11월 17일 오후 11시 13분 dev 최신
+// 2023년 11월 17일 오후 11시 47분 dev 최신
 
 import UIKit
 import MapKit
@@ -37,11 +39,11 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
     var collectionView: UICollectionView!
 
     // 전시 데이터 목록을 추가합니다.
-        var exhibitions: [Exhibition] = [
-            Exhibition(name: "현대차 시리즈 2023 : 정연두 - 백년여행기", museum: "MMCA 서울", imageName: "art1"),
-            Exhibition(name: "올해의 작가상 2023", museum: "MMCA 서울", imageName: "art2"),
-            Exhibition(name: "어느 수집가의 초대", museum: "서울시립미술관", imageName: "art2")
-        ]
+    var exhibitions: [Exhibition] = [
+        Exhibition(name: "현대차 시리즈 2023 : 정연두 - 백년여행기", museum: "MMCA 서울", imageName: "art1"),
+        Exhibition(name: "올해의 작가상 2023", museum: "MMCA 서울", imageName: "art2"),
+        Exhibition(name: "어느 수집가의 초대", museum: "서울시립미술관", imageName: "art2")
+    ]
 
 
     override func viewDidLoad() {
@@ -83,13 +85,20 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
         collectionView.alpha = 0 // collectionView를 투명하게 만듭니다
 
         // 새로운 테스트 애너테이션 추가
-           let testCoordinate = CLLocationCoordinate2D(latitude: 37.334722, longitude: -122.000000)
-           let newAnnotation = NewCustomAnnotation(coordinate: testCoordinate)
-           newAnnotation.title = "카페 도트"
-           newAnnotation.subtitle = "서울"
-           mapView.addAnnotation(newAnnotation)
+        let testCoordinate = CLLocationCoordinate2D(latitude: 37.334722, longitude: -122.000000)
+        let newAnnotation = NewCustomAnnotation(coordinate: testCoordinate)
+        newAnnotation.title = "카페 도트"
+        newAnnotation.subtitle = "서울"
+        mapView.addAnnotation(newAnnotation)
 
-        configureFloatingActionButton()
+        //        configureFloatingActionButton()
+
+        // 탭 제스처 인식기 추가
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleScreenTap))
+        view.addGestureRecognizer(tapGesture)
+
+        // 지도 움직임 감지를 위한 델리게이트 설정
+        mapView.delegate = self
     }
 
     func addDoneButtonOnKeyboard() {
@@ -122,6 +131,16 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
             mapView.setRegion(region, animated: true)
             locationManager.stopUpdatingLocation()
         }
+    }
+
+//    // 지도 이동 시 호출될 메서드
+//    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+//        hideCollectionView()
+//    }
+
+    // 화면 탭 시 호출되는 함수
+    @objc func handleScreenTap(sender: UITapGestureRecognizer) {
+        hideCollectionView()
     }
 
     func setupCurrentLocationButton() {
@@ -172,60 +191,77 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
     }
 
 
-    func configureFloatingActionButton() {
-        floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
-        floatingActionButton.backgroundColor = .white
-        floatingActionButton.setTitle("근처 전시 7개", for: .normal)
-        floatingActionButton.setTitleColor(.black, for: .normal)
-        floatingActionButton.layer.cornerRadius = 23
-        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
-        // Initially hide the floating action button until the first segment is selected
-//               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
+    //    func configureFloatingActionButton() {
+    //        floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
+    //        floatingActionButton.backgroundColor = .white
+    //        floatingActionButton.setTitle("근처 전시 7개", for: .normal)
+    //        floatingActionButton.setTitleColor(.black, for: .normal)
+    //        floatingActionButton.layer.cornerRadius = 23
+    //        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
+    //        // Initially hide the floating action button until the first segment is selected
+    ////               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
+    //
+    //
+    //        // 이미지 설정
+    //        let buttonImage = UIImage(named: "write") // 'reviewIcon'은 프로젝트에 포함된 이미지 이름이어야 합니다.
+    //        floatingActionButton.setImage(buttonImage, for: .normal)
+    //
+    //        // 타이틀의 여백을 설정하여 이미지와 텍스트 사이에 간격을 줍니다.
+    //        floatingActionButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+    //
+    //        // 이미지의 여백을 설정하여 이미지와 버튼의 왼쪽 가장자리 사이에 간격을 줍니다.
+    //        floatingActionButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+    //
+    //        // 버튼에 액션 추가
+    //        floatingActionButton.addTarget(self, action: #selector(floatingActionButtonTapped), for: .touchUpInside)
+    //
+    //        view.addSubview(floatingActionButton)
+    //
+    //        // 버튼의 제약 조건 설정
+    //        floatingActionButton.snp.makeConstraints { make in
+    //            make.centerX.equalToSuperview()
+    //            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(90)
+    //            make.width.equalTo(124)
+    //            make.height.equalTo(46)
+    //        }
+    //    }
+
+    //    // 플로팅 버튼을 누를 때 호출되는 함수
+    //    @objc func floatingActionButtonTapped() {
+    //        showCollectionView()
+    //    }
+    //
+    //    // 화면 탭 시 호출되는 함수
+    //    @objc func handleScreenTap(sender: UITapGestureRecognizer) {
+    //        hideCollectionView()
+    //    }
 
 
-        // 이미지 설정
-        let buttonImage = UIImage(named: "write") // 'reviewIcon'은 프로젝트에 포함된 이미지 이름이어야 합니다.
-        floatingActionButton.setImage(buttonImage, for: .normal)
 
-        // 타이틀의 여백을 설정하여 이미지와 텍스트 사이에 간격을 줍니다.
-        floatingActionButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-
-        // 이미지의 여백을 설정하여 이미지와 버튼의 왼쪽 가장자리 사이에 간격을 줍니다.
-        floatingActionButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
-
-        // 버튼에 액션 추가
-        floatingActionButton.addTarget(self, action: #selector(floatingActionButtonTapped), for: .touchUpInside)
-
-        view.addSubview(floatingActionButton)
-
-        // 버튼의 제약 조건 설정
-        floatingActionButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(90)
-            make.width.equalTo(124)
-            make.height.equalTo(46)
+    // 컬렉션 뷰를 숨기는 함수
+    private func hideCollectionView() {
+        collectionView.isHidden = true
+        floatingActionButton.isHidden = false
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.alpha = 0
         }
     }
 
-    @objc func floatingActionButtonTapped() {
 
-    }
-
-
-     // MARK: - UICollectionViewDataSource
+    // MARK: - UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-           return exhibitions.count // 실제 전시 목록의 수에 따라 반환합니다.
-       }
+        return exhibitions.count // 실제 전시 목록의 수에 따라 반환합니다.
+    }
 
-       func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-           // 컬렉션 뷰 셀 구성
-           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! CustomCollectionViewCell
-           // 셀에 전시 데이터를 설정합니다.
-           let exhibition = exhibitions[indexPath.item]
-           cell.configure(with: exhibition)
-           return cell
-       }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // 컬렉션 뷰 셀 구성
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! CustomCollectionViewCell
+        // 셀에 전시 데이터를 설정합니다.
+        let exhibition = exhibitions[indexPath.item]
+        cell.configure(with: exhibition)
+        return cell
+    }
 
 
 
@@ -240,6 +276,8 @@ extension MapPage: MKMapViewDelegate {
         annotation.subtitle = "한국의 미술관" // 필요에 따라 서브타이틀 설정
         mapView.addAnnotation(annotation)
     }
+
+
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? CustomAnnotation {
@@ -276,9 +314,10 @@ extension MapPage: MKMapViewDelegate {
 
 
 
+    // 핀을 탭했을 때 호출되는 메서드
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let annotation = view.annotation as? CustomAnnotation {
-            // 필요한 경우 annotation 정보를 사용하여 컬렉션 뷰 데이터 업데이트
+            // 컬렉션 뷰 업데이트 함수 호출
             updateCollectionViewForAnnotation(annotation)
             showCollectionView()
         }
@@ -301,14 +340,7 @@ extension MapPage: MKMapViewDelegate {
         }
     }
 
-    private func hideCollectionView() {
-        // 컬렉션 뷰를 애니메이션과 함께 숨깁니다.
-        UIView.animate(withDuration: 0.3) {
-            self.collectionView.alpha = 0.0
-        } completion: { _ in
-            self.collectionView.isHidden = true
-        }
-    }
+
 
 }
 
@@ -431,25 +463,25 @@ class NewCustomAnnotationView: MKAnnotationView {
         let label = UILabel()
         label.backgroundColor = .clear
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 24)
+        label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 0
         return label
     }()
 
     var smallSquareView: UIView = {
-         let view = UIView()
-         view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
-         view.layer.cornerRadius = 10 // 모서리를 둥글게
-         return view
-     }()
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        view.layer.cornerRadius = 10 // 모서리를 둥글게
+        return view
+    }()
 
     var smallSquareLabel: UILabel = {
-          let label = UILabel()
-          label.textAlignment = .center
-          label.font = UIFont.systemFont(ofSize: 12) // 폰트 크기 조정
-          label.textColor = .black // 텍스트 색상 설정
-          return label
-      }()
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 12) // 폰트 크기 조정
+        label.textColor = .black // 텍스트 색상 설정
+        return label
+    }()
 
     override var annotation: MKAnnotation? {
         willSet {
@@ -509,45 +541,45 @@ class NewCustomAnnotationView: MKAnnotationView {
 
 
     func configure(with text: String?) {
-         label.text = text
+        label.text = text
 
-         // 레이블 크기 계산
-         let size = label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
-         let maxLabelWidth = self.superview?.bounds.width ?? 200 // 상한선 설정
-         let labelWidth = min(size.width, maxLabelWidth)
-         let labelHeight = size.height
+        // 레이블 크기 계산
+        let size = label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+        let maxLabelWidth = self.superview?.bounds.width ?? 200 // 상한선 설정
+        let labelWidth = min(size.width, maxLabelWidth)
+        let labelHeight = size.height
 
-         // 레이블 크기에 맞추어 핀의 모양과 크기를 조정
-         updateBalloonPath(width: labelWidth, height: labelHeight)
-         self.frame.size = CGSize(width: labelWidth + 20, height: labelHeight + 40)
+        // 레이블 크기에 맞추어 핀의 모양과 크기를 조정
+        updateBalloonPath(width: labelWidth, height: labelHeight)
+        self.frame.size = CGSize(width: labelWidth + 20, height: labelHeight + 40)
 
-         // 레이블의 위치 조정
-         label.frame = CGRect(x: 10, y: 10, width: labelWidth, height: labelHeight)
-     }
+        // 레이블의 위치 조정
+        label.frame = CGRect(x: 10, y: 10, width: labelWidth, height: labelHeight)
+    }
 
-     private func updateBalloonPath(width: CGFloat, height: CGFloat) {
-         let newWidth = width + 20 // 좌우 여백 추가
-         let newHeight = height + 27 // 상하 여백 및 추가 공간 추가
+    private func updateBalloonPath(width: CGFloat, height: CGFloat) {
+        let newWidth = width + 20 // 좌우 여백 추가
+        let newHeight = height + 27 // 상하 여백 및 추가 공간 추가
 
-         // 새로운 사각형 크기에 맞는 경로 생성
-         let rect = CGRect(x: 0, y: 0, width: newWidth, height: newHeight)
-         let roundedRectanglePath = UIBezierPath(roundedRect: rect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft], cornerRadii: CGSize(width: 28, height: 28))
+        // 새로운 사각형 크기에 맞는 경로 생성
+        let rect = CGRect(x: 0, y: 0, width: newWidth, height: newHeight)
+        let roundedRectanglePath = UIBezierPath(roundedRect: rect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft], cornerRadii: CGSize(width: 28, height: 28))
 
-         if let shapeLayer = self.layer.sublayers?.first(where: { $0 is CAShapeLayer }) as? CAShapeLayer {
-             shapeLayer.path = roundedRectanglePath.cgPath
-         }
-     }
+        if let shapeLayer = self.layer.sublayers?.first(where: { $0 is CAShapeLayer }) as? CAShapeLayer {
+            shapeLayer.path = roundedRectanglePath.cgPath
+        }
+    }
 
     override func layoutSubviews() {
-         super.layoutSubviews()
+        super.layoutSubviews()
 
-         // 작은 네모 뷰의 크기와 위치 설정
-         smallSquareView.frame = CGRect(x: 45, y: -10, width: 50, height: 20)
+        // 작은 네모 뷰의 크기와 위치 설정
+        smallSquareView.frame = CGRect(x: 45, y: -10, width: 50, height: 20)
 
-         // 레이블의 크기와 위치를 작은 네모 뷰에 맞춰 조정
-         smallSquareLabel.frame = CGRect(x: 0, y: 0, width: 50, height: 20)
-         smallSquareLabel.text = "AD" // 레이블에 텍스트 설정
-     }
+        // 레이블의 크기와 위치를 작은 네모 뷰에 맞춰 조정
+        smallSquareLabel.frame = CGRect(x: 0, y: 0, width: 50, height: 20)
+        smallSquareLabel.text = "AD" // 레이블에 텍스트 설정
+    }
 }
 
 
@@ -571,13 +603,13 @@ class CustomCollectionViewCell: UICollectionViewCell {
     }
 
     private func commonInit() {
-          // 셀 기본 설정
-          self.backgroundColor = .white // 셀의 배경색을 하얀색으로 설정
-          self.layer.cornerRadius = 10 // 셀의 모서리를 둥글게 설정
-          self.clipsToBounds = true  // 셀 경계를 넘어가는 내용을 잘라냄
+        // 셀 기본 설정
+        self.backgroundColor = .white // 셀의 배경색을 하얀색으로 설정
+        self.layer.cornerRadius = 10 // 셀의 모서리를 둥글게 설정
+        self.clipsToBounds = true  // 셀 경계를 넘어가는 내용을 잘라냄
 
-          setupViews()
-      }
+        setupViews()
+    }
 
     private func setupViews() {
         // 이미지 뷰 설정
@@ -608,7 +640,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
         museumNameLabel.font = .systemFont(ofSize: 14)
         museumNameLabel.textAlignment = .left
         museumNameLabel.textColor = .black
-//        museumNameLabel.numberOfLines = 0
+        //        museumNameLabel.numberOfLines = 0
         contentView.addSubview(museumNameLabel)
         museumNameLabel.snp.makeConstraints { make in
             make.top.equalTo(exhibitionNameLabel.snp.bottom).offset(5) // 전시 이름 레이블 아래에 위치
@@ -617,16 +649,16 @@ class CustomCollectionViewCell: UICollectionViewCell {
         }
 
         // 이미지 버튼 설정
-              if let buttonImage = UIImage(named: "heartIcon") { // 'yourImageName'을 실제 이미지 이름으로 교체
-                  imageButton.setImage(buttonImage, for: .normal)
-                  imageButton.imageView?.contentMode = .scaleAspectFit
-              }
-              contentView.addSubview(imageButton)
-              imageButton.snp.makeConstraints { make in
-                  make.centerY.equalTo(exhibitionNameLabel.snp.centerY) // 버튼의 가운데를 레이블의 가운데와 맞춤
-                  make.leading.equalTo(exhibitionNameLabel.snp.trailing).offset(10) // 레이블 뒤에 위치
-                  make.width.height.equalTo(30) // 버튼 크기 설정
-              }
+        if let buttonImage = UIImage(named: "heartIcon") { // 'yourImageName'을 실제 이미지 이름으로 교체
+            imageButton.setImage(buttonImage, for: .normal)
+            imageButton.imageView?.contentMode = .scaleAspectFit
+        }
+        contentView.addSubview(imageButton)
+        imageButton.snp.makeConstraints { make in
+            make.centerY.equalTo(exhibitionNameLabel.snp.centerY) // 버튼의 가운데를 레이블의 가운데와 맞춤
+            make.leading.equalTo(exhibitionNameLabel.snp.trailing).offset(10) // 레이블 뒤에 위치
+            make.width.height.equalTo(30) // 버튼 크기 설정
+        }
     }
 
     override func layoutSubviews() {
