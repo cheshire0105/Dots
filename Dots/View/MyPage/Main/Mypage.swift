@@ -1,4 +1,4 @@
-//23 . 11 . 17. 11:13 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 - 캘린더 작업 이어나가기
+//23 . 11 . 19. 12:28 am  최신화 완료- dev 에서 pull완료 - FS캘린더 커스텀. 진행중
 import UIKit
 import SnapKit
 import RxSwift
@@ -308,9 +308,6 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
             return 1
         }
-
-        // MARK: - FSCalendarDelegate
-
         func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         }
     
