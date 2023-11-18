@@ -1,9 +1,10 @@
-//23 . 11 . 17. 11:50 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 -
+//23 . 11 . 17. 11:13 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 - 캘린더 작업 이어나가기
 import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
-import JTAppleCalendar
+import FSCalendar
+
 class Mypage: UIViewController {
     
     
@@ -24,6 +25,7 @@ class Mypage: UIViewController {
         button.isSelected = !button.isSelected
         return button
     } ()
+    
     let 마이페이지_알림_버튼 = {
         var button = UIButton()
         button.setImage(UIImage(named: "알림" ), for: .normal)
@@ -54,12 +56,14 @@ class Mypage: UIViewController {
         button.isSelected = !button.isSelected
         return button
     } ()
+    
     let 마이페이지_전시_아이콘 = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "전시")
         imageView.contentMode = .scaleAspectFill
         return imageView
     } ()
+    
     let 마이페이지_전시_라벨 = {
         let label = UILabel()
         label.text = "전시"
@@ -82,6 +86,7 @@ class Mypage: UIViewController {
         imageView.contentMode = .scaleAspectFill
         return imageView
     } ()
+    
     let 마이페이지_후기_라벨 = {
         let label = UILabel()
         label.text = "리뷰"
@@ -97,12 +102,14 @@ class Mypage: UIViewController {
         button.isSelected = !button.isSelected
         return button
     } ()
+    
     let 마이페이지_보관함_아이콘 = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "보관함")
         imageView.contentMode = .scaleAspectFill
         return imageView
     } ()
+    
     let 마이페이지_보관함_라벨 = {
         let label = UILabel()
         label.text = "보관함"
@@ -116,6 +123,7 @@ class Mypage: UIViewController {
         view.backgroundColor = .darkGray
         return view
     }()
+    
     /*
      
      
@@ -123,39 +131,35 @@ class Mypage: UIViewController {
      
      
      */
-    lazy var 달력 = {
-        let layout = UICollectionViewFlowLayout()
-        let calendarView = JTACYearView(frame: .zero, collectionViewLayout: layout)
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
-        calendarView.backgroundColor = .orange
-        calendarView.showsHorizontalScrollIndicator = true
-        return calendarView
-    }()
-
-    let 달력_월 = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.textColor = .white
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        return label
-    }()
-    func 달력_레이아웃() {
-        view.addSubview(달력)
-        view.addSubview(달력_월)
+    lazy var 캘린더 = {
+            let calendar = FSCalendar()
+        calendar.backgroundColor = UIColor.clear
+        calendar.layer.cornerRadius = 15
+        calendar.layer.borderWidth = 0.3
+        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
+            calendar.dataSource = self
+            calendar.delegate = self
         
-        달력.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(50)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        달력_월.snp.makeConstraints { make in
-            make.top.equalTo(달력.snp.top).offset(30)
-            make.centerX.equalTo(달력.snp.centerX)
-        }
-    }
+        calendar.appearance.headerMinimumDissolvedAlpha = 0.0
+          calendar.appearance.headerDateFormat = "MMMM yyyy"
+        calendar.appearance.headerTitleColor = UIColor.white
+        calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
+          calendar.appearance.weekdayTextColor = UIColor.darkGray
+          calendar.appearance.todayColor = UIColor.cyan
+          calendar.appearance.selectionColor = UIColor.green
+          calendar.appearance.titleDefaultColor = UIColor.white
+          calendar.appearance.titleSelectionColor = UIColor.white
+          calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
+          calendar.appearance.weekdayFont = UIFont.boldSystemFont(ofSize: 14)
+          
+          calendar.scrollDirection = .vertical
+          calendar.scope = .month
+          calendar.allowsMultipleSelection = true
+        
+            return calendar
+        }()
+    
+    
     
     override func viewWillAppear(_ animated: Bool) {
         if let glassTabBar = tabBarController as? GlassTabBar {
@@ -172,10 +176,7 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.backgroundColor = UIColor.clear
         버튼_클릭()
         UI레이아웃()
-        달력_레이아웃()
-//        달력.calendarDelegate = self
-//        달력.calendarDataSource = self
-//        
+        캘린더_레이아웃()
     }
     
     private func UI레이아웃 () {
@@ -255,6 +256,15 @@ class Mypage: UIViewController {
             make.height.equalTo(1)
         }
     }
+    func 캘린더_레이아웃() {
+        view.addSubview(캘린더)
+        캘린더.snp.makeConstraints { make in
+            make.top.equalTo(구분선.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-100)
+        }
+    }
 }
 
 extension Mypage {
@@ -292,25 +302,16 @@ extension Mypage {
     }
 }
 
-//
-//
-//
-//extension Mypage : JTACYearViewDelegate, JTACYearViewDataSource {
-//    func calendar(_ calendar: JTAppleCalendar.JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleCalendar.JTACMonthCell {
-//        <#code#>
-//    }
-//    
-//    func calendar(_ calendar: JTAppleCalendar.JTACYearView, monthView: JTAppleCalendar.JTACCellMonthView, drawingFor segmentRect: CGRect, with date: Date, dateOwner: JTAppleCalendar.DateOwner, monthIndex index: Int) {
-//        <#code#>
-//    }
-//    
-//    func calendar(_ calendar: JTAppleCalendar.JTACYearView, sizeFor item: Any) -> CGSize {
-//        <#code#>
-//    }
-//    
-//    func configureCalendar(_ calendar: JTAppleCalendar.JTACYearView) -> (configurationParameters: JTAppleCalendar.ConfigurationParameters, months: [Any]) {
-//        <#code#>
-//    }
-//    
-//    
-//}
+
+extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
+    
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+            return 1
+        }
+
+        // MARK: - FSCalendarDelegate
+
+        func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        }
+    
+}
