@@ -463,7 +463,7 @@ class NewCustomAnnotationView: MKAnnotationView {
         let label = UILabel()
         label.backgroundColor = .clear
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 24)
+        label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 0
         return label
     }()
