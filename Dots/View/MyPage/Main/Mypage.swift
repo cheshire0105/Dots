@@ -1,10 +1,12 @@
-//23 . 11 . 17. 3:08 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 - 세그먼트 콘트롤 을 버튼 커스텀으로 해결 진행하기
+//23 . 11 . 17. 11:50 pm  최신화 완료- dev 에서 pull 받고 최신화 완료 -
 import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
 import JTAppleCalendar
 class Mypage: UIViewController {
+    
+    
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
@@ -121,7 +123,39 @@ class Mypage: UIViewController {
      
      
      */
-    
+    lazy var 달력 = {
+        let layout = UICollectionViewFlowLayout()
+        let calendarView = JTACYearView(frame: .zero, collectionViewLayout: layout)
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
+        calendarView.backgroundColor = .orange
+        calendarView.showsHorizontalScrollIndicator = true
+        return calendarView
+    }()
+
+    let 달력_월 = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.textColor = .white
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        return label
+    }()
+    func 달력_레이아웃() {
+        view.addSubview(달력)
+        view.addSubview(달력_월)
+        
+        달력.snp.makeConstraints { make in
+            make.top.equalTo(구분선.snp.bottom).offset(50)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        달력_월.snp.makeConstraints { make in
+            make.top.equalTo(달력.snp.top).offset(30)
+            make.centerX.equalTo(달력.snp.centerX)
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         if let glassTabBar = tabBarController as? GlassTabBar {
@@ -138,6 +172,10 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.backgroundColor = UIColor.clear
         버튼_클릭()
         UI레이아웃()
+        달력_레이아웃()
+//        달력.calendarDelegate = self
+//        달력.calendarDataSource = self
+//        
     }
     
     private func UI레이아웃 () {
@@ -253,3 +291,26 @@ extension Mypage {
         self.navigationItem.hidesBackButton = true
     }
 }
+
+//
+//
+//
+//extension Mypage : JTACYearViewDelegate, JTACYearViewDataSource {
+//    func calendar(_ calendar: JTAppleCalendar.JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleCalendar.JTACMonthCell {
+//        <#code#>
+//    }
+//    
+//    func calendar(_ calendar: JTAppleCalendar.JTACYearView, monthView: JTAppleCalendar.JTACCellMonthView, drawingFor segmentRect: CGRect, with date: Date, dateOwner: JTAppleCalendar.DateOwner, monthIndex index: Int) {
+//        <#code#>
+//    }
+//    
+//    func calendar(_ calendar: JTAppleCalendar.JTACYearView, sizeFor item: Any) -> CGSize {
+//        <#code#>
+//    }
+//    
+//    func configureCalendar(_ calendar: JTAppleCalendar.JTACYearView) -> (configurationParameters: JTAppleCalendar.ConfigurationParameters, months: [Any]) {
+//        <#code#>
+//    }
+//    
+//    
+//}
