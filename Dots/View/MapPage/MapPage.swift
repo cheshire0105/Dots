@@ -91,7 +91,11 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
            newAnnotation.subtitle = "서울"
            mapView.addAnnotation(newAnnotation)
 
-        configureFloatingActionButton()
+//        configureFloatingActionButton()
+
+        // 탭 제스처 인식기 추가
+               let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleScreenTap))
+               view.addGestureRecognizer(tapGesture)
     }
 
     func addDoneButtonOnKeyboard() {
@@ -174,43 +178,60 @@ class MapPage: UIViewController, CLLocationManagerDelegate, UICollectionViewDele
     }
 
 
-    func configureFloatingActionButton() {
-        floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
-        floatingActionButton.backgroundColor = .white
-        floatingActionButton.setTitle("근처 전시 7개", for: .normal)
-        floatingActionButton.setTitleColor(.black, for: .normal)
-        floatingActionButton.layer.cornerRadius = 23
-        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
-        // Initially hide the floating action button until the first segment is selected
-//               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
+//    func configureFloatingActionButton() {
+//        floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
+//        floatingActionButton.backgroundColor = .white
+//        floatingActionButton.setTitle("근처 전시 7개", for: .normal)
+//        floatingActionButton.setTitleColor(.black, for: .normal)
+//        floatingActionButton.layer.cornerRadius = 23
+//        floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
+//        // Initially hide the floating action button until the first segment is selected
+////               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
+//
+//
+//        // 이미지 설정
+//        let buttonImage = UIImage(named: "write") // 'reviewIcon'은 프로젝트에 포함된 이미지 이름이어야 합니다.
+//        floatingActionButton.setImage(buttonImage, for: .normal)
+//
+//        // 타이틀의 여백을 설정하여 이미지와 텍스트 사이에 간격을 줍니다.
+//        floatingActionButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+//
+//        // 이미지의 여백을 설정하여 이미지와 버튼의 왼쪽 가장자리 사이에 간격을 줍니다.
+//        floatingActionButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+//
+//        // 버튼에 액션 추가
+//        floatingActionButton.addTarget(self, action: #selector(floatingActionButtonTapped), for: .touchUpInside)
+//
+//        view.addSubview(floatingActionButton)
+//
+//        // 버튼의 제약 조건 설정
+//        floatingActionButton.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(90)
+//            make.width.equalTo(124)
+//            make.height.equalTo(46)
+//        }
+//    }
 
+//    // 플로팅 버튼을 누를 때 호출되는 함수
+//    @objc func floatingActionButtonTapped() {
+//        showCollectionView()
+//    }
 
-        // 이미지 설정
-        let buttonImage = UIImage(named: "write") // 'reviewIcon'은 프로젝트에 포함된 이미지 이름이어야 합니다.
-        floatingActionButton.setImage(buttonImage, for: .normal)
-
-        // 타이틀의 여백을 설정하여 이미지와 텍스트 사이에 간격을 줍니다.
-        floatingActionButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-
-        // 이미지의 여백을 설정하여 이미지와 버튼의 왼쪽 가장자리 사이에 간격을 줍니다.
-        floatingActionButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
-
-        // 버튼에 액션 추가
-        floatingActionButton.addTarget(self, action: #selector(floatingActionButtonTapped), for: .touchUpInside)
-
-        view.addSubview(floatingActionButton)
-
-        // 버튼의 제약 조건 설정
-        floatingActionButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(90)
-            make.width.equalTo(124)
-            make.height.equalTo(46)
-        }
+    // 화면 탭 시 호출되는 함수
+    @objc func handleScreenTap(sender: UITapGestureRecognizer) {
+        hideCollectionView()
     }
 
-    @objc func floatingActionButtonTapped() {
 
+
+    // 컬렉션 뷰를 숨기는 함수
+    private func hideCollectionView() {
+        collectionView.isHidden = true
+        floatingActionButton.isHidden = false
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.alpha = 0
+        }
     }
 
 
@@ -281,7 +302,7 @@ extension MapPage: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let annotation = view.annotation as? CustomAnnotation {
             // 필요한 경우 annotation 정보를 사용하여 컬렉션 뷰 데이터 업데이트
-            updateCollectionViewForAnnotation(annotation)
+//            updateCollectionViewForAnnotation(annotation)
             showCollectionView()
         }
     }
@@ -303,14 +324,7 @@ extension MapPage: MKMapViewDelegate {
         }
     }
 
-    private func hideCollectionView() {
-        // 컬렉션 뷰를 애니메이션과 함께 숨깁니다.
-        UIView.animate(withDuration: 0.3) {
-            self.collectionView.alpha = 0.0
-        } completion: { _ in
-            self.collectionView.isHidden = true
-        }
-    }
+
 
 }
 
