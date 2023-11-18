@@ -3,6 +3,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import FSCalendar
 
 class Mypage: UIViewController {
     
@@ -130,8 +131,35 @@ class Mypage: UIViewController {
      
      
      */
+    lazy var 캘린더 = {
+            let calendar = FSCalendar()
+        calendar.backgroundColor = UIColor.clear
+        calendar.layer.cornerRadius = 15
+        calendar.layer.borderWidth = 0.3
+        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
+            calendar.dataSource = self
+            calendar.delegate = self
+        
+        calendar.appearance.headerMinimumDissolvedAlpha = 0.0
+          calendar.appearance.headerDateFormat = "MMMM yyyy"
+        calendar.appearance.headerTitleColor = UIColor.white
+        calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
+          calendar.appearance.weekdayTextColor = UIColor.darkGray
+          calendar.appearance.todayColor = UIColor.cyan
+          calendar.appearance.selectionColor = UIColor.green
+          calendar.appearance.titleDefaultColor = UIColor.white
+          calendar.appearance.titleSelectionColor = UIColor.white
+          calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
+          calendar.appearance.weekdayFont = UIFont.boldSystemFont(ofSize: 14)
+          
+          calendar.scrollDirection = .vertical
+          calendar.scope = .month
+          calendar.allowsMultipleSelection = true
+        
+            return calendar
+        }()
     
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
         if let glassTabBar = tabBarController as? GlassTabBar {
@@ -148,6 +176,7 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.backgroundColor = UIColor.clear
         버튼_클릭()
         UI레이아웃()
+        캘린더_레이아웃()
     }
     
     private func UI레이아웃 () {
@@ -227,6 +256,15 @@ class Mypage: UIViewController {
             make.height.equalTo(1)
         }
     }
+    func 캘린더_레이아웃() {
+        view.addSubview(캘린더)
+        캘린더.snp.makeConstraints { make in
+            make.top.equalTo(구분선.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-100)
+        }
+    }
 }
 
 extension Mypage {
@@ -262,4 +300,18 @@ extension Mypage {
         self.navigationController?.pushViewController(보관함_이동, animated: true)
         self.navigationItem.hidesBackButton = true
     }
+}
+
+
+extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
+    
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+            return 1
+        }
+
+        // MARK: - FSCalendarDelegate
+
+        func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        }
+    
 }
