@@ -76,6 +76,12 @@ class GlassTabBar: UITabBarController {
     // 각 indicatorView에 대한 너비 제약 조건을 저장하기 위한 배열
        var indicatorViewWidthConstraints: [NSLayoutConstraint] = []
 
+    
+    // 버튼 및 indicatorView의 너비에 대한 변수들
+        let initialIndicatorWidth: CGFloat = 50 // 예시 값, 실제 화면에 맞게 조정 필요
+        let expandedWidth: CGFloat = 100 // 예시 값, 실제 화면에 맞게 조정 필요
+        let contractedWidth: CGFloat = 50 // 예시 값, 실제 화면에 맞게 조정 필요
+
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -89,6 +95,15 @@ class GlassTabBar: UITabBarController {
         setupTabBarItems()
         // 기본 탭 설정 및 외관 업데이트
         let defaultTabIndex = 0
+
+
+        // 각 indicatorView에 대한 너비 제약 조건을 설정하고 저장합니다.
+               for indicatorView in indicatorViews {
+                   let widthConstraint = indicatorView.widthAnchor.constraint(equalToConstant: initialIndicatorWidth) // 초기 너비 설정
+                   widthConstraint.isActive = true
+                   indicatorViewWidthConstraints.append(widthConstraint)
+               }
+
         updateSelectedTabAppearance(index: defaultTabIndex)
 
         
@@ -183,13 +198,13 @@ class GlassTabBar: UITabBarController {
 
             NSLayoutConstraint.activate([
                 // ImageView 제약 조건
-                imageView.leadingAnchor.constraint(equalTo: indicatorView.leadingAnchor, constant: 6),
+                imageView.leadingAnchor.constraint(equalTo: indicatorView.leadingAnchor, constant: 8),
                 imageView.centerYAnchor.constraint(equalTo: indicatorView.centerYAnchor),
                 imageView.widthAnchor.constraint(equalTo: indicatorView.widthAnchor, multiplier: 0.3),
                 imageView.heightAnchor.constraint(equalTo: indicatorView.heightAnchor, multiplier: 0.3),
 
                 // Label 제약 조건
-                label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 3),
+                label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 8),
                 label.centerYAnchor.constraint(equalTo: indicatorView.centerYAnchor),
                 label.trailingAnchor.constraint(lessThanOrEqualTo: indicatorView.trailingAnchor, constant: -8),
                 // label.widthAnchor, label.heightAnchor 등 필요한 경우 추가 제약 조건 설정
@@ -210,6 +225,10 @@ class GlassTabBar: UITabBarController {
             button.isSelected = false
             updateButtonAppearance(button: button, isSelected: false)
         }
+
+        for (index, constraint) in indicatorViewWidthConstraints.enumerated() {
+                   constraint.constant = (sender.tag == index) ? expandedWidth : contractedWidth
+               }
 
         // 선택된 버튼의 상태를 업데이트
         sender.isSelected = true
