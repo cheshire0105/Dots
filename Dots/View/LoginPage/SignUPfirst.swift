@@ -324,20 +324,35 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         
     }
     @objc func 회원가입_중복확인_버튼_클릭() {
-        Auth.auth().fetchSignInMethods(forEmail: self.이메일) { [weak self] (methods, 에러) in
-            guard let self = self else { return }
-            
-            if let error = 에러 {
-                print("이메일 중복 확인 실패: \(error.localizedDescription)")
-                return
-            }
-            
-            if let 중복확인 = methods {
-                print("중복된 이메일")
-            } else {
-                print("사용 가능한 이메일")
-            }
-        }
+        guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
+              showAlert(message: "이메일을 입력하세요.")
+              return
+          }
+           let 데이터베이스 = Firestore.firestore()
+           let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+           
+           유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, error) in
+               guard let self = self else { return }
+
+               if let error = error {
+                   print("Firestore에서 이메일 중복 확인 실패: \(error.localizedDescription)")
+                   self.showAlert(message: "이메일 중복 확인 실패")
+                   return
+               }
+
+               if snapshot?.isEmpty == false {
+                   self.showAlert(message: "중복된 이메일입니다.")
+               } else {
+                   self.showAlert(message: "사용 가능한 이메일입니다.")
+               }
+           }
+       }
+       
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "경고", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
     }
     @objc func 회원가입_다음_버튼_클릭() {
         print("다음 페이지로 이동")
