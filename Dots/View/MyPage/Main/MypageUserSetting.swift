@@ -388,6 +388,7 @@ extension 마이페이지_설정_페이지 {
             let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
             로그인화면_이동.modalPresentationStyle = .fullScreen
             present(로그인화면_이동, animated: true, completion: nil)
+            UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
         } catch {
             print("로그아웃 실패: \(error.localizedDescription)")
         }
@@ -398,6 +399,8 @@ extension 마이페이지_설정_페이지 {
                 if let error = error {
                     print("회원 탈퇴 실패: \(error.localizedDescription)")
                 } else {
+                    UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+
                     print("회원 탈퇴 성공")
                     
                 }
