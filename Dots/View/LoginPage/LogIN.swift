@@ -1,7 +1,7 @@
 import UIKit
 import FirebaseAuth
 import SnapKit
-
+//ㅁ
 class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate, UITextFieldDelegate {
 
     var 활성화된텍스트필드: UITextField?
@@ -270,11 +270,13 @@ extension 로그인_뷰컨트롤러 {
             } else {
                 print("로그인 성공")
                 
+                UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
+
+                
                 let 메인화면_이동 = GlassTabBar()
                 self.navigationController?.pushViewController(메인화면_이동, animated: true)
                 self.navigationItem.hidesBackButton = true
             }
         }
     }
-    
 }
