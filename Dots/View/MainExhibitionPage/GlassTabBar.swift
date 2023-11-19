@@ -10,7 +10,6 @@ import UIKit
 
 class GlassTabBar: UITabBarController {
     let customTabBarView = UIView()
-    let stackView = UIStackView()
 
     let images = [UIImage(named: "home"), UIImage(named: "search"), UIImage(named: "hot"), UIImage(named: "map"), UIImage(named: "mypage")]
     let backgroundView = UIView() // 스택뷰의 백그라운드 뷰
@@ -75,10 +74,11 @@ class GlassTabBar: UITabBarController {
 
     // 각 indicatorView에 대한 너비 제약 조건을 저장하기 위한 배열
        var indicatorViewWidthConstraints: [NSLayoutConstraint] = []
+    var buttonWidthConstraints: [NSLayoutConstraint] = []
 
     
     // 버튼 및 indicatorView의 너비에 대한 변수들
-        let initialIndicatorWidth: CGFloat = 50 // 예시 값, 실제 화면에 맞게 조정 필요
+        let initialIndicatorWidth: CGFloat = 80 // 예시 값, 실제 화면에 맞게 조정 필요
         let expandedWidth: CGFloat = 100 // 예시 값, 실제 화면에 맞게 조정 필요
         let contractedWidth: CGFloat = 50 // 예시 값, 실제 화면에 맞게 조정 필요
 
@@ -86,6 +86,10 @@ class GlassTabBar: UITabBarController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupCustomTabBarView()
+        // 첫 번째 버튼이 프로그래매틱하게 선택되도록 설정
+         if let firstButton = buttons.first {
+             tabBarButtonTapped(firstButton)
+         }
 
     }
 
@@ -94,7 +98,6 @@ class GlassTabBar: UITabBarController {
 
         setupTabBarItems()
         // 기본 탭 설정 및 외관 업데이트
-        let defaultTabIndex = 0
 
 
         // 각 indicatorView에 대한 너비 제약 조건을 설정하고 저장합니다.
@@ -104,9 +107,16 @@ class GlassTabBar: UITabBarController {
                    indicatorViewWidthConstraints.append(widthConstraint)
                }
 
-        updateSelectedTabAppearance(index: defaultTabIndex)
+
+        // 버튼 너비 제약 조건 설정
+          for button in buttons {
+              let widthConstraint = button.widthAnchor.constraint(equalToConstant: contractedWidth)
+              widthConstraint.isActive = true
+              buttonWidthConstraints.append(widthConstraint)
+          }
 
         
+
     }
 
 
@@ -140,49 +150,51 @@ class GlassTabBar: UITabBarController {
         // 기본 탭바 숨기기
         tabBar.isHidden = true
 
-        let tabBarWidth = view.frame.width * 0.8 // 전체 너비의 80%
-        let tabBarX = (view.frame.width - tabBarWidth) / 2 // 중앙 정렬
+            customTabBarView.backgroundColor = .clear
+            view.addSubview(customTabBarView)
 
-        customTabBarView.backgroundColor = .clear
-        customTabBarView.frame = CGRect(x: tabBarX, y: view.frame.height - 75, width: tabBarWidth, height: 50)
-        view.addSubview(customTabBarView)
+            // 백그라운드 뷰 설정
+            backgroundView.layer.cornerRadius = 25
+            backgroundView.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 1)
+            customTabBarView.addSubview(backgroundView)
 
-        // 스택뷰의 백그라운드 뷰 설정
-        backgroundView.layer.cornerRadius = 25
-        backgroundView.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 1)
+            // SnapKit을 사용한 제약 조건 설정
+            customTabBarView.snp.makeConstraints { make in
+                make.height.equalTo(50)
+                make.bottom.equalToSuperview().offset(-25)
+                make.leading.trailing.equalToSuperview().inset(view.frame.width * 0.1) // 왼쪽과 오른쪽 간격을 상위뷰 너비의 10%로 설정
+            }
 
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        customTabBarView.addSubview(backgroundView)
+            backgroundView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
 
-        // 스택뷰 설정
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.alignment = .fill
-        stackView.spacing = 0
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        customTabBarView.addSubview(stackView)
 
-        // 제약 조건 설정
-        NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: customTabBarView.topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: customTabBarView.bottomAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: customTabBarView.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: customTabBarView.trailingAnchor),
+    }
+    func setupButtons() {
+        let totalSpacing = customTabBarView.frame.width - (CGFloat(buttons.count) * contractedWidth)
+        let spacing = totalSpacing / CGFloat(buttons.count - 1)
+        var xPosition: CGFloat = 0
+        let buttonTitles = ["전시", "검색", "인기", "지도", "마이"] // 탭에 따른 제목 설정
 
-            stackView.topAnchor.constraint(equalTo: backgroundView.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
-            stackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor)
-        ])
 
         for (index, button) in buttons.enumerated() {
-            stackView.addArrangedSubview(button)
+
+            if let image = images[index]?.withRenderingMode(.alwaysTemplate) {
+                       button.setImage(image, for: .normal)
+                       button.setImage(image, for: .selected)
+                       button.tintColor = UIColor.lightGray // 기본 색상 설정
+                   }
+            button.frame = CGRect(x: xPosition, y: 0, width: contractedWidth, height: 50)
+            customTabBarView.addSubview(button)
             button.addTarget(self, action: #selector(tabBarButtonTapped(_:)), for: .touchUpInside)
             button.tag = index
 
-            button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            
 
-            // 각 버튼에 해당하는 indicatorView를 추가합니다.
+            // 다음 버튼의 위치를 계산
+            xPosition += contractedWidth + (index < buttons.count - 1 ? spacing : 0)
+
             let indicatorView = indicatorViews[index]
             customTabBarView.addSubview(indicatorView)
 
@@ -192,31 +204,36 @@ class GlassTabBar: UITabBarController {
 
             // UILabel을 indicatorView에 추가합니다.
             let label = indicatorLabels[index]
+                   label.text = buttonTitles[index] // 각 탭에 해당하는 텍스트 설정
             indicatorView.addSubview(label)
 
+            // SnapKit을 사용한 제약 조건 설정
+            imageView.snp.makeConstraints { make in
+                make.leading.equalToSuperview().offset(8)
+                make.centerY.equalToSuperview()
+                make.width.equalToSuperview().multipliedBy(0.4)
+                make.height.equalToSuperview().multipliedBy(0.4)
+            }
 
+            label.snp.makeConstraints { make in
+                make.leading.equalTo(imageView.snp.trailing).offset(4)
+                make.centerY.equalToSuperview()
+                make.trailing.lessThanOrEqualToSuperview().offset(-8)
+            }
 
-            NSLayoutConstraint.activate([
-                // ImageView 제약 조건
-                imageView.leadingAnchor.constraint(equalTo: indicatorView.leadingAnchor, constant: 8),
-                imageView.centerYAnchor.constraint(equalTo: indicatorView.centerYAnchor),
-                imageView.widthAnchor.constraint(equalTo: indicatorView.widthAnchor, multiplier: 0.3),
-                imageView.heightAnchor.constraint(equalTo: indicatorView.heightAnchor, multiplier: 0.3),
-
-                // Label 제약 조건
-                label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 8),
-                label.centerYAnchor.constraint(equalTo: indicatorView.centerYAnchor),
-                label.trailingAnchor.constraint(lessThanOrEqualTo: indicatorView.trailingAnchor, constant: -8),
-                // label.widthAnchor, label.heightAnchor 등 필요한 경우 추가 제약 조건 설정
-                indicatorView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor), // 탭바의 하단에 맞춤
-                indicatorView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-                indicatorView.widthAnchor.constraint(equalTo: button.widthAnchor), // 버튼의 너비와 일치
-                indicatorView.heightAnchor.constraint(equalTo: button.heightAnchor) // 원하는 높이
-
-            ])
+            indicatorView.snp.makeConstraints { make in
+                make.bottom.equalTo(backgroundView.snp.bottom)
+                make.centerX.equalTo(button.snp.centerX)
+                make.width.equalTo(initialIndicatorWidth) // 일정한 너비 설정
+                make.height.equalTo(button.snp.height)
+            }
+            indicatorViewWidthConstraints.append(indicatorView.constraints.first { $0.firstAttribute == .width }!)
         }
+    }
 
-
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setupButtons()
     }
 
     @objc func tabBarButtonTapped(_ sender: UIButton) {
@@ -226,9 +243,20 @@ class GlassTabBar: UITabBarController {
             updateButtonAppearance(button: button, isSelected: false)
         }
 
-        for (index, constraint) in indicatorViewWidthConstraints.enumerated() {
-                   constraint.constant = (sender.tag == index) ? expandedWidth : contractedWidth
-               }
+        // 선택된 버튼의 너비를 확대하고, 나머지 버튼의 위치와 너비를 조정합니다.
+        var xPosition: CGFloat = 0
+        for (index, button) in buttons.enumerated() {
+            let isExpanded = sender.tag == index
+            let width = isExpanded ? expandedWidth : contractedWidth
+            button.frame = CGRect(x: xPosition, y: 0, width: width, height: 50)
+
+            // IndicatorView의 너비를 조정합니다.
+            let widthConstraint = indicatorViewWidthConstraints[index]
+            widthConstraint.constant = isExpanded ? expandedWidth : initialIndicatorWidth
+
+            // 확장된 버튼을 기준으로 나머지 버튼의 위치를 조정합니다.
+            xPosition += width
+        }
 
         // 선택된 버튼의 상태를 업데이트
         sender.isSelected = true
@@ -236,36 +264,68 @@ class GlassTabBar: UITabBarController {
 
         // 탭 인덱스 변경
         selectedIndex = sender.tag
+
+        // 레이아웃 업데이트
+        view.layoutIfNeeded()
     }
+
 
     // 버튼의 외관을 업데이트하는 메소드
     // updateButtonAppearance 메서드 수정
+    // updateButtonAppearance 메서드에서 indicatorView의 너비를 변경하지 않도록 수정
     func updateButtonAppearance(button: UIButton, isSelected: Bool) {
         if isSelected {
             indicatorViews[button.tag].isHidden = false
-            indicatorImageViews[button.tag].image = button.image(for: .normal) // 이미지 설정
-            indicatorLabels[button.tag].text = "전시" // 여기에 원하는 텍스트를 설정
+
+            // 선택된 상태일 때 이미지와 텍스트의 색상 변경
+            indicatorImageViews[button.tag].image = button.image(for: .normal)?.withRenderingMode(.alwaysTemplate)
+            indicatorImageViews[button.tag].tintColor = UIColor.black // 선택된 이미지 색상 설정
+
+            indicatorLabels[button.tag].textColor = UIColor.black // 선택된 텍스트 색상 설정
+            // 이 부분은 필요에 따라 선택된 탭의 텍스트를 설정할 수 있습니다.
         } else {
             indicatorViews[button.tag].isHidden = true
+
+            // 선택되지 않은 상태일 때 이미지와 텍스트의 색상 변경
+            if let image = button.image(for: .normal)?.withRenderingMode(.alwaysTemplate) {
+                indicatorImageViews[button.tag].image = image
+                indicatorImageViews[button.tag].tintColor = UIColor.lightGray // 선택되지 않은 이미지 색상 설정
+            }
+
+            indicatorLabels[button.tag].textColor = UIColor.lightGray // 선택되지 않은 텍스트 색상 설정
         }
     }
+
+
 
 
 
     // 기본 선택된 탭의 외관을 업데이트하는 메소드
     func updateSelectedTabAppearance(index: Int) {
+        var xPosition: CGFloat = 0
         for (buttonIndex, button) in buttons.enumerated() {
             let isSelected = buttonIndex == index
             button.isSelected = isSelected
             updateButtonAppearance(button: button, isSelected: isSelected)
 
-            // 추가된 부분: 버튼의 레이아웃이 결정된 후에 배경을 업데이트
-            DispatchQueue.main.async {
-                self.updateButtonAppearance(button: button, isSelected: isSelected)
-            }
+            let width = isSelected ? expandedWidth : contractedWidth
+            button.frame = CGRect(x: xPosition, y: 0, width: width, height: 50)
+
+            // IndicatorView의 너비를 조정합니다.
+            let widthConstraint = indicatorViewWidthConstraints[buttonIndex]
+            widthConstraint.constant = isSelected ? expandedWidth : initialIndicatorWidth
+
+            // 다음 버튼의 x 위치를 업데이트합니다.
+            xPosition += width
         }
+
+        // 선택된 탭에 대한 추가 처리 (예: 컨텐츠 뷰 컨트롤러 변경)
         selectedIndex = index
+
+        // 레이아웃 업데이트
+        view.layoutIfNeeded()
     }
+
 
 
 
