@@ -161,8 +161,8 @@ class GlassTabBar: UITabBarController {
             // SnapKit을 사용한 제약 조건 설정
             customTabBarView.snp.makeConstraints { make in
                 make.height.equalTo(50)
-                make.bottom.equalToSuperview().offset(-10)
-                make.leading.trailing.equalToSuperview().inset(view.frame.width * 0.12) // 왼쪽과 오른쪽 간격을 상위뷰 너비의 10%로 설정
+                make.bottom.equalToSuperview().offset(-25)
+                make.leading.trailing.equalToSuperview().inset(view.frame.width * 0.1) // 왼쪽과 오른쪽 간격을 상위뷰 너비의 10%로 설정
             }
 
             backgroundView.snp.makeConstraints { make in
