@@ -145,8 +145,9 @@ class Mypage: UIViewController {
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
           calendar.appearance.weekdayTextColor = UIColor.darkGray
-          calendar.appearance.todayColor = UIColor.cyan
-          calendar.appearance.selectionColor = UIColor.green
+        calendar.appearance.todayColor = UIColor(named: "neon")?.withAlphaComponent(0.3)
+        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
+        calendar.appearance.selectionColor = UIColor.green.withAlphaComponent(0.1)
           calendar.appearance.titleDefaultColor = UIColor.white
           calendar.appearance.titleSelectionColor = UIColor.white
           calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
@@ -154,7 +155,7 @@ class Mypage: UIViewController {
           
           calendar.scrollDirection = .vertical
           calendar.scope = .month
-          calendar.allowsMultipleSelection = true
+          calendar.allowsMultipleSelection = false
         
             return calendar
         }()
@@ -309,6 +310,9 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
             return 1
         }
         func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+            let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
+            present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+
         }
     
 }
