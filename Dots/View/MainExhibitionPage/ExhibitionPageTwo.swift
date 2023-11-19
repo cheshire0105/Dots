@@ -112,6 +112,16 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // 모달이 표시되어 있으면 닫습니다.
+        if let presentedViewController = self.presentedViewController {
+            presentedViewController.dismiss(animated: false, completion: nil)
+        }
+    }
+
+
     @objc func backButtonTapped() {
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
         navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
@@ -288,3 +298,4 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         nicknameLabel.text = nickname
     }
 }
+
