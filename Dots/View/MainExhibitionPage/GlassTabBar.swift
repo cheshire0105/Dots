@@ -14,7 +14,21 @@ class GlassTabBar: UITabBarController {
     
     let images = [UIImage(named: "home"), UIImage(named: "search"), UIImage(named: "hot"), UIImage(named: "map"), UIImage(named: "mypage")]
     let backgroundView = UIView() // 스택뷰의 백그라운드 뷰
-    
+
+    lazy var indicatorViews: [UIView] = {
+        var views: [UIView] = []
+        for _ in 0 ..< 5 {
+            let view = UIView()
+            view.backgroundColor = UIColor.white // 색상은 원하는 대로 설정
+            view.layer.cornerRadius = 5 // 원하는 모양으로 조정
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.isHidden = true // 기본적으로 숨김
+            views.append(view)
+        }
+        return views
+    }()
+
+
     lazy var buttons: [UIButton] = {
         var buttons: [UIButton] = []
         for i in 0 ..< 5 {
@@ -129,12 +143,25 @@ class GlassTabBar: UITabBarController {
         ])
 
         for (index, button) in buttons.enumerated() {
-            stackView.addArrangedSubview(button)
-            button.addTarget(self, action: #selector(tabBarButtonTapped(_:)), for: .touchUpInside)
-            button.tag = index
+             stackView.addArrangedSubview(button)
+             button.addTarget(self, action: #selector(tabBarButtonTapped(_:)), for: .touchUpInside)
+             button.tag = index
 
-            button.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        }
+             button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+            // 각 버튼에 해당하는 indicatorView를 추가합니다.
+               let indicatorView = indicatorViews[index]
+               customTabBarView.addSubview(indicatorView)
+
+               NSLayoutConstraint.activate([
+                   indicatorView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor), // 탭바의 하단에 맞춤
+                   indicatorView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+                   indicatorView.widthAnchor.constraint(equalTo: button.widthAnchor), // 버튼의 너비와 일치
+                   indicatorView.heightAnchor.constraint(equalTo: button.heightAnchor) // 원하는 높이
+               ])
+         }
+
+
     }
 
     @objc func tabBarButtonTapped(_ sender: UIButton) {
@@ -155,15 +182,14 @@ class GlassTabBar: UITabBarController {
     // 버튼의 외관을 업데이트하는 메소드
     func updateButtonAppearance(button: UIButton, isSelected: Bool) {
         if isSelected {
-            button.backgroundColor = UIColor.white
-            button.layer.cornerRadius = button.frame.height / 2
-            button.tintColor = .black // 선택된 경우 검은색으로 설정
+            // 기존 동그란 배경 설정 코드는 제거
+            indicatorViews[button.tag].isHidden = false // 해당 뷰를 표시
         } else {
-            button.backgroundColor = .clear
-            button.layer.cornerRadius = 0
-            button.tintColor = .white // 선택되지 않은 경우 하얀색으로 설정
+            // 기존 동그란 배경 설정 코드는 제거
+            indicatorViews[button.tag].isHidden = true // 해당 뷰를 숨김
         }
     }
+
 
 
     // 기본 선택된 탭의 외관을 업데이트하는 메소드
