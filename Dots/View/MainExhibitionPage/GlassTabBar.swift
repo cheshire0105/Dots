@@ -12,7 +12,6 @@ class GlassTabBar: UITabBarController {
     let customTabBarView = UIView()
     let stackView = UIStackView()
     
-//    let titles = ["홈", "검색", "인기", "지도", "마이"]
     let images = [UIImage(named: "home"), UIImage(named: "search"), UIImage(named: "hot"), UIImage(named: "map"), UIImage(named: "mypage")]
     let backgroundView = UIView() // 스택뷰의 백그라운드 뷰
     
@@ -20,8 +19,7 @@ class GlassTabBar: UITabBarController {
         var buttons: [UIButton] = []
         for i in 0 ..< 5 {
             let button = UIButton()
-//            button.setTitle(titles[i], for: .normal)
-            
+
             let originalImage = images[i]?.withRenderingMode(.alwaysTemplate)
             button.setImage(originalImage, for: .normal)
             button.setImage(originalImage, for: .selected) // 동일한 이미지를 선택 상태에도 설정
@@ -33,12 +31,11 @@ class GlassTabBar: UITabBarController {
             button.setTitleColor(.white, for: .normal)
             
             let imageSize = button.imageView!.intrinsicContentSize
-//            let titleSize = button.titleLabel!.intrinsicContentSize
-            
+
             let spacing: CGFloat = 10 // Adjust this value to increase or decrease the spacing
 
             button.titleEdgeInsets = UIEdgeInsets(top: imageSize.height + spacing, left: -imageSize.width, bottom: 0, right: 0)
-//            button.imageEdgeInsets = UIEdgeInsets(top: -titleSize.height - spacing, left: 0, bottom: 0, right: -titleSize.width)
+
             
             buttons.append(button)
         }
@@ -46,23 +43,25 @@ class GlassTabBar: UITabBarController {
     }()
 
     override func viewWillAppear(_ animated: Bool) {
-//        updateTabBarAppearance() // 여기에 추가
-        setupTabBarItems()
+
         setupCustomTabBarView()
-        updateTabBarAppearance()
+        selectedIndex = 0
+
 
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        setupTabBarItems()
-//        setupCustomTabBarView()
-//
-//        // 첫 번째 탭을 기본으로 선택합니다.
-//        selectedIndex = 0
-//        updateTabBarAppearance()
+        setupTabBarItems()
+
+
+        // 기본 탭 설정 및 외관 업데이트
+               let defaultTabIndex = 0
+               updateSelectedTabAppearance(index: defaultTabIndex)
+
     }
+
 
 
     
@@ -88,89 +87,13 @@ class GlassTabBar: UITabBarController {
         viewControllers = [firstNavController, secondVC, thirdNavController, fourthVC, fifthNavController]
     }
     
-//    func setupCustomTabBarView() {
-//        // 기본 탭바 숨기기
-//        tabBar.isHidden = true
-//
-//        let tabBarWidth = view.frame.width * 0.8 // 전체 너비의 80%
-//            let tabBarX = (view.frame.width - tabBarWidth) / 2 // 중앙 정렬
-//
-//        customTabBarView.backgroundColor = .clear
-//           customTabBarView.frame = CGRect(x: tabBarX, y: view.frame.height - 80, width: tabBarWidth, height: 70)
-//           view.addSubview(customTabBarView)
-//
-//        // 글래스 모피즘(Glassmorphism) 효과 추가
-//        let blurEffect = UIBlurEffect(style: .dark) // 또는 .light, .extraLight, .dark 중 선택
-//        let visualEffectView = UIVisualEffectView(effect: blurEffect)
-//        visualEffectView.layer.cornerRadius = 25
-//        visualEffectView.layer.masksToBounds = true
-//        visualEffectView.translatesAutoresizingMaskIntoConstraints = false
-//        customTabBarView.addSubview(visualEffectView)
-//        
-//        // 글래스 모피즘 효과를 강화하기 위해 블러 뷰의 알파 값을 조정할 수 있습니다.
-//        visualEffectView.alpha = 0.8 // 이 값을 조정하여 불투명도를 변경하세요.
-//        
-//        // 반사 효과를 추가하고 싶다면, 여기에 그라디언트 레이어를 추가하거나 반사 이미지를 사용할 수 있습니다.
-//        // 예를 들어, 그라디언트 레이어를 추가하는 코드는 다음과 같습니다.
-//        let gradientLayer = CAGradientLayer()
-//        gradientLayer.frame = visualEffectView.bounds
-//        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.white.withAlphaComponent(0.2).cgColor, UIColor.clear.cgColor]
-//        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
-//        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-//        gradientLayer.locations = [0, 0.5, 1] // 이 값들을 조정하여 그라디언트의 위치를 변경하세요.
-//        visualEffectView.layer.addSublayer(gradientLayer)
-//        
-//        // 스택뷰의 백그라운드 뷰 설정
-//        backgroundView.layer.cornerRadius = 25
-//        backgroundView.backgroundColor = .clear // 변경: 배경을 투명하게 설정
-//        backgroundView.layer.shadowColor = UIColor.black.cgColor
-//        backgroundView.layer.shadowOpacity = 0.1
-//        backgroundView.layer.shadowOffset = CGSize(width: 0, height: -1)
-//        backgroundView.layer.shadowRadius = 4
-//        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-//        customTabBarView.addSubview(backgroundView)
-//        
-//        // 스택뷰 설정
-//        stackView.axis = .horizontal 
-//        stackView.distribution = .fillEqually
-//        stackView.alignment = .fill
-//        stackView.spacing = 0
-//        stackView.translatesAutoresizingMaskIntoConstraints = false
-//        customTabBarView.addSubview(stackView)
-//        
-//        // 제약 조건 설정
-//        NSLayoutConstraint.activate([
-//            visualEffectView.topAnchor.constraint(equalTo: customTabBarView.topAnchor, constant: 10),
-//            visualEffectView.bottomAnchor.constraint(equalTo: customTabBarView.bottomAnchor, constant: -10),
-//            visualEffectView.leadingAnchor.constraint(equalTo: customTabBarView.leadingAnchor, constant: 30),
-//            visualEffectView.trailingAnchor.constraint(equalTo: customTabBarView.trailingAnchor, constant: -30),
-//            
-//            backgroundView.topAnchor.constraint(equalTo: visualEffectView.topAnchor),
-//            backgroundView.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor),
-//            backgroundView.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor),
-//            backgroundView.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor),
-//            
-//            stackView.topAnchor.constraint(equalTo: backgroundView.topAnchor),
-//            stackView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
-//            stackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
-//            stackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor)
-//        ])
-//        
-//        for (index, button) in buttons.enumerated() {
-//            stackView.addArrangedSubview(button)
-//            button.addTarget(self, action: #selector(tabBarButtonTapped(_:)), for: .touchUpInside)
-//            button.tag = index
-//            
-//            button.heightAnchor.constraint(equalToConstant: 70).isActive = true
-//        }
-//    }
-//   
+
 
     func setupCustomTabBarView() {
         // 기본 탭바 숨기기
         tabBar.isHidden = true
 
-        let tabBarWidth = view.frame.width * 0.6 // 전체 너비의 80%
+        let tabBarWidth = view.frame.width * 0.62 // 전체 너비의 80%
         let tabBarX = (view.frame.width - tabBarWidth) / 2 // 중앙 정렬
 
         customTabBarView.backgroundColor = .clear
@@ -180,10 +103,7 @@ class GlassTabBar: UITabBarController {
         // 스택뷰의 백그라운드 뷰 설정
         backgroundView.layer.cornerRadius = 25
         backgroundView.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 1)
-//        backgroundView.layer.shadowColor = UIColor.black.cgColor
-//        backgroundView.layer.shadowOpacity = 0.1
-//        backgroundView.layer.shadowOffset = CGSize(width: 0, height: -1)
-//        backgroundView.layer.shadowRadius = 4
+
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         customTabBarView.addSubview(backgroundView)
 
@@ -218,51 +138,50 @@ class GlassTabBar: UITabBarController {
     }
 
     @objc func tabBarButtonTapped(_ sender: UIButton) {
+        // 모든 버튼의 선택 상태와 배경을 초기화
+        for button in buttons {
+            button.isSelected = false
+            updateButtonAppearance(button: button, isSelected: false)
+        }
+
+        // 선택된 버튼의 상태를 업데이트
+        sender.isSelected = true
+        updateButtonAppearance(button: sender, isSelected: true)
+
+        // 탭 인덱스 변경
         selectedIndex = sender.tag
-        updateTabBarAppearance()
     }
-    
-    func updateTabBarAppearance() {
 
-        
-        for (index, button) in buttons.enumerated() {
-
-            button.adjustsImageWhenHighlighted = false // 하이라이트 상태 비활성화
-
-            if index == selectedIndex {
-                button.isSelected = true
-                button.backgroundColor = .white // 선택된 탭의 배경색
-                button.tintColor = .black // 선택된 버튼의 이미지 색상 변경
-
-                // 원형 배경 설정
-                button.layer.cornerRadius = button.frame.height / 2
-                button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-                button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            } else {
-                button.isSelected = false
-                button.tintColor = .white // 비선택된 버튼의 이미지 색상
-
-                button.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 1) // 기본 배경색
-
-                // 원래 모양으로 되돌리기
-                if index == 0 {
-                    button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-                } else if index == buttons.count - 1 {
-                    button.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-                } else {
-                    button.layer.maskedCorners = []
-                }
-                button.layer.cornerRadius = 25 // 원래 모서리 둥글기 값
-                // 이미지와 텍스트 간격 재조정
-                let imageSize = button.imageView!.intrinsicContentSize
-                let spacing: CGFloat = 10
-                button.titleEdgeInsets = UIEdgeInsets(top: imageSize.height + spacing, left: -imageSize.width, bottom: 0, right: 0)
-            }
+    // 버튼의 외관을 업데이트하는 메소드
+    func updateButtonAppearance(button: UIButton, isSelected: Bool) {
+        if isSelected {
+            button.backgroundColor = UIColor.white
+            button.layer.cornerRadius = button.frame.height / 2
+            button.tintColor = .black // 선택된 경우 검은색으로 설정
+        } else {
+            button.backgroundColor = .clear
+            button.layer.cornerRadius = 0
+            button.tintColor = .white // 선택되지 않은 경우 하얀색으로 설정
         }
     }
 
-    
+
+    // 기본 선택된 탭의 외관을 업데이트하는 메소드
+    func updateSelectedTabAppearance(index: Int) {
+        for (buttonIndex, button) in buttons.enumerated() {
+            let isSelected = buttonIndex == index
+            button.isSelected = isSelected
+            updateButtonAppearance(button: button, isSelected: isSelected)
+
+            // 추가된 부분: 버튼의 레이아웃이 결정된 후에 배경을 업데이트
+            DispatchQueue.main.async {
+                self.updateButtonAppearance(button: button, isSelected: isSelected)
+            }
+        }
+        selectedIndex = index
+    }
+
+
     
 }
 
