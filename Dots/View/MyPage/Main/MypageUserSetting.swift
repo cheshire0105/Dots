@@ -1,7 +1,6 @@
 import UIKit
 import FirebaseAuth
 import SnapKit
-//asdfasf
 class 마이페이지_설정_페이지 : UIViewController {
     private let 페이지_제목 = {
         let label = UILabel()
