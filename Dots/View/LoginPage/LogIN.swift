@@ -86,7 +86,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
     }()
     private let 간편로그인_라벨 = {
         let label = UILabel()
-        label.text = "간편 로그인"
+        label.text = " - - - - - - - - - - - - - -  간편 로그인  - - - - - - - - - - - - - - "
         label.textColor = UIColor.darkGray
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textAlignment = .center
@@ -100,7 +100,9 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.setImage(UIImage(named: "google"), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = UIColor(named: "neon")
-        button.layer.cornerRadius = 30
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
         button.contentMode = .scaleToFill
         return button
     } ()
@@ -110,7 +112,9 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.setImage(UIImage(named: "apple"), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = UIColor(named: "neon")
-        button.layer.cornerRadius = 30
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
         button.contentMode = .scaleToFill
         
         return button
@@ -121,7 +125,9 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.setImage(UIImage(named: "twitter"), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = UIColor(named: "neon")
-        button.layer.cornerRadius = 30
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
         button.contentMode = .scaleToFill
         
         return button
@@ -164,24 +170,24 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(트위터_버튼)
         
         뒤로가기_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(75)
-            make.leading.equalToSuperview().offset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
             make.size.equalTo(40)
         }
         
         제목_라벨.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(264)
+            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(105)
             make.leading.equalToSuperview().offset(32)
             
         }
         이메일_백.snp.makeConstraints { make in
-            make.top.equalTo(제목_라벨.snp.bottom).offset(73)
+            make.top.equalTo(제목_라벨.snp.bottom).offset(40)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(58)
+            make.height.equalTo(55)
         }
         로그인_이메일_텍스트필드.snp.makeConstraints { make in
-            make.height.equalTo(58)
+            make.height.equalTo(55)
             make.top.equalTo(이메일_백)
             make.leading.equalTo(이메일_백).offset(30)
             make.trailing.equalTo(이메일_백).offset(-80)
@@ -190,10 +196,10 @@ extension 로그인_뷰컨트롤러 {
             make.top.equalTo(로그인_이메일_텍스트필드.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(58)
+            make.height.equalTo(55)
         }
         로그인_비밀번호_텍스트필드.snp.makeConstraints { make in
-            make.height.equalTo(58)
+            make.height.equalTo(55)
             make.top.equalTo(비밀번호_백)
             make.leading.equalTo(비밀번호_백).offset(30)
             make.trailing.equalTo(비밀번호_백).offset(-80)
@@ -202,26 +208,27 @@ extension 로그인_뷰컨트롤러 {
             make.top.equalTo(로그인_비밀번호_텍스트필드.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(64)
+            make.height.equalTo(60)
         }
         간편로그인_라벨.snp.makeConstraints { make in
-            make.top.equalTo(로그인_버튼.snp.bottom).offset(46)
+            make.top.equalTo(로그인_버튼.snp.bottom).offset(50)
             make.centerX.equalToSuperview()
         }
         구글_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(애플_버튼)
             make.trailing.equalTo(애플_버튼.snp.leading).offset(-20)
-            make.size.equalTo(60)
+            make.size.equalTo(50)
         }
         애플_버튼.snp.makeConstraints { make in
-            make.top.equalTo(간편로그인_라벨.snp.bottom).offset(30)
+            make.top.equalTo(간편로그인_라벨.snp.bottom).offset(63)
             make.centerX.equalToSuperview()
-            make.size.equalTo(60)
+            make.size.equalTo(50)
+//            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
         트위터_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(애플_버튼)
             make.leading.equalTo(애플_버튼.snp.trailing).offset(20)
-            make.size.equalTo(60)
+            make.size.equalTo(50)
         }
     }
 }
@@ -263,7 +270,7 @@ extension 로그인_뷰컨트롤러 {
     }
 }
 
-//키보드 관련
+//키보드 관련 Extension
 extension 로그인_뷰컨트롤러 : UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {

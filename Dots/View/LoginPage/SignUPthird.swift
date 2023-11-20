@@ -543,31 +543,3 @@ extension 회원가입_세번째_뷰컨트롤러 {
         navigationItem.hidesBackButton = true
     }
 }
-
-
-
-
-
-import SwiftUI
-import AVFoundation
-import SnapKit
-
-// ReviewWritePage를 SwiftUI에서 미리 보기 위한 래퍼
-struct 회원가입_세번째_뷰컨트롤러Preview: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        // UINavigationController를 반환합니다.
-        return UINavigationController(rootViewController: 회원가입_세번째_뷰컨트롤러())
-    }
-
-    func updateUIViewController(_ uiViewController: some UIViewController, context: Context) {
-        // 뷰 컨트롤러 업데이트 시 수행할 작업, 필요한 경우에만 구현합니다.
-    }
-}
-
-// SwiftUI 프리뷰
-struct 회원가입_세번째_뷰컨트롤러Preview_Previews: PreviewProvider {
-    static var previews: some View {
-        회원가입_세번째_뷰컨트롤러Preview()
-    }
-}
-
