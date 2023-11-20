@@ -261,8 +261,10 @@ class DetailAudioPage: UIViewController {
     private func setupLabels() {
         label1.text = "Signal Projection, 2023"
         label1.textColor = .black
+        label1.font = UIFont(name: "Pretendard-Bold", size: 18)
         label2.text = "Liam Gillick"
         label2.textColor = .black
+        label2.font = UIFont(name: "Pretendard-Regular", size: 16)
 
         roundedRectangleView.addSubview(label1)
         roundedRectangleView.addSubview(label2)
@@ -297,7 +299,7 @@ class DetailAudioPage: UIViewController {
     private func setupTextView() {
         textView.textColor = .white
         textView.backgroundColor = .black // 배경색 설정
-        textView.font = .systemFont(ofSize: 24)
+        textView.font = UIFont(name: "Pretendard-Bold", size: 22)
         textView.isEditable = false
         textView.isScrollEnabled = true
         textView.textAlignment = .justified

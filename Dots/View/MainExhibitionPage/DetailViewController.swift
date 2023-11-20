@@ -91,7 +91,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         titleLabel.text = "현대차 시리즈 2023: 정연두 - 백년여행"
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
-        titleLabel.font = UIFont.systemFont(ofSize: 16)
+        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 20)
         view.addSubview(titleLabel)
 
         // 세그먼트 컨트롤을 설정합니다.
@@ -166,13 +166,13 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let exhibitionTitleLabel = UILabel()
         exhibitionTitleLabel.text = "갤러리바톤"
         exhibitionTitleLabel.textColor = .white
-        exhibitionTitleLabel.font = UIFont.boldSystemFont(ofSize: 22)
+        exhibitionTitleLabel.font = UIFont(name: "Pretendard-Medium", size: 18)
 
         // 미술관 주소 레이블 초기화
         let galleryAddressLabel = UILabel()
         galleryAddressLabel.text = "서울 종로구 삼청로 30"
         galleryAddressLabel.textColor = .white
-        galleryAddressLabel.font = UIFont.systemFont(ofSize: 16)
+        galleryAddressLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
 
         // 컨텐츠 뷰에 레이블 추가
         detailContentView.addSubview(exhibitionTitleLabel)
@@ -282,7 +282,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             label.text = labelContents[index]
             label.textColor = .white
             label.textAlignment = .center
-            label.font = UIFont.systemFont(ofSize: 14)
+            label.font = UIFont(name: "Pretendard-Regular", size: 12)
             label.numberOfLines = 0 // 최대 두 줄로 설정
             containerView.addSubview(label) // containerView에 label 추가
 
@@ -323,7 +323,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 «김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다. 이번 전시는 1950년대부터 현재까지 다양한 매체, 장르, 주제를 넘나들며 예술의 최전선에서 독자적인 영역을 구축해 온 작가의 전위적인 면모를 확인할 수 있다. 비디오 아트, 설치, 판화, 퍼포먼스, 회화 등 미술의 범주를 넘어 무용, 연극, 영화, 음악에 이르기까지 다양한 분야에서 활발한 활동을 펼쳐 온 작가를 입체적으로 만나볼 수 있는 자리이기도 하다. 한국 현대미술사에서 중요한 위치를 차지하는 작가임에도 불구하고 김구림의 작품을 설명하거나 깊이 있게 경험할 기회는 충분치 않았기에 이번 전시를 통해 김구림의 미술사적 성과를 재확인하고, 현재진행형 작가로서 오늘날 그의 행보를 살펴보고자 한다. 전시는 1960년대 초 한국전쟁 이후 실존적인 문제에 매달리며 제작한 초기 회화, 1960-70년대 한국 실험미술의 중심에서 발표했던 퍼포먼스와 설치, 1980년대 중반부터 지속하는 <음과 양> 시리즈 등을 고루 소개한다. 또한 김구림 작가의 동시대적 면모를 확인할 수 있는 대형 설치와 함께 영화-무용-음악-연극을 한데 모은 공연을 새롭게 선보인다. 1950년대부터 이어진 김구림의 전방위적 활동과 거침없는 도전은 시대에 대한 반응이었고, 관습에 대한 저항이었던 바 그와 다른 시간대를 영위하는 이들이 단숨에 파악하기에는 어려운 낯선 영역일 것이다. 따라서 이번 전시는 부분적으로 밖에 파악할 수밖에 없었던 김구림의 세계를 최대한 온전하게 전달하는 데 초점을 두었다. 김구림과 함께 그의 결정적 순간들을 재방문해 보길 바라며, 김구림의 발자취를 경유하는 가운데 한국 미술사에 대한 이해의 폭을 넓히는 기회가 되길 바란다.
 """
         additionalInfoLabel.textColor = .white
-        additionalInfoLabel.font = UIFont.systemFont(ofSize: 16)
+        additionalInfoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
         additionalInfoLabel.numberOfLines = 0 // 제한 없이 여러 줄 표시 가능
 
         // contentView에 추가 정보 레이블 추가
