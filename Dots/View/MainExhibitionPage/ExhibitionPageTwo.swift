@@ -60,6 +60,19 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         presentModalViewController() // 뷰가 나타날 때 모달을 바로 표시합니다.
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 탭바를 숨깁니다.
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
+        tabBarController?.tabBar.isHidden = false
+    }
+
+
 
     override func viewDidLoad() {
 
