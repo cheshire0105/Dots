@@ -2,10 +2,10 @@ import UIKit
 import FirebaseAuth
 import SnapKit
 
-class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate, UITextFieldDelegate {
-
+class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
+    
     var 활성화된텍스트필드: UITextField?
-
+    
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
@@ -93,7 +93,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         
         return label
     } ()
-   
+    
     let 구글_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "google"), for: .selected)
@@ -112,7 +112,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.backgroundColor = UIColor(named: "neon")
         button.layer.cornerRadius = 30
         button.contentMode = .scaleToFill
-
+        
         return button
     } ()
     let 트위터_버튼 = {
@@ -123,47 +123,29 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.backgroundColor = UIColor(named: "neon")
         button.layer.cornerRadius = 30
         button.contentMode = .scaleToFill
-
+        
         return button
     } ()
-
+    
     override func viewDidLoad() {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
-
+        
         로그인_이메일_텍스트필드.delegate = self
-               로그인_비밀번호_텍스트필드.delegate = self
-
-               // 키보드 이벤트 리스너 등록
-               NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+        로그인_비밀번호_텍스트필드.delegate = self
+        
+        // 키보드 이벤트 리스너 등록
+        NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
-
-    @objc func 키보드가올라올때(notification: NSNotification) {
-        if let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let 활성화된텍스트필드 = 활성화된텍스트필드 {
-            let 화면끝 = view.frame.size.height
-            let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
-            let 키보드시작 = 화면끝 - 키보드크기.height
-
-            if 텍스트필드끝 > 키보드시작 {
-                view.frame.origin.y = -텍스트필드끝 + 키보드시작
-            }
-        }
-    }
-
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-
-
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-
-
+    
+    
 }
 
 //레이아웃
@@ -271,7 +253,7 @@ extension 로그인_뷰컨트롤러 {
                 print("로그인 성공")
                 
                 UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
-
+                
                 
                 let 메인화면_이동 = TabBar()
                 self.navigationController?.pushViewController(메인화면_이동, animated: true)
@@ -279,4 +261,39 @@ extension 로그인_뷰컨트롤러 {
             }
         }
     }
+}
+
+//키보드 관련
+extension 로그인_뷰컨트롤러 : UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = nil
+    }
+}
+
+extension 로그인_뷰컨트롤러 {
+    
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let 활성화된텍스트필드 = 활성화된텍스트필드 else {
+            return
+        }
+        
+        let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+        let 키보드시작 = view.frame.size.height - 키보드크기.height
+        
+        if 텍스트필드끝 > 키보드시작 {
+            let 이동거리 = 키보드시작 - 텍스트필드끝
+            view.frame.origin.y = 이동거리
+        }
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        self.view.frame.origin.y = 0
+    }
+    
 }
