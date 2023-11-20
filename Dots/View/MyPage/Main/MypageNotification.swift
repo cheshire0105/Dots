@@ -8,11 +8,11 @@ class 마이페이지_알림 : UIViewController {
             button.isSelected = !button.isSelected
             return button
         } ()
-    override func viewWillAppear(_ animated: Bool) {
-        if let glassTabBar = tabBarController as? GlassTabBar {
-            glassTabBar.customTabBarView.isHidden = true
-        }
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        if let glassTabBar = tabBarController as? GlassTabBar {
+//            glassTabBar.customTabBarView.isHidden = true
+//        }
+//    }
     override func viewDidLoad() {
         view.backgroundColor = .orange
         navigationItem.hidesBackButton = true

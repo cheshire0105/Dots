@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // 로그인이 되어 있으면, 메인 탭 바를 설정합니다.
             launchScreenVC.completionHandler = { [weak self] in
                 guard let self = self else { return }
-                let mainTabBar = GlassTabBar()
+                let mainTabBar = TabBar()
                 self.window?.rootViewController = mainTabBar
             }
         } else {

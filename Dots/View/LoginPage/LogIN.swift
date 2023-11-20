@@ -273,7 +273,7 @@ extension 로그인_뷰컨트롤러 {
                 UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
 
                 
-                let 메인화면_이동 = GlassTabBar()
+                let 메인화면_이동 = TabBar()
                 self.navigationController?.pushViewController(메인화면_이동, animated: true)
                 self.navigationItem.hidesBackButton = true
             }

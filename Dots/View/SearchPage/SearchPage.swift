@@ -92,6 +92,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupTableView()
         setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
         setupCoverView() // 커버 뷰 설정 추가
+        
 
     }
 
@@ -187,7 +188,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
 
         searchBar.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.top.equalTo(view.snp.top).inset(20)
             make.leading.equalTo(view).offset(5)
             make.trailing.equalTo(view).offset(-5)
         }
