@@ -5,12 +5,7 @@ import UIKit
 import SnapKit
 
 class 로그인_회원가입_뷰컨트롤러: UIViewController {
-    
-    //    도트 로고&슬로건
-//    private let 로고_이미지 = {
-//        let imageView = UIImageView()
-//        return imageView
-//    } ()
+
     private let D = {
         let imageView = UIImageView()
         imageView.backgroundColor = .white
@@ -181,13 +176,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
             make.leading.equalTo(로그인_버튼.snp.centerX).offset(50)
 
         }
-//        로고_이미지.snp.makeConstraints { make in
-//            make.height.equalTo(50)
-//            make.top.equalToSuperview().offset(258)
-//            make.leading.equalToSuperview().offset(109)
-//            make.trailing.equalToSuperview().offset(-109)
-//        }
-        
+
         슬로건_라벨.snp.makeConstraints { make in
             make.top.equalTo(D.snp.bottom).offset(32)
             make.leading.equalTo(D.snp.leading).offset(18)
