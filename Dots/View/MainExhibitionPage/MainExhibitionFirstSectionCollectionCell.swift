@@ -44,7 +44,7 @@ class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
 
     private func setupLabel() {
         label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 40)
+        label.font = UIFont(name: "Pretendard-Bold", size: 40)
         label.numberOfLines = 0
         label.textColor = .white  // 텍스트 색상을 하얀색으로 설정
         label.textAlignment = .right

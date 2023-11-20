@@ -48,6 +48,7 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         collectionView.register(CategotyCell.self, forCellWithReuseIdentifier: "CategoryCollectionCell")
         collectionView.isScrollEnabled = true
         collectionView.showsVerticalScrollIndicator = false
+        
         return collectionView
     }()
 
