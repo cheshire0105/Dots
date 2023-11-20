@@ -188,7 +188,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
 
         searchBar.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.top).inset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalTo(view).offset(5)
             make.trailing.equalTo(view).offset(-5)
         }
