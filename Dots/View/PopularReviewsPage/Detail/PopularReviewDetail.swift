@@ -150,11 +150,11 @@ class PopularReviewDetail : UIViewController {
         collectionView.isPagingEnabled = true
         return collectionView
     }()
-    override func viewWillAppear(_ animated: Bool) {
-        if let glassTabBar = tabBarController as? GlassTabBar {
-            glassTabBar.customTabBarView.isHidden = true
-        }
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        if let glassTabBar = tabBarController as? GlassTabBar {
+//            glassTabBar.customTabBarView.isHidden = true
+//        }
+//    }
     override func viewDidLoad() {
         print("Popular Review Detail")
         

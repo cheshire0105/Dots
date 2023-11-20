@@ -67,13 +67,13 @@ class MainExhibitionPage: UIViewController, UICollectionViewDelegateFlowLayout {
         return collectionView
     }()
 
-    override func viewDidAppear(_ animated: Bool) {
-        // 네비게이션 바의 아이템들을 숨깁니다.
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-        if let glassTabBar = tabBarController as? GlassTabBar {
-            glassTabBar.customTabBarView.isHidden = false
-        }
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        // 네비게이션 바의 아이템들을 숨깁니다.
+//        navigationController?.setNavigationBarHidden(true, animated: animated)
+//        if let glassTabBar = tabBarController as? GlassTabBar {
+//            glassTabBar.customTabBarView.isHidden = false
+//        }
+//    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

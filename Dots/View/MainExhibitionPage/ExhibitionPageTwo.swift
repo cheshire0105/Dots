@@ -47,11 +47,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
-    override func viewWillAppear(_ animated: Bool) {
-        if let glassTabBar = tabBarController as? GlassTabBar {
-            glassTabBar.customTabBarView.isHidden = true
-        }
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        if let glassTabBar = tabBarController as? GlassTabBar {
+//            glassTabBar.customTabBarView.isHidden = true
+//        }
+//    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -112,14 +112,14 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        // 모달이 표시되어 있으면 닫습니다.
-        if let presentedViewController = self.presentedViewController {
-            presentedViewController.dismiss(animated: false, completion: nil)
-        }
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        // 모달이 표시되어 있으면 닫습니다.
+//        if let presentedViewController = self.presentedViewController {
+//            presentedViewController.dismiss(animated: false, completion: nil)
+//        }
+//    }
 
 
     @objc func backButtonTapped() {

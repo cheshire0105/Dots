@@ -88,11 +88,11 @@ class 마이페이지_보관함 : UIViewController {
         collectionView.decelerationRate = UIScrollView.DecelerationRate.normal
         return collectionView
     } ()
-    override func viewWillAppear(_ animated: Bool) {
-        if let glassTabBar = tabBarController as? GlassTabBar {
-            glassTabBar.customTabBarView.isHidden = true
-        }
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        if let glassTabBar = tabBarController as? GlassTabBar {
+//            glassTabBar.customTabBarView.isHidden = true
+//        }
+//    }
     override func viewDidLoad() {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
