@@ -47,6 +47,19 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 네비게이션 바 숨기기
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // 다른 화면으로 넘어갈 때 네비게이션 바 다시 표시
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+
+
     func setupCollectionViewLayout() {
         guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         layout.scrollDirection = .vertical
