@@ -3,7 +3,7 @@
 //  Dots
 //
 //  Created by cheshire on 11/8/23.
-//
+// 폰트 수정 시작.
 
 import Foundation
 import UIKit
@@ -30,7 +30,7 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
         }
 
         // 타이틀 레이블 설정
-        titleLabel.font = .boldSystemFont(ofSize: 16)
+        titleLabel.font =  UIFont(name: "Pretendard-Regular", size: 16)
         titleLabel.text = "올해의 전시"
         titleLabel.textColor = .white
         contentView.addSubview(titleLabel)
@@ -40,7 +40,7 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
         }
 
         // 날짜 레이블 설정
-        dateLabel.font = .systemFont(ofSize: 14)
+        dateLabel.font = UIFont(name: "Pretendard-Regular", size: 12)
         dateLabel.text = "2023. 12. 34 ~ 2024. 12. 34"
         dateLabel.textColor = .lightGray
         contentView.addSubview(dateLabel)

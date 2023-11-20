@@ -130,6 +130,17 @@
 		37E2AAD32AEF9FFB00611B0D /* MyPageTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicket.swift; sourceTree = "<group>"; };
 		7463B6322E0941141F04DE43 /* Pods_Dots.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Dots.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75A67AE9D70EFBEEF526F19F /* Pods-Dots.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.debug.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.debug.xcconfig"; sourceTree = "<group>"; };
+
+		FF0400E72B0B2AD900B23988 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-Medium.otf"; path = "font/Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		FF0400E82B0B2AD900B23988 /* Pretendard-ExtraLight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-ExtraLight.otf"; path = "font/Pretendard-ExtraLight.otf"; sourceTree = "<group>"; };
+		FF0400E92B0B2AD900B23988 /* Pretendard-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-Light.otf"; path = "font/Pretendard-Light.otf"; sourceTree = "<group>"; };
+		FF0400EA2B0B2AD900B23988 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-SemiBold.otf"; path = "font/Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		FF0400EB2B0B2ADA00B23988 /* Pretendard-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-ExtraBold.otf"; path = "font/Pretendard-ExtraBold.otf"; sourceTree = "<group>"; };
+		FF0400EC2B0B2ADA00B23988 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-Regular.otf"; path = "font/Pretendard-Regular.otf"; sourceTree = "<group>"; };
+		FF0400ED2B0B2ADA00B23988 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-Bold.otf"; path = "font/Pretendard-Bold.otf"; sourceTree = "<group>"; };
+		FF0400EE2B0B2ADA00B23988 /* Pretendard-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-Thin.otf"; path = "font/Pretendard-Thin.otf"; sourceTree = "<group>"; };
+		FF0400EF2B0B2ADA00B23988 /* Pretendard-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pretendard-Black.otf"; path = "font/Pretendard-Black.otf"; sourceTree = "<group>"; };
+
 		FF1EBFED2B03141E00343619 /* DetailAudioPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailAudioPage.swift; sourceTree = "<group>"; };
 		FF3C97172AE5FEA1006FEF23 /* Dots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dots.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF3C971A2AE5FEA1006FEF23 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
