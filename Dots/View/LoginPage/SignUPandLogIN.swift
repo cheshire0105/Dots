@@ -196,7 +196,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
         
         회원가입_버튼.snp.makeConstraints { make in
             make.height.equalTo(64)
-            make.top.equalTo(슬로건_라벨.snp.bottom).offset(170)
+            make.top.equalTo(슬로건_라벨.snp.bottom).offset(127)
             make.leading.equalToSuperview().offset(45)
             make.trailing.equalToSuperview().offset(-44)
         }
