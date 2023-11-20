@@ -19,17 +19,17 @@ class DetailAudioPage: UIViewController {
     let textView = UITextView()
 
     let leftCircleView = UIView() // 왼쪽 원형 뷰
-      let rightCircleView = UIView() // 오른쪽 원형 뷰
-      let leftButton = UIButton(type: .custom) // 왼쪽 버튼
-      let rightButton = UIButton(type: .custom) // 오른쪽 버튼
+    let rightCircleView = UIView() // 오른쪽 원형 뷰
+    let leftButton = UIButton(type: .custom) // 왼쪽 버튼
+    let rightButton = UIButton(type: .custom) // 오른쪽 버튼
 
     // 새로운 버튼 선언
-       let leftButton1 = UIButton(type: .custom)
-       let leftButton2 = UIButton(type: .custom)
-       let leftButton3 = UIButton(type: .custom)
-       let rightButton1 = UIButton(type: .custom)
-       let rightButton2 = UIButton(type: .custom)
-       let rightButton3 = UIButton(type: .custom)
+    let leftButton1 = UIButton(type: .custom)
+    let leftButton2 = UIButton(type: .custom)
+    let leftButton3 = UIButton(type: .custom)
+    let rightButton1 = UIButton(type: .custom)
+    let rightButton2 = UIButton(type: .custom)
+    let rightButton3 = UIButton(type: .custom)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +41,7 @@ class DetailAudioPage: UIViewController {
         setupRightImageView() // 이미지 뷰 설정 메서드 호출
         setupTextView()
         setupLeftCircleView() // 새로 추가한 메서드 호출
-               setupRightCircleView() // 새로 추가한 메서드 호출
+        setupRightCircleView() // 새로 추가한 메서드 호출
 
     }
 
@@ -53,7 +53,7 @@ class DetailAudioPage: UIViewController {
         // 왼쪽 원형 뷰에 세 개의 버튼 추가 및 설정
         configureAdditionalButton(button: leftButton1, title: "x 0.5", fontSize: 16)
         configureAdditionalButton(button: leftButton2, title: "x 1", fontSize: 16)
-                configureAdditionalButton(button: leftButton3, title: "x 2", fontSize: 16)
+        configureAdditionalButton(button: leftButton3, title: "x 2", fontSize: 16)
 
         view.addSubview(leftCircleView)
         leftCircleView.snp.makeConstraints { make in
@@ -68,18 +68,18 @@ class DetailAudioPage: UIViewController {
             make.center.equalToSuperview()
             make.width.height.equalToSuperview()
         }
-        
+
         // 왼쪽 원형 뷰에 세 개의 버튼 추가
-             [leftButton1, leftButton2, leftButton3].forEach {
-                 $0.isHidden = true // 초기에는 숨김
-//                 $0.backgroundColor = .red // 색상 예시
-                 leftCircleView.addSubview($0)
-                 $0.snp.makeConstraints { make in
-                     make.centerX.equalToSuperview()
-                     make.height.equalTo(40)
-                     // 각 버튼의 위치 조정 필요
-                 }
-             }
+        [leftButton1, leftButton2, leftButton3].forEach {
+            $0.isHidden = true // 초기에는 숨김
+            //                 $0.backgroundColor = .red // 색상 예시
+            leftCircleView.addSubview($0)
+            $0.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.height.equalTo(40)
+                // 각 버튼의 위치 조정 필요
+            }
+        }
 
     }
 
@@ -109,16 +109,16 @@ class DetailAudioPage: UIViewController {
         }
 
         [rightButton1, rightButton2, rightButton3].forEach {
-                $0.isHidden = true // 초기에는 숨김
-//                $0.backgroundColor = .blue // 예시 색상
-                configureButtonAppearance(button: $0)
-                rightCircleView.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.centerX.equalToSuperview()
-                    make.height.equalTo(40)
-                    // 각 버튼의 위치 조정 필요
-                }
+            $0.isHidden = true // 초기에는 숨김
+            //                $0.backgroundColor = .blue // 예시 색상
+            configureButtonAppearance(button: $0)
+            rightCircleView.addSubview($0)
+            $0.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.height.equalTo(40)
+                // 각 버튼의 위치 조정 필요
             }
+        }
     }
 
     private func configureAdditionalButton(button: UIButton, title: String, fontSize: CGFloat) {
@@ -170,26 +170,26 @@ class DetailAudioPage: UIViewController {
     }
 
     @objc private func circleButtonTapped(sender: UIButton) {
-          sender.isHidden = true // 버튼 숨기기
+        sender.isHidden = true // 버튼 숨기기
 
-          if sender == leftButton {
-              leftCircleView.snp.updateConstraints { make in
-                  make.height.equalTo(150) // 높이를 늘립니다.
-              }
-              // 왼쪽 버튼들의 위치 조정
-              configureButtonPositions(buttons: [leftButton1, leftButton2, leftButton3], inView: leftCircleView)
-          } else if sender == rightButton {
-              rightCircleView.snp.updateConstraints { make in
-                  make.height.equalTo(150) // 높이를 늘립니다.
-              }
-              // 오른쪽 버튼들의 위치 조정
-              configureButtonPositions(buttons: [rightButton1, rightButton2, rightButton3], inView: rightCircleView)
-          }
+        if sender == leftButton {
+            leftCircleView.snp.updateConstraints { make in
+                make.height.equalTo(150) // 높이를 늘립니다.
+            }
+            // 왼쪽 버튼들의 위치 조정
+            configureButtonPositions(buttons: [leftButton1, leftButton2, leftButton3], inView: leftCircleView)
+        } else if sender == rightButton {
+            rightCircleView.snp.updateConstraints { make in
+                make.height.equalTo(150) // 높이를 늘립니다.
+            }
+            // 오른쪽 버튼들의 위치 조정
+            configureButtonPositions(buttons: [rightButton1, rightButton2, rightButton3], inView: rightCircleView)
+        }
 
-          UIView.animate(withDuration: 0.3) {
-              self.view.layoutIfNeeded()
-          }
-      }
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
 
 
     private func configureButtonPositions(buttons: [UIButton], inView view: UIView) {
