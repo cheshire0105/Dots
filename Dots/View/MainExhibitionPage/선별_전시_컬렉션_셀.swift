@@ -3,7 +3,7 @@
 //  Dots
 //
 //  Created by cheshire on 11/8/23.
-//
+// 폰트 수정 시작.
 
 import Foundation
 import UIKit
