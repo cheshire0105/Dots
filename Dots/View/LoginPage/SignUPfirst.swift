@@ -30,7 +30,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
     
     var 회원가입_이미지_선택_버튼 = {
         var imageButton = UIButton()
-        imageButton.layer.cornerRadius = 75
+        imageButton.layer.cornerRadius = 60
         imageButton.backgroundColor = .darkGray
         imageButton.clipsToBounds = true
         imageButton.setTitle("사진", for: .normal)
@@ -201,22 +201,22 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         view.addSubview(회원가입_다음_버튼)
         
         뒤로가기_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(75)
-            make.leading.equalToSuperview().offset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
             make.size.equalTo(40)
         }
         제목_라벨.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(149)
+            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(25)
             make.leading.equalToSuperview().offset(24)
             
         }
         회원가입_이미지_선택_버튼.snp.makeConstraints { make in
-            make.top.equalTo(제목_라벨).offset(83)
+            make.top.equalTo(제목_라벨.snp.bottom).offset(75)
             make.centerX.equalToSuperview()
-            make.size.equalTo(150)
+            make.width.height.equalTo(124)
         }
         닉네임_백.snp.makeConstraints { make in
-            make.top.equalTo(회원가입_이미지_선택_버튼.snp.bottom).offset(33)
+            make.top.equalTo(회원가입_이미지_선택_버튼.snp.bottom).offset(35)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(58)
@@ -226,7 +226,6 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.leading.equalTo(닉네임_백).offset(30)
             make.trailing.equalTo(닉네임_백).offset(-80)
             make.height.equalTo(58)
-            
         }
         이메일_백.snp.makeConstraints { make in
             make.top.equalTo(회원가입_닉네임_텍스트필드.snp.bottom).offset(24)
@@ -257,7 +256,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.height.equalTo(58)
         }
         회원가입_다음_버튼.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-30)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(64)
@@ -355,6 +354,9 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         present(alert, animated: true, completion: nil)
     }
     @objc func 회원가입_다음_버튼_클릭() {
+        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+        self.navigationController?.pushViewController(다음화면_이동, animated: true)
+        self.navigationItem.hidesBackButton = true
         print("다음 페이지로 이동")
         guard let 이메일 = 회원가입_이메일_텍스트필드.text,
               let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
@@ -370,6 +372,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
                 Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { (authResult, 에러) in
                     if let 회원가입_실패 = 에러 {
                         print("회원가입 실패: \(회원가입_실패.localizedDescription)")
+                        
                         return
                     }
                     
@@ -383,6 +386,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
                 }
             case .failure(let 업로드_실패):
                 print("이미지 업로드 실패: \(업로드_실패.localizedDescription)")
+                
             }
         }
         
@@ -414,9 +418,10 @@ extension 회원가입_첫번째_뷰컨트롤러: UIImagePickerControllerDelegat
     }
 }
 
-class 사진_라이브: UIViewController {
+class 사진_라이브러리: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
     }
 }
+

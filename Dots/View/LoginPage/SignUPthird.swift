@@ -463,8 +463,8 @@ extension 회원가입_세번째_뷰컨트롤러 {
         view.addSubview(다음_버튼)
 
         뒤로가기_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(75)
-            make.leading.equalToSuperview().offset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
             make.size.equalTo(40)
         }
         건너뛰기_버튼.snp.makeConstraints { make in
@@ -473,7 +473,7 @@ extension 회원가입_세번째_뷰컨트롤러 {
             make.height.equalTo(30)
         }
         제목_라벨.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(149)
+            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(45)
             make.leading.equalToSuperview().offset(24)
         }
         검색_백.snp.makeConstraints { make in
@@ -492,13 +492,11 @@ extension 회원가입_세번째_뷰컨트롤러 {
 
         }
         다음_버튼.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-30)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(64)
         }
-
-
     }
 }
 
