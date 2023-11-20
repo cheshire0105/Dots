@@ -47,6 +47,19 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 네비게이션 바 숨기기
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // 다른 화면으로 넘어갈 때 네비게이션 바 다시 표시
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+
+
     func setupCollectionViewLayout() {
         guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         layout.scrollDirection = .vertical
@@ -92,6 +105,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupTableView()
         setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
         setupCoverView() // 커버 뷰 설정 추가
+        
 
     }
 
@@ -187,7 +201,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
 
         searchBar.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalTo(view).offset(5)
             make.trailing.equalTo(view).offset(-5)
         }

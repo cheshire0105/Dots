@@ -155,11 +155,11 @@ class 마이페이지_설정_페이지 : UIViewController {
         return label
     }()
     
-    override func viewWillAppear(_ animated: Bool) {
-        if let glassTabBar = tabBarController as? GlassTabBar {
-            glassTabBar.customTabBarView.isHidden = true
-        }
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        if let glassTabBar = tabBarController as? GlassTabBar {
+//            glassTabBar.customTabBarView.isHidden = true
+//        }
+//    }
     override func viewDidLoad() {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
