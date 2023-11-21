@@ -80,7 +80,7 @@ class 마이페이지_보관함 : UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 0 , left: 0, bottom: 0, right: 0)
         
         collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
@@ -309,10 +309,10 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
             return 15
         case 1:
           
-            return 5
+            return 25
         case 2:
            
-            return 5
+            return 25
         case 3:
            
             return 15
@@ -330,11 +330,11 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
             return CGSize(width: width, height: height)
         case 1:
             let width = collectionView.frame.width * 0.33 - 10
-            let height = collectionView.frame.height * 0.22
+            let height = collectionView.frame.height * 0.20
             return CGSize(width: width, height: height)
         case 2:
             let width = collectionView.frame.width * 0.33 - 10
-            let height = collectionView.frame.height * 0.22
+            let height = collectionView.frame.height * 0.20
             return CGSize(width: width, height: height)
         case 3:
             let width = collectionView.frame.width * 1

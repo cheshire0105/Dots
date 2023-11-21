@@ -15,6 +15,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         
         return label
     } ()
+    
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -24,6 +25,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.layer.cornerRadius = 20
         return button
     } ()
+    
     //이메일 텍스트필드
     private let 로그인_이메일_텍스트필드 = { ()
         let textField = UITextField()

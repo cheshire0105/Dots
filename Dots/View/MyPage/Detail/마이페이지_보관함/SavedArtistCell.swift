@@ -4,10 +4,9 @@ class 보관함_아티스트_셀 : UICollectionViewCell {
     var 보관함_아티스트_셀_이미지 = {
         var imageView = UIImageView()
         imageView.image = UIImage(named: "help")
-        imageView.layer.cornerRadius = 52
-        imageView.clipsToBounds = true
-        imageView.layer.borderWidth = 0.3
         imageView.layer.borderColor = UIColor(named: "neon")?.cgColor
+        imageView.layer.cornerRadius = 50
+        imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
     } ()
@@ -29,7 +28,7 @@ class 보관함_아티스트_셀 : UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.clear
+        backgroundColor = UIColor.black
 //        layer.cornerRadius = 15
 //        layer.borderWidth = 0.5
 //        layer.borderColor = UIColor(named: "neon")?.cgColor
@@ -42,14 +41,14 @@ class 보관함_아티스트_셀 : UICollectionViewCell {
         contentView.addSubview(보관함_아티스트_셀_이름)
         
         보관함_아티스트_셀_이미지.snp.makeConstraints { make in
-            make.width.equalToSuperview()
-            make.height.equalTo(보관함_아티스트_셀_이미지.snp.width)
-            make.bottom.equalToSuperview().offset(-30)
-            
+            make.centerX.equalToSuperview()
+            make.size.equalTo(100)
+            make.centerY.equalToSuperview()
         }
         보관함_아티스트_셀_이름.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-10)
+//            make.bottom.equalToSuperview()
+            make.top.equalTo(보관함_아티스트_셀_이미지.snp.bottom)
         }
         
     }
