@@ -75,8 +75,24 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         updateCollectionViewLayout()
         collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCollectionViewCell")
 
-
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+
+    @objc func keyboardWillShow(notification: NSNotification) {
+        // 키보드가 표시될 때 필요한 동작을 구현
+        // 예를 들어, 텍스트 필드의 위치 조정 등
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        // 키보드가 숨겨질 때 필요한 동작을 구현
+        // 예를 들어, 텍스트 필드의 위치를 원래대로 복원
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
 
     func setupCollectionView() {
         // 레이아웃 설정
