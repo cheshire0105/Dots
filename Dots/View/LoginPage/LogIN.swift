@@ -146,7 +146,6 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         로그인_이메일_텍스트필드.delegate = self
         로그인_비밀번호_텍스트필드.delegate = self
         
-        // 키보드 이벤트 리스너 등록
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
@@ -157,7 +156,89 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
     
 }
 
-//레이아웃
+
+//버튼클릭
+extension 로그인_뷰컨트롤러 {
+    
+    private func 버튼_클릭() {
+        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
+    }
+    //일반 화면전환 버튼
+    @objc func 뒤로가기_버튼_클릭() {
+        print("뒤로가기")
+        let 처음화면_이동 = 로그인_회원가입_뷰컨트롤러()
+        self.navigationController?.pushViewController(처음화면_이동, animated: true)
+        navigationItem.hidesBackButton = true
+    }
+    
+   
+}
+
+//로그인 관련
+extension 로그인_뷰컨트롤러 {
+    
+    //클릭했을때
+    @objc func 로그인_버튼_클릭() {
+        print("메인 전시 페이지로 이동")
+        guard let 이메일 = 로그인_이메일_텍스트필드.text, let 비밀번호 = 로그인_비밀번호_텍스트필드.text else {
+            return
+        }
+        
+        Auth.auth().signIn(withEmail: 이메일, password: 비밀번호) { [weak self] authResult, 에러 in
+            guard let self = self else { return }
+            
+            if let 로그인_실패 = 에러 {
+                print("로그인 실패: \(로그인_실패.localizedDescription)")
+            } else {
+                print("로그인 성공")
+                이중_로그인_확인_장치(이메일: 이메일)
+            }
+        }
+    }
+    
+    // 로그인 메서드
+    private func 이중_로그인_확인_장치(이메일: String) {
+        let 파이어스토어 = Firestore.firestore()
+        
+        파이어스토어.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
+            guard let self = self else { return }
+            
+            if let 에러 = 에러 {
+                print("Firestore 조회 에러: \(에러.localizedDescription)")
+            } else {
+
+                if let 문서조회 = 컬렉션?.documents, !문서조회.isEmpty {
+
+                    let 문서 = 문서조회[0]
+                    
+                    if let 로그인상태 = 문서["로그인상태"] as? Bool, !로그인상태 {
+                        
+                        문서.reference.updateData(["로그인상태": true]) { 에러 in
+                            if let 에러 = 에러 {
+                                print("Firestore 업데이트 에러: \(에러.localizedDescription)")
+                            } else {
+
+                                UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
+                                
+                                let 메인화면_이동 = TabBar()
+                                self.navigationController?.pushViewController(메인화면_이동, animated: true)
+                                self.navigationItem.hidesBackButton = true
+                            }
+                        }
+                    } else {
+                        print("Firestore: 이미 로그인된 상태입니다.")
+                    }
+                } else {
+                    print("Firestore: 일치하는 이메일이 없습니다.")
+                }
+            }
+        }
+    }
+}
+
+
+//레이아웃 관련
 extension 로그인_뷰컨트롤러 {
     func UI레이아웃() {
         view.addSubview(뒤로가기_버튼)
@@ -226,7 +307,6 @@ extension 로그인_뷰컨트롤러 {
             make.top.equalTo(간편로그인_라벨.snp.bottom).offset(63)
             make.centerX.equalToSuperview()
             make.size.equalTo(50)
-//            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
         트위터_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(애플_버튼)
@@ -235,74 +315,10 @@ extension 로그인_뷰컨트롤러 {
         }
     }
 }
-//버튼클릭
-extension 로그인_뷰컨트롤러 {
-    
-    private func 버튼_클릭() {
-        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
-        로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
-    }
-    @objc func 뒤로가기_버튼_클릭() {
-        print("뒤로가기")
-        let 처음화면_이동 = 로그인_회원가입_뷰컨트롤러()
-        self.navigationController?.pushViewController(처음화면_이동, animated: true)
-        navigationItem.hidesBackButton = true
-    }
-    @objc func 로그인_버튼_클릭() {
-        print("메인 전시 페이지로 이동")
-        guard let 이메일 = 로그인_이메일_텍스트필드.text, let 비밀번호 = 로그인_비밀번호_텍스트필드.text else {
-            return
-        }
-        
-        Auth.auth().signIn(withEmail: 이메일, password: 비밀번호) { [weak self] authResult, 에러 in
-            guard let self = self else { return }
-            
-            if let 로그인_실패 = 에러 {
-                print("로그인 실패: \(로그인_실패.localizedDescription)")
-            } else {
-                print("로그인 성공")
-                이중_로그인_확인_장치(이메일: 이메일)
-            }
-        }
-    }
-    private func 이중_로그인_확인_장치(이메일: String) {
-        let 파이어스토어 = Firestore.firestore()
-        
-        파이어스토어.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
-            guard let self = self else { return }
-            
-            if let 에러 = 에러 {
-                print("Firestore 조회 에러: \(에러.localizedDescription)")
-            } else {
 
-                if let 문서조회 = 컬렉션?.documents, !문서조회.isEmpty {
 
-                    let 문서 = 문서조회[0]
-                    
-                    if let 로그인상태 = 문서["로그인상태"] as? Bool, !로그인상태 {
-                        
-                        문서.reference.updateData(["로그인상태": true]) { 에러 in
-                            if let 에러 = 에러 {
-                                print("Firestore 업데이트 에러: \(에러.localizedDescription)")
-                            } else {
 
-                                UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
-                                
-                                let 메인화면_이동 = TabBar()
-                                self.navigationController?.pushViewController(메인화면_이동, animated: true)
-                                self.navigationItem.hidesBackButton = true
-                            }
-                        }
-                    } else {
-                        print("Firestore: 이미 로그인된 상태입니다.")
-                    }
-                } else {
-                    print("Firestore: 일치하는 이메일이 없습니다.")
-                }
-            }
-        }
-    }
-}
+
 //키보드 관련 Extension
 extension 로그인_뷰컨트롤러 : UITextFieldDelegate {
     
@@ -334,3 +350,4 @@ extension 로그인_뷰컨트롤러 {
         self.view.frame.origin.y = 0
     }
 }
+
