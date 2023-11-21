@@ -34,7 +34,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "heartIcon"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
 
@@ -43,7 +43,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "Union 4"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        button.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
 
@@ -133,6 +133,22 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 //            presentedViewController.dismiss(animated: false, completion: nil)
 //        }
 //    }
+
+    @objc func heartIconTapped() {
+        let isSelected = heartIcon.isSelected
+        heartIcon.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
+
+        let newImageName = isSelected ? "heartIcon" : "Vector 1" // 새 이미지 이름
+        heartIcon.setImage(UIImage(named: newImageName), for: .normal)
+    }
+
+    @objc func recordButtonTapped() {
+        let isSelected = recordButton.isSelected
+        recordButton.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
+
+        let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
+        recordButton.setImage(UIImage(named: newImageName), for: .normal)
+    }
 
 
     @objc func backButtonTapped() {

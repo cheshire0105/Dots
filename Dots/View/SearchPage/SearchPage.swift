@@ -105,9 +105,11 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupTableView()
         setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
         setupCoverView() // 커버 뷰 설정 추가
-        
 
     }
+
+
+
 
     func setupCoverView() {
         coverView.backgroundColor = .black
