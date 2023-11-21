@@ -38,7 +38,7 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(10)
+            make.leading.trailing.equalToSuperview()
         }
 
         // 날짜 레이블 설정
@@ -48,7 +48,7 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
         contentView.addSubview(dateLabel)
         dateLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(10)
+            make.leading.trailing.equalToSuperview()
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
         }
     }
