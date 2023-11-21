@@ -25,9 +25,11 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
         imageView.backgroundColor = .gray
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(imageView.snp.width) // 가로 세로 비율 1:1로 설정
+            make.top.leading.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.8) // 화면 폭의 80%
+            make.height.equalTo(imageView.snp.width).multipliedBy(1.41) // 가로 세로 비율 1:1.41로 설정
         }
+
 
         // 타이틀 레이블 설정
         titleLabel.font =  UIFont(name: "Pretendard-Regular", size: 16)
