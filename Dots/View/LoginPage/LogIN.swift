@@ -285,13 +285,11 @@ extension 로그인_뷰컨트롤러 : UITextFieldDelegate {
 }
 
 extension 로그인_뷰컨트롤러 {
-    
     @objc func 키보드가올라올때(notification: NSNotification) {
         guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
               let 활성화된텍스트필드 = 활성화된텍스트필드 else {
             return
         }
-        
         let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
         let 키보드시작 = view.frame.size.height - 키보드크기.height
         
@@ -304,5 +302,4 @@ extension 로그인_뷰컨트롤러 {
         self.view.endEditing(true)
         self.view.frame.origin.y = 0
     }
-    
 }
