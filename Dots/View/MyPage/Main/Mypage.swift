@@ -18,7 +18,7 @@ class Mypage: UIViewController {
     }()
     let 버튼_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = UIColor.white
+        uiView.backgroundColor = UIColor.black
         return uiView
     } ()
     let 마이페이지_설정_버튼 = {
@@ -189,57 +189,57 @@ class Mypage: UIViewController {
         
         
         마이페이지_전시_버튼.snp.makeConstraints { make in
-            make.top.equalTo(버튼_백.snp.bottom).offset(10)
-            //            make.leading.equalToSuperview().offset(24)
+            make.top.equalTo(버튼_백.snp.top).offset(15)
+            make.bottom.equalTo(버튼_백.snp.bottom).offset(-15)
+
             make.trailing.equalTo(마이페이지_후기_버튼.snp.leading).offset(-11)
             make.height.equalTo(마이페이지_후기_버튼)
             make.width.equalTo(마이페이지_후기_버튼)
             make.leading.equalTo(버튼_백.snp.leading).offset(10)
         }
+        
+        마이페이지_후기_버튼.snp.makeConstraints { make in
+            make.top.equalTo(버튼_백.snp.top).offset(15)
+            make.centerX.equalTo(버튼_백.snp.centerX)
+            make.bottom.equalTo(버튼_백.snp.bottom).offset(-15)
+            
+        }
+        마이페이지_보관함_버튼.snp.makeConstraints { make in
+            make.top.equalTo(버튼_백.snp.top).offset(15)
+            make.leading.equalTo(마이페이지_후기_버튼.snp.trailing).offset(11)
+            make.width.equalTo(마이페이지_후기_버튼)
+            make.height.equalTo(마이페이지_후기_버튼)
+            make.trailing.equalTo(버튼_백.snp.trailing).offset(-10)
+            make.bottom.equalTo(버튼_백.snp.bottom).offset(-15)
+
+            
+            
+        }
+       
         마이페이지_전시_아이콘.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
             make.bottom.equalTo(마이페이지_전시_버튼.snp.centerY)
             make.size.equalTo(25)
         }
-        마이페이지_전시_라벨.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
-            make.top.equalTo(마이페이지_전시_버튼.snp.centerY).offset(6)
-        }
-        마이페이지_후기_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_전시_버튼.snp.top)
-            make.leading.equalToSuperview().offset(142.5)
-            make.trailing.equalToSuperview().offset(-142.5)
-            //            make.centerX.equalToSuperview()
-            //            make.width.equalTo(110)
-            make.bottom.equalTo(버튼_백.snp.bottom).offset(-20)
-            
-        }
-        
         마이페이지_후기_아이콘.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
             make.bottom.equalTo(마이페이지_후기_버튼.snp.centerY)
             make.size.equalTo(25)
-        }
-        
-        마이페이지_후기_라벨.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
-            make.top.equalTo(마이페이지_후기_버튼.snp.centerY).offset(6)
-        }
-        마이페이지_보관함_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_전시_버튼.snp.top)
-            make.leading.equalTo(마이페이지_후기_버튼.snp.trailing).offset(11)
-            //            make.trailing.equalToSuperview().offset(-24)
-            make.width.equalTo(마이페이지_후기_버튼)
-            make.height.equalTo(마이페이지_후기_버튼)
-            make.trailing.equalTo(버튼_백.snp.trailing).offset(-10)
-            
-            
         }
         마이페이지_보관함_아이콘.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
             make.bottom.equalTo(마이페이지_보관함_버튼.snp.centerY)
             make.size.equalTo(25)
         }
+        마이페이지_전시_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_전시_버튼.snp.centerY).offset(6)
+        }
+        마이페이지_후기_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_후기_버튼.snp.centerY).offset(6)
+        }
+       
         마이페이지_보관함_라벨.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
             make.top.equalTo(마이페이지_보관함_버튼.snp.centerY).offset(6)
