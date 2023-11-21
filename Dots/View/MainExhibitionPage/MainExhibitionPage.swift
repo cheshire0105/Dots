@@ -31,6 +31,8 @@ class MainExhibitionPage: UIViewController {
     let items = ["전시회", "미술관", "갤러리", "박물관", "비엔날레"]
     var exhibitions = [ExhibitionModel]()
     var secondSectionExhibitions = [ExhibitionModel]()
+    var thirdSectionExhibitions = [ExhibitionModel]()
+
 
 
     lazy var CategoryCollectionView: UICollectionView = {
@@ -120,7 +122,25 @@ class MainExhibitionPage: UIViewController {
                 }
             }
         }
+
+        // 세 번째 섹션 데이터 로드 로직
+        Firestore.firestore().collection("메인페이지_세번째_섹션").getDocuments { [weak self] (snapshot, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Error loading third section data: \(error)")
+                } else if let snapshot = snapshot {
+                    self?.thirdSectionExhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
+                        var data = doc.data()
+                        data["셀_구성"] = doc.documentID
+                        return ExhibitionModel(dictionary: data)
+                    }
+                    self?.MainExhibitionCollectionView.reloadData()
+                }
+            }
+        }
     }
+
+    
 
 
 
@@ -249,6 +269,8 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                 return exhibitions.count
             } else if section == 1 {
                 return secondSectionExhibitions.count
+            } else if section == 2 {
+                return thirdSectionExhibitions.count
             }
             // 세 번째 섹션에 대한 아이템 수를 반환해야 합니다 (예: thirdSectionExhibitions.count)
         }
@@ -286,7 +308,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                 return cell
             } 
 
-            else if indexPath.section == 1 || indexPath.section == 2 {
+            else if indexPath.section == 1 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
                 let exhibition = secondSectionExhibitions[indexPath.item]
                 cell.titleLabel.text = exhibition.title
@@ -308,6 +330,29 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                 return cell
             }
 
+            else if indexPath.section == 2 {
+                if indexPath.item < thirdSectionExhibitions.count {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
+                    let exhibition = thirdSectionExhibitions[indexPath.item]
+                    cell.dateLabel.text = exhibition.period
+
+                    // 'if let' 구문 제거
+                    let imageName = exhibition.poster
+                    let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+                    storageRef.downloadURL { (url, error) in
+                        if let error = error {
+                            print("Error getting download URL: \(error)")
+                        } else if let url = url {
+                            DispatchQueue.main.async {
+                                cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                            }
+                        }
+                    }
+                    return cell
+
+                }
+              }
+
         }
         return UICollectionViewCell()
     }
@@ -319,7 +364,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             if indexPath.section == 1 {
                 header.label.text = "서울의 전시"
             } else if indexPath.section == 2 {
-                header.label.text = "추천 전시"
+                header.label.text = "가장 많이 찾는 전시"
             }
             return header
         }
