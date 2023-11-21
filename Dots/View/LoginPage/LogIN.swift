@@ -1,11 +1,11 @@
 import UIKit
 import FirebaseAuth
 import SnapKit
-//팟버전 테스트 커밋
-class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate, UITextFieldDelegate {
 
+class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
+    
     var 활성화된텍스트필드: UITextField?
-
+    
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
@@ -86,21 +86,23 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
     }()
     private let 간편로그인_라벨 = {
         let label = UILabel()
-        label.text = "간편 로그인"
+        label.text = " - - - - - - - - - - - - - -  간편 로그인  - - - - - - - - - - - - - - "
         label.textColor = UIColor.darkGray
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textAlignment = .center
         
         return label
     } ()
-   
+    
     let 구글_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "google"), for: .selected)
         button.setImage(UIImage(named: "google"), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = UIColor(named: "neon")
-        button.layer.cornerRadius = 30
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
         button.contentMode = .scaleToFill
         return button
     } ()
@@ -110,9 +112,11 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.setImage(UIImage(named: "apple"), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = UIColor(named: "neon")
-        button.layer.cornerRadius = 30
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
         button.contentMode = .scaleToFill
-
+        
         return button
     } ()
     let 트위터_버튼 = {
@@ -121,49 +125,33 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.setImage(UIImage(named: "twitter"), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = UIColor(named: "neon")
-        button.layer.cornerRadius = 30
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
         button.contentMode = .scaleToFill
-
+        
         return button
     } ()
-
+    
     override func viewDidLoad() {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
-
+        
         로그인_이메일_텍스트필드.delegate = self
-               로그인_비밀번호_텍스트필드.delegate = self
-
-               // 키보드 이벤트 리스너 등록
-               NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+        로그인_비밀번호_텍스트필드.delegate = self
+        
+        // 키보드 이벤트 리스너 등록
+        NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
-
-    @objc func 키보드가올라올때(notification: NSNotification) {
-        if let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let 활성화된텍스트필드 = 활성화된텍스트필드 {
-            let 화면끝 = view.frame.size.height
-            let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
-            let 키보드시작 = 화면끝 - 키보드크기.height
-
-            if 텍스트필드끝 > 키보드시작 {
-                view.frame.origin.y = -텍스트필드끝 + 키보드시작
-            }
-        }
-    }
-
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-
-
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-
-
+    
+    
 }
 
 //레이아웃
@@ -182,24 +170,24 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(트위터_버튼)
         
         뒤로가기_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(75)
-            make.leading.equalToSuperview().offset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
             make.size.equalTo(40)
         }
         
         제목_라벨.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(264)
+            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(105)
             make.leading.equalToSuperview().offset(32)
             
         }
         이메일_백.snp.makeConstraints { make in
-            make.top.equalTo(제목_라벨.snp.bottom).offset(73)
+            make.top.equalTo(제목_라벨.snp.bottom).offset(40)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(58)
+            make.height.equalTo(55)
         }
         로그인_이메일_텍스트필드.snp.makeConstraints { make in
-            make.height.equalTo(58)
+            make.height.equalTo(55)
             make.top.equalTo(이메일_백)
             make.leading.equalTo(이메일_백).offset(30)
             make.trailing.equalTo(이메일_백).offset(-80)
@@ -208,10 +196,10 @@ extension 로그인_뷰컨트롤러 {
             make.top.equalTo(로그인_이메일_텍스트필드.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(58)
+            make.height.equalTo(55)
         }
         로그인_비밀번호_텍스트필드.snp.makeConstraints { make in
-            make.height.equalTo(58)
+            make.height.equalTo(55)
             make.top.equalTo(비밀번호_백)
             make.leading.equalTo(비밀번호_백).offset(30)
             make.trailing.equalTo(비밀번호_백).offset(-80)
@@ -220,26 +208,27 @@ extension 로그인_뷰컨트롤러 {
             make.top.equalTo(로그인_비밀번호_텍스트필드.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(64)
+            make.height.equalTo(60)
         }
         간편로그인_라벨.snp.makeConstraints { make in
-            make.top.equalTo(로그인_버튼.snp.bottom).offset(46)
+            make.top.equalTo(로그인_버튼.snp.bottom).offset(50)
             make.centerX.equalToSuperview()
         }
         구글_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(애플_버튼)
             make.trailing.equalTo(애플_버튼.snp.leading).offset(-20)
-            make.size.equalTo(60)
+            make.size.equalTo(50)
         }
         애플_버튼.snp.makeConstraints { make in
-            make.top.equalTo(간편로그인_라벨.snp.bottom).offset(30)
+            make.top.equalTo(간편로그인_라벨.snp.bottom).offset(63)
             make.centerX.equalToSuperview()
-            make.size.equalTo(60)
+            make.size.equalTo(50)
+//            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
         트위터_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(애플_버튼)
             make.leading.equalTo(애플_버튼.snp.trailing).offset(20)
-            make.size.equalTo(60)
+            make.size.equalTo(50)
         }
     }
 }
@@ -271,7 +260,7 @@ extension 로그인_뷰컨트롤러 {
                 print("로그인 성공")
                 
                 UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
-
+                
                 
                 let 메인화면_이동 = TabBar()
                 self.navigationController?.pushViewController(메인화면_이동, animated: true)
@@ -279,4 +268,39 @@ extension 로그인_뷰컨트롤러 {
             }
         }
     }
+}
+
+//키보드 관련 Extension
+extension 로그인_뷰컨트롤러 : UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = nil
+    }
+}
+
+extension 로그인_뷰컨트롤러 {
+    
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let 활성화된텍스트필드 = 활성화된텍스트필드 else {
+            return
+        }
+        
+        let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+        let 키보드시작 = view.frame.size.height - 키보드크기.height
+        
+        if 텍스트필드끝 > 키보드시작 {
+            let 이동거리 = 키보드시작 - 텍스트필드끝
+            view.frame.origin.y = 이동거리
+        }
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        self.view.frame.origin.y = 0
+    }
+    
 }
