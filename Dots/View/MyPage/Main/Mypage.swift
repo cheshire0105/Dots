@@ -6,8 +6,6 @@ import RxCocoa
 import FSCalendar
 
 class Mypage: UIViewController {
-    //asdfhghg test test test
-    
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
@@ -18,7 +16,11 @@ class Mypage: UIViewController {
         imageButton.isSelected = !imageButton.isSelected
         return imageButton
     }()
-    
+    let 버튼_백 = {
+        let uiView = UIView()
+        uiView.backgroundColor = UIColor.white
+        return uiView
+    } ()
     let 마이페이지_설정_버튼 = {
         var button = UIButton()
         button.setImage(UIImage(named: "setting" ), for: .normal)
@@ -51,7 +53,7 @@ class Mypage: UIViewController {
     
     let 마이페이지_전시_버튼 = {
         let button = UIButton()
-        button.backgroundColor = UIColor.darkGray
+        button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
         return button
@@ -74,7 +76,7 @@ class Mypage: UIViewController {
     
     let 마이페이지_후기_버튼 = {
         let button = UIButton()
-        button.backgroundColor = UIColor.darkGray
+        button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
         return button
@@ -97,7 +99,7 @@ class Mypage: UIViewController {
     
     let 마이페이지_보관함_버튼 = {
         let button = UIButton()
-        button.backgroundColor = UIColor.darkGray
+        button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         button.layer.cornerRadius = 10
         button.isSelected = !button.isSelected
         return button
@@ -132,41 +134,39 @@ class Mypage: UIViewController {
      
      */
     lazy var 캘린더 = {
-            let calendar = FSCalendar()
+        let calendar = FSCalendar()
         calendar.backgroundColor = UIColor.clear
         calendar.layer.cornerRadius = 15
         calendar.layer.borderWidth = 0.3
         calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
-            calendar.dataSource = self
-            calendar.delegate = self
+        calendar.dataSource = self
+        calendar.delegate = self
         
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
-          calendar.appearance.headerDateFormat = "MMMM yyyy"
+        calendar.appearance.headerDateFormat = "MMMM yyyy"
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
-          calendar.appearance.weekdayTextColor = UIColor.darkGray
+        calendar.appearance.weekdayTextColor = UIColor.darkGray
         calendar.appearance.todayColor = UIColor(named: "neon")?.withAlphaComponent(0.3)
         calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
         calendar.appearance.selectionColor = UIColor.green.withAlphaComponent(0.1)
-          calendar.appearance.titleDefaultColor = UIColor.white
-          calendar.appearance.titleSelectionColor = UIColor.white
-          calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
-          calendar.appearance.weekdayFont = UIFont.boldSystemFont(ofSize: 14)
-          
-          calendar.scrollDirection = .vertical
-          calendar.scope = .month
-          calendar.allowsMultipleSelection = false
-        
-            return calendar
-        }()
+        calendar.appearance.titleDefaultColor = UIColor.white
+        calendar.appearance.titleSelectionColor = UIColor.white
+        calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
+        calendar.appearance.weekdayFont = UIFont.boldSystemFont(ofSize: 14)
+        calendar.scrollDirection = .vertical
+        calendar.scope = .month
+        calendar.allowsMultipleSelection = false
+        return calendar
+    }()
     
     
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        if let glassTabBar = tabBarController as? GlassTabBar {
-//            glassTabBar.customTabBarView.isHidden = false
-//        }
-//    }
+    //    override func viewWillAppear(_ animated: Bool) {
+    //        if let glassTabBar = tabBarController as? GlassTabBar {
+    //            glassTabBar.customTabBarView.isHidden = false
+    //        }
+    //    }
     override func viewDidLoad() {
         super.viewDidLoad()
         print("My Page")
@@ -177,12 +177,78 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.backgroundColor = UIColor.clear
         버튼_클릭()
         UI레이아웃()
+        버튼_백_레이아웃 ()
+        
         캘린더_레이아웃()
     }
     
+    private func 버튼_백_레이아웃 () {
+        for 버튼배치 in [마이페이지_전시_버튼,마이페이지_후기_버튼,마이페이지_보관함_버튼,마이페이지_전시_아이콘,마이페이지_후기_아이콘,마이페이지_보관함_아이콘,마이페이지_전시_라벨,마이페이지_후기_라벨,마이페이지_보관함_라벨] {
+            버튼_백.addSubview(버튼배치)
+        }
+        
+        
+        마이페이지_전시_버튼.snp.makeConstraints { make in
+            make.top.equalTo(버튼_백.snp.bottom).offset(10)
+            //            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalTo(마이페이지_후기_버튼.snp.leading).offset(-11)
+            make.height.equalTo(마이페이지_후기_버튼)
+            make.width.equalTo(마이페이지_후기_버튼)
+            make.leading.equalTo(버튼_백.snp.leading).offset(10)
+        }
+        마이페이지_전시_아이콘.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
+            make.bottom.equalTo(마이페이지_전시_버튼.snp.centerY)
+            make.size.equalTo(25)
+        }
+        마이페이지_전시_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_전시_버튼.snp.centerY).offset(6)
+        }
+        마이페이지_후기_버튼.snp.makeConstraints { make in
+            make.top.equalTo(마이페이지_전시_버튼.snp.top)
+            make.leading.equalToSuperview().offset(142.5)
+            make.trailing.equalToSuperview().offset(-142.5)
+            //            make.centerX.equalToSuperview()
+            //            make.width.equalTo(110)
+            make.bottom.equalTo(버튼_백.snp.bottom).offset(-20)
+            
+        }
+        
+        마이페이지_후기_아이콘.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
+            make.bottom.equalTo(마이페이지_후기_버튼.snp.centerY)
+            make.size.equalTo(25)
+        }
+        
+        마이페이지_후기_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_후기_버튼.snp.centerY).offset(6)
+        }
+        마이페이지_보관함_버튼.snp.makeConstraints { make in
+            make.top.equalTo(마이페이지_전시_버튼.snp.top)
+            make.leading.equalTo(마이페이지_후기_버튼.snp.trailing).offset(11)
+            //            make.trailing.equalToSuperview().offset(-24)
+            make.width.equalTo(마이페이지_후기_버튼)
+            make.height.equalTo(마이페이지_후기_버튼)
+            make.trailing.equalTo(버튼_백.snp.trailing).offset(-10)
+            
+            
+        }
+        마이페이지_보관함_아이콘.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
+            make.bottom.equalTo(마이페이지_보관함_버튼.snp.centerY)
+            make.size.equalTo(25)
+        }
+        마이페이지_보관함_라벨.snp.makeConstraints { make in
+            make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
+            make.top.equalTo(마이페이지_보관함_버튼.snp.centerY).offset(6)
+        }
+        
+    }
     private func UI레이아웃 () {
         
-        for UI뷰 in [마이페이지_프로필_이미지_버튼,마이페이지_설정_버튼,마이페이지_알림_버튼,마이페이지_프로필_닉네임,마이페이지_프로필_이메일,마이페이지_전시_버튼,마이페이지_후기_버튼,마이페이지_보관함_버튼,마이페이지_전시_아이콘,마이페이지_후기_아이콘,마이페이지_보관함_아이콘,마이페이지_전시_라벨,마이페이지_후기_라벨,마이페이지_보관함_라벨,구분선]{
+        for UI뷰 in [마이페이지_프로필_이미지_버튼,마이페이지_설정_버튼,마이페이지_알림_버튼,마이페이지_프로필_닉네임,마이페이지_프로필_이메일,버튼_백,구분선]{
             view.addSubview(UI뷰)
         }
         마이페이지_프로필_이미지_버튼.snp.makeConstraints { make in
@@ -206,64 +272,27 @@ class Mypage: UIViewController {
             make.leading.equalTo(마이페이지_프로필_이미지_버튼.snp.trailing).offset(16)
             make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY).offset(10)
         }
-        마이페이지_전시_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(37)
-            make.leading.equalToSuperview().offset(24)
-            make.width.equalTo(95)
-            make.height.equalTo(85)
+        버튼_백.snp.makeConstraints { make in
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(10)
+            make.bottom.equalTo(구분선.snp.bottom).offset(-10)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
         }
-        마이페이지_전시_아이콘.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
-            make.bottom.equalTo(마이페이지_전시_버튼.snp.centerY)
-            make.size.equalTo(25)
-        }
-        마이페이지_전시_라벨.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
-            make.top.equalTo(마이페이지_전시_버튼.snp.centerY).offset(6)
-        }
-        마이페이지_후기_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(37)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(95)
-            make.height.equalTo(85)
-        }
-        마이페이지_후기_아이콘.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
-            make.bottom.equalTo(마이페이지_후기_버튼.snp.centerY)
-            make.size.equalTo(25)
-        }
-        마이페이지_후기_라벨.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
-            make.top.equalTo(마이페이지_후기_버튼.snp.centerY).offset(6)
-        }
-        마이페이지_보관함_버튼.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(37)
-            make.trailing.equalToSuperview().offset(-24)
-            make.width.equalTo(95)
-            make.height.equalTo(85)
-        }
-        마이페이지_보관함_아이콘.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
-            make.bottom.equalTo(마이페이지_보관함_버튼.snp.centerY)
-            make.size.equalTo(25)
-        }
-        마이페이지_보관함_라벨.snp.makeConstraints { make in
-            make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
-            make.top.equalTo(마이페이지_보관함_버튼.snp.centerY).offset(6)
-        }
+        
         구분선.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_전시_버튼.snp.bottom).offset(30)
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(120)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
     }
+    
     func 캘린더_레이아웃() {
         view.addSubview(캘린더)
         캘린더.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(20)
+            make.top.equalTo(구분선.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(-100)
+            make.bottom.equalToSuperview().offset(-90)
         }
     }
 }
@@ -307,12 +336,12 @@ extension Mypage {
 extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-            return 1
-        }
-        func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-            let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-            present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
-
-        }
+        return 1
+    }
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
+        present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+        
+    }
     
 }
