@@ -134,6 +134,29 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
     
   
 }
+
+// 버튼 클릭
+extension 로그인_회원가입_뷰컨트롤러 {
+    
+    private func 버튼_클릭() {
+        회원가입_버튼.addTarget(self, action: #selector(회원가입_버튼_클릭), for: .touchUpInside)
+        로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
+    }
+    @objc func 회원가입_버튼_클릭() {
+        print("회원가입 페이지로 이동")
+        let 인기리뷰페이지_디테일_화면 = 회원가입_첫번째_뷰컨트롤러()
+        self.navigationController?.pushViewController(인기리뷰페이지_디테일_화면, animated: true)
+    }
+    @objc func 로그인_버튼_클릭() {
+        print("로그인 페이지로 이동")
+        let 로그인_뷰컨트롤러_이동 = 로그인_뷰컨트롤러()
+        self.navigationController?.pushViewController(로그인_뷰컨트롤러_이동, animated: true)
+ 
+    }
+}
+
+
+
 // 레이아웃
 extension 로그인_회원가입_뷰컨트롤러 {
     func UI레이아웃() {
@@ -198,23 +221,3 @@ extension 로그인_회원가입_뷰컨트롤러 {
         }
     }
 }
-// 버튼 클릭
-extension 로그인_회원가입_뷰컨트롤러 {
-    
-    private func 버튼_클릭() {
-        회원가입_버튼.addTarget(self, action: #selector(회원가입_버튼_클릭), for: .touchUpInside)
-        로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
-    }
-    @objc func 회원가입_버튼_클릭() {
-        print("회원가입 페이지로 이동")
-        let 인기리뷰페이지_디테일_화면 = 회원가입_첫번째_뷰컨트롤러()
-        self.navigationController?.pushViewController(인기리뷰페이지_디테일_화면, animated: true)
-    }
-    @objc func 로그인_버튼_클릭() {
-        print("로그인 페이지로 이동")
-        let 로그인_뷰컨트롤러_이동 = 로그인_뷰컨트롤러()
-        self.navigationController?.pushViewController(로그인_뷰컨트롤러_이동, animated: true)
- 
-    }
-}
-

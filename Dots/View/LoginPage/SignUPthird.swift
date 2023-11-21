@@ -4,7 +4,7 @@ import SnapKit
 
 
 class 회원가입_세번째_뷰컨트롤러 : UIViewController {
-
+    var 활성화된텍스트필드: UITextField?
     let 아티스트_리스트 : [String] = ["살바도르 달리", "파블로 피카소", "뱅크시" , "클로드 모네","빈센트 반 고흐", "램브란트", "레오나르도 다 빈치","미켈란젤로", "뒤샹", "앤디 워홀" , "폴 세잔", "박철우", "김나라", "빈지노", "미야자키 하야오", "홍길동"]
 
     private let 아티스트_버튼_뷰 = UIView()
@@ -121,9 +121,13 @@ class 회원가입_세번째_뷰컨트롤러 : UIViewController {
         [원형_버튼1, 원형_버튼2, 원형_버튼3, 원형_버튼4, 원형_버튼4, 원형_버튼5, 원형_버튼6, 원형_버튼7, 원형_버튼8, 원형_버튼9, 원형_버튼10 , 원형_버튼11, 원형_버튼12, 원형_버튼13,원형_버튼14 ,원형_버튼15].forEach { 버튼 in
               버튼.addTarget(self, action: #selector(버튼이눌림(_:)), for: .touchUpInside)
           }
+        NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
 
     }
-
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     private func 아티스트_버튼들_생성() {
 
 
@@ -543,3 +547,35 @@ extension 회원가입_세번째_뷰컨트롤러 {
         navigationItem.hidesBackButton = true
     }
 }
+
+extension 회원가입_세번째_뷰컨트롤러 : UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = nil
+    }
+}
+
+extension 회원가입_세번째_뷰컨트롤러 {
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let 활성화된텍스트필드 = 활성화된텍스트필드 else {
+            return
+        }
+        let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+        let 키보드시작 = view.frame.size.height - 키보드크기.height
+        
+        if 텍스트필드끝 > 키보드시작 {
+            let 이동거리 = 키보드시작 - 텍스트필드끝
+            view.frame.origin.y = 이동거리
+        }
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        self.view.frame.origin.y = 0
+    }
+}
+

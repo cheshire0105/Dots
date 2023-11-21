@@ -157,85 +157,6 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
   
 }
 
-extension 회원가입_첫번째_뷰컨트롤러 {
-    
-    func UI레이아웃 () {
-        view.addSubview(뒤로가기_버튼)
-        view.addSubview(제목_라벨)
-        view.addSubview(닉네임_백)
-        view.addSubview(이메일_백)
-        view.addSubview(비밀번호_백)
-        view.addSubview(회원가입_이미지_선택_버튼)
-        view.addSubview(회원가입_닉네임_텍스트필드)
-        view.addSubview(회원가입_이메일_텍스트필드)
-        view.addSubview(회원가입_중복확인_버튼)
-        view.addSubview(회원가입_비밀번호_텍스트필드)
-        view.addSubview(회원가입_다음_버튼)
-        
-        뒤로가기_버튼.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
-            make.size.equalTo(40)
-        }
-        제목_라벨.snp.makeConstraints { make in
-            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(25)
-            make.leading.equalToSuperview().offset(24)
-            
-        }
-        회원가입_이미지_선택_버튼.snp.makeConstraints { make in
-            make.top.equalTo(제목_라벨.snp.bottom).offset(75)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(124)
-        }
-        닉네임_백.snp.makeConstraints { make in
-            make.top.equalTo(회원가입_이미지_선택_버튼.snp.bottom).offset(35)
-            make.leading.equalToSuperview().offset(24)
-            make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(50)
-        }
-        회원가입_닉네임_텍스트필드.snp.makeConstraints { make in
-            make.top.equalTo(닉네임_백)
-            make.leading.equalTo(닉네임_백).offset(30)
-            make.trailing.equalTo(닉네임_백).offset(-80)
-            make.height.equalTo(50)
-        }
-        이메일_백.snp.makeConstraints { make in
-            make.top.equalTo(회원가입_닉네임_텍스트필드.snp.bottom).offset(24)
-            make.leading.equalToSuperview().offset(24)
-            make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(50)
-        }
-        회원가입_이메일_텍스트필드.snp.makeConstraints { make in
-            make.top.equalTo(이메일_백)
-            make.leading.equalTo(이메일_백).offset(30)
-            make.trailing.equalTo(이메일_백).offset(-80)
-            make.height.equalTo(50)
-        }
-        비밀번호_백.snp.makeConstraints { make in
-            make.top.equalTo(회원가입_이메일_텍스트필드.snp.bottom).offset(24)
-            make.leading.equalToSuperview().offset(24)
-            make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(50)
-        }
-        회원가입_중복확인_버튼.snp.makeConstraints { make in
-            make.centerY.equalTo(이메일_백.snp.centerY)
-            make.trailing.equalTo(이메일_백.snp.trailing).offset(-30)
-        }
-        회원가입_비밀번호_텍스트필드.snp.makeConstraints { make in
-            make.top.equalTo(비밀번호_백)
-            make.leading.equalTo(비밀번호_백).offset(30)
-            make.trailing.equalTo(비밀번호_백).offset(-80)
-            make.height.equalTo(50)
-        }
-        회원가입_다음_버튼.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-            make.leading.equalToSuperview().offset(24)
-            make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(60)
-            
-        }
-    }
-}
 
 //버튼클릭
 extension 회원가입_첫번째_뷰컨트롤러 {
@@ -374,7 +295,86 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 }
 
 
-
+//레이아웃 관련
+extension 회원가입_첫번째_뷰컨트롤러 {
+    
+    func UI레이아웃 () {
+        view.addSubview(뒤로가기_버튼)
+        view.addSubview(제목_라벨)
+        view.addSubview(닉네임_백)
+        view.addSubview(이메일_백)
+        view.addSubview(비밀번호_백)
+        view.addSubview(회원가입_이미지_선택_버튼)
+        view.addSubview(회원가입_닉네임_텍스트필드)
+        view.addSubview(회원가입_이메일_텍스트필드)
+        view.addSubview(회원가입_중복확인_버튼)
+        view.addSubview(회원가입_비밀번호_텍스트필드)
+        view.addSubview(회원가입_다음_버튼)
+        
+        뒤로가기_버튼.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
+            make.size.equalTo(40)
+        }
+        제목_라벨.snp.makeConstraints { make in
+            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(25)
+            make.leading.equalToSuperview().offset(24)
+            
+        }
+        회원가입_이미지_선택_버튼.snp.makeConstraints { make in
+            make.top.equalTo(제목_라벨.snp.bottom).offset(75)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(124)
+        }
+        닉네임_백.snp.makeConstraints { make in
+            make.top.equalTo(회원가입_이미지_선택_버튼.snp.bottom).offset(35)
+            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
+            make.height.equalTo(50)
+        }
+        회원가입_닉네임_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(닉네임_백)
+            make.leading.equalTo(닉네임_백).offset(30)
+            make.trailing.equalTo(닉네임_백).offset(-80)
+            make.height.equalTo(50)
+        }
+        이메일_백.snp.makeConstraints { make in
+            make.top.equalTo(회원가입_닉네임_텍스트필드.snp.bottom).offset(24)
+            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
+            make.height.equalTo(50)
+        }
+        회원가입_이메일_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(이메일_백)
+            make.leading.equalTo(이메일_백).offset(30)
+            make.trailing.equalTo(이메일_백).offset(-80)
+            make.height.equalTo(50)
+        }
+        비밀번호_백.snp.makeConstraints { make in
+            make.top.equalTo(회원가입_이메일_텍스트필드.snp.bottom).offset(24)
+            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
+            make.height.equalTo(50)
+        }
+        회원가입_중복확인_버튼.snp.makeConstraints { make in
+            make.centerY.equalTo(이메일_백.snp.centerY)
+            make.trailing.equalTo(이메일_백.snp.trailing).offset(-30)
+        }
+        회원가입_비밀번호_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(비밀번호_백)
+            make.leading.equalTo(비밀번호_백).offset(30)
+            make.trailing.equalTo(비밀번호_백).offset(-80)
+            make.height.equalTo(50)
+        }
+        회원가입_다음_버튼.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
+            make.height.equalTo(60)
+            
+        }
+    }
+}
 
 //사진라이브러리 접근관련 Extension
 extension 회원가입_첫번째_뷰컨트롤러: UIImagePickerControllerDelegate {
@@ -397,6 +397,7 @@ class 사진_라이브러리: UIViewController {
         view.backgroundColor = .white
     }
 }
+
 
 //키보드관련 Extension
 extension 회원가입_첫번째_뷰컨트롤러: UITextFieldDelegate {
@@ -432,3 +433,5 @@ extension 회원가입_첫번째_뷰컨트롤러 {
            }
     }
 }
+
+

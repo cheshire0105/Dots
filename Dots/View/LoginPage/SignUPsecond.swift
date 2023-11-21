@@ -2,6 +2,8 @@ import UIKit
 import SnapKit
 
 class 회원가입_두번째_뷰컨트롤러 : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    var 활성화된텍스트필드: UITextField?
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
          return 미술관_리스트.count
      }
@@ -100,6 +102,11 @@ class 회원가입_두번째_뷰컨트롤러 : UIViewController, UICollectionVie
         미술관_컬렉션뷰.register(미술관셀.self, forCellWithReuseIdentifier: 미술관셀.identifier)
         미술관_컬렉션뷰.allowsMultipleSelection = true
 
+        NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -306,3 +313,38 @@ class 미술관셀: UICollectionViewCell {
     }
 
 }
+
+
+
+//키보드 관련 Extension
+extension 회원가입_두번째_뷰컨트롤러 : UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = nil
+    }
+}
+
+extension 회원가입_두번째_뷰컨트롤러 {
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let 활성화된텍스트필드 = 활성화된텍스트필드 else {
+            return
+        }
+        let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+        let 키보드시작 = view.frame.size.height - 키보드크기.height
+        
+        if 텍스트필드끝 > 키보드시작 {
+            let 이동거리 = 키보드시작 - 텍스트필드끝
+            view.frame.origin.y = 이동거리
+        }
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        self.view.frame.origin.y = 0
+    }
+}
+
