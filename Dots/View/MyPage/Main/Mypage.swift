@@ -1,4 +1,4 @@
-//23 . 11 . 19. 12:28 am  최신화 완료- dev 에서 pull완료 - FS캘린더 커스텀. 진행중
+//23 . 11 . 21. 6:23 pm  최신화 완료 - 오토레이아웃 작업 끝
 import UIKit
 import SnapKit
 import RxSwift
@@ -16,11 +16,13 @@ class Mypage: UIViewController {
         imageButton.isSelected = !imageButton.isSelected
         return imageButton
     }()
+    
     let 버튼_백 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor.black
         return uiView
     } ()
+    
     let 마이페이지_설정_버튼 = {
         var button = UIButton()
         button.setImage(UIImage(named: "setting" ), for: .normal)
@@ -69,7 +71,7 @@ class Mypage: UIViewController {
     let 마이페이지_전시_라벨 = {
         let label = UILabel()
         label.text = "전시"
-        label.font = UIFont(name: "HelveticaNeue", size: 15)
+        label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textColor = UIColor.white
         return label
     } ()
@@ -92,7 +94,7 @@ class Mypage: UIViewController {
     let 마이페이지_후기_라벨 = {
         let label = UILabel()
         label.text = "리뷰"
-        label.font = UIFont(name: "HelveticaNeue", size: 15)
+        label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textColor = UIColor.white
         return label
     } ()
@@ -115,7 +117,7 @@ class Mypage: UIViewController {
     let 마이페이지_보관함_라벨 = {
         let label = UILabel()
         label.text = "보관함"
-        label.font = UIFont(name: "HelveticaNeue", size: 15)
+        label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textColor = UIColor.white
         return label
     } ()
@@ -133,6 +135,7 @@ class Mypage: UIViewController {
      
      
      */
+    
     lazy var 캘린더 = {
         let calendar = FSCalendar()
         calendar.backgroundColor = UIColor.clear
@@ -219,17 +222,17 @@ class Mypage: UIViewController {
         마이페이지_전시_아이콘.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
             make.bottom.equalTo(마이페이지_전시_버튼.snp.centerY)
-            make.size.equalTo(25)
+            make.size.equalTo(20)
         }
         마이페이지_후기_아이콘.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
             make.bottom.equalTo(마이페이지_후기_버튼.snp.centerY)
-            make.size.equalTo(25)
+            make.size.equalTo(20)
         }
         마이페이지_보관함_아이콘.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
             make.bottom.equalTo(마이페이지_보관함_버튼.snp.centerY)
-            make.size.equalTo(25)
+            make.size.equalTo(20)
         }
         마이페이지_전시_라벨.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)

@@ -15,6 +15,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         
         return label
     } ()
+    
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -24,6 +25,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         button.layer.cornerRadius = 20
         return button
     } ()
+    
     //이메일 텍스트필드
     private let 로그인_이메일_텍스트필드 = { ()
         let textField = UITextField()
@@ -283,13 +285,11 @@ extension 로그인_뷰컨트롤러 : UITextFieldDelegate {
 }
 
 extension 로그인_뷰컨트롤러 {
-    
     @objc func 키보드가올라올때(notification: NSNotification) {
         guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
               let 활성화된텍스트필드 = 활성화된텍스트필드 else {
             return
         }
-        
         let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
         let 키보드시작 = view.frame.size.height - 키보드크기.height
         
@@ -302,5 +302,4 @@ extension 로그인_뷰컨트롤러 {
         self.view.endEditing(true)
         self.view.frame.origin.y = 0
     }
-    
 }
