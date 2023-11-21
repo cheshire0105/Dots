@@ -30,6 +30,8 @@ class MainExhibitionPage: UIViewController {
     var collectionViewTopConstraint: Constraint?
     let items = ["전시회", "미술관", "갤러리", "박물관", "비엔날레"]
     var exhibitions = [ExhibitionModel]()
+    var secondSectionExhibitions = [ExhibitionModel]()
+
 
     lazy var CategoryCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -79,7 +81,7 @@ class MainExhibitionPage: UIViewController {
         setupCollectionView()
         setupNewCollectionView()
         fetchExhibitionData()
-
+        fetchAdditionalExhibitionData()
         self.view.backgroundColor = .black
 
     }
@@ -102,6 +104,24 @@ class MainExhibitionPage: UIViewController {
             }
         }
     }
+
+    private func fetchAdditionalExhibitionData() {
+        Firestore.firestore().collection("메인페이지_두번째_섹션").getDocuments { [weak self] (snapshot, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("An error occurred: \(error)")
+                } else if let snapshot = snapshot {
+                    self?.secondSectionExhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
+                        var data = doc.data()
+                        data["셀_구성"] = doc.documentID
+                        return ExhibitionModel(dictionary: data)
+                    }
+                    self?.MainExhibitionCollectionView.reloadData()
+                }
+            }
+        }
+    }
+
 
 
 
@@ -225,17 +245,25 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView == CategoryCollectionView {
             return items.count
         } else if collectionView == MainExhibitionCollectionView {
-            return exhibitions.count
+            if section == 0 {
+                return exhibitions.count
+            } else if section == 1 {
+                return secondSectionExhibitions.count
+            }
+            // 세 번째 섹션에 대한 아이템 수를 반환해야 합니다 (예: thirdSectionExhibitions.count)
         }
         return 0
     }
+
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == CategoryCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionCell", for: indexPath) as! CategotyCell
             cell.label.text = items[indexPath.item]
             return cell
-        } else         if collectionView == MainExhibitionCollectionView {
+        } 
+
+        else if collectionView == MainExhibitionCollectionView {
             if indexPath.section == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
                 let exhibition = exhibitionData(forIndexPath: indexPath)
@@ -256,15 +284,30 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
                 cell.configureCellLayout(isEven: indexPath.row % 2 == 0)
                 return cell
-            } else {
-                // 두 번째 및 세 번째 섹션의 셀 구성
+            } 
+
+            else if indexPath.section == 1 || indexPath.section == 2 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
-                // 샘플 데이터를 이용하여 셀 구성
-                cell.titleLabel.text = "올해의 전시 \(indexPath.row)"
-                cell.dateLabel.text = "2023.01.01 ~ 2023.12.31"
-                cell.imageView.image = UIImage(named: "placeholder") // 샘플 이미지 설정
+                let exhibition = secondSectionExhibitions[indexPath.item]
+                cell.titleLabel.text = exhibition.title
+                cell.dateLabel.text = exhibition.period
+
+                // 'if let' 구문 제거
+                let imageName = exhibition.poster
+                let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+                storageRef.downloadURL { (url, error) in
+                    if let error = error {
+                        print("Error getting download URL: \(error)")
+                    } else if let url = url {
+                        DispatchQueue.main.async {
+                            cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                        }
+                    }
+                }
+
                 return cell
             }
+
         }
         return UICollectionViewCell()
     }
@@ -274,9 +317,9 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
             // 섹션에 따른 헤더 텍스트 설정
             if indexPath.section == 1 {
-                header.label.text = "추천 전시회"
+                header.label.text = "서울의 전시"
             } else if indexPath.section == 2 {
-                header.label.text = "인기 전시회"
+                header.label.text = "추천 전시"
             }
             return header
         }
@@ -285,7 +328,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 4 // 두 개의 섹션이 있다고 가정
+        return 3 // 두 개의 섹션이 있다고 가정
     }
 
 
