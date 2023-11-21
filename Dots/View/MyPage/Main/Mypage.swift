@@ -6,7 +6,7 @@ import RxCocoa
 import FSCalendar
 
 class Mypage: UIViewController {
-    //asdfhghg test
+    //asdfhghg test test test
     
     
     var 마이페이지_프로필_이미지_버튼 = {
