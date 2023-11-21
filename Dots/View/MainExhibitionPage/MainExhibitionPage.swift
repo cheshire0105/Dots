@@ -274,9 +274,9 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
             // 섹션에 따른 헤더 텍스트 설정
             if indexPath.section == 1 {
-                header.label.text = "추천 전시회"
+                header.label.text = "서울의 전시"
             } else if indexPath.section == 2 {
-                header.label.text = "인기 전시회"
+                header.label.text = "추천 전시"
             }
             return header
         }
@@ -285,7 +285,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 4 // 두 개의 섹션이 있다고 가정
+        return 3 // 두 개의 섹션이 있다고 가정
     }
 
 
