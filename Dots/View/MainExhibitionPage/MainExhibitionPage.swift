@@ -10,6 +10,7 @@
 // 테스트 푸쉬 3
 // 테스트 푸쉬 4
 // 메인 서버 시작 최신화
+// 최신화
 
 import UIKit
 import SnapKit
@@ -181,12 +182,12 @@ class MainExhibitionPage: UIViewController {
             // Second section (Gray Square Cells)
 
             let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
-                                                  heightDimension: .absolute(250))
+                                                  heightDimension: .absolute(300))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 40, trailing: 0)
 
             let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
-                                                   heightDimension: .absolute(200))
+                                                   heightDimension: .absolute(250))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
             let section = NSCollectionLayoutSection(group: group)
@@ -334,6 +335,8 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                 if indexPath.item < thirdSectionExhibitions.count {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
                     let exhibition = thirdSectionExhibitions[indexPath.item]
+                    cell.titleLabel.text = exhibition.title
+
                     cell.dateLabel.text = exhibition.period
 
                     // 'if let' 구문 제거
@@ -392,3 +395,4 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
 
 
+// cn0105@naver.com
