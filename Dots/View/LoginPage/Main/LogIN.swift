@@ -206,10 +206,10 @@ extension 로그인_뷰컨트롤러 {
             
             if let 에러 = 에러 {
                 print("Firestore 조회 에러: \(에러.localizedDescription)")
-            } else {
-
+            } 
+            else {
                 if let 문서조회 = 컬렉션?.documents, !문서조회.isEmpty {
-
+                    
                     let 문서 = 문서조회[0]
                     
                     if let 로그인상태 = 문서["로그인상태"] as? Bool, !로그인상태 {
@@ -218,7 +218,7 @@ extension 로그인_뷰컨트롤러 {
                             if let 에러 = 에러 {
                                 print("Firestore 업데이트 에러: \(에러.localizedDescription)")
                             } else {
-
+                                
                                 UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
                                 
                                 let 메인화면_이동 = TabBar()
@@ -230,12 +230,13 @@ extension 로그인_뷰컨트롤러 {
                         print("Firestore: 이미 로그인된 상태입니다.")
                     }
                 } else {
-                    print("Firestore: 일치하는 이메일이 없습니다.")
+                    print("Firestore: 등록된 계정이 없습니다.")
                 }
             }
         }
     }
 }
+
 
 
 //레이아웃 관련
