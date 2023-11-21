@@ -1,4 +1,4 @@
-//23 . 11 . 19. 12:28 am  최신화 완료- dev 에서 pull완료 - FS캘린더 커스텀. 진행중
+//23 . 11 . 21. 6:23 pm  최신화 완료 - 오토레이아웃 작업 끝
 import UIKit
 import SnapKit
 import RxSwift
