@@ -8,7 +8,6 @@ import SnapKit
 class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
     var 이메일: String = ""
     var 활성화된텍스트필드: UITextField?
-    
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
@@ -271,7 +270,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             }
         }
     }
-    private func 회원가입_유저정보_업로드(닉네임: String, 이메일: String, 비밀번호: String, /*로그인상태: Bool,*/ 프로필이미지URL: String) {
+    private func 회원가입_유저정보_업로드(닉네임: String, 이메일: String, 비밀번호: String,로그인상태: Bool ,프로필이미지URL: String) {
         let 데이터베이스 = Firestore.firestore()
         let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
         
@@ -279,7 +278,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             "닉네임": 닉네임,
             "이메일": 이메일,
             "비밀번호": 비밀번호,
-//            "로그인상태": 로그인상태,
+            "로그인상태": false,
             "프로필이미지URL": 프로필이미지URL
         ]
         
@@ -335,8 +334,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         guard let 이메일 = 회원가입_이메일_텍스트필드.text,
               let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
               let 닉네임 = 회원가입_닉네임_텍스트필드.text,
-//              let 로그인상태 = false,
-              let 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
+              var 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
             return
         }
         회원가입_이미지_업로드(프로필이미지) { [weak self] 결과 in
@@ -353,7 +351,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
                     
                     print("회원가입 성공")
                     
-                    self.회원가입_유저정보_업로드(닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호,/* 로그인상태: 로그인상태,*/ 프로필이미지URL: 이미지Url.absoluteString)
+                    self.회원가입_유저정보_업로드(닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 이미지Url.absoluteString)
                     
                     let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
                     self.navigationController?.pushViewController(다음화면_이동, animated: true)
