@@ -9,7 +9,7 @@
 // 테스트 푸쉬 2
 // 테스트 푸쉬 3
 // 테스트 푸쉬 4
-// 메인 서버 시작 최신화 
+// 메인 서버 시작 최신화
 
 import UIKit
 import SnapKit
@@ -106,10 +106,10 @@ class MainExhibitionPage: UIViewController {
 
 
     private func setupCollectionView() {
-        
+
         view.addSubview(CategoryCollectionView)
         CategoryCollectionView.dataSource = self
-           CategoryCollectionView.delegate = self
+        CategoryCollectionView.delegate = self
         CategoryCollectionView.snp.makeConstraints { make in
             collectionViewTopConstraint = make.top.equalTo(view.safeAreaLayoutGuide.snp.top).constraint.update(offset: 16)
             make.left.right.equalToSuperview().offset(6)
@@ -270,20 +270,23 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-         if kind == UICollectionView.elementKindSectionHeader {
-             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
-             // 섹션에 따른 헤더 텍스트 설정
-             if indexPath.section == 1 {
-                 header.label.text = "추천 전시회"
-             } else if indexPath.section == 2 {
-                 header.label.text = "인기 전시회"
-             }
-             return header
-         }
-         return UICollectionReusableView()
-     }
+        if kind == UICollectionView.elementKindSectionHeader {
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
+            // 섹션에 따른 헤더 텍스트 설정
+            if indexPath.section == 1 {
+                header.label.text = "추천 전시회"
+            } else if indexPath.section == 2 {
+                header.label.text = "인기 전시회"
+            }
+            return header
+        }
+        return UICollectionReusableView()
+    }
 
 
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 4 // 두 개의 섹션이 있다고 가정
+    }
 
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -295,8 +298,6 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         // CategoryCollectionView에 대한 선택 처리 (필요한 경우)
     }
 
-
-    // ... 기타 필요한 UICollectionViewDelegateFlowLayout 메서드
 }
 
 
