@@ -80,7 +80,7 @@ class 마이페이지_보관함 : UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 0 , left: 0, bottom: 0, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 5 , left: 0, bottom: 0, right: 0)
         
         collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
@@ -306,16 +306,16 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
         switch 현재_선택된_버튼 {
         case 0:
             
-            return 15
+            return 20
         case 1:
           
-            return 25
+            return 30
         case 2:
            
-            return 25
+            return 30
         case 3:
            
-            return 15
+            return 20
         default:
             break
         }

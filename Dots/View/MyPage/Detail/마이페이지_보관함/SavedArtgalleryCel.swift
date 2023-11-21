@@ -48,7 +48,7 @@ class 보관함_미술관_셀 : UICollectionViewCell {
         
         보관함_미술관_셀_이름.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(보관함_미술관_셀_이미지.snp.bottom)
+            make.top.equalTo(보관함_미술관_셀_이미지.snp.bottom).offset(5)
         }
     }
     
