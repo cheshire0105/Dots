@@ -15,7 +15,7 @@ class DetailAudioPage: UIViewController {
     let circleImageView = UIImageView()
     let label1 = UILabel()
     let label2 = UILabel()
-    let rightImageView = UIImageView() // 오른쪽에 추가할 이미지 뷰 선언
+    let rightActionButton = UIButton(type: .custom)
     let textView = UITextView()
 
     let leftCircleView = UIView() // 왼쪽 원형 뷰
@@ -31,6 +31,9 @@ class DetailAudioPage: UIViewController {
     let rightButton2 = UIButton(type: .custom)
     let rightButton3 = UIButton(type: .custom)
 
+    var isButtonImageToggled = false
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black // 배경색을 흰색으로 설정합니다.
@@ -38,7 +41,7 @@ class DetailAudioPage: UIViewController {
         setupRoundedRectangleView()
         setupCircleImageView()
         setupLabels()
-        setupRightImageView() // 이미지 뷰 설정 메서드 호출
+        setupRightActionButton() // 새로 정의한 메서드 호출
         setupTextView()
         setupLeftCircleView() // 새로 추가한 메서드 호출
         setupRightCircleView() // 새로 추가한 메서드 호출
@@ -282,19 +285,31 @@ class DetailAudioPage: UIViewController {
         }
     }
 
-    private func setupRightImageView() {
-        // 에셋에서 이미지 로드 (이미지 이름을 'yourImageName'으로 가정)
-        if let image = UIImage(named: "Group 150") {
-            rightImageView.image = image
+    private func setupRightActionButton() {
+        if let image = UIImage(named: "Group 150") { // 사용할 이미지 이름
+            rightActionButton.setImage(image, for: .normal)
         }
 
-        roundedRectangleView.addSubview(rightImageView)
-        rightImageView.snp.makeConstraints { make in
+        rightActionButton.imageView?.contentMode = .scaleAspectFit
+        rightActionButton.addTarget(self, action: #selector(rightActionButtonTapped), for: .touchUpInside)
+
+        roundedRectangleView.addSubview(rightActionButton)
+        rightActionButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-20) // 오른쪽 여백 설정
             make.centerY.equalToSuperview() // 세로 중앙 정렬
-            make.width.height.equalTo(20) // 이미지 크기 설정
+            make.width.height.equalTo(20) // 버튼 크기 설정
         }
     }
+    @objc private func rightActionButtonTapped() {
+        if isButtonImageToggled {
+            rightActionButton.setImage(UIImage(named: "Group 150"), for: .normal)
+        } else {
+            rightActionButton.setImage(UIImage(named: "Polygon 6"), for: .normal)
+        }
+        isButtonImageToggled.toggle() // 상태 변경
+    }
+
+
 
     private func setupTextView() {
         textView.textColor = .white
