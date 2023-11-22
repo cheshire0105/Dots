@@ -218,7 +218,8 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     }
     @objc func 회원가입_중복확인_버튼_클릭() {
         guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
-            알럿센터.알럿_메시지.경고_알럿(message: "이메일을 입력하세요.")
+            
+            알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.")
               return
           }
            let 데이터베이스 = Firestore.firestore()
@@ -229,14 +230,15 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 
                if let error = error {
                    print("Firestore에서 이메일 중복 확인 실패: \(error.localizedDescription)")
-                   알럿센터.알럿_메시지.경고_알럿(message: "이메일 중복 확인 실패")
+                   
+                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패")
                    return
                }
 
                if snapshot?.isEmpty == false {
-                   알럿센터.알럿_메시지.경고_알럿(message: "중복된 이메일입니다.")
+                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "중복된 이메일입니다.")
                } else {
-                   알럿센터.알럿_메시지.경고_알럿(message: "사용 가능한 이메일입니다.")
+                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.")
                }
            }
        }
@@ -250,7 +252,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         guard let 이메일 = 회원가입_이메일_텍스트필드.text,
               let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
               let 닉네임 = 회원가입_닉네임_텍스트필드.text,
-              var 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
+              let 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
             return
         }
         회원가입_이미지_업로드(프로필이미지) { [weak self] 결과 in

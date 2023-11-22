@@ -19,6 +19,7 @@
 		3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */; };
 		3727BE0C2AF293EC0055AD24 /* PopularReviewDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE0B2AF293EC0055AD24 /* PopularReviewDetailCell.swift */; };
 		373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F22B0D500D000A7BCD /* Alert.swift */; };
+		373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */; };
 		377041D92AF3CADF009FE818 /* PopularReviewDetailPanModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377041D82AF3CADF009FE818 /* PopularReviewDetailPanModal.swift */; };
 		377041DB2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377041DA2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift */; };
 		377130222AFB88B00018D4C1 /* SignUPsecond.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130212AFB88B00018D4C1 /* SignUPsecond.swift */; };
@@ -118,6 +119,7 @@
 		3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetail.swift; sourceTree = "<group>"; };
 		3727BE0B2AF293EC0055AD24 /* PopularReviewDetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetailCell.swift; sourceTree = "<group>"; };
 		373FC7F22B0D500D000A7BCD /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
 		377041D82AF3CADF009FE818 /* PopularReviewDetailPanModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetailPanModal.swift; sourceTree = "<group>"; };
 		377041DA2AF3D76A009FE818 /* PopularReviewDetailPanModalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetailPanModalCell.swift; sourceTree = "<group>"; };
 		377130212AFB88B00018D4C1 /* SignUPsecond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecond.swift; sourceTree = "<group>"; };
@@ -257,6 +259,14 @@
 				FF77BFBC2AF7736900EA5A1B /* LogIN.swift */,
 			);
 			path = Main;
+			sourceTree = "<group>";
+		};
+		373FC7F42B0E0AD7000A7BCD /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		37B3D8012B0A1B5200DDCEC2 /* Calendar */ = {
@@ -532,6 +542,7 @@
 		FF77BFB92AF772AF00EA5A1B /* LoginPage */ = {
 			isa = PBXGroup;
 			children = (
+				373FC7F42B0E0AD7000A7BCD /* Service */,
 				373FC7F12B0D4FE5000A7BCD /* Main */,
 				373FC7F02B0D4FB7000A7BCD /* AlertCenter */,
 				373FC7EF2B0D4F44000A7BCD /* SignUP */,
@@ -750,6 +761,7 @@
 				FF47B5EE2AE61BA5006A5004 /* TabBar.swift in Sources */,
 				37DE8F992B03B46A0086FC58 /* MypageReviewCell.swift in Sources */,
 				1F9325C22AE67DC400C27F1B /* PopularReviewCell.swift in Sources */,
+				373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -156,18 +156,18 @@ class 마이페이지_설정_페이지 : UIViewController {
         return label
     }()
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        if let glassTabBar = tabBarController as? GlassTabBar {
-//            glassTabBar.customTabBarView.isHidden = true
-//        }
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+
+    }
     override func viewDidLoad() {
+        super.viewDidLoad()
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
-        버튼_클릭()
         화살표_레이아웃()
+        버튼_클릭()
+
     }
 
 }
@@ -210,7 +210,7 @@ extension 마이페이지_설정_페이지 {
 //유저 로그아웃 관련
 extension 마이페이지_설정_페이지 {
     
-    //클릭했을때
+//    클릭했을때
     @objc private func 로그아웃_버튼_클릭() {
         let 로그아웃_알럿 = UIAlertController(title: "로그아웃", message: "지금 사용중인 기기에서 로그아웃을 진행할까요?", preferredStyle: .alert)
 
@@ -223,10 +223,12 @@ extension 마이페이지_설정_페이지 {
         로그아웃_알럿.addAction(로그아웃확인_버튼)
 
             present(로그아웃_알럿, animated: true, completion: nil)
-    }
+     
+        }
     
+  
     //로그아웃 로직
-    private func 로그아웃_유저로그아웃() {
+     func 로그아웃_유저로그아웃() {
         do {
             if let 현제접속중인_유저 = Auth.auth().currentUser {
                 print("로그아웃한 사용자 정보:")

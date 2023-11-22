@@ -20,7 +20,6 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
-        button.setImage(UIImage(named: ""), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
@@ -61,6 +60,16 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         return textField
     } ()
+    private let 로그인_비밀번호찾기_버튼 = {
+       let button = UIButton()
+        button.setTitle("비밀번호 찾기", for: .selected)
+        button.setTitle("비밀번호 찾기", for: .normal)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        button.setTitleColor(UIColor(named: "neon"), for: .selected)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 13)
+        button.isSelected = !button.isSelected
+        return button
+    }()
     //로그인 버튼
     private let 로그인_버튼 = {
         let button = UIButton()
@@ -162,6 +171,7 @@ extension 로그인_뷰컨트롤러 {
     
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        로그인_비밀번호찾기_버튼.addTarget(self, action: #selector(로그인_비밀번호찾기_버튼_클릭), for: .touchUpInside)
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
     }
     //일반 화면전환 버튼
@@ -172,7 +182,11 @@ extension 로그인_뷰컨트롤러 {
         navigationItem.hidesBackButton = true
     }
     
-   
+    @objc func 로그인_비밀번호찾기_버튼_클릭() {
+        print("비밀번호 찾기 진행")
+        let 비밀번호찾기_이동 = 유저_비밀번호찾기_뷰컨트롤러()
+        self.navigationController?.pushViewController(비밀번호찾기_이동, animated: true)
+    }
 }
 
 //로그인 관련
@@ -206,7 +220,8 @@ extension 로그인_뷰컨트롤러 {
             
             if let 에러 = 에러 {
                 print("Firestore 조회 에러: \(에러.localizedDescription)")
-            } 
+                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.")
+            }
             else {
                 if let 문서조회 = 컬렉션?.documents, !문서조회.isEmpty {
                     
@@ -217,6 +232,7 @@ extension 로그인_뷰컨트롤러 {
                         문서.reference.updateData(["로그인상태": true]) { 에러 in
                             if let 에러 = 에러 {
                                 print("Firestore 업데이트 에러: \(에러.localizedDescription)")
+                                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.")
                             } else {
                                 
                                 UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
@@ -228,9 +244,11 @@ extension 로그인_뷰컨트롤러 {
                         }
                     } else {
                         print("Firestore: 이미 로그인된 상태입니다.")
+                        알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "타 기기에 이미 로그인되어있는 계정입니다.")
                     }
                 } else {
                     print("Firestore: 등록된 계정이 없습니다.")
+                    알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "등록된 계정이 없습니다.")
                 }
             }
         }
@@ -248,6 +266,7 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(비밀번호_백)
         view.addSubview(로그인_이메일_텍스트필드)
         view.addSubview(로그인_비밀번호_텍스트필드)
+        view.addSubview(로그인_비밀번호찾기_버튼)
         view.addSubview(로그인_버튼)
         view.addSubview(간편로그인_라벨)
         view.addSubview(구글_버튼)
@@ -288,6 +307,10 @@ extension 로그인_뷰컨트롤러 {
             make.top.equalTo(비밀번호_백)
             make.leading.equalTo(비밀번호_백).offset(30)
             make.trailing.equalTo(비밀번호_백).offset(-80)
+        }
+        로그인_비밀번호찾기_버튼.snp.makeConstraints { make in
+            make.top.equalTo(비밀번호_백.snp.bottom).offset(1)
+            make.trailing.equalTo(비밀번호_백.snp.trailing).offset(-2)
         }
         로그인_버튼.snp.makeConstraints { make in
             make.top.equalTo(로그인_비밀번호_텍스트필드.snp.bottom).offset(30)

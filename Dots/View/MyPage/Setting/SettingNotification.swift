@@ -24,7 +24,7 @@ class 알림설정_모달 : UIViewController {
     } ()
     private let 페이지_제목 = {
         let label = UILabel()
-        label.text = "서비스 설정"
+        label.text = "알림 설정"
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .center
