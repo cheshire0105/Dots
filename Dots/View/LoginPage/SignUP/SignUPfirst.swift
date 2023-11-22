@@ -6,7 +6,7 @@ import FirebaseFirestore
 import SnapKit
 
 class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
-    var 이메일: String = ""
+
     var 활성화된텍스트필드: UITextField?
     //페이지 제목
     private let 제목_라벨 = {
@@ -26,21 +26,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         button.layer.cornerRadius = 20
         return button
     } ()
-    
-    //    var 회원가입_이미지_선택_버튼 = {
-    //        var imageButton = UIButton()
-    //        imageButton.layer.cornerRadius = 60
-    //        imageButton.backgroundColor = .darkGray
-    //        imageButton.clipsToBounds = true
-    //        imageButton.setTitle("사진", for: .normal)
-    //        imageButton.setTitle("사진", for: .selected)
-    //        imageButton.setTitleColor(UIColor.white, for: .selected)
-    //        imageButton.setTitleColor(UIColor.darkGray, for: .normal)
-    //        imageButton.setImage(UIImage(named: ""), for: .selected)
-    //        imageButton.setImage(UIImage(named: ""), for: .normal)
-    //        imageButton.isSelected = !imageButton.isSelected
-    //        return imageButton
-    //    }()
+  
     private let 회원가입_닉네임_텍스트필드 = { ()
         let textField = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [
@@ -55,6 +41,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.backgroundColor = .clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        
         return textField
     } ()
     private let 회원가입_이메일_텍스트필드 = { ()
@@ -71,6 +58,11 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.backgroundColor = .darkGray
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        
+        textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+
+
         return textField
     } ()
     private let 회원가입_중복확인_버튼 = {
@@ -100,6 +92,9 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.backgroundColor = .darkGray
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        
+        textField.isSecureTextEntry = true
+
         return textField
     } ()
     private let 회원가입_다음_버튼 = {
@@ -278,11 +273,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.leading.equalToSuperview().offset(24)
             
         }
-        //        회원가입_이미지_선택_버튼.snp.makeConstraints { make in
-        //            make.top.equalTo(제목_라벨.snp.bottom).offset(75)
-        //            make.centerX.equalToSuperview()
-        //            make.width.height.equalTo(124)
-        //        }
+
         닉네임_백.snp.makeConstraints { make in
             make.top.equalTo(제목_라벨.snp.bottom).offset(35)
             make.leading.equalToSuperview().offset(24)
@@ -331,6 +322,40 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             
         }
     }
+}
+// 텍스트 필드 델리게이트 구현
+extension 회원가입_첫번째_뷰컨트롤러 {
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == 회원가입_비밀번호_텍스트필드 {
+            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
+            let validCharacters = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
+            let isValid = string.rangeOfCharacter(from: validCharacters.inverted) == nil
+            let newLength = (textField.text?.count ?? 0) + string.count
+            return isValid && (newLength <= 16)
+        } else if textField == 회원가입_닉네임_텍스트필드 {
+            // 닉네임 규칙: 2~8자, 한글과 영문만 가능
+            let validCharacters = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ가-힣")
+            let isValid = string.rangeOfCharacter(from: validCharacters.inverted) == nil
+            let newLength = (textField.text?.count ?? 0) + string.count
+            return isValid && (newLength <= 8)
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // 리턴 키를 눌렀을 때 다음 텍스트 필드로 포커스 이동
+        if textField == 회원가입_닉네임_텍스트필드 {
+            회원가입_이메일_텍스트필드.becomeFirstResponder()
+        } else if textField == 회원가입_이메일_텍스트필드 {
+            회원가입_비밀번호_텍스트필드.becomeFirstResponder()
+        } else if textField == 회원가입_비밀번호_텍스트필드 {
+            회원가입_비밀번호_텍스트필드.resignFirstResponder()  // 마지막 필드에서 리턴 키를 눌렀을 때 키보드 숨김
+            회원가입_다음_버튼_클릭()  // 원래는 다음 버튼 클릭 메소드 호출로 변경
+        }
+        return true
+    }
+    
 }
 
 
