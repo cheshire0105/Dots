@@ -97,14 +97,14 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
 
         return textField
     } ()
-    private let 회원가입_다음_버튼 = {
+    private let 회원가입_회원가입_버튼 = {
         let button = UIButton()
         button.layer.cornerRadius = 30
-        button.backgroundColor = UIColor.white
+        button.backgroundColor = UIColor(named: "neon")
         button.isSelected = !button.isSelected
-        button.setTitle("다음", for: .normal)
-        button.setTitle("다음", for: .selected)
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitle("회원가입", for: .normal)
+        button.setTitle("회원가입", for: .selected)
+        button.setTitleColor(UIColor(named: "neon"), for: .normal)
         button.setTitleColor(UIColor.black, for: .selected)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.titleLabel?.textAlignment = .center
@@ -128,6 +128,54 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         uiView.layer.cornerRadius = 25
         return uiView
     }()
+    private let 간편로그인_라벨 = {
+        let label = UILabel()
+        label.text = " - - - - - - - - - - - - - -  간편 로그인  - - - - - - - - - - - - - - "
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.textAlignment = .center
+        
+        return label
+    } ()
+    let 구글_버튼 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "google"), for: .selected)
+        button.setImage(UIImage(named: "google"), for: .normal)
+        button.isSelected = !button.isSelected
+        button.backgroundColor = UIColor(named: "neon")
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
+        button.contentMode = .scaleToFill
+        return button
+    } ()
+    let 애플_버튼 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "apple"), for: .selected)
+        button.setImage(UIImage(named: "apple"), for: .normal)
+        button.isSelected = !button.isSelected
+        button.backgroundColor = UIColor(named: "neon")
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
+        button.contentMode = .scaleToFill
+        
+        return button
+    } ()
+    let 트위터_버튼 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "twitter"), for: .selected)
+        button.setImage(UIImage(named: "twitter"), for: .normal)
+        button.isSelected = !button.isSelected
+        button.backgroundColor = UIColor(named: "neon")
+        button.layer.borderColor = UIColor(named: "neon")?.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
+        button.contentMode = .scaleToFill
+        
+        return button
+    } ()
+    
     
     override func viewDidLoad() {
         view.backgroundColor = .black
@@ -158,7 +206,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
-        회원가입_다음_버튼.addTarget(self, action: #selector(회원가입_다음_버튼_클릭), for: .touchUpInside)
+        회원가입_회원가입_버튼.addTarget(self, action: #selector(회원가입_회원가입_버튼_클릭), for: .touchUpInside)
         회원가입_중복확인_버튼.addTarget(self, action: #selector(회원가입_중복확인_버튼_클릭), for: .touchUpInside)
         
     }
@@ -216,7 +264,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     }
     
     
-    @objc func 회원가입_다음_버튼_클릭() {
+    @objc func 회원가입_회원가입_버튼_클릭() {
         //        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
         //        self.navigationController?.pushViewController(다음화면_이동, animated: true)
         //        self.navigationItem.hidesBackButton = true
@@ -261,21 +309,24 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         view.addSubview(회원가입_이메일_텍스트필드)
         view.addSubview(회원가입_중복확인_버튼)
         view.addSubview(회원가입_비밀번호_텍스트필드)
-        view.addSubview(회원가입_다음_버튼)
-        
+        view.addSubview(회원가입_회원가입_버튼)
+        view.addSubview(간편로그인_라벨)
+        view.addSubview(구글_버튼)
+        view.addSubview(애플_버튼)
+        view.addSubview(트위터_버튼)
         뒤로가기_버튼.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
             make.size.equalTo(40)
         }
         제목_라벨.snp.makeConstraints { make in
-            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(25)
+            make.top.equalTo(뒤로가기_버튼.snp.bottom).offset(105)
             make.leading.equalToSuperview().offset(24)
             
         }
 
         닉네임_백.snp.makeConstraints { make in
-            make.top.equalTo(제목_라벨.snp.bottom).offset(35)
+            make.top.equalTo(제목_라벨.snp.bottom).offset(40)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(50)
@@ -287,7 +338,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.height.equalTo(50)
         }
         이메일_백.snp.makeConstraints { make in
-            make.top.equalTo(회원가입_닉네임_텍스트필드.snp.bottom).offset(24)
+            make.top.equalTo(회원가입_닉네임_텍스트필드.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(50)
@@ -299,7 +350,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.height.equalTo(50)
         }
         비밀번호_백.snp.makeConstraints { make in
-            make.top.equalTo(회원가입_이메일_텍스트필드.snp.bottom).offset(24)
+            make.top.equalTo(회원가입_이메일_텍스트필드.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(50)
@@ -314,12 +365,31 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.trailing.equalTo(비밀번호_백).offset(-80)
             make.height.equalTo(50)
         }
-        회원가입_다음_버튼.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+        회원가입_회원가입_버튼.snp.makeConstraints { make in
+            make.top.equalTo(비밀번호_백.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(60)
             
+        }
+        간편로그인_라벨.snp.makeConstraints { make in
+            make.top.equalTo(회원가입_회원가입_버튼.snp.bottom).offset(25)
+            make.centerX.equalToSuperview()
+        }
+        구글_버튼.snp.makeConstraints { make in
+            make.centerY.equalTo(애플_버튼)
+            make.trailing.equalTo(애플_버튼.snp.leading).offset(-20)
+            make.size.equalTo(50)
+        }
+        애플_버튼.snp.makeConstraints { make in
+            make.top.equalTo(간편로그인_라벨.snp.bottom).offset(30)
+            make.centerX.equalToSuperview()
+            make.size.equalTo(50)
+        }
+        트위터_버튼.snp.makeConstraints { make in
+            make.centerY.equalTo(애플_버튼)
+            make.leading.equalTo(애플_버튼.snp.trailing).offset(20)
+            make.size.equalTo(50)
         }
     }
 }
@@ -351,7 +421,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             회원가입_비밀번호_텍스트필드.becomeFirstResponder()
         } else if textField == 회원가입_비밀번호_텍스트필드 {
             회원가입_비밀번호_텍스트필드.resignFirstResponder()  // 마지막 필드에서 리턴 키를 눌렀을 때 키보드 숨김
-            회원가입_다음_버튼_클릭()  // 원래는 다음 버튼 클릭 메소드 호출로 변경
+            회원가입_회원가입_버튼_클릭()  // 원래는 다음 버튼 클릭 메소드 호출로 변경
         }
         return true
     }
