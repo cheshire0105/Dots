@@ -390,12 +390,20 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == MainExhibitionCollectionView {
-            let exhibitionPage = BackgroundImageViewController() // 예시 ViewController
-            // 여기서는 예시로 새 ViewController를 푸시합니다.
+            let exhibitionPage = BackgroundImageViewController()
+
+            // 선택된 셀의 전시 데이터 가져오기
+            if let selectedExhibition = exhibitionData(forIndexPath: indexPath) {
+                exhibitionPage.posterImageName = selectedExhibition.poster
+            }
+
             self.navigationController?.pushViewController(exhibitionPage, animated: true)
         }
         // CategoryCollectionView에 대한 선택 처리 (필요한 경우)
     }
+
+
+    
 
 }
 
