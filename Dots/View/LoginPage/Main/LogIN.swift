@@ -20,7 +20,6 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
-        button.setImage(UIImage(named: ""), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
@@ -36,12 +35,16 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
         textField.textColor = UIColor.white
-        textField.tintColor = UIColor.lightGray
+        textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .darkGray
+        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+        textField.clearButtonMode = .whileEditing
+        textField.rightViewMode = .whileEditing
         return textField
     } ()
     //비밀번호 텍스트필드
@@ -53,14 +56,33 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "비밀번호", attributes: attributes)
         textField.textColor = UIColor.white
-        textField.tintColor = UIColor.lightGray
+        textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .darkGray
+        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        textField.isSecureTextEntry = true
+        textField.clearButtonMode = .whileEditing
+        textField.rightViewMode = .whileEditing
+
         return textField
     } ()
+    private let 비밀번호_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
+    private let 로그인_비밀번호찾기_버튼 = {
+       let button = UIButton()
+        button.setTitle("비밀번호 찾기", for: .selected)
+        button.setTitle("비밀번호 찾기", for: .normal)
+        button.setTitleColor(UIColor.darkGray, for: .normal)
+        button.setTitleColor(UIColor(named: "neon"), for: .selected)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 13)
+        button.isSelected = !button.isSelected
+        return button
+    }()
     //로그인 버튼
     private let 로그인_버튼 = {
         let button = UIButton()
@@ -77,13 +99,13 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
     }()
     private let 이메일_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = .darkGray
+        uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 25
         return uiView
     }()
     private let 비밀번호_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = .darkGray
+        uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 25
         return uiView
     }()
@@ -162,17 +184,34 @@ extension 로그인_뷰컨트롤러 {
     
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        비밀번호_표시_온오프.addTarget(self, action: #selector(비밀번호_표시_온오프_클릭), for: .touchUpInside)
+        로그인_비밀번호찾기_버튼.addTarget(self, action: #selector(로그인_비밀번호찾기_버튼_클릭), for: .touchUpInside)
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
     }
     //일반 화면전환 버튼
     @objc func 뒤로가기_버튼_클릭() {
         print("뒤로가기")
         let 처음화면_이동 = 로그인_회원가입_뷰컨트롤러()
-        self.navigationController?.pushViewController(처음화면_이동, animated: true)
+        self.navigationController?.pushViewController(처음화면_이동, animated: false)
         navigationItem.hidesBackButton = true
     }
+    @objc func 비밀번호_표시_온오프_클릭() {
+        if 로그인_비밀번호_텍스트필드.isSecureTextEntry == true {
+            비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+            비밀번호_표시_온오프.tintColor = UIColor(named: "neon")
+            로그인_비밀번호_텍스트필드.isSecureTextEntry = false
+        } else {
+            비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+            로그인_비밀번호_텍스트필드.isSecureTextEntry = true
+
+        }
+    }
     
-   
+    @objc func 로그인_비밀번호찾기_버튼_클릭() {
+        print("비밀번호 찾기 진행")
+        let 비밀번호찾기_이동 = 유저_비밀번호찾기_뷰컨트롤러()
+        self.navigationController?.pushViewController(비밀번호찾기_이동, animated: true)
+    }
 }
 
 //로그인 관련
@@ -206,10 +245,11 @@ extension 로그인_뷰컨트롤러 {
             
             if let 에러 = 에러 {
                 print("Firestore 조회 에러: \(에러.localizedDescription)")
-            } else {
-
+                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.")
+            }
+            else {
                 if let 문서조회 = 컬렉션?.documents, !문서조회.isEmpty {
-
+                    
                     let 문서 = 문서조회[0]
                     
                     if let 로그인상태 = 문서["로그인상태"] as? Bool, !로그인상태 {
@@ -217,8 +257,9 @@ extension 로그인_뷰컨트롤러 {
                         문서.reference.updateData(["로그인상태": true]) { 에러 in
                             if let 에러 = 에러 {
                                 print("Firestore 업데이트 에러: \(에러.localizedDescription)")
+                                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.")
                             } else {
-
+                                
                                 UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
                                 
                                 let 메인화면_이동 = TabBar()
@@ -228,14 +269,17 @@ extension 로그인_뷰컨트롤러 {
                         }
                     } else {
                         print("Firestore: 이미 로그인된 상태입니다.")
+                        알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "타 기기에 이미 로그인되어있는 계정입니다.")
                     }
                 } else {
-                    print("Firestore: 일치하는 이메일이 없습니다.")
+                    print("Firestore: 등록된 계정이 없습니다.")
+                    알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "등록된 계정이 없습니다.")
                 }
             }
         }
     }
 }
+
 
 
 //레이아웃 관련
@@ -247,6 +291,8 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(비밀번호_백)
         view.addSubview(로그인_이메일_텍스트필드)
         view.addSubview(로그인_비밀번호_텍스트필드)
+        view.addSubview(비밀번호_표시_온오프)
+        view.addSubview(로그인_비밀번호찾기_버튼)
         view.addSubview(로그인_버튼)
         view.addSubview(간편로그인_라벨)
         view.addSubview(구글_버튼)
@@ -274,7 +320,7 @@ extension 로그인_뷰컨트롤러 {
             make.height.equalTo(55)
             make.top.equalTo(이메일_백)
             make.leading.equalTo(이메일_백).offset(30)
-            make.trailing.equalTo(이메일_백).offset(-80)
+            make.trailing.equalTo(이메일_백).offset(-30)
         }
         비밀번호_백.snp.makeConstraints { make in
             make.top.equalTo(로그인_이메일_텍스트필드.snp.bottom).offset(24)
@@ -286,7 +332,16 @@ extension 로그인_뷰컨트롤러 {
             make.height.equalTo(55)
             make.top.equalTo(비밀번호_백)
             make.leading.equalTo(비밀번호_백).offset(30)
-            make.trailing.equalTo(비밀번호_백).offset(-80)
+            make.trailing.equalTo(비밀번호_백).offset(-30)
+        }
+        비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(로그인_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(비밀번호_백.snp.trailing).offset(-15)
+            make.size.equalTo(20)
+        }
+        로그인_비밀번호찾기_버튼.snp.makeConstraints { make in
+            make.top.equalTo(비밀번호_백.snp.bottom).offset(1)
+            make.trailing.equalTo(비밀번호_백.snp.trailing).offset(-2)
         }
         로그인_버튼.snp.makeConstraints { make in
             make.top.equalTo(로그인_비밀번호_텍스트필드.snp.bottom).offset(30)
@@ -317,7 +372,37 @@ extension 로그인_뷰컨트롤러 {
 }
 
 
-
+extension 로그인_뷰컨트롤러 {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if textField == 로그인_이메일_텍스트필드 {
+            // 이메일 규칙: 숫자 영문 소문자 - . _ 사용 가능
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz.@_-")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            return 제한사항준수
+        }
+        else if textField == 로그인_비밀번호_텍스트필드 {
+            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            let 글자수제한 = (textField.text?.count ?? 0) + string.count
+            return 제한사항준수 && (글자수제한 <= 16)
+        }
+        return true
+    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if textField == 로그인_이메일_텍스트필드 {
+            로그인_비밀번호_텍스트필드.becomeFirstResponder()
+        } else if textField == 로그인_비밀번호_텍스트필드 {
+            로그인_비밀번호_텍스트필드.resignFirstResponder()
+            //            회원가입_회원가입_버튼_클릭()
+        }
+        return true
+    }
+}
+    
 
 //키보드 관련 Extension
 extension 로그인_뷰컨트롤러 : UITextFieldDelegate {

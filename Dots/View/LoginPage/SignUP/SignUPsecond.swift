@@ -1,6 +1,6 @@
 import UIKit
 import SnapKit
-
+//new
 class 회원가입_두번째_뷰컨트롤러 : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     var 활성화된텍스트필드: UITextField?
 
