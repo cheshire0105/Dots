@@ -392,8 +392,16 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView == MainExhibitionCollectionView {
             let exhibitionPage = BackgroundImageViewController()
 
-            // 선택된 셀의 전시 데이터 가져오기
-            if let selectedExhibition = exhibitionData(forIndexPath: indexPath) {
+            var selectedExhibition: ExhibitionModel?
+            if indexPath.section == 0 {
+                selectedExhibition = exhibitions.count > indexPath.item ? exhibitions[indexPath.item] : nil
+            } else if indexPath.section == 1 {
+                selectedExhibition = secondSectionExhibitions.count > indexPath.item ? secondSectionExhibitions[indexPath.item] : nil
+            } else if indexPath.section == 2 {
+                selectedExhibition = thirdSectionExhibitions.count > indexPath.item ? thirdSectionExhibitions[indexPath.item] : nil
+            }
+
+            if let selectedExhibition = selectedExhibition {
                 exhibitionPage.posterImageName = selectedExhibition.poster
             }
 
@@ -401,6 +409,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         }
         // CategoryCollectionView에 대한 선택 처리 (필요한 경우)
     }
+
 
 
     
