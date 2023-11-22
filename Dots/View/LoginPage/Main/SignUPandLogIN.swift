@@ -95,7 +95,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         return label
     } ()
     
-    
+   
     //회원가입 -
     private let 회원가입_버튼 = {
         let button = UIButton()
@@ -171,7 +171,6 @@ extension 로그인_회원가입_뷰컨트롤러 {
 extension 로그인_회원가입_뷰컨트롤러 {
     func UI레이아웃() {
         
-        //        view.addSubview(로고_이미지)
         view.addSubview(D)
         view.addSubview(O)
         view.addSubview(T)

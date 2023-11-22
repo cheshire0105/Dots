@@ -38,7 +38,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .clear
+        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         
@@ -55,7 +55,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .darkGray
+        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         
@@ -89,7 +89,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .darkGray
+        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         
@@ -112,19 +112,19 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
     }()
     private let 닉네임_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = .darkGray
+        uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 25
         return uiView
     }()
     private let 이메일_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = .darkGray
+        uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 25
         return uiView
     }()
     private let 비밀번호_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = .darkGray
+        uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 25
         return uiView
     }()
@@ -306,7 +306,6 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         view.addSubview(닉네임_백)
         view.addSubview(이메일_백)
         view.addSubview(비밀번호_백)
-        //        view.addSubview(회원가입_이미지_선택_버튼)
         view.addSubview(회원가입_닉네임_텍스트필드)
         view.addSubview(회원가입_이메일_텍스트필드)
         view.addSubview(회원가입_중복확인_버튼)

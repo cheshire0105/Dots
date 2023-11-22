@@ -38,11 +38,13 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .darkGray
+        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
+        textField.clearButtonMode = .whileEditing
+        textField.rightViewMode = .whileEditing
         return textField
     } ()
     //비밀번호 텍스트필드
@@ -57,13 +59,20 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = .darkGray
+        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         textField.isSecureTextEntry = true
+        textField.clearButtonMode = .whileEditing
+        textField.rightViewMode = .whileEditing
 
         return textField
     } ()
+    private let 비밀번호_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
     private let 로그인_비밀번호찾기_버튼 = {
        let button = UIButton()
         button.setTitle("비밀번호 찾기", for: .selected)
@@ -90,13 +99,13 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
     }()
     private let 이메일_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = .darkGray
+        uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 25
         return uiView
     }()
     private let 비밀번호_백 = {
         let uiView = UIView()
-        uiView.backgroundColor = .darkGray
+        uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 25
         return uiView
     }()
@@ -175,6 +184,7 @@ extension 로그인_뷰컨트롤러 {
     
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        비밀번호_표시_온오프.addTarget(self, action: #selector(비밀번호_표시_온오프_클릭), for: .touchUpInside)
         로그인_비밀번호찾기_버튼.addTarget(self, action: #selector(로그인_비밀번호찾기_버튼_클릭), for: .touchUpInside)
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
     }
@@ -184,6 +194,17 @@ extension 로그인_뷰컨트롤러 {
         let 처음화면_이동 = 로그인_회원가입_뷰컨트롤러()
         self.navigationController?.pushViewController(처음화면_이동, animated: false)
         navigationItem.hidesBackButton = true
+    }
+    @objc func 비밀번호_표시_온오프_클릭() {
+        if 로그인_비밀번호_텍스트필드.isSecureTextEntry == true {
+            비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+            비밀번호_표시_온오프.tintColor = UIColor(named: "neon")
+            로그인_비밀번호_텍스트필드.isSecureTextEntry = false
+        } else {
+            비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+            로그인_비밀번호_텍스트필드.isSecureTextEntry = true
+
+        }
     }
     
     @objc func 로그인_비밀번호찾기_버튼_클릭() {
@@ -270,6 +291,7 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(비밀번호_백)
         view.addSubview(로그인_이메일_텍스트필드)
         view.addSubview(로그인_비밀번호_텍스트필드)
+        view.addSubview(비밀번호_표시_온오프)
         view.addSubview(로그인_비밀번호찾기_버튼)
         view.addSubview(로그인_버튼)
         view.addSubview(간편로그인_라벨)
@@ -298,7 +320,7 @@ extension 로그인_뷰컨트롤러 {
             make.height.equalTo(55)
             make.top.equalTo(이메일_백)
             make.leading.equalTo(이메일_백).offset(30)
-            make.trailing.equalTo(이메일_백).offset(-80)
+            make.trailing.equalTo(이메일_백).offset(-30)
         }
         비밀번호_백.snp.makeConstraints { make in
             make.top.equalTo(로그인_이메일_텍스트필드.snp.bottom).offset(24)
@@ -310,7 +332,12 @@ extension 로그인_뷰컨트롤러 {
             make.height.equalTo(55)
             make.top.equalTo(비밀번호_백)
             make.leading.equalTo(비밀번호_백).offset(30)
-            make.trailing.equalTo(비밀번호_백).offset(-80)
+            make.trailing.equalTo(비밀번호_백).offset(-30)
+        }
+        비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(로그인_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(비밀번호_백.snp.trailing).offset(-15)
+            make.size.equalTo(20)
         }
         로그인_비밀번호찾기_버튼.snp.makeConstraints { make in
             make.top.equalTo(비밀번호_백.snp.bottom).offset(1)
