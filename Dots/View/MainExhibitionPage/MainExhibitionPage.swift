@@ -141,7 +141,7 @@ class MainExhibitionPage: UIViewController {
         }
     }
 
-    
+
 
 
 
@@ -284,7 +284,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionCell", for: indexPath) as! CategotyCell
             cell.label.text = items[indexPath.item]
             return cell
-        } 
+        }
 
         else if collectionView == MainExhibitionCollectionView {
             if indexPath.section == 0 {
@@ -307,7 +307,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
                 cell.configureCellLayout(isEven: indexPath.row % 2 == 0)
                 return cell
-            } 
+            }
 
             else if indexPath.section == 1 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
@@ -354,7 +354,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                     return cell
 
                 }
-              }
+            }
 
         }
         return UICollectionViewCell()
@@ -375,8 +375,16 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     }
 
 
+    // 이 메서드는 각 컬렉션 뷰에 대한 섹션의 수를 정의합니다.
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3 // 두 개의 섹션이 있다고 가정
+        if collectionView == CategoryCollectionView {
+            // CategoryCollectionView의 경우 1개의 섹션
+            return 1
+        } else if collectionView == MainExhibitionCollectionView {
+            // MainExhibitionCollectionView의 경우 3개의 섹션
+            return 3
+        }
+        return 0
     }
 
 
