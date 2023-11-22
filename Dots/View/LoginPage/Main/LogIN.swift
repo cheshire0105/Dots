@@ -41,6 +41,8 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.backgroundColor = .darkGray
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
         return textField
     } ()
     //비밀번호 텍스트필드
@@ -58,6 +60,8 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.backgroundColor = .darkGray
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        textField.isSecureTextEntry = true
+
         return textField
     } ()
     private let 로그인_비밀번호찾기_버튼 = {

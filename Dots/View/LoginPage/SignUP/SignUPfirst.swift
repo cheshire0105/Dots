@@ -11,9 +11,9 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
     //페이지 제목
     private let 제목_라벨 = {
         let label = UILabel()
-        label.text = "기본 정보를 입력해주세요"
+        label.text = "SIGN UP"
         label.textColor = UIColor.white
-        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.font = UIFont.boldSystemFont(ofSize: 40)
         
         return label
     } ()
@@ -27,20 +27,20 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         return button
     } ()
     
-    var 회원가입_이미지_선택_버튼 = {
-        var imageButton = UIButton()
-        imageButton.layer.cornerRadius = 60
-        imageButton.backgroundColor = .darkGray
-        imageButton.clipsToBounds = true
-        imageButton.setTitle("사진", for: .normal)
-        imageButton.setTitle("사진", for: .selected)
-        imageButton.setTitleColor(UIColor.white, for: .selected)
-        imageButton.setTitleColor(UIColor.darkGray, for: .normal)
-        imageButton.setImage(UIImage(named: ""), for: .selected)
-        imageButton.setImage(UIImage(named: ""), for: .normal)
-        imageButton.isSelected = !imageButton.isSelected
-        return imageButton
-    }()
+    //    var 회원가입_이미지_선택_버튼 = {
+    //        var imageButton = UIButton()
+    //        imageButton.layer.cornerRadius = 60
+    //        imageButton.backgroundColor = .darkGray
+    //        imageButton.clipsToBounds = true
+    //        imageButton.setTitle("사진", for: .normal)
+    //        imageButton.setTitle("사진", for: .selected)
+    //        imageButton.setTitleColor(UIColor.white, for: .selected)
+    //        imageButton.setTitleColor(UIColor.darkGray, for: .normal)
+    //        imageButton.setImage(UIImage(named: ""), for: .selected)
+    //        imageButton.setImage(UIImage(named: ""), for: .normal)
+    //        imageButton.isSelected = !imageButton.isSelected
+    //        return imageButton
+    //    }()
     private let 회원가입_닉네임_텍스트필드 = { ()
         let textField = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [
@@ -154,7 +154,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         // 메모리 해제 시 리스너 제거
         NotificationCenter.default.removeObserver(self)
     }
-  
+    
 }
 
 
@@ -164,33 +164,10 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         회원가입_다음_버튼.addTarget(self, action: #selector(회원가입_다음_버튼_클릭), for: .touchUpInside)
-        회원가입_이미지_선택_버튼.addTarget(self, action: #selector(회원가입_이미지_선택_버튼_클릭), for: .touchUpInside)
         회원가입_중복확인_버튼.addTarget(self, action: #selector(회원가입_중복확인_버튼_클릭), for: .touchUpInside)
         
     }
-    private func 회원가입_이미지_업로드(_ 이미지: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
-        guard let 이미지데이터 = 이미지.jpegData(compressionQuality: 0.5) else {
-            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to data"])))
-            return
-        }
-        
-        let 이미지생성 = "\(UUID().uuidString).jpg"
-        
-        let 스토리지_참조 = Storage.storage().reference().child("profile_images/\(이미지생성)")
-        스토리지_참조.putData(이미지데이터, metadata: nil) { (metadata, 에러) in
-            if let 이미지업로드실패 = 에러 {
-                completion(.failure(이미지업로드실패))
-            } else {
-                스토리지_참조.downloadURL { (url, error) in
-                    if let url = url {
-                        completion(.success(url))
-                    } else {
-                        completion(.failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get image URL"])))
-                    }
-                }
-            }
-        }
-    }
+    
     private func 회원가입_유저정보_업로드(닉네임: String, 이메일: String, 비밀번호: String,로그인상태: Bool ,프로필이미지URL: String) {
         let 데이터베이스 = Firestore.firestore()
         let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
@@ -217,78 +194,61 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         
     }
     @objc func 회원가입_중복확인_버튼_클릭() {
-        guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
-            
-            알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.")
-              return
-          }
-           let 데이터베이스 = Firestore.firestore()
-           let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
-           
-           유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, error) in
-               guard let self = self else { return }
-
-               if let error = error {
-                   print("Firestore에서 이메일 중복 확인 실패: \(error.localizedDescription)")
-                   
-                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패")
-                   return
-               }
-
-               if snapshot?.isEmpty == false {
-                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "중복된 이메일입니다.")
-               } else {
-                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.")
-               }
-           }
-       }
-       
+        //        guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
+        //
+        //            알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.")
+        //              return
+        //          }
+        //           let 데이터베이스 = Firestore.firestore()
+        //           let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+        //
+        //           유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, error) in
+        //               guard let self = self else { return }
+        //
+        //               if let error = error {
+        //                   print("Firestore에서 이메일 중복 확인 실패: \(error.localizedDescription)")
+        //
+        //                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패")
+        //                   return
+        //               }
+        //
+        //               if snapshot?.isEmpty == false {
+        //                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "중복된 이메일입니다.")
+        //               } else {
+        //                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.")
+        //               }
+        //           }
+    }
+    
     
     @objc func 회원가입_다음_버튼_클릭() {
-        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
-        self.navigationController?.pushViewController(다음화면_이동, animated: true)
-        self.navigationItem.hidesBackButton = true
+        //        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+        //        self.navigationController?.pushViewController(다음화면_이동, animated: true)
+        //        self.navigationItem.hidesBackButton = true
         print("다음 페이지로 이동")
         guard let 이메일 = 회원가입_이메일_텍스트필드.text,
               let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
-              let 닉네임 = 회원가입_닉네임_텍스트필드.text,
-              let 프로필이미지 = 회원가입_이미지_선택_버튼.image(for: .normal) else {
+              let 닉네임 = 회원가입_닉네임_텍스트필드.text else {
             return
         }
-        회원가입_이미지_업로드(프로필이미지) { [weak self] 결과 in
-            guard let self = self else { return }
-            
-            switch 결과 {
-            case .success(let 이미지Url):
-                Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { (authResult, 에러) in
-                    if let 회원가입_실패 = 에러 {
-                        print("회원가입 실패: \(회원가입_실패.localizedDescription)")
-                        
-                        return
-                    }
-                    
-                    print("회원가입 성공")
-                    
-                    self.회원가입_유저정보_업로드(닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 이미지Url.absoluteString)
-                    
-                    let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
-                    self.navigationController?.pushViewController(다음화면_이동, animated: true)
-                    self.navigationItem.hidesBackButton = true
-                }
-            case .failure(let 업로드_실패):
-                print("이미지 업로드 실패: \(업로드_실패.localizedDescription)")
-                
-            }
-        }
+        let 기본프로필이미지URL = "https://firebasestorage.googleapis.com/v0/b/dots-3ad09.appspot.com/o/profile_default_images%2FdotsMan.png?alt=media&token=c412cd87-160c-4ebf-bd7d-53ebac38a720"
         
+        Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { (authResult, 에러) in
+            if let 회원가입_실패 = 에러 {
+                print("회원가입 실패: \(회원가입_실패.localizedDescription)")
+                return
+            }
+            
+            print("회원가입 성공")
+            
+            self.회원가입_유저정보_업로드(닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL)
+            
+            let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+            self.navigationController?.pushViewController(다음화면_이동, animated: true)
+            self.navigationItem.hidesBackButton = true
+        }
     }
     
-    @objc func 회원가입_이미지_선택_버튼_클릭() {
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        present(imagePickerController, animated: true, completion: nil)
-    }
 }
 
 
@@ -301,7 +261,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         view.addSubview(닉네임_백)
         view.addSubview(이메일_백)
         view.addSubview(비밀번호_백)
-        view.addSubview(회원가입_이미지_선택_버튼)
+        //        view.addSubview(회원가입_이미지_선택_버튼)
         view.addSubview(회원가입_닉네임_텍스트필드)
         view.addSubview(회원가입_이메일_텍스트필드)
         view.addSubview(회원가입_중복확인_버튼)
@@ -318,13 +278,13 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.leading.equalToSuperview().offset(24)
             
         }
-        회원가입_이미지_선택_버튼.snp.makeConstraints { make in
-            make.top.equalTo(제목_라벨.snp.bottom).offset(75)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(124)
-        }
+        //        회원가입_이미지_선택_버튼.snp.makeConstraints { make in
+        //            make.top.equalTo(제목_라벨.snp.bottom).offset(75)
+        //            make.centerX.equalToSuperview()
+        //            make.width.height.equalTo(124)
+        //        }
         닉네임_백.snp.makeConstraints { make in
-            make.top.equalTo(회원가입_이미지_선택_버튼.snp.bottom).offset(35)
+            make.top.equalTo(제목_라벨.snp.bottom).offset(35)
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(50)
@@ -373,28 +333,6 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     }
 }
 
-//사진라이브러리 접근관련 Extension
-extension 회원가입_첫번째_뷰컨트롤러: UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        if let selectedImage = info[.originalImage] as? UIImage {
-            회원가입_이미지_선택_버튼.setImage(selectedImage, for: .normal)
-        }
-        
-        picker.dismiss(animated: true, completion: nil)
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
-    }
-}
-
-class 사진_라이브러리: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-    }
-}
-
 
 //키보드관련 Extension
 extension 회원가입_첫번째_뷰컨트롤러: UITextFieldDelegate {
@@ -414,20 +352,20 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         self.view.endEditing(true)
         self.view.frame.origin.y = 0
     }
-
+    
     @objc func 키보드가올라올때(notification: NSNotification) {
         guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-                 let 활성화된텍스트필드 = 활성화된텍스트필드 else {
-               return
-           }
-
-           let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
-           let 키보드시작 = view.frame.size.height - 키보드크기.height
-
-           if 텍스트필드끝 > 키보드시작 {
-               let 이동거리 = 키보드시작 - 텍스트필드끝
-               view.frame.origin.y = 이동거리
-           }
+              let 활성화된텍스트필드 = 활성화된텍스트필드 else {
+            return
+        }
+        
+        let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+        let 키보드시작 = view.frame.size.height - 키보드크기.height
+        
+        if 텍스트필드끝 > 키보드시작 {
+            let 이동거리 = 키보드시작 - 텍스트필드끝
+            view.frame.origin.y = 이동거리
+        }
     }
 }
 
