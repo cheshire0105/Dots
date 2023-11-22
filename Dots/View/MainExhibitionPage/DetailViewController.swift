@@ -18,7 +18,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var detailScrollView: UIScrollView!
     var detailContentView: UIView!
     let floatingActionButton = UIButton(type: .custom)
-
+    
+    
 
     var mapView: MKMapView!
 

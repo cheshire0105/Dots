@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 import SnapKit
 import UIKit
+import FirebaseStorage
+import Firebase
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -47,6 +49,16 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
+    var posterImageName: String?
+    
+    private lazy var backgroundImageView: UIImageView = {
+        let imageView = UIImageView(frame: self.view.bounds)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+
 //    override func viewWillAppear(_ animated: Bool) {
 //        if let glassTabBar = tabBarController as? GlassTabBar {
 //            glassTabBar.customTabBarView.isHidden = true
@@ -75,22 +87,57 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     override func viewDidLoad() {
+         super.viewDidLoad()
+         view.backgroundColor = .black
 
-        view.backgroundColor = .black
+         // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
+         view.addSubview(backgroundImageView)
+         view.sendSubviewToBack(backgroundImageView)
 
-        navigationController?.interactivePopGestureRecognizer?.delegate = self
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-        super.viewDidLoad()
-        // 배경으로 사용할 이미지 뷰를 설정합니다.
-        let backgroundImageView = UIImageView(frame: self.view.bounds)
-        backgroundImageView.image = UIImage(named: "ExhibitionPageBack")
-        backgroundImageView.contentMode = .scaleAspectFill
-        backgroundImageView.clipsToBounds = true
-        self.view.addSubview(backgroundImageView)
+         setupBackButton()
 
-        setupBackButton() // 백 버튼 설정 메서드 호출
+         // 이미지 로딩을 위한 함수 호출
+         if let posterName = posterImageName {
+             setupBackgroundImage(with: posterName)
+         }
+     }
 
+    private func fetchExhibitionData() {
+        let collectionRef = Firestore.firestore().collection("메인페이지_첫번째_섹션")
+
+        collectionRef.getDocuments { [weak self] (snapshot, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("An error occurred: \(error)")
+                } else if let snapshot = snapshot, let firstDocument = snapshot.documents.first {
+                    let data = firstDocument.data()
+                    let posterImageName = data["poster"] as? String ?? "" // 'poster' 필드에서 이미지 이름 가져오기
+
+                    // 디버깅을 위한 print 문
+                    print("Fetched image name: \(posterImageName)")
+
+                    self?.setupBackgroundImage(with: posterImageName)
+                }
+            }
+        }
     }
+
+    private func setupBackgroundImage(with imageName: String) {
+           let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+           storageRef.downloadURL { [weak self] (url, error) in
+               if let error = error {
+                   print("Error getting download URL: \(error)")
+               } else if let url = url {
+                   // 이미지 로드
+                   URLSession.shared.dataTask(with: url) { (data, _, error) in
+                       guard let data = data, error == nil else { return }
+                       DispatchQueue.main.async {
+                           self?.backgroundImageView.image = UIImage(data: data)
+                       }
+                   }.resume()
+               }
+           }
+       }
 
     private func setupBackButton() {
         view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
@@ -125,14 +172,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//
-//        // 모달이 표시되어 있으면 닫습니다.
-//        if let presentedViewController = self.presentedViewController {
-//            presentedViewController.dismiss(animated: false, completion: nil)
-//        }
-//    }
+
 
     @objc func heartIconTapped() {
         let isSelected = heartIcon.isSelected
