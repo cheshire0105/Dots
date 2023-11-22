@@ -35,7 +35,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "닉네임", attributes: attributes)
         textField.textColor = UIColor.white
-        textField.tintColor = UIColor.lightGray
+        textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
         textField.backgroundColor = .clear
@@ -52,7 +52,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
         textField.textColor = UIColor.white
-        textField.tintColor = UIColor.lightGray
+        textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
         textField.backgroundColor = .darkGray
@@ -86,7 +86,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "비밀번호", attributes: attributes)
         textField.textColor = UIColor.white
-        textField.tintColor = UIColor.lightGray
+        textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
         textField.backgroundColor = .darkGray
@@ -233,7 +233,9 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     }
     @objc func 뒤로가기_버튼_클릭() {
         print("뒤로가기")
-        navigationController?.popViewController(animated: true)
+        let 처음화면_이동 = 로그인_회원가입_뷰컨트롤러()
+        self.navigationController?.pushViewController(처음화면_이동, animated: false)
+        navigationItem.hidesBackButton = true
         
     }
     @objc func 회원가입_중복확인_버튼_클릭() {
@@ -397,31 +399,38 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 extension 회원가입_첫번째_뷰컨트롤러 {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField == 회원가입_비밀번호_텍스트필드 {
-            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
-            let validCharacters = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
-            let isValid = string.rangeOfCharacter(from: validCharacters.inverted) == nil
-            let newLength = (textField.text?.count ?? 0) + string.count
-            return isValid && (newLength <= 16)
-        } else if textField == 회원가입_닉네임_텍스트필드 {
+         if textField == 회원가입_닉네임_텍스트필드 {
             // 닉네임 규칙: 2~8자, 한글과 영문만 가능
-            let validCharacters = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ가-힣")
-            let isValid = string.rangeOfCharacter(from: validCharacters.inverted) == nil
-            let newLength = (textField.text?.count ?? 0) + string.count
-            return isValid && (newLength <= 8)
+            let 입력제한사항 = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ가-힣")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            let 글자수제한 = (textField.text?.count ?? 0) + string.count
+            return 제한사항준수 && (글자수제한 <= 8)
+        }
+        else if textField == 회원가입_이메일_텍스트필드 {
+            // 이메일 규칙: 숫자 영문 소문자 - . _ 사용 가능
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz.@_-")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            return 제한사항준수
+        }
+        else if textField == 회원가입_비밀번호_텍스트필드 {
+            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            let 글자수제한 = (textField.text?.count ?? 0) + string.count
+            return 제한사항준수 && (글자수제한 <= 16)
         }
         return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // 리턴 키를 눌렀을 때 다음 텍스트 필드로 포커스 이동
+
         if textField == 회원가입_닉네임_텍스트필드 {
             회원가입_이메일_텍스트필드.becomeFirstResponder()
         } else if textField == 회원가입_이메일_텍스트필드 {
             회원가입_비밀번호_텍스트필드.becomeFirstResponder()
         } else if textField == 회원가입_비밀번호_텍스트필드 {
-            회원가입_비밀번호_텍스트필드.resignFirstResponder()  // 마지막 필드에서 리턴 키를 눌렀을 때 키보드 숨김
-            회원가입_회원가입_버튼_클릭()  // 원래는 다음 버튼 클릭 메소드 호출로 변경
+            회원가입_비밀번호_텍스트필드.resignFirstResponder()
+//            회원가입_회원가입_버튼_클릭()
         }
         return true
     }

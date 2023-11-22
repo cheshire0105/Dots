@@ -35,7 +35,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
         textField.textColor = UIColor.white
-        textField.tintColor = UIColor.lightGray
+        textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
         textField.backgroundColor = .darkGray
@@ -54,7 +54,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "비밀번호", attributes: attributes)
         textField.textColor = UIColor.white
-        textField.tintColor = UIColor.lightGray
+        textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
         textField.backgroundColor = .darkGray
@@ -182,7 +182,7 @@ extension 로그인_뷰컨트롤러 {
     @objc func 뒤로가기_버튼_클릭() {
         print("뒤로가기")
         let 처음화면_이동 = 로그인_회원가입_뷰컨트롤러()
-        self.navigationController?.pushViewController(처음화면_이동, animated: true)
+        self.navigationController?.pushViewController(처음화면_이동, animated: false)
         navigationItem.hidesBackButton = true
     }
     
@@ -345,7 +345,37 @@ extension 로그인_뷰컨트롤러 {
 }
 
 
-
+extension 로그인_뷰컨트롤러 {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if textField == 로그인_이메일_텍스트필드 {
+            // 이메일 규칙: 숫자 영문 소문자 - . _ 사용 가능
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz.@_-")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            return 제한사항준수
+        }
+        else if textField == 로그인_비밀번호_텍스트필드 {
+            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            let 글자수제한 = (textField.text?.count ?? 0) + string.count
+            return 제한사항준수 && (글자수제한 <= 16)
+        }
+        return true
+    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if textField == 로그인_이메일_텍스트필드 {
+            로그인_비밀번호_텍스트필드.becomeFirstResponder()
+        } else if textField == 로그인_비밀번호_텍스트필드 {
+            로그인_비밀번호_텍스트필드.resignFirstResponder()
+            //            회원가입_회원가입_버튼_클릭()
+        }
+        return true
+    }
+}
+    
 
 //키보드 관련 Extension
 extension 로그인_뷰컨트롤러 : UITextFieldDelegate {

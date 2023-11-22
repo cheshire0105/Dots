@@ -40,9 +40,8 @@ extension 유저_비밀번호찾기_뷰컨트롤러 {
     //일반 화면전환 버튼
     @objc func 뒤로가기_버튼_클릭() {
         print("뒤로가기")
-        let 처음화면_이동 = 로그인_회원가입_뷰컨트롤러()
-        self.navigationController?.pushViewController(처음화면_이동, animated: true)
-        navigationItem.hidesBackButton = true
+        navigationController?.popViewController(animated: true)
+
     }
 
 }

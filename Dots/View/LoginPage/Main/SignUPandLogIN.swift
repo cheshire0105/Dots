@@ -4,14 +4,14 @@ import UIKit
 import SnapKit
 
 class 로그인_회원가입_뷰컨트롤러: UIViewController {
-
+    
     private let D = {
         let imageView = UIImageView()
         imageView.backgroundColor = .white
         imageView.layer.cornerRadius = 20
         imageView.clipsToBounds = true
-        
         imageView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        imageView.alpha = 0
         return imageView
     }()
     private let O = {
@@ -19,8 +19,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         imageView.backgroundColor = .white
         imageView.layer.cornerRadius = 20
         imageView.clipsToBounds = true
-        
-        
+        imageView.alpha = 0
         return imageView
     }()
     private let T = {
@@ -28,8 +27,6 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .white
         imageView.clipsToBounds = true
-        
-        
         let combinedMaskLayer = CALayer()
         
         let maskLayer1 = CAShapeLayer()
@@ -51,6 +48,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         imageView.layer.mask = combinedMaskLayer
         
         
+        imageView.alpha = 0
         
         return imageView
     }()
@@ -77,8 +75,12 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         combinedMaskLayer.addSublayer(maskLayer2)
         
         imageView.layer.mask = combinedMaskLayer
+        imageView.alpha = 0
+        
         return imageView
     }()
+    
+    
     private let 슬로건_라벨 = {
         let label = UILabel()
         label.text = """
@@ -89,9 +91,11 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         label.font = UIFont(name: "HelveticaNeue", size: 14)
         label.textColor = UIColor.white
         label.textAlignment = .justified
+        label.alpha = 0
         return label
     } ()
-    //
+    
+    
     //회원가입 -
     private let 회원가입_버튼 = {
         let button = UIButton()
@@ -104,6 +108,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         button.setTitleColor(UIColor.black, for: .selected)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.titleLabel?.textAlignment = .center
+        button.alpha = 0
         return button
     }()
     
@@ -119,6 +124,7 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         button.setTitleColor(UIColor.black, for: .selected)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.titleLabel?.textAlignment = .center
+        button.alpha = 0
         return button
     }()
     
@@ -129,9 +135,14 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
+        로고_페이드_인아웃()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.버튼_페이드_인아웃()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            self.슬로건_페이드_인아웃()
+        }
     }
-    
-  
 }
 
 // 버튼 클릭
@@ -150,7 +161,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
         print("로그인 페이지로 이동")
         let 로그인_뷰컨트롤러_이동 = 로그인_뷰컨트롤러()
         self.navigationController?.pushViewController(로그인_뷰컨트롤러_이동, animated: true)
- 
+        
     }
 }
 
@@ -160,7 +171,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
 extension 로그인_회원가입_뷰컨트롤러 {
     func UI레이아웃() {
         
-//        view.addSubview(로고_이미지)
+        //        view.addSubview(로고_이미지)
         view.addSubview(D)
         view.addSubview(O)
         view.addSubview(T)
@@ -181,24 +192,24 @@ extension 로그인_회원가입_뷰컨트롤러 {
             make.height.equalTo(40)
             make.top.equalToSuperview().offset(258)
             make.trailing.equalTo(로그인_버튼.snp.centerX).offset(-4)
-
+            
         }
         T.snp.makeConstraints { make in
             make.width.equalTo(40)
             make.height.equalTo(40)
             make.top.equalToSuperview().offset(258)
             make.leading.equalTo(로그인_버튼.snp.centerX).offset(4)
-
-
+            
+            
         }
         S.snp.makeConstraints { make in
             make.width.equalTo(40)
             make.height.equalTo(40)
             make.top.equalToSuperview().offset(258)
             make.leading.equalTo(로그인_버튼.snp.centerX).offset(50)
-
+            
         }
-
+        
         슬로건_라벨.snp.makeConstraints { make in
             make.top.equalTo(D.snp.bottom).offset(32)
             make.leading.equalTo(D.snp.leading).offset(18)
@@ -219,4 +230,81 @@ extension 로그인_회원가입_뷰컨트롤러 {
             make.trailing.equalToSuperview().offset(-44)
         }
     }
+}
+
+//효과
+extension 로그인_회원가입_뷰컨트롤러 {
+    private func 로고_페이드_인아웃() {
+        let 총시간 = 2.5
+        let 딜레이 = 0.9
+        
+        // D
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 0, options: [], animations: {
+            self.D.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: 총시간, delay: 1, options: [], animations: {
+                self.D.alpha = 1
+            }, completion: nil)
+        })
+        
+        // O
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 1, options: [], animations: {
+            self.O.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: 총시간, delay: 2, options: [], animations: {
+                self.O.alpha = 1
+            }, completion: nil)
+        })
+        
+        // T
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 2, options: [], animations: {
+            self.T.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: 총시간, delay: 3, options: [], animations: {
+                self.T.alpha = 1
+            }, completion: nil)
+        })
+        
+        // S
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 3, options: [], animations: {
+            self.S.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: 총시간, delay: 4, options: [], animations: {
+                self.S.alpha = 1
+            }, completion: nil)
+        })
+    }
+    private func 슬로건_페이드_인아웃() {
+        let duration = 2.5
+        let delay = 0.9
+        
+        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+            self.슬로건_라벨.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: duration, delay: 0, options: [], animations: {
+                self.슬로건_라벨.alpha = 1
+            }, completion: nil)
+        })
+    }
+    private func 버튼_페이드_인아웃() {
+        let duration = 3.5
+        let delay = 0.9
+        
+        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+            self.회원가입_버튼.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: duration, delay: 1, options: [], animations: {
+                self.회원가입_버튼.alpha = 1
+            }, completion: nil)
+        })
+        
+        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+            self.로그인_버튼.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: duration, delay: 2, options: [], animations: {
+                self.로그인_버튼.alpha = 1
+            }, completion: nil)
+        })
+    }
+    
 }
