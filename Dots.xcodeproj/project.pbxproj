@@ -27,6 +27,7 @@
 		377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130252AFB88FA0018D4C1 /* SignUPfourth.swift */; };
 		3771302A2AFCAB0A0018D4C1 /* SignUPsecondCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */; };
 		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
+		37976D532B0F76AD004F278F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37976D522B0F76AD004F278F /* GoogleService-Info.plist */; };
 		37B3D8032B0A1B9100DDCEC2 /* CalendarSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */; };
 		37DE8F882AFE38260086FC58 /* SignUPthirdCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F872AFE38260086FC58 /* SignUPthirdCell.swift */; };
 		37DE8F8C2B0396CF0086FC58 /* MypageExhibition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */; };
@@ -67,7 +68,6 @@
 		FF77BFBD2AF7736900EA5A1B /* LogIN.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFBC2AF7736900EA5A1B /* LogIN.swift */; };
 		FF77BFBF2AF780AC00EA5A1B /* SignUPfirst.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFBE2AF780AC00EA5A1B /* SignUPfirst.swift */; };
 		FF77BFC12AF79D3A00EA5A1B /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFC02AF79D3A00EA5A1B /* LaunchScreenViewController.swift */; };
-		FFAFCB2A2AFA228C0030C3C9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FFAFCB292AFA228C0030C3C9 /* GoogleService-Info.plist */; };
 		FFAFCB2D2AFA23E30030C3C9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB2C2AFA23E30030C3C9 /* FirebaseAnalytics */; };
 		FFAFCB2F2AFA23E30030C3C9 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB2E2AFA23E30030C3C9 /* FirebaseAnalyticsOnDeviceConversion */; };
 		FFAFCB312AFA23E30030C3C9 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB302AFA23E30030C3C9 /* FirebaseAnalyticsSwift */; };
@@ -127,6 +127,7 @@
 		377130252AFB88FA0018D4C1 /* SignUPfourth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfourth.swift; sourceTree = "<group>"; };
 		377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecondCell.swift; sourceTree = "<group>"; };
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
+		37976D522B0F76AD004F278F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule.swift; sourceTree = "<group>"; };
 		37DE8F872AFE38260086FC58 /* SignUPthirdCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPthirdCell.swift; sourceTree = "<group>"; };
 		37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MypageExhibition.swift; path = "../마이페이지_전시폴더/MypageExhibition.swift"; sourceTree = "<group>"; };
@@ -170,7 +171,6 @@
 		FF77BFBC2AF7736900EA5A1B /* LogIN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogIN.swift; sourceTree = "<group>"; };
 		FF77BFBE2AF780AC00EA5A1B /* SignUPfirst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfirst.swift; sourceTree = "<group>"; };
 		FF77BFC02AF79D3A00EA5A1B /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
-		FFAFCB292AFA228C0030C3C9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FFAFCB732AFB71080030C3C9 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		FFAFCB752AFB76220030C3C9 /* ExhibitionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExhibitionModel.swift; sourceTree = "<group>"; };
 		FFAFCB772AFB76460030C3C9 /* 선별_전시_컬렉션_셀.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "선별_전시_컬렉션_셀.swift"; sourceTree = "<group>"; };
@@ -417,7 +417,7 @@
 				FF3C97202AE5FEA1006FEF23 /* Main.storyboard */,
 				FF3C97252AE5FEA4006FEF23 /* LaunchScreen.storyboard */,
 				FF3C97282AE5FEA4006FEF23 /* Info.plist */,
-				FFAFCB292AFA228C0030C3C9 /* GoogleService-Info.plist */,
+				37976D522B0F76AD004F278F /* GoogleService-Info.plist */,
 			);
 			path = Dots;
 			sourceTree = "<group>";
@@ -642,13 +642,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37976D532B0F76AD004F278F /* GoogleService-Info.plist in Resources */,
 				FF0401192B0B88F900B23988 /* Pretendard-Thin.ttf in Resources */,
 				FF3C97272AE5FEA4006FEF23 /* LaunchScreen.storyboard in Resources */,
 				FF04011C2B0B88F900B23988 /* Pretendard-ExtraBold.ttf in Resources */,
 				FF04011B2B0B88F900B23988 /* Pretendard-SemiBold.ttf in Resources */,
 				FF0401182B0B88F900B23988 /* Pretendard-Regular.ttf in Resources */,
 				FF0401162B0B88F900B23988 /* Pretendard-Medium.ttf in Resources */,
-				FFAFCB2A2AFA228C0030C3C9 /* GoogleService-Info.plist in Resources */,
 				FF3C97242AE5FEA4006FEF23 /* Assets.xcassets in Resources */,
 				FF04011E2B0B88F900B23988 /* Pretendard-Light.ttf in Resources */,
 				FF04011A2B0B88F900B23988 /* Pretendard-ExtraLight.ttf in Resources */,

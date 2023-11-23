@@ -1,4 +1,4 @@
-// 23. 11.21  10:01 pm dev에서 풀 완료 - 최신화 커밋 - > 최신화 완료
+// 23. 11.23  8:48 pm dev에서 풀 완료 - 최신화 커밋 - > 최신화 완료
 
 import UIKit
 import SnapKit
@@ -136,10 +136,10 @@ class 로그인_회원가입_뷰컨트롤러: UIViewController {
         UI레이아웃()
         버튼_클릭()
         로고_페이드_인아웃()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             self.버튼_페이드_인아웃()
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             self.슬로건_페이드_인아웃()
         }
     }
@@ -241,7 +241,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
         UIView.animate(withDuration: 총시간, delay: 딜레이 * 0, options: [], animations: {
             self.D.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: 총시간, delay: 1, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 0.5, options: [], animations: {
                 self.D.alpha = 1
             }, completion: nil)
         })
@@ -250,7 +250,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
         UIView.animate(withDuration: 총시간, delay: 딜레이 * 1, options: [], animations: {
             self.O.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: 총시간, delay: 2, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 1, options: [], animations: {
                 self.O.alpha = 1
             }, completion: nil)
         })
@@ -259,7 +259,7 @@ extension 로그인_회원가입_뷰컨트롤러 {
         UIView.animate(withDuration: 총시간, delay: 딜레이 * 2, options: [], animations: {
             self.T.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: 총시간, delay: 3, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 1.5, options: [], animations: {
                 self.T.alpha = 1
             }, completion: nil)
         })
@@ -268,39 +268,39 @@ extension 로그인_회원가입_뷰컨트롤러 {
         UIView.animate(withDuration: 총시간, delay: 딜레이 * 3, options: [], animations: {
             self.S.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: 총시간, delay: 4, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 2, options: [], animations: {
                 self.S.alpha = 1
             }, completion: nil)
         })
     }
     private func 슬로건_페이드_인아웃() {
-        let duration = 2.5
+        let 총시간 = 1.5
         let delay = 0.9
         
-        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+        UIView.animate(withDuration: 총시간, delay: delay * 0, options: [], animations: {
             self.슬로건_라벨.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: duration, delay: 0, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 0, options: [], animations: {
                 self.슬로건_라벨.alpha = 1
             }, completion: nil)
         })
     }
     private func 버튼_페이드_인아웃() {
-        let duration = 3.5
-        let delay = 0.9
+        let 총시간 = 1.5
+        let 딜레이 = 0.9
         
-        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 0, options: [], animations: {
             self.회원가입_버튼.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: duration, delay: 1, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 0.5, options: [], animations: {
                 self.회원가입_버튼.alpha = 1
             }, completion: nil)
         })
         
-        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 0, options: [], animations: {
             self.로그인_버튼.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: duration, delay: 2, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 1, options: [], animations: {
                 self.로그인_버튼.alpha = 1
             }, completion: nil)
         })

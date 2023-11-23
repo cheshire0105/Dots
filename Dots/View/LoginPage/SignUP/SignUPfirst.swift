@@ -38,9 +38,14 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+//        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
+        
+        textField.clearButtonMode = .whileEditing
+        textField.rightViewMode = .whileEditing
+
         
         return textField
     } ()
@@ -55,12 +60,17 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+//        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
+        
+        textField.clearButtonMode = .whileEditing
+        textField.rightViewMode = .whileEditing
+
 
 
         return textField
@@ -89,14 +99,25 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+//        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         
         textField.isSecureTextEntry = true
+        
+        textField.clearButtonMode = .whileEditing
+        textField.rightViewMode = .whileEditing
+
 
         return textField
     } ()
+    
+    private let 비밀번호_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
     private let 회원가입_회원가입_버튼 = {
         let button = UIButton()
         button.layer.cornerRadius = 30
@@ -183,7 +204,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         navigationController?.isNavigationBarHidden = true
         UI레이아웃()
         버튼_클릭()
-        
+    
         // 키보드 이벤트 리스너 등록
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         
@@ -208,7 +229,8 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         회원가입_회원가입_버튼.addTarget(self, action: #selector(회원가입_회원가입_버튼_클릭), for: .touchUpInside)
         회원가입_중복확인_버튼.addTarget(self, action: #selector(회원가입_중복확인_버튼_클릭), for: .touchUpInside)
-        
+        비밀번호_표시_온오프.addTarget(self, action: #selector(비밀번호_표시_온오프_클릭), for: .touchUpInside)
+
     }
     
     private func 회원가입_유저정보_업로드(닉네임: String, 이메일: String, 비밀번호: String,로그인상태: Bool ,프로필이미지URL: String) {
@@ -239,32 +261,42 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         
     }
     @objc func 회원가입_중복확인_버튼_클릭() {
-        //        guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
-        //
-        //            알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.")
-        //              return
-        //          }
-        //           let 데이터베이스 = Firestore.firestore()
-        //           let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
-        //
-        //           유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, error) in
-        //               guard let self = self else { return }
-        //
-        //               if let error = error {
-        //                   print("Firestore에서 이메일 중복 확인 실패: \(error.localizedDescription)")
-        //
-        //                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패")
-        //                   return
-        //               }
-        //
-        //               if snapshot?.isEmpty == false {
-        //                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "중복된 이메일입니다.")
-        //               } else {
-        //                   알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.")
-        //               }
-        //           }
+                guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
+        
+                    알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.", presentingViewController: self)
+                      return
+                  }
+                   let 데이터베이스 = Firestore.firestore()
+                   let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+        
+                   유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, error) in
+                       guard let self = self else { return }
+        
+                       if let error = error {
+                           print("Firestore에서 이메일 중복 확인 실패: \(error.localizedDescription)")
+        
+                           알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패", presentingViewController: self)
+                           return
+                       }
+        
+                       if snapshot?.isEmpty == false {
+                           알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "중복된 이메일입니다.", presentingViewController: self)
+                       } else {
+                           알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.", presentingViewController: self)
+                       }
+                   }
     }
-    
+    @objc func 비밀번호_표시_온오프_클릭() {
+        if 회원가입_비밀번호_텍스트필드.isSecureTextEntry == true {
+            비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+            비밀번호_표시_온오프.tintColor = UIColor(named: "neon")
+            회원가입_비밀번호_텍스트필드.isSecureTextEntry = false
+        } else {
+            비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+            회원가입_비밀번호_텍스트필드.isSecureTextEntry = true
+
+        }
+    }
     
     @objc func 회원가입_회원가입_버튼_클릭() {
         //        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
@@ -310,6 +342,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         view.addSubview(회원가입_이메일_텍스트필드)
         view.addSubview(회원가입_중복확인_버튼)
         view.addSubview(회원가입_비밀번호_텍스트필드)
+        view.addSubview(비밀번호_표시_온오프)
         view.addSubview(회원가입_회원가입_버튼)
         view.addSubview(간편로그인_라벨)
         view.addSubview(구글_버튼)
@@ -335,7 +368,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         회원가입_닉네임_텍스트필드.snp.makeConstraints { make in
             make.top.equalTo(닉네임_백)
             make.leading.equalTo(닉네임_백).offset(30)
-            make.trailing.equalTo(닉네임_백).offset(-80)
+            make.trailing.equalTo(닉네임_백).offset(-30)
             make.height.equalTo(50)
         }
         이메일_백.snp.makeConstraints { make in
@@ -347,7 +380,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         회원가입_이메일_텍스트필드.snp.makeConstraints { make in
             make.top.equalTo(이메일_백)
             make.leading.equalTo(이메일_백).offset(30)
-            make.trailing.equalTo(이메일_백).offset(-80)
+            make.trailing.equalTo(이메일_백).offset(-30)
             make.height.equalTo(50)
         }
         비밀번호_백.snp.makeConstraints { make in
@@ -363,8 +396,13 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         회원가입_비밀번호_텍스트필드.snp.makeConstraints { make in
             make.top.equalTo(비밀번호_백)
             make.leading.equalTo(비밀번호_백).offset(30)
-            make.trailing.equalTo(비밀번호_백).offset(-80)
+            make.trailing.equalTo(비밀번호_백).offset(-30)
             make.height.equalTo(50)
+        }
+        비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(회원가입_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(비밀번호_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
         }
         회원가입_회원가입_버튼.snp.makeConstraints { make in
             make.top.equalTo(비밀번호_백.snp.bottom).offset(30)
@@ -398,13 +436,13 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 extension 회원가입_첫번째_뷰컨트롤러 {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-         if textField == 회원가입_닉네임_텍스트필드 {
-            // 닉네임 규칙: 2~8자, 한글과 영문만 가능
-            let 입력제한사항 = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ가-힣")
-            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
-            let 글자수제한 = (textField.text?.count ?? 0) + string.count
-            return 제한사항준수 && (글자수제한 <= 8)
-        }
+        if textField == 회원가입_닉네임_텍스트필드 {
+                // 닉네임 규칙: 2~8자, 한글과 영문만 가능
+//                let 입력제한사항 = CharacterSet(charactersIn: "가-힣")
+//                let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+                let 글자수제한 = (textField.text?.count ?? 0) + string.count
+                return /*제한사항준수 &&*/ (글자수제한 <= 8)
+            }
         else if textField == 회원가입_이메일_텍스트필드 {
             // 이메일 규칙: 숫자 영문 소문자 - . _ 사용 가능
             let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz.@_-")
@@ -440,14 +478,35 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 //키보드관련 Extension
 extension 회원가입_첫번째_뷰컨트롤러: UITextFieldDelegate {
     
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         활성화된텍스트필드 = textField
+        if textField == 회원가입_닉네임_텍스트필드 {
+            닉네임_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            닉네임_백.layer.borderWidth = 1
+        }
+        else if textField == 회원가입_이메일_텍스트필드 {
+            이메일_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            이메일_백.layer.borderWidth = 1
+        }
+        else if textField == 회원가입_비밀번호_텍스트필드 {
+            비밀번호_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            비밀번호_백.layer.borderWidth = 1
+        }
     }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        활성화된텍스트필드 = nil
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            활성화된텍스트필드 = nil
+            if textField == 회원가입_닉네임_텍스트필드 {
+                닉네임_백.layer.borderColor = UIColor.clear.cgColor
+            }
+            else if textField == 회원가입_이메일_텍스트필드 {
+                이메일_백.layer.borderColor = UIColor.clear.cgColor
+            }
+            else if textField == 회원가입_비밀번호_텍스트필드 {
+                비밀번호_백.layer.borderColor = UIColor.clear.cgColor
+            }
+        }
     }
-}
 
 extension 회원가입_첫번째_뷰컨트롤러 {
     
