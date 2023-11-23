@@ -38,7 +38,8 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+//        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         textField.keyboardType = .emailAddress
@@ -59,7 +60,8 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+//        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         textField.isSecureTextEntry = true
@@ -336,7 +338,7 @@ extension 로그인_뷰컨트롤러 {
         }
         비밀번호_표시_온오프.snp.makeConstraints { make in
             make.centerY.equalTo(로그인_비밀번호_텍스트필드.snp.centerY)
-            make.trailing.equalTo(비밀번호_백.snp.trailing).offset(-15)
+            make.trailing.equalTo(비밀번호_백.snp.trailing).offset(-10)
             make.size.equalTo(20)
         }
         로그인_비밀번호찾기_버튼.snp.makeConstraints { make in
