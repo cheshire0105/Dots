@@ -19,7 +19,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var detailContentView: UIView!
     let floatingActionButton = UIButton(type: .custom)
     
-    
+    var posterImageName: String?
+
+
 
     var mapView: MKMapView!
 

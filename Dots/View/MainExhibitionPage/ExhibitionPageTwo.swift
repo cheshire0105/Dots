@@ -210,11 +210,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-    @objc func presentModalViewController() {
-        // 상세 내용을 담은 뷰 컨트롤러를 생성하고 모달로 표시합니다.
-        let detailViewController = DetailViewController()
-        presentDetailViewController(detailViewController)
-    }
+    private func presentModalViewController() {
+          let detailViewController = DetailViewController()
+          detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
+          presentDetailViewController(detailViewController)
+      }
 
     private func presentDetailViewController(_ detailViewController: DetailViewController) {
         if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
