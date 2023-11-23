@@ -26,8 +26,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     let galleryAddressLabel = UILabel()
 
+    var labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
 
     var mapView: MKMapView!
+    let squaresStackView = UIStackView()
 
 
     override func viewDidLoad() {
@@ -44,6 +46,41 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
     }
+
+    // UI를 전시 상세 정보로 업데이트하는 함수
+    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
+        DispatchQueue.main.async {
+            // titleLabel에 전시 타이틀을 설정
+            self.titleLabel.text = exhibitionDetail.exhibitionTitle
+
+            // exhibitionTitleLabel에 미술관 이름을 설정
+            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
+            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
+
+            // 스택 뷰에 데이터 바인딩
+            self.labelContents = [
+                exhibitionDetail.exhibitionDates,
+                exhibitionDetail.exhibitionHours,
+                exhibitionDetail.exhibitionPrice,
+                exhibitionDetail.artworkCount,
+                exhibitionDetail.artistCount
+            ]
+
+            // 스택 뷰 업데이트
+            self.updateStackView()
+        }
+    }
+
+    // 스택 뷰 업데이트 함수
+    private func updateStackView() {
+        // squaresStackView에 있는 각 레이블에 새로운 값을 설정합니다.
+        for (index, label) in squaresStackView.arrangedSubviews.enumerated() {
+            if let containerView = label as? UIView, let label = containerView.subviews.last as? UILabel {
+                label.text = labelContents[index]
+            }
+        }
+    }
+
 
 
 
@@ -63,18 +100,18 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
           }
       }
 
-    // UI를 전시 상세 정보로 업데이트하는 함수
-    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
-        DispatchQueue.main.async {
-            // titleLabel에 전시 타이틀을 설정
-            self.titleLabel.text = exhibitionDetail.exhibitionTitle
-
-            // exhibitionTitleLabel에 미술관 이름을 설정
-            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
-            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
-
-        }
-    }
+//    // UI를 전시 상세 정보로 업데이트하는 함수
+//    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
+//        DispatchQueue.main.async {
+//            // titleLabel에 전시 타이틀을 설정
+//            self.titleLabel.text = exhibitionDetail.exhibitionTitle
+//
+//            // exhibitionTitleLabel에 미술관 이름을 설정
+//            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
+//            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
+//
+//        }
+//    }
 
     func configureFloatingActionButton() {
         floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
@@ -264,13 +301,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
         // 스택 뷰 생성 및 구성
-        let squaresStackView = UIStackView()
         squaresStackView.axis = .horizontal
         squaresStackView.distribution = .fillEqually
         squaresStackView.alignment = .fill
         squaresStackView.spacing = 10 // 또는 원하는 간격
 
-        let labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
         // 각 이미지 뷰에 설정할 이미지 이름 배열
         let imageNames = ["calenderE", "Group 50", "Group 48", "Union 1", "Group 125"]
 
