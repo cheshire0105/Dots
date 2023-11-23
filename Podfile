@@ -14,4 +14,5 @@ target 'Dots' do
   pod 'PanModal'
   pod 'SDWebImage'
   pod 'FSCalendar'
+  pod 'GoogleSignIn'
 end
