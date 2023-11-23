@@ -127,7 +127,7 @@
 		377130252AFB88FA0018D4C1 /* SignUPfourth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfourth.swift; sourceTree = "<group>"; };
 		377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecondCell.swift; sourceTree = "<group>"; };
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
-		37976D522B0F76AD004F278F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		37976D522B0F76AD004F278F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule.swift; sourceTree = "<group>"; };
 		37DE8F872AFE38260086FC58 /* SignUPthirdCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPthirdCell.swift; sourceTree = "<group>"; };
 		37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MypageExhibition.swift; path = "../마이페이지_전시폴더/MypageExhibition.swift"; sourceTree = "<group>"; };
