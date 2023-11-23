@@ -274,33 +274,33 @@ extension 로그인_회원가입_뷰컨트롤러 {
         })
     }
     private func 슬로건_페이드_인아웃() {
-        let duration = 2.5
+        let 총시간 = 2.5
         let delay = 0.9
         
-        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+        UIView.animate(withDuration: 총시간, delay: delay * 0, options: [], animations: {
             self.슬로건_라벨.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: duration, delay: 0, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 0, options: [], animations: {
                 self.슬로건_라벨.alpha = 1
             }, completion: nil)
         })
     }
     private func 버튼_페이드_인아웃() {
-        let duration = 3.5
-        let delay = 0.9
+        let 총시간 = 3.5
+        let 딜레이 = 0.9
         
-        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 0, options: [], animations: {
             self.회원가입_버튼.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: duration, delay: 1, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 1, options: [], animations: {
                 self.회원가입_버튼.alpha = 1
             }, completion: nil)
         })
         
-        UIView.animate(withDuration: duration, delay: delay * 0, options: [], animations: {
+        UIView.animate(withDuration: 총시간, delay: 딜레이 * 0, options: [], animations: {
             self.로그인_버튼.alpha = 0
         }, completion: { _ in
-            UIView.animate(withDuration: duration, delay: 2, options: [], animations: {
+            UIView.animate(withDuration: 총시간, delay: 2, options: [], animations: {
                 self.로그인_버튼.alpha = 1
             }, completion: nil)
         })

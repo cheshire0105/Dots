@@ -38,7 +38,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-//        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        //        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
@@ -60,14 +60,15 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 25
-//        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        //        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
         textField.isSecureTextEntry = true
+        
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
-
+        
         return textField
     } ()
     private let 비밀번호_표시_온오프 = {
@@ -76,7 +77,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         return button
     }()
     private let 로그인_비밀번호찾기_버튼 = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("비밀번호 찾기", for: .selected)
         button.setTitle("비밀번호 찾기", for: .normal)
         button.setTitleColor(UIColor.darkGray, for: .normal)
@@ -205,7 +206,7 @@ extension 로그인_뷰컨트롤러 {
         } else {
             비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
             로그인_비밀번호_텍스트필드.isSecureTextEntry = true
-
+            
         }
     }
     
@@ -231,6 +232,10 @@ extension 로그인_뷰컨트롤러 {
             
             if let 로그인_실패 = 에러 {
                 print("로그인 실패: \(로그인_실패.localizedDescription)")
+                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: """
+입력을 하지않았거나
+기입 정보와 일치하는 계정이없습니다.
+""", presentingViewController: self)
             } else {
                 print("로그인 성공")
                 이중_로그인_확인_장치(이메일: 이메일)
@@ -247,7 +252,7 @@ extension 로그인_뷰컨트롤러 {
             
             if let 에러 = 에러 {
                 print("Firestore 조회 에러: \(에러.localizedDescription)")
-                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.")
+                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.", presentingViewController: self)
             }
             else {
                 if let 문서조회 = 컬렉션?.documents, !문서조회.isEmpty {
@@ -259,7 +264,7 @@ extension 로그인_뷰컨트롤러 {
                         문서.reference.updateData(["로그인상태": true]) { 에러 in
                             if let 에러 = 에러 {
                                 print("Firestore 업데이트 에러: \(에러.localizedDescription)")
-                                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.")
+                                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.", presentingViewController: self)
                             } else {
                                 
                                 UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
@@ -271,11 +276,11 @@ extension 로그인_뷰컨트롤러 {
                         }
                     } else {
                         print("Firestore: 이미 로그인된 상태입니다.")
-                        알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "타 기기에 이미 로그인되어있는 계정입니다.")
+                        알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "타 기기에 이미 로그인되어있는 계정입니다.", presentingViewController: self)
                     }
                 } else {
                     print("Firestore: 등록된 계정이 없습니다.")
-                    알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "등록된 계정이 없습니다.")
+                    알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "등록된 계정이 없습니다.", presentingViewController: self)
                 }
             }
         }
@@ -404,17 +409,32 @@ extension 로그인_뷰컨트롤러 {
         return true
     }
 }
-    
+
 
 //키보드 관련 Extension
 extension 로그인_뷰컨트롤러 : UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         활성화된텍스트필드 = textField
+        if textField == 로그인_이메일_텍스트필드 {
+            이메일_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            이메일_백.layer.borderWidth = 1
+        }
+        else if textField == 로그인_비밀번호_텍스트필드 {
+            비밀번호_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            비밀번호_백.layer.borderWidth = 1
+        }
+        
     }
-    
     func textFieldDidEndEditing(_ textField: UITextField) {
         활성화된텍스트필드 = nil
+        if textField == 로그인_이메일_텍스트필드 {
+            이메일_백.layer.borderColor = UIColor.clear.cgColor
+        }
+        else if textField == 로그인_비밀번호_텍스트필드 {
+            비밀번호_백.layer.borderColor = UIColor.clear.cgColor
+        }
+        
     }
 }
 
