@@ -8,7 +8,7 @@
 import Foundation
 
 import MapKit // MapKit 프레임워크를 임포트합니다.
-
+import Firebase
 
 class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -20,6 +20,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     let floatingActionButton = UIButton(type: .custom)
     
     var posterImageName: String?
+
+    let titleLabel = UILabel()
 
 
 
@@ -36,9 +38,32 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         configureDetailScrollView()
         configureFloatingActionButton()
+        fetchExhibitionDetails() // Firestore에서 전시 상세 정보를 가져오는 함수 호출
 
 
     }
+
+    // Firestore에서 전시 상세 정보를 가져오는 함수
+      private func fetchExhibitionDetails() {
+          guard let posterName = posterImageName else { return }
+          let documentRef = Firestore.firestore().collection("전시_상세").document(posterName)
+          documentRef.getDocument { [weak self] (document, error) in
+              if let document = document, document.exists {
+                  let data = document.data()
+                  let exhibitionDetail = ExhibitionDetailModel(dictionary: data ?? [:])
+                  self?.updateUIWithExhibitionDetails(exhibitionDetail)
+              } else {
+                  print("Document does not exist or error fetching document: \(error?.localizedDescription ?? "")")
+              }
+          }
+      }
+
+      // UI를 전시 상세 정보로 업데이트하는 함수
+      private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
+          DispatchQueue.main.async {
+              self.titleLabel.text = exhibitionDetail.exhibitionTitle
+          }
+      }
 
     func configureFloatingActionButton() {
         floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
@@ -90,10 +115,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     func configureSegmentControl() {
 
         // 타이틀 레이블을 설정합니다.
-        let titleLabel = UILabel()
         titleLabel.text = "현대차 시리즈 2023: 정연두 - 백년여행"
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
+        titleLabel.numberOfLines = 2
         titleLabel.font = UIFont(name: "Pretendard-Bold", size: 20)
         view.addSubview(titleLabel)
 
@@ -115,6 +140,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.centerX.equalTo(view.snp.centerX)
+            make.left.right.equalToSuperview().inset(20)
         }
 
         segmentControl.snp.makeConstraints { make in
