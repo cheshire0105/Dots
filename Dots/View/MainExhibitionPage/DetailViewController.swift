@@ -3,7 +3,7 @@
 //  Dots
 //
 //  Created by cheshire on 11/13/23.
-//
+//  [최신화] : 2023년 11월 23일
 
 import Foundation
 
