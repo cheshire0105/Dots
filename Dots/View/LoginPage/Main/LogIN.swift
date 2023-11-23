@@ -173,6 +173,8 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         로그인_비밀번호_텍스트필드.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        
     }
     
     deinit {
@@ -216,7 +218,6 @@ extension 로그인_뷰컨트롤러 {
         let 비밀번호찾기_이동 = 유저_비밀번호찾기_뷰컨트롤러()
         self.navigationController?.pushViewController(비밀번호찾기_이동, animated: true)
     }
-   
 }
 
 //로그인 관련
@@ -459,5 +460,3 @@ extension 로그인_뷰컨트롤러 {
         self.view.frame.origin.y = 0
     }
 }
-
-
