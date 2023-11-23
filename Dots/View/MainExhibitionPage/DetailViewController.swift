@@ -22,7 +22,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var posterImageName: String?
 
     let titleLabel = UILabel()
+    let exhibitionTitleLabel = UILabel()
 
+    let galleryAddressLabel = UILabel()
 
 
     var mapView: MKMapView!
@@ -43,6 +45,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     }
 
+
+
+
     // Firestore에서 전시 상세 정보를 가져오는 함수
       private func fetchExhibitionDetails() {
           guard let posterName = posterImageName else { return }
@@ -58,12 +63,18 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
           }
       }
 
-      // UI를 전시 상세 정보로 업데이트하는 함수
-      private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
-          DispatchQueue.main.async {
-              self.titleLabel.text = exhibitionDetail.exhibitionTitle
-          }
-      }
+    // UI를 전시 상세 정보로 업데이트하는 함수
+    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
+        DispatchQueue.main.async {
+            // titleLabel에 전시 타이틀을 설정
+            self.titleLabel.text = exhibitionDetail.exhibitionTitle
+
+            // exhibitionTitleLabel에 미술관 이름을 설정
+            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
+            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
+
+        }
+    }
 
     func configureFloatingActionButton() {
         floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
@@ -192,13 +203,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         detailScrollView.addSubview(detailContentView)
 
         // 전시 제목 레이블 초기화
-        let exhibitionTitleLabel = UILabel()
         exhibitionTitleLabel.text = "갤러리바톤"
         exhibitionTitleLabel.textColor = .white
         exhibitionTitleLabel.font = UIFont(name: "Pretendard-Medium", size: 18)
 
         // 미술관 주소 레이블 초기화
-        let galleryAddressLabel = UILabel()
         galleryAddressLabel.text = "서울 종로구 삼청로 30"
         galleryAddressLabel.textColor = .white
         galleryAddressLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
