@@ -3,12 +3,12 @@
 //  Dots
 //
 //  Created by cheshire on 11/13/23.
-//
+//  [최신화] : 2023년 11월 23일
 
 import Foundation
 
 import MapKit // MapKit 프레임워크를 임포트합니다.
-
+import Firebase
 
 class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -19,9 +19,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var detailContentView: UIView!
     let floatingActionButton = UIButton(type: .custom)
     
-    
+    var posterImageName: String?
+
+    let titleLabel = UILabel()
+    let exhibitionTitleLabel = UILabel()
+
+    let galleryAddressLabel = UILabel()
+
+    var labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
 
     var mapView: MKMapView!
+    let squaresStackView = UIStackView()
 
 
     override func viewDidLoad() {
@@ -34,9 +42,76 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         configureDetailScrollView()
         configureFloatingActionButton()
+        fetchExhibitionDetails() // Firestore에서 전시 상세 정보를 가져오는 함수 호출
 
 
     }
+
+    // UI를 전시 상세 정보로 업데이트하는 함수
+    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
+        DispatchQueue.main.async {
+            // titleLabel에 전시 타이틀을 설정
+            self.titleLabel.text = exhibitionDetail.exhibitionTitle
+
+            // exhibitionTitleLabel에 미술관 이름을 설정
+            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
+            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
+
+            // 스택 뷰에 데이터 바인딩
+            self.labelContents = [
+                exhibitionDetail.exhibitionDates,
+                exhibitionDetail.exhibitionHours,
+                exhibitionDetail.exhibitionPrice,
+                exhibitionDetail.artworkCount,
+                exhibitionDetail.artistCount
+            ]
+
+            // 스택 뷰 업데이트
+            self.updateStackView()
+        }
+    }
+
+    // 스택 뷰 업데이트 함수
+    private func updateStackView() {
+        // squaresStackView에 있는 각 레이블에 새로운 값을 설정합니다.
+        for (index, label) in squaresStackView.arrangedSubviews.enumerated() {
+            if let containerView = label as? UIView, let label = containerView.subviews.last as? UILabel {
+                label.text = labelContents[index]
+            }
+        }
+    }
+
+
+
+
+
+    // Firestore에서 전시 상세 정보를 가져오는 함수
+      private func fetchExhibitionDetails() {
+          guard let posterName = posterImageName else { return }
+          let documentRef = Firestore.firestore().collection("전시_상세").document(posterName)
+          documentRef.getDocument { [weak self] (document, error) in
+              if let document = document, document.exists {
+                  let data = document.data()
+                  let exhibitionDetail = ExhibitionDetailModel(dictionary: data ?? [:])
+                  self?.updateUIWithExhibitionDetails(exhibitionDetail)
+              } else {
+                  print("Document does not exist or error fetching document: \(error?.localizedDescription ?? "")")
+              }
+          }
+      }
+
+//    // UI를 전시 상세 정보로 업데이트하는 함수
+//    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
+//        DispatchQueue.main.async {
+//            // titleLabel에 전시 타이틀을 설정
+//            self.titleLabel.text = exhibitionDetail.exhibitionTitle
+//
+//            // exhibitionTitleLabel에 미술관 이름을 설정
+//            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
+//            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
+//
+//        }
+//    }
 
     func configureFloatingActionButton() {
         floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
@@ -88,10 +163,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     func configureSegmentControl() {
 
         // 타이틀 레이블을 설정합니다.
-        let titleLabel = UILabel()
         titleLabel.text = "현대차 시리즈 2023: 정연두 - 백년여행"
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
+        titleLabel.numberOfLines = 2
         titleLabel.font = UIFont(name: "Pretendard-Bold", size: 20)
         view.addSubview(titleLabel)
 
@@ -113,6 +188,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.centerX.equalTo(view.snp.centerX)
+            make.left.right.equalToSuperview().inset(20)
         }
 
         segmentControl.snp.makeConstraints { make in
@@ -164,13 +240,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         detailScrollView.addSubview(detailContentView)
 
         // 전시 제목 레이블 초기화
-        let exhibitionTitleLabel = UILabel()
         exhibitionTitleLabel.text = "갤러리바톤"
         exhibitionTitleLabel.textColor = .white
         exhibitionTitleLabel.font = UIFont(name: "Pretendard-Medium", size: 18)
 
         // 미술관 주소 레이블 초기화
-        let galleryAddressLabel = UILabel()
         galleryAddressLabel.text = "서울 종로구 삼청로 30"
         galleryAddressLabel.textColor = .white
         galleryAddressLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
@@ -227,13 +301,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
         // 스택 뷰 생성 및 구성
-        let squaresStackView = UIStackView()
         squaresStackView.axis = .horizontal
         squaresStackView.distribution = .fillEqually
         squaresStackView.alignment = .fill
         squaresStackView.spacing = 10 // 또는 원하는 간격
 
-        let labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
         // 각 이미지 뷰에 설정할 이미지 이름 배열
         let imageNames = ["calenderE", "Group 50", "Group 48", "Union 1", "Group 125"]
 
