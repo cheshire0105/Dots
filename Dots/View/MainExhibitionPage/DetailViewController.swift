@@ -33,10 +33,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     let squaresStackView = UIStackView()
 
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
-        isModalInPresentation = true
         configureSegmentControl()
         configureTableView()
         loadSampleReviews()

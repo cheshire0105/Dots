@@ -49,6 +49,43 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
+    lazy var AddInfoButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
+        return button
+    }()
+
+    @objc func presentInfoModal() {
+        let detailViewController = DetailViewController()
+        detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
+
+        // DetailViewController의 presentationController 설정
+        if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
+            // 사용자 정의 detent 생성
+            let customDetentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
+            let customDetent = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifier) { _ in
+                // 모든 기기에서 항상 높이가 700인 detent를 만들어낼 수 있습니다.
+                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+                return 700 - safeAreaBottom
+            }
+
+            // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
+            sheetController.detents = [.medium(), customDetent]
+            detailViewController.isModalInPresentation = false
+
+            sheetController.largestUndimmedDetentIdentifier = customDetentIdentifier // 최대 높이를 커스텀 detent로 설정합니다.
+            sheetController.prefersScrollingExpandsWhenScrolledToEdge = true // 스크롤할 때 시트가 확장되도록 설정합니다.
+            sheetController.preferredCornerRadius = 30 // 둥근 모서리 설정을 유지합니다.
+        }
+
+        // 모달 표시 설정
+        detailViewController.modalPresentationStyle = .pageSheet
+        self.present(detailViewController, animated: true, completion: nil)
+    }
+
+
     var posterImageName: String?
     
     private lazy var backgroundImageView: UIImageView = {
@@ -69,7 +106,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         super.viewDidAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
 
-        presentModalViewController() // 뷰가 나타날 때 모달을 바로 표시합니다.
+//        presentModalViewController() // 뷰가 나타날 때 모달을 바로 표시합니다.
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -144,6 +181,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
+        view.addSubview(AddInfoButton)
 
 
 
@@ -168,6 +206,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         headsetIcon.snp.makeConstraints{ make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.trailing.equalTo(heartIcon.snp.leading).offset(-10)
+            make.width.height.equalTo(40)
+        }
+
+        AddInfoButton.snp.makeConstraints{ make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.trailing.equalTo(headsetIcon.snp.leading).offset(-10)
             make.width.height.equalTo(40)
         }
     }
@@ -213,38 +257,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     private func presentModalViewController() {
           let detailViewController = DetailViewController()
           detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
-          presentDetailViewController(detailViewController)
       }
 
-    private func presentDetailViewController(_ detailViewController: DetailViewController) {
-        if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
-            // 사용자 정의 detent 생성
-            let detentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
-            let customDetent = UISheetPresentationController.Detent.custom(identifier: detentIdentifier) { _ in
-                // safe area bottom을 구하기 위한 선언.
-                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                let safeAreaBottom = windowScene?.windows.first?.safeAreaInsets.bottom ?? 0
-
-
-                // 모든 기기에서 항상 높이가 700인 detent를 만들어낼 수 있다.
-                return 700 - safeAreaBottom
-            }
-
-
-
-            // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
-            sheetController.detents = [.medium(), customDetent]
-            sheetController.largestUndimmedDetentIdentifier = detentIdentifier // 최대 높이를 커스텀 detent로 설정합니다.
-            sheetController.prefersScrollingExpandsWhenScrolledToEdge = true // 스크롤할 때 시트가 확장되도록 설정합니다.
-            sheetController.preferredCornerRadius = 30 // 둥근 모서리 설정을 유지합니다.
-
-
-        }
-
-        // 모달 표시 설정
-        detailViewController.modalPresentationStyle = .pageSheet
-        self.present(detailViewController, animated: true, completion: nil)
-    }
 
 
 }
