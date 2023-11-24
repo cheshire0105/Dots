@@ -356,8 +356,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
         recordButton.setImage(UIImage(named: newImageName), for: .normal)
 
-        blurEffectView.isHidden = false
-        customAlertView.isHidden = false
+        // 현재 표시된 모든 모달 뷰 컨트롤러를 닫습니다.
+        self.dismiss(animated: true) {
+            // 모달 뷰가 닫힌 후에 얼럿 뷰를 표시합니다.
+            self.blurEffectView.isHidden = false
+            self.customAlertView.isHidden = false
+        }
     }
 
 
