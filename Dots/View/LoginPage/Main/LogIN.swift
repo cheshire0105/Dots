@@ -2,10 +2,10 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 import GoogleSignIn
+import FirebaseCore
 import SnapKit
 
 class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
-    
     var 활성화된텍스트필드: UITextField?
     
     //페이지 제목
@@ -193,6 +193,7 @@ extension 로그인_뷰컨트롤러 {
         비밀번호_표시_온오프.addTarget(self, action: #selector(비밀번호_표시_온오프_클릭), for: .touchUpInside)
         로그인_비밀번호찾기_버튼.addTarget(self, action: #selector(로그인_비밀번호찾기_버튼_클릭), for: .touchUpInside)
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
+        구글_버튼.addTarget(self, action: #selector(구글_버튼_클릭), for: .touchUpInside)
     }
     //일반 화면전환 버튼
     @objc func 뒤로가기_버튼_클릭() {
@@ -209,16 +210,16 @@ extension 로그인_뷰컨트롤러 {
         } else {
             비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
             로그인_비밀번호_텍스트필드.isSecureTextEntry = true
-            
         }
     }
-    
     @objc func 로그인_비밀번호찾기_버튼_클릭() {
         print("비밀번호 찾기 진행")
         let 비밀번호찾기_이동 = 유저_비밀번호찾기_뷰컨트롤러()
         self.navigationController?.pushViewController(비밀번호찾기_이동, animated: true)
     }
+    
 }
+
 
 //로그인 관련
 extension 로그인_뷰컨트롤러 {
@@ -250,7 +251,7 @@ extension 로그인_뷰컨트롤러 {
     private func 이중_로그인_확인_장치(이메일: String) {
         let 파이어스토어 = Firestore.firestore()
         
-        파이어스토어.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
+        파이어스토어.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
             guard let self = self else { return }
             
             if let 에러 = 에러 {

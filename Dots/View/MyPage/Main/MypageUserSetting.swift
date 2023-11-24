@@ -237,7 +237,7 @@ extension 마이페이지_설정_페이지 {
                 
                 let 파이어스토어 = Firestore.firestore()
                 let 이메일 = 현제접속중인_유저.email ?? ""
-                let 유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
+                let 유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
                 
                 유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, 에러) in
                     guard let self = self else { return }
