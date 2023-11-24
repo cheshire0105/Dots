@@ -57,6 +57,29 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "현대차 시리즈 2023 : 정연두 - 백년여행" // 타이틀 텍스트 설정
+        label.textColor = .white // 텍스트 색상 설정
+        label.font = UIFont(name: "Pretendard-Bold", size: 30)
+        label.textAlignment = .left
+        label.numberOfLines = 0
+        return label
+    }()
+
+    private func setupTitleLabel() {
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).offset(-40)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-80) // 하단 가장자리에서 10포인트 떨어진 위치
+
+        }
+    }
+
+
+
+
     @objc func presentInfoModal() {
         let detailViewController = DetailViewController()
         detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
@@ -87,7 +110,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     var posterImageName: String?
-    
+    var titleName : String?
+
     private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView(frame: self.view.bounds)
         imageView.contentMode = .scaleAspectFill
@@ -137,27 +161,16 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
          if let posterName = posterImageName {
              setupBackgroundImage(with: posterName)
          }
+
+
+        setupTitleLabel() // 타이틀 레이블 설정 호출
+
+        if let titleName = titleName {
+              titleLabel.text = titleName
+          }
      }
 
-    private func fetchExhibitionData() {
-        let collectionRef = Firestore.firestore().collection("메인페이지_첫번째_섹션")
 
-        collectionRef.getDocuments { [weak self] (snapshot, error) in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("An error occurred: \(error)")
-                } else if let snapshot = snapshot, let firstDocument = snapshot.documents.first {
-                    let data = firstDocument.data()
-                    let posterImageName = data["poster"] as? String ?? "" // 'poster' 필드에서 이미지 이름 가져오기
-
-                    // 디버깅을 위한 print 문
-                    print("Fetched image name: \(posterImageName)")
-
-                    self?.setupBackgroundImage(with: posterImageName)
-                }
-            }
-        }
-    }
 
     private func setupBackgroundImage(with imageName: String) {
            let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
@@ -175,6 +188,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                }
            }
        }
+
+
+
 
     private func setupBackButton() {
         view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
