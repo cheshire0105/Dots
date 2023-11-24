@@ -67,6 +67,23 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return label
     }()
 
+    private lazy var blurEffectView: UIVisualEffectView = {
+          let blurEffect = UIBlurEffect(style: .dark)
+          let view = UIVisualEffectView(effect: blurEffect)
+          view.frame = self.view.bounds
+          view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+          view.isHidden = true // 처음에는 숨겨둡니다.
+          return view
+      }()
+
+      private lazy var customAlertView: UIView = {
+          let view = UIView()
+          view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+          view.layer.cornerRadius = 20
+          view.isHidden = true // 처음에는 숨겨둡니다.
+          return view
+      }()
+
     private func setupTitleLabel() {
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
@@ -77,7 +94,54 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
+    private lazy var alertTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "언제 다녀오셨나요?"
+        label.textColor = .black
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
+        label.textAlignment = .center
+        return label
+    }()
 
+    private lazy var alertSubtitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
+        label.textColor = .darkGray
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }()
+
+    private lazy var datePicker: UIDatePicker = {
+         let picker = UIDatePicker()
+         picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .wheels
+         picker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
+         return picker
+     }()
+
+     @objc func datePickerChanged(_ sender: UIDatePicker) {
+         // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
+         // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
+     }
+
+    
+    private lazy var confirmButton: UIButton = {
+          let button = UIButton()
+          button.setTitle("등록하기", for: .normal)
+        button.backgroundColor = .black
+          button.setTitleColor(.white, for: .normal)
+          button.layer.cornerRadius = 25 // 모서리 둥글게
+          button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
+          return button
+      }()
+
+    @objc func confirmButtonTapped() {
+          // 버튼을 눌렀을 때 수행할 동작을 여기에 추가합니다.
+        customAlertView.isHidden = true
+               blurEffectView.isHidden = true
+      }
 
 
     @objc func presentInfoModal() {
@@ -168,7 +232,50 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         if let titleName = titleName {
               titleLabel.text = titleName
           }
+
+        view.addSubview(blurEffectView)
+                view.addSubview(customAlertView)
+                setupCustomAlertView()
      }
+
+    private func setupCustomAlertView() {
+        customAlertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(310)
+            make.height.equalTo(390)
+        }
+
+        customAlertView.addSubview(alertTitleLabel)
+           customAlertView.addSubview(alertSubtitleLabel)
+
+           alertTitleLabel.snp.makeConstraints { make in
+               make.top.equalTo(customAlertView.snp.top).offset(20)
+               make.left.right.equalTo(customAlertView).inset(10)
+           }
+
+           alertSubtitleLabel.snp.makeConstraints { make in
+               make.top.equalTo(alertTitleLabel.snp.bottom).offset(10)
+               make.left.right.equalTo(customAlertView).inset(30)
+           }
+
+        customAlertView.addSubview(datePicker)
+              datePicker.snp.makeConstraints { make in
+                  make.top.equalTo(alertSubtitleLabel.snp.bottom).offset(20)
+
+                  make.centerX.equalTo(customAlertView.snp.centerX)
+              }
+
+        customAlertView.addSubview(confirmButton)
+            confirmButton.snp.makeConstraints { make in
+                make.top.equalTo(datePicker.snp.bottom).offset(10)
+                make.centerX.equalTo(customAlertView.snp.centerX)
+                make.width.equalTo(273) // 버튼의 너비
+                make.height.equalTo(56) // 버튼의 높이
+                make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
+            }
+    }
+
+
 
 
 
@@ -248,7 +355,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
         recordButton.setImage(UIImage(named: newImageName), for: .normal)
+
+        blurEffectView.isHidden = false
+        customAlertView.isHidden = false
     }
+
+
 
 
     @objc func backButtonTapped() {
