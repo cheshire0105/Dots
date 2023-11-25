@@ -22,7 +22,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     
     var posterImageName: String?
 
-    let titleLabel = UILabel()
+//    let titleLabel = UILabel()
     let exhibitionTitleLabel = UILabel()
 
     let galleryAddressLabel = UILabel()
@@ -52,7 +52,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
         DispatchQueue.main.async {
             // titleLabel에 전시 타이틀을 설정
-            self.titleLabel.text = exhibitionDetail.exhibitionTitle
+//            self.titleLabel.text = exhibitionDetail.exhibitionTitle
 
             // exhibitionTitleLabel에 미술관 이름을 설정
             self.exhibitionTitleLabel.text = exhibitionDetail.museumName
@@ -163,13 +163,13 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     func configureSegmentControl() {
 
-        // 타이틀 레이블을 설정합니다.
-        titleLabel.text = "현대차 시리즈 2023: 정연두 - 백년여행"
-        titleLabel.textAlignment = .center
-        titleLabel.textColor = .white
-        titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 20)
-        view.addSubview(titleLabel)
+//        // 타이틀 레이블을 설정합니다.
+//        titleLabel.text = "현대차 시리즈 2023: 정연두 - 백년여행"
+//        titleLabel.textAlignment = .center
+//        titleLabel.textColor = .white
+//        titleLabel.numberOfLines = 2
+//        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 20)
+//        view.addSubview(titleLabel)
 
         // 세그먼트 컨트롤을 설정합니다.
         segmentControl.selectedSegmentIndex = 0 // 기본 선택 인덱스를 설정합니다.
@@ -186,14 +186,14 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         segmentControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         view.addSubview(segmentControl)
 
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-            make.centerX.equalTo(view.snp.centerX)
-            make.left.right.equalToSuperview().inset(20)
-        }
+//        titleLabel.snp.makeConstraints { make in
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+//            make.centerX.equalTo(view.snp.centerX)
+//            make.left.right.equalToSuperview().inset(20)
+//        }
 
         segmentControl.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.centerX.equalTo(view.snp.centerX)
             make.leading.equalTo(view.snp.leading).offset(110)
             make.trailing.equalTo(view.snp.trailing).offset(-110)

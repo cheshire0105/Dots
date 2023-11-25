@@ -153,13 +153,22 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             // 사용자 정의 detent 생성
             let customDetentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
             let customDetent = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifier) { _ in
-                // 모든 기기에서 항상 높이가 700인 detent를 만들어낼 수 있습니다.
+                // 모든 기기에서 항상 높이가 60인 detent를 만들어낼 수 있습니다.
                 let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
-                return 700 - safeAreaBottom
+                return 60 - safeAreaBottom
             }
 
+
+            let customDetentIdentifierT = UISheetPresentationController.Detent.Identifier("customDetentT")
+            let customDetentT = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifierT) { _ in
+                // 모든 기기에서 항상 높이가 750인 detent를 만들어낼 수 있습니다.
+                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+                return 750 - safeAreaBottom
+            }
+
+
             // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
-            sheetController.detents = [.medium(), customDetent]
+            sheetController.detents = [customDetent, customDetentT]
             detailViewController.isModalInPresentation = false
 
             sheetController.largestUndimmedDetentIdentifier = customDetentIdentifier // 최대 높이를 커스텀 detent로 설정합니다.
