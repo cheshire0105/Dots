@@ -294,17 +294,19 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 // 회원가입 유저 정보 업로드 관련
 extension 회원가입_첫번째_뷰컨트롤러 {
     
-    private func 회원가입_유저정보_업로드(회원가입_타입: String,닉네임: String, 이메일: String, 비밀번호: String,로그인상태: Bool ,프로필이미지URL: String) {
+    private func 회원가입_유저정보_업로드(회원가입_타입: String,닉네임: String, 이메일: String, 비밀번호: String,로그인상태: Bool ,프로필이미지URL: String, 마지막로그인: String,마지막로그아웃:String) {
         let 데이터베이스 = Firestore.firestore()
         let 유저컬렉션 = 데이터베이스.collection("도트_유저_데이터_관리")
-        
         let userData: [String: Any] = [
             "회원가입_타입": "도트",
             "닉네임": 닉네임,
             "이메일": 이메일,
             "비밀번호": 비밀번호,
             "로그인상태": false,
-            "프로필이미지URL": 프로필이미지URL
+            "프로필이미지URL": 프로필이미지URL,
+            "마지막로그인": "로그인 기록이 없음",
+            "마지막로그아웃": "로그아웃 기록이 없음"
+
         ]
         
         유저컬렉션.addDocument(data: userData) { 에러 in
@@ -318,9 +320,9 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     
     
     @objc func 회원가입_회원가입_버튼_클릭() {
-        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
-        self.navigationController?.pushViewController(다음화면_이동, animated: true)
-        self.navigationItem.hidesBackButton = true
+//        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+//        self.navigationController?.pushViewController(다음화면_이동, animated: true)
+//        self.navigationItem.hidesBackButton = true
         print("다음 페이지로 이동")
         guard let 이메일 = 회원가입_이메일_텍스트필드.text,
               let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
@@ -337,7 +339,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             
             print("회원가입 성공")
             
-            self.회원가입_유저정보_업로드(회원가입_타입: "도트", 닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL)
+            self.회원가입_유저정보_업로드(회원가입_타입: "도트", 닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL, 마지막로그인: "로그인 기록이 없음",마지막로그아웃: "로그아웃 기록이 없음")
             
             let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
             self.navigationController?.pushViewController(다음화면_이동, animated: true)

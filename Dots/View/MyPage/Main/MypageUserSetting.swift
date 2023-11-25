@@ -247,8 +247,9 @@ extension 마이페이지_설정_페이지 {
                     } else {
                         if let 문서조회 = querySnapshot?.documents, !문서조회.isEmpty {
                             let 문서 = 문서조회[0]
-                            
-                            문서.reference.updateData(["로그인상태": false]) { (에러) in
+                            let 현재날짜시간 = Timestamp(date: Date())
+
+                            문서.reference.updateData(["로그인상태": false,"마지막로그아웃": 현재날짜시간]) { (에러) in
                                 if let 에러 = 에러 {
                                     print("Firestore 업데이트 에러: \(에러.localizedDescription)")
                                 } else {
