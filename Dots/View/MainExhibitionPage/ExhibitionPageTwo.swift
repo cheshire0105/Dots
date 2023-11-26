@@ -172,6 +172,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
          let picker = UIDatePicker()
          picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .wheels
+        picker.overrideUserInterfaceStyle = .light
+
          picker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
          return picker
      }()
