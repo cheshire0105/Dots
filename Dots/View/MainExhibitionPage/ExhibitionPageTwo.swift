@@ -52,7 +52,17 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     lazy var AddInfoButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .white
+        button.setImage(UIImage(named: "Group 167"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+
         button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
+        return button
+    }()
+
+    lazy var modalLoadButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "Union 5"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+
         button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -61,7 +71,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let label = UILabel()
         label.text = "현대차 시리즈 2023 : 정연두 - 백년여행" // 타이틀 텍스트 설정
         label.textColor = .white // 텍스트 색상 설정
-        label.font = UIFont(name: "Pretendard-Bold", size: 30)
+        label.font = UIFont(name: "Pretendard-Bold", size: 25)
         label.textAlignment = .left
         label.numberOfLines = 0
         return label
@@ -88,7 +98,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
-            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).offset(-40)
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(50)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-80) // 하단 가장자리에서 10포인트 떨어진 위치
 
         }
@@ -150,28 +160,29 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         // DetailViewController의 presentationController 설정
         if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
+            sheetController.prefersGrabberVisible = true
+
             // 사용자 정의 detent 생성
-            let customDetentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
-            let customDetent = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifier) { _ in
-                // 모든 기기에서 항상 높이가 60인 detent를 만들어낼 수 있습니다.
-                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
-                return 60 - safeAreaBottom
-            }
-
-
-            let customDetentIdentifierT = UISheetPresentationController.Detent.Identifier("customDetentT")
-            let customDetentT = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifierT) { _ in
-                // 모든 기기에서 항상 높이가 750인 detent를 만들어낼 수 있습니다.
-                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
-                return 750 - safeAreaBottom
-            }
+//            let customDetentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
+//            let customDetent = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifier) { _ in
+//                // 모든 기기에서 항상 높이가 60인 detent를 만들어낼 수 있습니다.
+//                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+//                return 60 - safeAreaBottom
+//            }
+//
+//
+//            let customDetentIdentifierT = UISheetPresentationController.Detent.Identifier("customDetentT")
+//            let customDetentT = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifierT) { _ in
+//                // 모든 기기에서 항상 높이가 750인 detent를 만들어낼 수 있습니다.
+//                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+//                return 750 - safeAreaBottom
+//            }
 
 
             // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
-            sheetController.detents = [customDetent, customDetentT]
+            sheetController.detents = [.medium(), .large()]
             detailViewController.isModalInPresentation = false
-
-            sheetController.largestUndimmedDetentIdentifier = customDetentIdentifier // 최대 높이를 커스텀 detent로 설정합니다.
+            sheetController.largestUndimmedDetentIdentifier = .large // 최대 높이를 커스텀 detent로 설정합니다.
             sheetController.prefersScrollingExpandsWhenScrolledToEdge = true // 스크롤할 때 시트가 확장되도록 설정합니다.
             sheetController.preferredCornerRadius = 30 // 둥근 모서리 설정을 유지합니다.
         }
@@ -314,7 +325,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
         view.addSubview(AddInfoButton)
-
+        view.addSubview(modalLoadButton)
 
 
         backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
@@ -323,28 +334,35 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
         
-        recordButton.snp.makeConstraints{ make in
+
+
+        headsetIcon.snp.makeConstraints{ make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
+            make.trailing.equalTo(view.snp.trailing).offset(-16)
+            make.width.height.equalTo(40)
+        }
+
+        recordButton.snp.makeConstraints{ make in
+            make.bottom.equalTo(heartIcon.snp.top).inset(-10)
+            make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
         }
 
         heartIcon.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(recordButton.snp.leading).offset(-10)
-            make.width.height.equalTo(40)
-        }
-
-        headsetIcon.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(heartIcon.snp.leading).offset(-10)
+            make.bottom.equalTo(AddInfoButton.snp.top).inset(-10)
+            make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
         }
 
         AddInfoButton.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(headsetIcon.snp.leading).offset(-10)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(73)
+            make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
+        }
+
+        modalLoadButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(26)
+            make.leading.trailing.equalToSuperview().inset(150)
         }
     }
 
