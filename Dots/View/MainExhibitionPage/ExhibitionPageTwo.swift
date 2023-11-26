@@ -19,6 +19,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -28,6 +35,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "headset help_"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
         button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -36,6 +49,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "heartIcon"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+
         button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -45,6 +65,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "Union 4"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
         button.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -55,27 +82,45 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "Group 167"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
 
         button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
         button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
 
     lazy var modalLoadButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "Union 5"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-
+        button.setImage(UIImage(named: "Union 6"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        // 그림자 설정
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
         button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "현대차 시리즈 2023 : 정연두 - 백년여행" // 타이틀 텍스트 설정
-        label.textColor = .white // 텍스트 색상 설정
+        label.text = "현대차 시리즈 2023 : 정연두 - 백년여행"
+        label.textColor = .white
         label.font = UIFont(name: "Pretendard-Bold", size: 25)
         label.textAlignment = .left
         label.numberOfLines = 0
+
+        // 그림자 설정
+        label.layer.shadowOpacity = 0.9
+        label.layer.shadowRadius = 2
+        label.layer.shadowOffset = CGSize(width: 1, height: 1)
+        label.layer.shadowColor = UIColor.black.cgColor
+
         return label
     }()
+
 
     private lazy var blurEffectView: UIVisualEffectView = {
           let blurEffect = UIBlurEffect(style: .dark)
