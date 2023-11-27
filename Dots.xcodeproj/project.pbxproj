@@ -19,6 +19,7 @@
 		3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */; };
 		373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F22B0D500D000A7BCD /* Alert.swift */; };
 		373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */; };
+		37404DEE2B1491C600D16F60 /* SettingEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37404DED2B1491C600D16F60 /* SettingEmail.swift */; };
 		377130222AFB88B00018D4C1 /* SignUPsecond.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130212AFB88B00018D4C1 /* SignUPsecond.swift */; };
 		377130242AFB88C40018D4C1 /* SignUPthird.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130232AFB88C40018D4C1 /* SignUPthird.swift */; };
 		377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130252AFB88FA0018D4C1 /* SignUPfourth.swift */; };
@@ -117,6 +118,7 @@
 		3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetail.swift; sourceTree = "<group>"; };
 		373FC7F22B0D500D000A7BCD /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
+		37404DED2B1491C600D16F60 /* SettingEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEmail.swift; sourceTree = "<group>"; };
 		377130212AFB88B00018D4C1 /* SignUPsecond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecond.swift; sourceTree = "<group>"; };
 		377130232AFB88C40018D4C1 /* SignUPthird.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPthird.swift; sourceTree = "<group>"; };
 		377130252AFB88FA0018D4C1 /* SignUPfourth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfourth.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			children = (
 				37051B7D2B05F86B00D33C07 /* SettingProfile.swift */,
 				37051B832B05F89900D33C07 /* SettingService.swift */,
+				37404DED2B1491C600D16F60 /* SettingEmail.swift */,
 				37051B812B05F88D00D33C07 /* SettingNotification.swift */,
 				37051B7F2B05F87700D33C07 /* SettingPassword.swift */,
 			);
@@ -744,6 +747,7 @@
 				377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */,
 				FF77BFBB2AF7733F00EA5A1B /* SignUPandLogIN.swift in Sources */,
 				FFAFCB742AFB71080030C3C9 /* API.swift in Sources */,
+				37404DEE2B1491C600D16F60 /* SettingEmail.swift in Sources */,
 				FF3C971F2AE5FEA1006FEF23 /* MainExhibitionPage.swift in Sources */,
 				373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */,
 				3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */,
