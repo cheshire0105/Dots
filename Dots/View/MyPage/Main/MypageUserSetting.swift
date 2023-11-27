@@ -1,4 +1,5 @@
 import UIKit
+import GoogleSignIn
 import FirebaseAuth
 import FirebaseFirestore
 import SnapKit
@@ -21,12 +22,12 @@ class 마이페이지_설정_페이지 : UIViewController {
         return button
     } ()
     private let 프로필공개여부_버튼 = {
-            let button = UIButton()
+        let button = UIButton()
         button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
-            button.titleLabel?.textAlignment = .left
+        button.titleLabel?.textAlignment = .left
         button.layer.cornerRadius = 15
-            return button
-        } ()
+        return button
+    } ()
     private let 프로필공개여부_토글 = {
         let toggle = UISwitch()
         return toggle
@@ -46,7 +47,7 @@ class 마이페이지_설정_페이지 : UIViewController {
         button.titleLabel?.textAlignment = .left
         button.layer.cornerRadius = 15
         button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-
+        
         return button
     } ()
     private let 프로필변경_라벨 = {
@@ -79,7 +80,7 @@ class 마이페이지_설정_페이지 : UIViewController {
     private let 비밀번호변경_화살표 = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "버튼화살표")
-
+        
         return imageView
     }()
     private let 알림설정_버튼 = {
@@ -99,7 +100,7 @@ class 마이페이지_설정_페이지 : UIViewController {
     private let 알림설정_화살표 = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "버튼화살표")
-
+        
         return imageView
     }()
     private let 서비스설정_버튼 = {
@@ -121,7 +122,7 @@ class 마이페이지_설정_페이지 : UIViewController {
     private let 서비스설정_화살표 = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "버튼화살표")
-
+        
         return imageView
     }()
     private let 로그아웃_버튼 = {
@@ -139,7 +140,7 @@ class 마이페이지_설정_페이지 : UIViewController {
         label.textAlignment = .left
         return label
     }()
- 
+    
     private let 회원탈퇴_버튼 = {
         let button = UIButton()
         button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
@@ -157,7 +158,7 @@ class 마이페이지_설정_페이지 : UIViewController {
     }()
     
     override func viewWillAppear(_ animated: Bool) {
-
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -167,9 +168,9 @@ class 마이페이지_설정_페이지 : UIViewController {
         UI레이아웃()
         화살표_레이아웃()
         버튼_클릭()
-
+        
     }
-
+    
 }
 
 //버튼 클릭 관련
@@ -187,8 +188,8 @@ extension 마이페이지_설정_페이지 {
     
     //일반 뷰전환 버튼
     @objc private func 프로필변경_버튼_클릭 () {
-               let 프로필변경_모달 = 프로필변경_모달()
-               present(프로필변경_모달, animated: true, completion: nil)
+        let 프로필변경_모달 = 프로필변경_모달()
+        present(프로필변경_모달, animated: true, completion: nil)
     }
     @objc private func 비밀번호변경_버튼_클릭 () {
         let 비밀번호변경_모달 = 비밀번호변경_모달()
@@ -210,25 +211,25 @@ extension 마이페이지_설정_페이지 {
 //유저 로그아웃 관련
 extension 마이페이지_설정_페이지 {
     
-//    클릭했을때
+    //    클릭했을때
     @objc private func 로그아웃_버튼_클릭() {
         let 로그아웃_알럿 = UIAlertController(title: "로그아웃", message: "지금 사용중인 기기에서 로그아웃을 진행할까요?", preferredStyle: .alert)
-
-            let 로그아웃취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        let 로그아웃취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         로그아웃_알럿.addAction(로그아웃취소_버튼)
-
-            let 로그아웃확인_버튼 = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
-                self.로그아웃_유저로그아웃()
-            }
-        로그아웃_알럿.addAction(로그아웃확인_버튼)
-
-            present(로그아웃_알럿, animated: true, completion: nil)
-     
+        
+        let 로그아웃확인_버튼 = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
+            self.로그아웃_유저로그아웃()
         }
+        로그아웃_알럿.addAction(로그아웃확인_버튼)
+        
+        present(로그아웃_알럿, animated: true, completion: nil)
+        
+    }
     
-  
+    
     //로그아웃 로직
-     func 로그아웃_유저로그아웃() {
+    func 로그아웃_유저로그아웃() {
         do {
             if let 현제접속중인_유저 = Auth.auth().currentUser {
                 print("로그아웃한 사용자 정보:")
@@ -237,7 +238,8 @@ extension 마이페이지_설정_페이지 {
                 
                 let 파이어스토어 = Firestore.firestore()
                 let 이메일 = 현제접속중인_유저.email ?? ""
-                let 유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
+                
+                let 유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
                 
                 유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, 에러) in
                     guard let self = self else { return }
@@ -247,8 +249,9 @@ extension 마이페이지_설정_페이지 {
                     } else {
                         if let 문서조회 = querySnapshot?.documents, !문서조회.isEmpty {
                             let 문서 = 문서조회[0]
+                            let 현재날짜시간 = Timestamp(date: Date())
                             
-                            문서.reference.updateData(["로그인상태": false]) { (에러) in
+                            문서.reference.updateData(["로그인상태": false,"마지막로그아웃": 현재날짜시간]) { (에러) in
                                 if let 에러 = 에러 {
                                     print("Firestore 업데이트 에러: \(에러.localizedDescription)")
                                 } else {
@@ -261,17 +264,19 @@ extension 마이페이지_설정_페이지 {
                     }
                 }
             }
-           try Auth.auth().signOut()
-           print("계정이 로그아웃되었습니다.")
-           let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
-           let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
-           로그인화면_이동.modalPresentationStyle = .fullScreen
-           present(로그인화면_이동, animated: true, completion: nil)
-           UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-       } catch {
-           print("로그아웃 실패: \(error.localizedDescription)")
-       }
-   }
+            
+            try Auth.auth().signOut()
+            print("계정이 로그아웃되었습니다.")
+            let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
+            let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
+            로그인화면_이동.modalPresentationStyle = .fullScreen
+            present(로그인화면_이동, animated: true, completion: nil)
+            UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+        } catch {
+            print("로그아웃 실패: \(error.localizedDescription)")
+        }
+    }
+    
 }
 
 //유저 회원탈퇴 관련
@@ -280,17 +285,17 @@ extension 마이페이지_설정_페이지 {
     //클릭했을때
     @objc private func 회원탈퇴_버튼_클릭() {
         let 탈퇴확인_알럿 = UIAlertController(title: "회원 탈퇴", message: "탈퇴하면 모든 정보가 삭제됩니다. 이대로 회원 탈퇴를 진행할까요?", preferredStyle: .alert)
-
-            let 탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        let 탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         탈퇴확인_알럿.addAction(탈퇴취소_버튼)
-
-            let 탈퇴확인_버튼 = UIAlertAction(title: "탈퇴", style: .destructive) { _ in
-                self.회원탈퇴_데이터삭제()
-            }
+        
+        let 탈퇴확인_버튼 = UIAlertAction(title: "탈퇴", style: .destructive) { _ in
+            self.회원탈퇴_데이터삭제()
+        }
         탈퇴확인_알럿.addAction(탈퇴확인_버튼)
-            present(탈퇴확인_알럿, animated: true, completion: nil)
+        present(탈퇴확인_알럿, animated: true, completion: nil)
     }
-     
+    
     // 회원탈퇴 로직
     private func 회원탈퇴_데이터삭제() {
         if let 현제접속중인_유저 = Auth.auth().currentUser {
@@ -299,7 +304,7 @@ extension 마이페이지_설정_페이지 {
                     print("회원 탈퇴 실패: \(error.localizedDescription)")
                 } else {
                     UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-
+                    
                     print("회원 탈퇴 성공")
                     
                 }
@@ -346,7 +351,7 @@ extension 마이페이지_설정_페이지 {
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-
+            
         }
         프로필공개여부_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(프로필공개여부_버튼.snp.centerY)
@@ -361,31 +366,31 @@ extension 마이페이지_설정_페이지 {
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-
+            
         }
         프로필변경_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(프로필변경_버튼.snp.centerY)
             make.leading.equalTo(프로필변경_버튼.snp.leading).offset(16)
         }
-       
+        
         비밀번호변경_버튼.snp.makeConstraints { make in
             make.top.equalTo(프로필변경_버튼.snp.bottom).offset(2)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-
+            
         }
         비밀번호변경_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(비밀번호변경_버튼.snp.centerY)
             make.leading.equalTo(비밀번호변경_버튼.snp.leading).offset(16)
         }
-       
+        
         알림설정_버튼.snp.makeConstraints { make in
             make.top.equalTo(비밀번호변경_버튼.snp.bottom).offset(2)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-
+            
         }
         알림설정_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(알림설정_버튼.snp.centerY)
@@ -402,7 +407,7 @@ extension 마이페이지_설정_페이지 {
             make.centerY.equalTo(서비스설정_버튼.snp.centerY)
             make.leading.equalTo(서비스설정_버튼.snp.leading).offset(16)
         }
-       
+        
         로그아웃_버튼.snp.makeConstraints { make in
             make.top.equalTo(서비스설정_버튼.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(15)

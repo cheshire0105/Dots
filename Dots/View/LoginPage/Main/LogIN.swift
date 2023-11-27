@@ -2,10 +2,10 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 import GoogleSignIn
+import FirebaseCore
 import SnapKit
 
 class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
-    
     var 활성화된텍스트필드: UITextField?
     
     //페이지 제목
@@ -193,6 +193,7 @@ extension 로그인_뷰컨트롤러 {
         비밀번호_표시_온오프.addTarget(self, action: #selector(비밀번호_표시_온오프_클릭), for: .touchUpInside)
         로그인_비밀번호찾기_버튼.addTarget(self, action: #selector(로그인_비밀번호찾기_버튼_클릭), for: .touchUpInside)
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
+        구글_버튼.addTarget(self, action: #selector(구글_버튼_클릭), for: .touchUpInside)
     }
     //일반 화면전환 버튼
     @objc func 뒤로가기_버튼_클릭() {
@@ -209,16 +210,16 @@ extension 로그인_뷰컨트롤러 {
         } else {
             비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
             로그인_비밀번호_텍스트필드.isSecureTextEntry = true
-            
         }
     }
-    
     @objc func 로그인_비밀번호찾기_버튼_클릭() {
         print("비밀번호 찾기 진행")
         let 비밀번호찾기_이동 = 유저_비밀번호찾기_뷰컨트롤러()
         self.navigationController?.pushViewController(비밀번호찾기_이동, animated: true)
     }
+    
 }
+
 
 //로그인 관련
 extension 로그인_뷰컨트롤러 {
@@ -241,16 +242,27 @@ extension 로그인_뷰컨트롤러 {
 """, presentingViewController: self)
             } else {
                 print("로그인 성공")
-                이중_로그인_확인_장치(이메일: 이메일)
+                let 파이어스토어 = Firestore.firestore()
+                파이어스토어.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
+                    guard let self = self else { return }
+                    
+                    if let 에러 = 에러 {
+                        print("Firestore 조회 에러: \(에러.localizedDescription)")
+                        알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.", presentingViewController: self)
+                    }
+                    else {
+                        self.이중_로그인_확인_장치(이메일: 이메일)
+                    }
+                }
             }
+            
         }
     }
-    
     // 로그인 메서드
     private func 이중_로그인_확인_장치(이메일: String) {
         let 파이어스토어 = Firestore.firestore()
         
-        파이어스토어.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
+        파이어스토어.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
             guard let self = self else { return }
             
             if let 에러 = 에러 {
@@ -263,8 +275,9 @@ extension 로그인_뷰컨트롤러 {
                     let 문서 = 문서조회[0]
                     
                     if let 로그인상태 = 문서["로그인상태"] as? Bool, !로그인상태 {
+                        let 현재날짜시간 = Timestamp(date: Date())
                         
-                        문서.reference.updateData(["로그인상태": true]) { 에러 in
+                        문서.reference.updateData(["로그인상태": true,"마지막로그인": 현재날짜시간 ]) { 에러 in
                             if let 에러 = 에러 {
                                 print("Firestore 업데이트 에러: \(에러.localizedDescription)")
                                 알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "네트워크 에러 다시 시도해주세요.", presentingViewController: self)
@@ -288,6 +301,8 @@ extension 로그인_뷰컨트롤러 {
             }
         }
     }
+    
+    
 }
 
 

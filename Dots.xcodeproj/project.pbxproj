@@ -28,6 +28,7 @@
 		3771302A2AFCAB0A0018D4C1 /* SignUPsecondCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */; };
 		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
 		37976D532B0F76AD004F278F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37976D522B0F76AD004F278F /* GoogleService-Info.plist */; };
+		37976D5B2B104274004F278F /* Google.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37976D5A2B104274004F278F /* Google.swift */; };
 		37B3D8032B0A1B9100DDCEC2 /* CalendarSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */; };
 		37DE8F882AFE38260086FC58 /* SignUPthirdCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F872AFE38260086FC58 /* SignUPthirdCell.swift */; };
 		37DE8F8C2B0396CF0086FC58 /* MypageExhibition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */; };
@@ -128,6 +129,7 @@
 		377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecondCell.swift; sourceTree = "<group>"; };
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
 		37976D522B0F76AD004F278F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		37976D5A2B104274004F278F /* Google.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Google.swift; sourceTree = "<group>"; };
 		37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule.swift; sourceTree = "<group>"; };
 		37DE8F872AFE38260086FC58 /* SignUPthirdCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPthirdCell.swift; sourceTree = "<group>"; };
 		37DE8F8B2B0396CF0086FC58 /* MypageExhibition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MypageExhibition.swift; path = "../마이페이지_전시폴더/MypageExhibition.swift"; sourceTree = "<group>"; };
@@ -267,6 +269,14 @@
 				373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		37976D592B10422E004F278F /* SNS */ = {
+			isa = PBXGroup;
+			children = (
+				37976D5A2B104274004F278F /* Google.swift */,
+			);
+			path = SNS;
 			sourceTree = "<group>";
 		};
 		37B3D8012B0A1B5200DDCEC2 /* Calendar */ = {
@@ -542,6 +552,7 @@
 		FF77BFB92AF772AF00EA5A1B /* LoginPage */ = {
 			isa = PBXGroup;
 			children = (
+				37976D592B10422E004F278F /* SNS */,
 				373FC7F42B0E0AD7000A7BCD /* Service */,
 				373FC7F12B0D4FE5000A7BCD /* Main */,
 				373FC7F02B0D4FB7000A7BCD /* AlertCenter */,
@@ -719,6 +730,7 @@
 				FF77BFBF2AF780AC00EA5A1B /* SignUPfirst.swift in Sources */,
 				37B3D8032B0A1B9100DDCEC2 /* CalendarSchedule.swift in Sources */,
 				37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */,
+				37976D5B2B104274004F278F /* Google.swift in Sources */,
 				FFAFCB782AFB76460030C3C9 /* 선별_전시_컬렉션_셀.swift in Sources */,
 				FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift in Sources */,
 				FFAFCB7A2AFD2D200030C3C9 /* ExhibitionPageTwo.swift in Sources */,
