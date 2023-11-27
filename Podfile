@@ -7,13 +7,11 @@ target 'Dots' do
 
   # Pods for Dots
 
-  pod 'RxSwift'
-  pod 'RxCocoa'
+
   pod 'SnapKit'
-  pod 'RxDataSources'
-  pod 'PanModal'
   pod 'SDWebImage'
   pod 'FSCalendar'
   pod 'GoogleSignIn'
   pod 'Toast-Swift'
+  
 end

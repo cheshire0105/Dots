@@ -1,7 +1,5 @@
 // 인기 리뷰 뷰 컨트롤러
 
-import RxCocoa
-import RxSwift
 import SnapKit
 import UIKit
 

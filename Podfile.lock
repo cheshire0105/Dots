@@ -5,7 +5,6 @@ PODS:
   - AppAuth/Core (1.6.2)
   - AppAuth/ExternalUserAgent (1.6.2):
     - AppAuth/Core
-  - Differentiator (5.0.0)
   - FSCalendar (2.8.4)
   - GoogleSignIn (7.0.0):
     - AppAuth (~> 1.5)
@@ -15,17 +14,6 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 4.0, >= 1.5)
   - GTMSessionFetcher/Core (3.1.1)
-  - PanModal (1.2.7)
-  - RxCocoa (6.6.0):
-    - RxRelay (= 6.6.0)
-    - RxSwift (= 6.6.0)
-  - RxDataSources (5.0.0):
-    - Differentiator (~> 5.0)
-    - RxCocoa (~> 6.0)
-    - RxSwift (~> 6.0)
-  - RxRelay (6.6.0):
-    - RxSwift (= 6.6.0)
-  - RxSwift (6.6.0)
   - SDWebImage (5.18.5):
     - SDWebImage/Core (= 5.18.5)
   - SDWebImage/Core (5.18.5)
@@ -35,10 +23,6 @@ PODS:
 DEPENDENCIES:
   - FSCalendar
   - GoogleSignIn
-  - PanModal
-  - RxCocoa
-  - RxDataSources
-  - RxSwift
   - SDWebImage
   - SnapKit
   - Toast-Swift
@@ -46,36 +30,24 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AppAuth
-    - Differentiator
     - FSCalendar
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
-    - PanModal
-    - RxCocoa
-    - RxDataSources
-    - RxRelay
-    - RxSwift
     - SDWebImage
     - SnapKit
     - Toast-Swift
 
 SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
-  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   FSCalendar: 2d1d0d9398f12d439f55c1fe0f01525b151b8260
   GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
   GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
-  PanModal: 3e16ead1a907fb06f4df3f13492fd00149fa4974
-  RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
-  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
-  RxRelay: 45eaa5db8ee4fb50e5ebd57deec0159e97fa51e6
-  RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
   SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 
-PODFILE CHECKSUM: 24fc458145fa495e0ea5b9f092508d69bb49bbcd
+PODFILE CHECKSUM: f5565e12c008925e98fd4c4cdc0e63eeb8faaeca
 
 COCOAPODS: 1.14.2

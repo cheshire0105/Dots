@@ -1,8 +1,6 @@
 //23 . 11 . 27. 3:41 pm  최신화 + 새브랜치 생성
 import UIKit
 import SnapKit
-import RxSwift
-import RxCocoa
 import FSCalendar
 import Firebase
 import FirebaseAuth
