@@ -188,20 +188,28 @@ extension 마이페이지_설정_페이지 {
     
     //일반 뷰전환 버튼
     @objc private func 프로필변경_버튼_클릭 () {
-        let 프로필변경_모달 = 프로필변경_모달()
-        present(프로필변경_모달, animated: true, completion: nil)
+        let 프로필변경_화면 = 프로필변경_화면()
+//        present(프로필변경_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(프로필변경_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func 비밀번호변경_버튼_클릭 () {
-        let 비밀번호변경_모달 = 비밀번호변경_모달()
-        present(비밀번호변경_모달, animated: true, completion: nil)
+        let 비밀번호변경_화면 = 비밀번호변경_화면()
+//        present(비밀번호변경_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(비밀번호변경_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func  알림설정_버튼_클릭 () {
-        let 알림설정_모달 = 알림설정_모달()
-        present(알림설정_모달, animated: true, completion: nil)
+        let 알림설정_화면 = 알림설정_화면()
+//        present(알림설정_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(알림설정_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func 서비스설정_버튼_클릭 () {
-        let 서비스설정_모달 = 서비스설정_모달()
-        present(서비스설정_모달, animated: true, completion: nil)
+        let 서비스설정_화면 = 서비스설정_화면()
+//        present(서비스설정_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(서비스설정_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)

@@ -182,6 +182,7 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = UIColor.clear
+        navigationController?.isNavigationBarHidden = true
         버튼_클릭()
         UI레이아웃()
         버튼_백_레이아웃 ()
