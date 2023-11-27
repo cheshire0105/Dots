@@ -229,17 +229,69 @@ extension 마이페이지_설정_페이지 {
     
     
     //로그아웃 로직
+//    func 로그아웃_유저로그아웃() {
+//        do {
+//            if let 현제접속중인_유저 = Auth.auth().currentUser {
+//                print("로그아웃한 사용자 정보:")
+//                print("UID: \(현제접속중인_유저.uid)")
+//                print("이메일: \(현제접속중인_유저.email ?? "없음")")
+//                
+//                let 파이어스토어 = Firestore.firestore()
+//                let 이메일 = 현제접속중인_유저.email ?? ""
+//                
+//                let 유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+//                
+//                유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, 에러) in
+//                    guard let self = self else { return }
+//                    
+//                    if let 에러 = 에러 {
+//                        print("Firestore 조회 에러: \(에러.localizedDescription)")
+//                    } else {
+//                        if let 문서조회 = querySnapshot?.documents, !문서조회.isEmpty {
+//                            let 문서 = 문서조회[0]
+//                            let 현재날짜시간 = Timestamp(date: Date())
+//                            
+//                            문서.reference.updateData(["로그인상태": false,"마지막로그아웃": 현재날짜시간]) { (에러) in
+//                                if let 에러 = 에러 {
+//                                    print("Firestore 업데이트 에러: \(에러.localizedDescription)")
+//                                } else {
+//                                    print("Firestore: 로그인 상태 : false")
+//                                }
+//                            }
+//                        } else {
+//                            print("Firestore: 일치하는 이메일이 없습니다.")
+//                        }
+//                    }
+//                }
+//            }
+//            
+//            try Auth.auth().signOut()
+//            print("계정이 로그아웃되었습니다.")
+//            let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
+//            let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
+//            로그인화면_이동.modalPresentationStyle = .fullScreen
+//            present(로그인화면_이동, animated: true, completion: nil)
+//            UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+//        } catch {
+//            print("로그아웃 실패: \(error.localizedDescription)")
+//        }
+//    }
     func 로그아웃_유저로그아웃() {
         do {
-            if let 현제접속중인_유저 = Auth.auth().currentUser {
+            if let 현재접속중인유저 = Auth.auth().currentUser {
                 print("로그아웃한 사용자 정보:")
-                print("UID: \(현제접속중인_유저.uid)")
-                print("이메일: \(현제접속중인_유저.email ?? "없음")")
+                print("UID: \(현재접속중인유저.uid)")
+                print("이메일: \(현재접속중인유저.email ?? "없음")")
                 
                 let 파이어스토어 = Firestore.firestore()
-                let 이메일 = 현제접속중인_유저.email ?? ""
+                let 이메일 = 현재접속중인유저.email ?? ""
+                let 유저컬렉션: CollectionReference
                 
-                let 유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+                if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
+                    유저컬렉션 = 파이어스토어.collection("구글_유저_데이터_관리")
+                } else {
+                    유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+                }
                 
                 유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, 에러) in
                     guard let self = self else { return }
@@ -251,7 +303,7 @@ extension 마이페이지_설정_페이지 {
                             let 문서 = 문서조회[0]
                             let 현재날짜시간 = Timestamp(date: Date())
                             
-                            문서.reference.updateData(["로그인상태": false,"마지막로그아웃": 현재날짜시간]) { (에러) in
+                            문서.reference.updateData(["로그인상태": false, "마지막로그아웃": 현재날짜시간]) { (에러) in
                                 if let 에러 = 에러 {
                                     print("Firestore 업데이트 에러: \(에러.localizedDescription)")
                                 } else {
@@ -264,19 +316,17 @@ extension 마이페이지_설정_페이지 {
                     }
                 }
             }
-            
-            try Auth.auth().signOut()
-            print("계정이 로그아웃되었습니다.")
-            let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
-            let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
-            로그인화면_이동.modalPresentationStyle = .fullScreen
-            present(로그인화면_이동, animated: true, completion: nil)
-            UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-        } catch {
+                try Auth.auth().signOut()
+                print("계정이 로그아웃되었습니다.")
+                        let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
+                        let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
+                        로그인화면_이동.modalPresentationStyle = .fullScreen
+                        present(로그인화면_이동, animated: true, completion: nil)
+                        UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+            } catch {
             print("로그아웃 실패: \(error.localizedDescription)")
         }
     }
-    
 }
 
 //유저 회원탈퇴 관련
