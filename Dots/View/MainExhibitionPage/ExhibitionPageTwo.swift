@@ -11,6 +11,7 @@ import SnapKit
 import UIKit
 import FirebaseStorage
 import Firebase
+import Toast_Swift
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -174,9 +175,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         picker.preferredDatePickerStyle = .wheels
         picker.overrideUserInterfaceStyle = .light
 
+        // 한국어 로케일 설정
+        picker.locale = Locale(identifier: "ko-KR")
+
         picker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
         return picker
     }()
+
 
     @objc func datePickerChanged(_ sender: UIDatePicker) {
         // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
@@ -196,8 +201,17 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     @objc func confirmButtonTapped() {
         // 버튼을 눌렀을 때 수행할 동작을 여기에 추가합니다.
+
+
+        let isSelected = recordButton.isSelected
+        recordButton.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
+
+        let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
+        recordButton.setImage(UIImage(named: newImageName), for: .normal)
+
         customAlertView.isHidden = true
         blurEffectView.isHidden = true
+
     }
 
 
@@ -286,6 +300,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
         swipeGesture.direction = .right // 오른쪽 스와이프를 인식
         view.addGestureRecognizer(swipeGesture)
+
+        // blurEffectView에 탭 제스처 인식기 추가
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
+            blurEffectView.addGestureRecognizer(tapGesture)
+            blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
     }
 
     @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
@@ -294,6 +313,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             navigationController?.popViewController(animated: true)
         }
     }
+    @objc func blurViewTapped() {
+        customAlertView.isHidden = true
+        blurEffectView.isHidden = true
+    }
+
 
     private func setupCustomAlertView() {
         customAlertView.snp.makeConstraints { make in
@@ -406,19 +430,28 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     @objc func heartIconTapped() {
-        let isSelected = heartIcon.isSelected
-        heartIcon.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
+        // 버튼의 현재 선택 상태를 반전시킵니다.
+        heartIcon.isSelected.toggle()
 
-        let newImageName = isSelected ? "heartIcon" : "Vector 1" // 새 이미지 이름
-        heartIcon.setImage(UIImage(named: newImageName), for: .normal)
+        if heartIcon.isSelected {
+            // 선택된 경우: 토스트 메시지 표시 및 이미지 변경
+            let newImageName = "Vector 1" // 선택된 상태의 이미지
+            heartIcon.setImage(UIImage(named: newImageName), for: .normal)
+
+            var toastStyle = ToastStyle()
+            toastStyle.messageColor = .white
+            toastStyle.messageFont = UIFont(name: "Pretendard-Bold", size: 16) ?? .boldSystemFont(ofSize: 20)
+
+            self.view.makeToast("전시가 맘에 드셨군요!", duration: 1.5, position: .center, style: toastStyle)
+        } else {
+            // 선택 해제된 경우: 원래의 이미지로 변경 (토스트는 표시하지 않음)
+            let originalImageName = "heartIcon"
+            heartIcon.setImage(UIImage(named: originalImageName), for: .normal)
+        }
     }
 
-    @objc func recordButtonTapped() {
-        let isSelected = recordButton.isSelected
-        recordButton.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
 
-        let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
-        recordButton.setImage(UIImage(named: newImageName), for: .normal)
+    @objc func recordButtonTapped() {
 
         // 현재 표시된 모든 모달 뷰 컨트롤러를 닫습니다.
         self.dismiss(animated: true) {
@@ -426,6 +459,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             self.blurEffectView.isHidden = false
             self.customAlertView.isHidden = false
         }
+
+        
     }
 
 
