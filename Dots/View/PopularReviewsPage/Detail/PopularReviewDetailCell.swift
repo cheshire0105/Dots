@@ -6,7 +6,7 @@ import UIKit
 class 인기리뷰_디테일_셀: UICollectionViewCell {
     var 인기셀_디테일_이미지 = {
         var imageView = UIImageView()
-        imageView.layer.cornerRadius = 10
+        imageView.layer.cornerRadius = 30
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         imageView.layer.borderWidth = 10
