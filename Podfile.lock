@@ -30,6 +30,7 @@ PODS:
     - SDWebImage/Core (= 5.18.5)
   - SDWebImage/Core (5.18.5)
   - SnapKit (5.6.0)
+  - Toast-Swift (5.0.1)
 
 DEPENDENCIES:
   - FSCalendar
@@ -40,6 +41,7 @@ DEPENDENCIES:
   - RxSwift
   - SDWebImage
   - SnapKit
+  - Toast-Swift
 
 SPEC REPOS:
   trunk:
@@ -56,6 +58,7 @@ SPEC REPOS:
     - RxSwift
     - SDWebImage
     - SnapKit
+    - Toast-Swift
 
 SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
@@ -71,7 +74,8 @@ SPEC CHECKSUMS:
   RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
   SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 
-PODFILE CHECKSUM: a5df134c0d5584714d2b5ff0d7587b882563dfb8
+PODFILE CHECKSUM: 24fc458145fa495e0ea5b9f092508d69bb49bbcd
 
 COCOAPODS: 1.14.2

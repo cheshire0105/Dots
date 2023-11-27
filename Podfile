@@ -15,4 +15,5 @@ target 'Dots' do
   pod 'SDWebImage'
   pod 'FSCalendar'
   pod 'GoogleSignIn'
+  pod 'Toast-Swift'
 end
