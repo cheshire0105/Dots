@@ -1,6 +1,6 @@
 import UIKit
 
-class 프로필변경_화면 : UIViewController {
+class 이메일변경_화면 : UIViewController {
     private let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -12,40 +12,12 @@ class 프로필변경_화면 : UIViewController {
     
     private let 페이지_제목 = {
         let label = UILabel()
-        label.text = "프로필 변경"
+        label.text = "이메일 변경"
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .center
         return label
     }()
-    
-    private let 이메일_텍스트필드 = { ()
-        let textField = UITextField()
-        let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.lightGray,
-            .font: UIFont.boldSystemFont(ofSize: 14)
-        ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
-        textField.textColor = UIColor.white
-        textField.tintColor = UIColor(named: "neon")
-        textField.layer.masksToBounds = true
-        textField.layer.cornerRadius = 25
-        //        textField.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
-        textField.backgroundColor = UIColor.clear
-        textField.textAlignment = .left
-        textField.font = UIFont.boldSystemFont(ofSize: 14)
-        
-        textField.keyboardType = .emailAddress
-        textField.autocapitalizationType = .none
-        
-        textField.clearButtonMode = .whileEditing
-        textField.rightViewMode = .whileEditing
-        
-        
-        
-        return textField
-    } ()
-    
     override func viewDidLoad() {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
@@ -57,7 +29,7 @@ class 프로필변경_화면 : UIViewController {
 }
 
 
-extension 프로필변경_화면{
+extension 이메일변경_화면{
     
     private func UI레이아웃 () {
         view.addSubview(뒤로가기_버튼)

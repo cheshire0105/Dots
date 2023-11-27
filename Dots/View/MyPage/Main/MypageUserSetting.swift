@@ -62,6 +62,26 @@ class 마이페이지_설정_페이지 : UIViewController {
         imageView.image = UIImage(named: "버튼화살표")
         return imageView
     }()
+    private let 이메일변경_버튼 = {
+        let button = UIButton()
+        button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        button.titleLabel?.textAlignment = .left
+        return button
+    } ()
+    private let 이메일변경_라벨 = {
+        let label = UILabel()
+        label.text = "이메일 변경"
+        label.textColor = UIColor.white
+        label.font = UIFont(name: "HelveticaNeue", size: 17)
+        label.textAlignment = .left
+        return label
+    }()
+    private let 이메일변경_화살표 = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "버튼화살표")
+        
+        return imageView
+    }()
     private let 비밀번호변경_버튼 = {
         let button = UIButton()
         button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
@@ -86,6 +106,8 @@ class 마이페이지_설정_페이지 : UIViewController {
         let button = UIButton()
         button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         button.titleLabel?.textAlignment = .left
+        button.layer.cornerRadius = 15
+        button.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         return button
     } ()
     private let 알림설정_라벨 = {
@@ -97,28 +119,6 @@ class 마이페이지_설정_페이지 : UIViewController {
         return label
     }()
     private let 알림설정_화살표 = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "버튼화살표")
-        
-        return imageView
-    }()
-    private let 서비스설정_버튼 = {
-        let button = UIButton()
-        button.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
-        button.titleLabel?.textAlignment = .left
-        button.layer.cornerRadius = 15
-        button.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        return button
-    } ()
-    private let 서비스설정_라벨 = {
-        let label = UILabel()
-        label.text = "서비스 설정"
-        label.textColor = UIColor.white
-        label.font = UIFont(name: "HelveticaNeue", size: 17)
-        label.textAlignment = .left
-        return label
-    }()
-    private let 서비스설정_화살표 = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "버튼화살표")
         
@@ -177,9 +177,9 @@ extension 마이페이지_설정_페이지 {
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         프로필변경_버튼.addTarget(self, action: #selector(프로필변경_버튼_클릭), for: .touchUpInside)
+        이메일변경_버튼.addTarget(self, action: #selector(이메일변경_버튼_클릭), for: .touchUpInside)
         비밀번호변경_버튼.addTarget(self, action: #selector(비밀번호변경_버튼_클릭), for: .touchUpInside)
         알림설정_버튼.addTarget(self, action: #selector(알림설정_버튼_클릭), for: .touchUpInside)
-        서비스설정_버튼.addTarget(self, action: #selector(서비스설정_버튼_클릭), for: .touchUpInside)
         
         로그아웃_버튼.addTarget(self, action: #selector(로그아웃_버튼_클릭), for: .touchUpInside)
         회원탈퇴_버튼.addTarget(self, action: #selector(회원탈퇴_버튼_클릭), for: .touchUpInside)
@@ -192,22 +192,22 @@ extension 마이페이지_설정_페이지 {
         self.navigationController?.pushViewController(프로필변경_화면, animated: false)
         navigationItem.hidesBackButton = true
     }
-    @objc private func 비밀번호변경_버튼_클릭 () {
-        let 비밀번호변경_화면 = 비밀번호변경_화면()
+    @objc private func 이메일변경_버튼_클릭 () {
+        let 이메일변경_화면 = 이메일변경_화면()
 //        present(비밀번호변경_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(이메일변경_화면, animated: false)
+        navigationItem.hidesBackButton = true
+    }
+    @objc private func  비밀번호변경_버튼_클릭 () {
+        let 비밀번호변경_화면 = 비밀번호변경_화면()
+//        present(알림설정_모달, animated: true, completion: nil)
         self.navigationController?.pushViewController(비밀번호변경_화면, animated: false)
         navigationItem.hidesBackButton = true
     }
-    @objc private func  알림설정_버튼_클릭 () {
+    @objc private func 알림설정_버튼_클릭 () {
         let 알림설정_화면 = 알림설정_화면()
-//        present(알림설정_모달, animated: true, completion: nil)
-        self.navigationController?.pushViewController(알림설정_화면, animated: false)
-        navigationItem.hidesBackButton = true
-    }
-    @objc private func 서비스설정_버튼_클릭 () {
-        let 서비스설정_화면 = 서비스설정_화면()
 //        present(서비스설정_모달, animated: true, completion: nil)
-        self.navigationController?.pushViewController(서비스설정_화면, animated: false)
+        self.navigationController?.pushViewController(알림설정_화면, animated: false)
         navigationItem.hidesBackButton = true
     }
     @objc private func 뒤로가기_버튼_클릭() {
@@ -333,15 +333,15 @@ extension 마이페이지_설정_페이지 {
         view.addSubview(프로필공개여부_라벨)
         view.addSubview(프로필공개여부_토글)
         view.addSubview(프로필변경_버튼)
+        view.addSubview(이메일변경_버튼)
         view.addSubview(비밀번호변경_버튼)
         view.addSubview(알림설정_버튼)
-        view.addSubview(서비스설정_버튼)
         view.addSubview(로그아웃_버튼)
         view.addSubview(회원탈퇴_버튼)
         view.addSubview(프로필변경_라벨)
+        view.addSubview(이메일변경_라벨)
         view.addSubview(비밀번호변경_라벨)
         view.addSubview(알림설정_라벨)
-        view.addSubview(서비스설정_라벨)
         view.addSubview(로그아웃_라벨)
         view.addSubview(회원탈퇴_라벨)
         뒤로가기_버튼.snp.makeConstraints { make in
@@ -381,8 +381,20 @@ extension 마이페이지_설정_페이지 {
             make.leading.equalTo(프로필변경_버튼.snp.leading).offset(16)
         }
         
-        비밀번호변경_버튼.snp.makeConstraints { make in
+        이메일변경_버튼.snp.makeConstraints { make in
             make.top.equalTo(프로필변경_버튼.snp.bottom).offset(2)
+            make.leading.equalToSuperview().offset(15)
+            make.trailing.equalToSuperview().offset(-15)
+            make.height.equalTo(44)
+            
+        }
+        이메일변경_라벨.snp.makeConstraints { make in
+            make.centerY.equalTo(이메일변경_버튼.snp.centerY)
+            make.leading.equalTo(이메일변경_버튼.snp.leading).offset(16)
+        }
+        
+        비밀번호변경_버튼.snp.makeConstraints { make in
+            make.top.equalTo(이메일변경_버튼.snp.bottom).offset(2)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
@@ -398,26 +410,14 @@ extension 마이페이지_설정_페이지 {
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-            
         }
         알림설정_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(알림설정_버튼.snp.centerY)
             make.leading.equalTo(알림설정_버튼.snp.leading).offset(16)
         }
         
-        서비스설정_버튼.snp.makeConstraints { make in
-            make.top.equalTo(알림설정_버튼.snp.bottom).offset(2)
-            make.leading.equalToSuperview().offset(15)
-            make.trailing.equalToSuperview().offset(-15)
-            make.height.equalTo(44)
-        }
-        서비스설정_라벨.snp.makeConstraints { make in
-            make.centerY.equalTo(서비스설정_버튼.snp.centerY)
-            make.leading.equalTo(서비스설정_버튼.snp.leading).offset(16)
-        }
-        
         로그아웃_버튼.snp.makeConstraints { make in
-            make.top.equalTo(서비스설정_버튼.snp.bottom).offset(24)
+            make.top.equalTo(알림설정_버튼.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
@@ -439,14 +439,19 @@ extension 마이페이지_설정_페이지 {
     }
     private func 화살표_레이아웃() {
         view.addSubview(프로필변경_화살표)
+        view.addSubview(이메일변경_화살표)
         view.addSubview(비밀번호변경_화살표)
         view.addSubview(알림설정_화살표)
-        view.addSubview(서비스설정_화살표)
         
         프로필변경_화살표.snp.makeConstraints { make in
             make.centerY.equalTo(프로필변경_버튼
                 .snp.centerY)
             make.trailing.equalTo(프로필변경_버튼.snp.trailing).offset(-16)
+        }
+        
+        이메일변경_화살표.snp.makeConstraints { make in
+            make.centerY.equalTo(이메일변경_버튼.snp.centerY)
+            make.trailing.equalTo(이메일변경_버튼.snp.trailing).offset(-16)
         }
         
         비밀번호변경_화살표.snp.makeConstraints { make in
@@ -457,11 +462,6 @@ extension 마이페이지_설정_페이지 {
         알림설정_화살표.snp.makeConstraints { make in
             make.centerY.equalTo(알림설정_버튼.snp.centerY)
             make.trailing.equalTo(알림설정_버튼.snp.trailing).offset(-16)
-        }
-        
-        서비스설정_화살표.snp.makeConstraints { make in
-            make.centerY.equalTo(서비스설정_버튼.snp.centerY)
-            make.trailing.equalTo(서비스설정_버튼.snp.trailing).offset(-16)
         }
     }
 }
