@@ -1,4 +1,4 @@
-//23 . 11 . 21. 6:23 pm  최신화 완료 - 오토레이아웃 작업 끝
+//23 . 11 . 27. 3:41 pm  최신화 + 새브랜치 생성
 import UIKit
 import SnapKit
 import RxSwift
