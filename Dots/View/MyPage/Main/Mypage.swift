@@ -4,6 +4,10 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import FSCalendar
+import Firebase
+import FirebaseAuth
+import FirebaseFirestore
+import GoogleSignIn
 
 class Mypage: UIViewController {
     
@@ -11,8 +15,8 @@ class Mypage: UIViewController {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
         imageButton.clipsToBounds = true
-        imageButton.setImage(UIImage(named: "cabanel"), for: .selected)
-        imageButton.setImage(UIImage(named: "cabanel"), for: .normal)
+//        imageButton.setImage(UIImage(named: "cabanel"), for: .selected)
+//        imageButton.setImage(UIImage(named: "cabanel"), for: .normal)
         imageButton.isSelected = !imageButton.isSelected
         return imageButton
     }()
@@ -183,6 +187,8 @@ class Mypage: UIViewController {
         버튼_백_레이아웃 ()
         
         캘린더_레이아웃()
+        
+        접속_유저_데이터_마이페이지_적용하기()
     }
     
     private func 버튼_백_레이아웃 () {
@@ -260,11 +266,17 @@ class Mypage: UIViewController {
             make.size.equalTo(76)
         }
         마이페이지_설정_버튼.snp.makeConstraints { make in
-            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+//            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(3)
+//            make.bottom.equalTo(마이페이지_프로필_닉네임.snp.bottom)
+            make.top.equalToSuperview().offset(65)
             make.trailing.equalToSuperview().offset(-26)
         }
         마이페이지_알림_버튼.snp.makeConstraints { make in
-            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+//            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(3)
+//            make.bottom.equalTo(마이페이지_프로필_닉네임.snp.bottom)
+            make.top.equalToSuperview().offset(65)
             make.trailing.equalTo(마이페이지_설정_버튼.snp.leading ).offset(-20)
         }
         마이페이지_프로필_닉네임.snp.makeConstraints { make in
@@ -273,6 +285,7 @@ class Mypage: UIViewController {
         }
         마이페이지_프로필_이메일.snp.makeConstraints { make in
             make.leading.equalTo(마이페이지_프로필_이미지_버튼.snp.trailing).offset(16)
+            make.trailing.equalTo(마이페이지_프로필_닉네임.snp.trailing)
             make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY).offset(10)
         }
         버튼_백.snp.makeConstraints { make in
@@ -347,4 +360,55 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
         
     }
     
+}
+
+
+
+extension Mypage {
+    
+    
+    private func 접속_유저_데이터_마이페이지_적용하기() {
+            guard let 현재접속중인유저 = Auth.auth().currentUser else {
+                return
+            }
+
+        let 파이어스토어 = Firestore.firestore()
+        let 이메일 = 현재접속중인유저.email ?? ""
+        let 유저컬렉션: CollectionReference
+
+        if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
+            유저컬렉션 = 파이어스토어.collection("구글_유저_데이터_관리")
+        } else {
+            유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+        }
+
+            // 현재 로그인한 사용자의 이메일을 이용해 Firestore에서 데이터 조회
+            유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in
+                guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+                    // 에러 처리
+                    return
+                }
+
+                if let userDocument = documents.first {
+                    // 사용자 문서에서 필요한 정보 추출
+                    let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
+                    let 닉네임 = userDocument["닉네임"] as? String ?? ""
+                    let 이메일 = userDocument["이메일"] as? String ?? ""
+
+                    // UI 업데이트
+                    DispatchQueue.main.async {
+                        // 프로필 이미지 업데이트
+                        if let url = URL(string: 프로필이미지URL) {
+                            self.마이페이지_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
+                        }
+
+                        // 닉네임 업데이트
+                        self.마이페이지_프로필_닉네임.text = 닉네임
+
+                        // 이메일 업데이트
+                        self.마이페이지_프로필_이메일.text = 이메일
+                    }
+                }
+            }
+        }
 }
