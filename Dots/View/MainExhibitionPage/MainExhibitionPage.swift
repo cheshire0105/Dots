@@ -87,6 +87,13 @@ class MainExhibitionPage: UIViewController {
         fetchAdditionalExhibitionData()
         self.view.backgroundColor = .black
         
+        if let 현제접속중인_유저 = Auth.auth().currentUser {
+            print("로그인한 사용자 정보:")
+            print("UID: \(현제접속중인_유저.uid)")
+            print("이메일: \(현제접속중인_유저.email ?? "없음")")
+            print("계정이 로그인되었습니다.")
+        }
+        
     }
     
     private func fetchExhibitionData() {
