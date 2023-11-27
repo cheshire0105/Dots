@@ -35,6 +35,12 @@ extension 로그인_뷰컨트롤러 {
                             let 프로필이미지URL = 구글계정.profile?.imageURL(withDimension: 200)?.absoluteString ?? "default image URL"
                             
                             self.구글계정정보_파이어스토어_업로드(회원가입_타입: "구글", 구글이메일: 구글이메일, 구글닉네임: 구글닉네임, 식별id: 식별id, 로그인상태: true, 프로필이미지URL: 프로필이미지URL)
+                            
+                            UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
+                            
+                            let 메인화면_이동 = TabBar()
+                            self.navigationController?.pushViewController(메인화면_이동, animated: true)
+                            self.navigationItem.hidesBackButton = true
                         }
                     }
                 }
@@ -105,6 +111,10 @@ extension 회원가입_첫번째_뷰컨트롤러 {
                     let 프로필이미지URL = 구글계정.profile?.imageURL(withDimension: 200)?.absoluteString ?? "default image URL"
                     
                     self.구글계정정보_파이어스토어_업로드(회원가입_타입: "구글", 구글이메일: 구글이메일, 구글닉네임: 구글닉네임, 식별id: 식별id, 로그인상태: true, 프로필이미지URL: 프로필이미지URL)
+                    
+                    let 메인화면_이동 = TabBar()
+                    self.navigationController?.pushViewController(메인화면_이동, animated: true)
+                    self.navigationItem.hidesBackButton = true
                 }
             }
         }
