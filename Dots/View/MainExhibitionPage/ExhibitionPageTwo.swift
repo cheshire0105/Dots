@@ -123,21 +123,21 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     private lazy var blurEffectView: UIVisualEffectView = {
-          let blurEffect = UIBlurEffect(style: .dark)
-          let view = UIVisualEffectView(effect: blurEffect)
-          view.frame = self.view.bounds
-          view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-          view.isHidden = true // 처음에는 숨겨둡니다.
-          return view
-      }()
+        let blurEffect = UIBlurEffect(style: .dark)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.frame = self.view.bounds
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
 
-      private lazy var customAlertView: UIView = {
-          let view = UIView()
-          view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
-          view.layer.cornerRadius = 20
-          view.isHidden = true // 처음에는 숨겨둡니다.
-          return view
-      }()
+    private lazy var customAlertView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        view.layer.cornerRadius = 20
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
 
     private func setupTitleLabel() {
         view.addSubview(titleLabel)
@@ -169,36 +169,36 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }()
 
     private lazy var datePicker: UIDatePicker = {
-         let picker = UIDatePicker()
-         picker.datePickerMode = .date
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .wheels
         picker.overrideUserInterfaceStyle = .light
 
-         picker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
-         return picker
-     }()
+        picker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
+        return picker
+    }()
 
-     @objc func datePickerChanged(_ sender: UIDatePicker) {
-         // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
-         // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
-     }
+    @objc func datePickerChanged(_ sender: UIDatePicker) {
+        // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
+        // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
+    }
 
-    
+
     private lazy var confirmButton: UIButton = {
-          let button = UIButton()
-          button.setTitle("등록하기", for: .normal)
+        let button = UIButton()
+        button.setTitle("등록하기", for: .normal)
         button.backgroundColor = .black
-          button.setTitleColor(.white, for: .normal)
-          button.layer.cornerRadius = 25 // 모서리 둥글게
-          button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
-          return button
-      }()
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 25 // 모서리 둥글게
+        button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
+        return button
+    }()
 
     @objc func confirmButtonTapped() {
-          // 버튼을 눌렀을 때 수행할 동작을 여기에 추가합니다.
+        // 버튼을 눌렀을 때 수행할 동작을 여기에 추가합니다.
         customAlertView.isHidden = true
-               blurEffectView.isHidden = true
-      }
+        blurEffectView.isHidden = true
+    }
 
 
     @objc func presentInfoModal() {
@@ -256,37 +256,37 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     override func viewDidLoad() {
-         super.viewDidLoad()
-         view.backgroundColor = .black
+        super.viewDidLoad()
+        view.backgroundColor = .black
 
-         // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
-         view.addSubview(backgroundImageView)
-         view.sendSubviewToBack(backgroundImageView)
+        // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
+        view.addSubview(backgroundImageView)
+        view.sendSubviewToBack(backgroundImageView)
 
-         setupBackButton()
+        setupBackButton()
 
-         // 이미지 로딩을 위한 함수 호출
-         if let posterName = posterImageName {
-             setupBackgroundImage(with: posterName)
-         }
+        // 이미지 로딩을 위한 함수 호출
+        if let posterName = posterImageName {
+            setupBackgroundImage(with: posterName)
+        }
 
 
         setupTitleLabel() // 타이틀 레이블 설정 호출
 
         if let titleName = titleName {
-              titleLabel.text = titleName
-          }
+            titleLabel.text = titleName
+        }
 
         view.addSubview(blurEffectView)
-                view.addSubview(customAlertView)
-                setupCustomAlertView()
+        view.addSubview(customAlertView)
+        setupCustomAlertView()
 
 
         // 스와이프 제스처 인식기 추가
-           let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
-           swipeGesture.direction = .right // 오른쪽 스와이프를 인식
-           view.addGestureRecognizer(swipeGesture)
-     }
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
+        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
+        view.addGestureRecognizer(swipeGesture)
+    }
 
     @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
         if gesture.direction == .right {
@@ -303,33 +303,33 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         customAlertView.addSubview(alertTitleLabel)
-           customAlertView.addSubview(alertSubtitleLabel)
+        customAlertView.addSubview(alertSubtitleLabel)
 
-           alertTitleLabel.snp.makeConstraints { make in
-               make.top.equalTo(customAlertView.snp.top).offset(20)
-               make.left.right.equalTo(customAlertView).inset(10)
-           }
+        alertTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(customAlertView.snp.top).offset(20)
+            make.left.right.equalTo(customAlertView).inset(10)
+        }
 
-           alertSubtitleLabel.snp.makeConstraints { make in
-               make.top.equalTo(alertTitleLabel.snp.bottom).offset(10)
-               make.left.right.equalTo(customAlertView).inset(30)
-           }
+        alertSubtitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(alertTitleLabel.snp.bottom).offset(10)
+            make.left.right.equalTo(customAlertView).inset(30)
+        }
 
         customAlertView.addSubview(datePicker)
-              datePicker.snp.makeConstraints { make in
-                  make.top.equalTo(alertSubtitleLabel.snp.bottom).offset(20)
+        datePicker.snp.makeConstraints { make in
+            make.top.equalTo(alertSubtitleLabel.snp.bottom).offset(20)
 
-                  make.centerX.equalTo(customAlertView.snp.centerX)
-              }
+            make.centerX.equalTo(customAlertView.snp.centerX)
+        }
 
         customAlertView.addSubview(confirmButton)
-            confirmButton.snp.makeConstraints { make in
-                make.top.equalTo(datePicker.snp.bottom).offset(10)
-                make.centerX.equalTo(customAlertView.snp.centerX)
-                make.width.equalTo(273) // 버튼의 너비
-                make.height.equalTo(56) // 버튼의 높이
-                make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
-            }
+        confirmButton.snp.makeConstraints { make in
+            make.top.equalTo(datePicker.snp.bottom).offset(10)
+            make.centerX.equalTo(customAlertView.snp.centerX)
+            make.width.equalTo(273) // 버튼의 너비
+            make.height.equalTo(56) // 버튼의 높이
+            make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
+        }
     }
 
 
@@ -337,21 +337,21 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     private func setupBackgroundImage(with imageName: String) {
-           let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
-           storageRef.downloadURL { [weak self] (url, error) in
-               if let error = error {
-                   print("Error getting download URL: \(error)")
-               } else if let url = url {
-                   // 이미지 로드
-                   URLSession.shared.dataTask(with: url) { (data, _, error) in
-                       guard let data = data, error == nil else { return }
-                       DispatchQueue.main.async {
-                           self?.backgroundImageView.image = UIImage(data: data)
-                       }
-                   }.resume()
-               }
-           }
-       }
+        let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+        storageRef.downloadURL { [weak self] (url, error) in
+            if let error = error {
+                print("Error getting download URL: \(error)")
+            } else if let url = url {
+                // 이미지 로드
+                URLSession.shared.dataTask(with: url) { (data, _, error) in
+                    guard let data = data, error == nil else { return }
+                    DispatchQueue.main.async {
+                        self?.backgroundImageView.image = UIImage(data: data)
+                    }
+                }.resume()
+            }
+        }
+    }
 
 
 
@@ -367,10 +367,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
-            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10) // leading edge로부터 10포인트 떨어진 곳에 위치
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
             make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
-        
+
 
 
         headsetIcon.snp.makeConstraints{ make in
@@ -451,9 +451,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     private func presentModalViewController() {
-          let detailViewController = DetailViewController()
-          detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
-      }
+        let detailViewController = DetailViewController()
+        detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
+    }
 
 
 

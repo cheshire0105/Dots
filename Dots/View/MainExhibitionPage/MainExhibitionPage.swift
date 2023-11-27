@@ -27,15 +27,15 @@ struct 메인페이지_전체_전시_섹션 {
 
 
 class MainExhibitionPage: UIViewController {
-
+    
     var collectionViewTopConstraint: Constraint?
     let items = ["전시회", "미술관", "갤러리", "박물관", "비엔날레"]
     var exhibitions = [ExhibitionModel]()
     var secondSectionExhibitions = [ExhibitionModel]()
     var thirdSectionExhibitions = [ExhibitionModel]()
-
-
-
+    
+    
+    
     lazy var CategoryCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
@@ -47,10 +47,10 @@ class MainExhibitionPage: UIViewController {
         collectionView.register(CategotyCell.self, forCellWithReuseIdentifier: "CategoryCollectionCell")
         collectionView.isScrollEnabled = true
         collectionView.showsVerticalScrollIndicator = false
-
+        
         return collectionView
     }()
-
+    
     // 새로운 컬렉션뷰를 정의합니다.
     // MainExhibitionCollectionView 초기화 부분에서 레이아웃 설정 변경
     lazy var MainExhibitionCollectionView: UICollectionView = {
@@ -58,7 +58,7 @@ class MainExhibitionPage: UIViewController {
         collectionView.backgroundColor = .black
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-
+        
         collectionView.register(MainExhibitionFirstSectionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
         collectionView.register(선별_전시_컬렉션_셀.self, forCellWithReuseIdentifier: "선별_전시_컬렉션_셀")
         collectionView.register(선별_전시_컬렉션_셀_헤더.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더")
@@ -66,32 +66,32 @@ class MainExhibitionPage: UIViewController {
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
-
-
-
+    
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
-
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // 네비게이션 바의 아이템들을 숨깁니다.
         navigationController?.setNavigationBarHidden(true, animated: false)
-
+        
         setupCollectionView()
         setupNewCollectionView()
         fetchExhibitionData()
         fetchAdditionalExhibitionData()
         self.view.backgroundColor = .black
-
+        
     }
-
+    
     private func fetchExhibitionData() {
         let collectionRef = Firestore.firestore().collection("메인페이지_첫번째_섹션")
-
+        
         collectionRef.getDocuments { [weak self] (snapshot, error) in
             DispatchQueue.main.async {
                 if let error = error {
@@ -107,7 +107,7 @@ class MainExhibitionPage: UIViewController {
             }
         }
     }
-
+    
     private func fetchAdditionalExhibitionData() {
         Firestore.firestore().collection("메인페이지_두번째_섹션").getDocuments { [weak self] (snapshot, error) in
             DispatchQueue.main.async {
@@ -123,7 +123,7 @@ class MainExhibitionPage: UIViewController {
                 }
             }
         }
-
+        
         // 세 번째 섹션 데이터 로드 로직
         Firestore.firestore().collection("메인페이지_세번째_섹션").getDocuments { [weak self] (snapshot, error) in
             DispatchQueue.main.async {
@@ -140,14 +140,14 @@ class MainExhibitionPage: UIViewController {
             }
         }
     }
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
     private func setupCollectionView() {
-
+        
         view.addSubview(CategoryCollectionView)
         CategoryCollectionView.dataSource = self
         CategoryCollectionView.delegate = self
@@ -157,7 +157,7 @@ class MainExhibitionPage: UIViewController {
             make.height.equalTo(40)
         }
     }
-
+    
     // 컴포지셔널 레이아웃을 생성하는 메소드
     let layout = UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in
         if sectionIndex == 0 {
@@ -165,47 +165,47 @@ class MainExhibitionPage: UIViewController {
             let mainExhibitionItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                 heightDimension: .absolute(360)) // MainExhibitionCollectionCell의 높이
             let mainExhibitionItem = NSCollectionLayoutItem(layoutSize: mainExhibitionItemSize)
-
+            
             // Main Exhibition Group
             let mainExhibitionGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                  heightDimension: .absolute(360))
             let mainExhibitionGroup = NSCollectionLayoutGroup.horizontal(layoutSize: mainExhibitionGroupSize, subitems: [mainExhibitionItem])
-
+            
             // Main Exhibition Section
             let section = NSCollectionLayoutSection(group: mainExhibitionGroup)
             section.orthogonalScrollingBehavior = .groupPaging // 여기에서 가로 스크롤을 설정합니다.
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0) // 첫 번째 섹션의 아래 간격을 10으로 설정
-
+            
             return section // 이 부분이 누락되어 있었습니다.
-
+            
         }else {
             // Second section (Gray Square Cells)
-
+            
             let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
                                                   heightDimension: .absolute(300))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 40, trailing: 0)
-
+            
             let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
                                                    heightDimension: .absolute(250))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
+            
             let section = NSCollectionLayoutSection(group: group)
-
+            
             // 섹션을 생성한 후에 헤더를 설정합니다.
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44))
             let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
             section.boundarySupplementaryItems = [header]
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
-
+            
             section.interGroupSpacing = 16
             section.orthogonalScrollingBehavior = .continuous
-
+            
             return section
         }
     }
-
-
+    
+    
     private func setupNewCollectionView() {
         view.addSubview(MainExhibitionCollectionView)
         MainExhibitionCollectionView.dataSource = self
@@ -216,7 +216,7 @@ class MainExhibitionPage: UIViewController {
             make.bottom.equalTo(view.snp.bottom)
         }
     }
-
+    
     // 기존의 sizeForItemAt 메소드를 수정하여, 새로운 컬렉션뷰의 사이즈도 설정해줍니다.
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == CategoryCollectionView {
@@ -230,7 +230,7 @@ class MainExhibitionPage: UIViewController {
         }
         return CGSize.zero
     }
-
+    
     func exhibitionData(forIndexPath indexPath: IndexPath) -> ExhibitionModel? {
         // 첫 번째 섹션에만 전시회 데이터가 표시되므로, 첫 번째 섹션의 인덱스 경로만 처리합니다.
         if indexPath.section == 0 {
@@ -243,13 +243,13 @@ class MainExhibitionPage: UIViewController {
         // 다른 섹션 또는 잘못된 인덱스에 대해서는 nil을 반환합니다.
         return nil
     }
-
+    
 }
 
 extension MainExhibitionPage: UIScrollViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let section0Height: CGFloat = 360.0 // 첫 번째 섹션의 높이
-
+        
         if targetContentOffset.pointee.y < section0Height { // 첫 번째 섹션 범위 내에서 스크롤 중인 경우
             if targetContentOffset.pointee.y <= section0Height / 2 {
                 targetContentOffset.pointee.y = 0 // 첫 번째 페이지로 스크롤
@@ -277,21 +277,21 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         }
         return 0
     }
-
-
+    
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == CategoryCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionCell", for: indexPath) as! CategotyCell
             cell.label.text = items[indexPath.item]
             return cell
         }
-
+        
         else if collectionView == MainExhibitionCollectionView {
             if indexPath.section == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
                 let exhibition = exhibitionData(forIndexPath: indexPath)
                 cell.label.text = exhibition?.title ?? "Default Title"
-
+                
                 if let imageName = exhibition?.poster {
                     let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
                     storageRef.downloadURL { (url, error) in
@@ -304,17 +304,17 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                         }
                     }
                 }
-
+                
                 cell.configureCellLayout(isEven: indexPath.row % 2 == 0)
                 return cell
             }
-
+            
             else if indexPath.section == 1 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
                 let exhibition = secondSectionExhibitions[indexPath.item]
                 cell.titleLabel.text = exhibition.title
                 cell.dateLabel.text = exhibition.period
-
+                
                 // 'if let' 구문 제거
                 let imageName = exhibition.poster
                 let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
@@ -327,18 +327,18 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                         }
                     }
                 }
-
+                
                 return cell
             }
-
+            
             else if indexPath.section == 2 {
                 if indexPath.item < thirdSectionExhibitions.count {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
                     let exhibition = thirdSectionExhibitions[indexPath.item]
                     cell.titleLabel.text = exhibition.title
-
+                    
                     cell.dateLabel.text = exhibition.period
-
+                    
                     // 'if let' 구문 제거
                     let imageName = exhibition.poster
                     let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
@@ -352,14 +352,14 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                         }
                     }
                     return cell
-
+                    
                 }
             }
-
+            
         }
         return UICollectionViewCell()
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
@@ -373,8 +373,8 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         }
         return UICollectionReusableView()
     }
-
-
+    
+    
     // 이 메서드는 각 컬렉션 뷰에 대한 섹션의 수를 정의합니다.
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView == CategoryCollectionView {
@@ -386,12 +386,12 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         }
         return 0
     }
-
-
+    
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == MainExhibitionCollectionView {
             let exhibitionPage = BackgroundImageViewController()
-
+            
             var selectedExhibition: ExhibitionModel?
             if indexPath.section == 0 {
                 selectedExhibition = exhibitions.count > indexPath.item ? exhibitions[indexPath.item] : nil
@@ -400,25 +400,21 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             } else if indexPath.section == 2 {
                 selectedExhibition = thirdSectionExhibitions.count > indexPath.item ? thirdSectionExhibitions[indexPath.item] : nil
             }
-
+            
             if let selectedExhibition = selectedExhibition {
                 exhibitionPage.posterImageName = selectedExhibition.poster;        exhibitionPage.titleName = selectedExhibition.title // 제목 설정
-
+                
             }
-
+            
             self.navigationController?.pushViewController(exhibitionPage, animated: true)
         }
         // CategoryCollectionView에 대한 선택 처리 (필요한 경우)
     }
-
-
-
     
-
+    
+    
+    
+    
 }
 
 
-
-
-
-// cn0105@naver.com
