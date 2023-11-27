@@ -209,23 +209,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
             sheetController.prefersGrabberVisible = true
 
-            // 사용자 정의 detent 생성
-//            let customDetentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
-//            let customDetent = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifier) { _ in
-//                // 모든 기기에서 항상 높이가 60인 detent를 만들어낼 수 있습니다.
-//                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
-//                return 60 - safeAreaBottom
-//            }
-//
-//
-//            let customDetentIdentifierT = UISheetPresentationController.Detent.Identifier("customDetentT")
-//            let customDetentT = UISheetPresentationController.Detent.custom(identifier: customDetentIdentifierT) { _ in
-//                // 모든 기기에서 항상 높이가 750인 detent를 만들어낼 수 있습니다.
-//                let safeAreaBottom = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
-//                return 750 - safeAreaBottom
-//            }
-
-
             // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
             sheetController.detents = [.medium(), .large()]
             detailViewController.isModalInPresentation = false
@@ -251,17 +234,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }()
 
 
-//    override func viewWillAppear(_ animated: Bool) {
-//        if let glassTabBar = tabBarController as? GlassTabBar {
-//            glassTabBar.customTabBarView.isHidden = true
-//        }
-//    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
 
-//        presentModalViewController() // 뷰가 나타날 때 모달을 바로 표시합니다.
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -303,7 +280,20 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(blurEffectView)
                 view.addSubview(customAlertView)
                 setupCustomAlertView()
+
+
+        // 스와이프 제스처 인식기 추가
+           let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
+           swipeGesture.direction = .right // 오른쪽 스와이프를 인식
+           view.addGestureRecognizer(swipeGesture)
      }
+
+    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
+        if gesture.direction == .right {
+            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
+            navigationController?.popViewController(animated: true)
+        }
+    }
 
     private func setupCustomAlertView() {
         customAlertView.snp.makeConstraints { make in
