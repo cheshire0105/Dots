@@ -10,20 +10,36 @@ class PopularReviewDetail : UIViewController {
     var selectedCellIndex: Int?
     var 전시정보_메인셀_인스턴스 = 전시정보_택스트(전시아티스트이름: "", 전시장소이름: "", 본문제목: "", 본문내용: "")
 
-    private let 뒤로가기_버튼_블록 = {
-        let uiView = UIView()
-        uiView.backgroundColor = UIColor.gray.withAlphaComponent(0.8)
-        uiView.layer.cornerRadius = 20
-        return uiView
-    } ()
-    
-    private let 뒤로가기_버튼 = {
+//    private let 뒤로가기_버튼_블록 = {
+//        let uiView = UIView()
+//        uiView.backgroundColor = UIColor.gray.withAlphaComponent(0.8)
+//        uiView.layer.cornerRadius = 20
+//        return uiView
+//    } ()
+//    
+//    private let 뒤로가기_버튼 = {
+//        let button = UIButton()
+//        button.setImage(UIImage(named: "backButton"), for: .normal)
+//        button.isSelected = !button.isSelected
+//        return button
+//    } ()
+
+
+    lazy var backButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "backButton"), for: .normal)
-        button.isSelected = !button.isSelected
+        button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+
         return button
-    } ()
-    
+    }()
+
      private var 유저_블록 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor.white.withAlphaComponent(0.8)
@@ -150,17 +166,25 @@ class PopularReviewDetail : UIViewController {
         collectionView.isPagingEnabled = true
         return collectionView
     }()
-//    override func viewWillAppear(_ animated: Bool) {
-//        if let glassTabBar = tabBarController as? GlassTabBar {
-//            glassTabBar.customTabBarView.isHidden = true
-//        }
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 탭바를 숨깁니다.
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
+        tabBarController?.tabBar.isHidden = false
+    }
     override func viewDidLoad() {
+        super.viewDidLoad()
+
         print("Popular Review Detail")
         
         view.backgroundColor = .black
-        navigationItem.hidesBackButton = true
-        navigationController?.navigationBar.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+        navigationController?.setNavigationBarHidden(true, animated: true) 
+//        navigationController?.navigationBar.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
         인기_디테일_컬렉션뷰.dataSource = self
         인기_디테일_컬렉션뷰.delegate = self
         버튼_클릭()
@@ -179,7 +203,7 @@ class PopularReviewDetail : UIViewController {
    
     
     private func 버튼_클릭() {
-        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        backButton.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         댓글_버튼.addTarget(self, action: #selector(댓글_버튼_클릭), for: .touchUpInside)
 
     }
@@ -194,8 +218,9 @@ class PopularReviewDetail : UIViewController {
 
 extension PopularReviewDetail {
     func UI레이아웃 () {
-        view.addSubview(뒤로가기_버튼_블록)
-        view.addSubview(뒤로가기_버튼)
+//        view.addSubview(뒤로가기_버튼_블록)
+//        view.addSubview(뒤로가기_버튼)
+        view.addSubview(backButton)
         view.addSubview(유저_블록)
         view.addSubview(조회수_블록)
         view.addSubview(좋아요_블록)
@@ -210,17 +235,24 @@ extension PopularReviewDetail {
         view.addSubview(리뷰_내용)
         view.addSubview(댓글_버튼)
         
-        뒤로가기_버튼_블록.snp.makeConstraints { make in
-            make.height.equalTo(40)
-            make.width.equalTo(80)
-            make.centerX.equalTo(뒤로가기_버튼.snp.centerX)
-            make.centerY.equalTo(뒤로가기_버튼.snp.centerY)
-            make.bottom.equalTo(인기_디테일_컬렉션뷰.snp.top).offset(-10)
+//        뒤로가기_버튼_블록.snp.makeConstraints { make in
+//            make.height.equalTo(40)
+//            make.width.equalTo(80)
+//            make.centerX.equalTo(뒤로가기_버튼.snp.centerX)
+//            make.centerY.equalTo(뒤로가기_버튼.snp.centerY)
+//            make.bottom.equalTo(인기_디테일_컬렉션뷰.snp.top).offset(-10)
+//        }
+//         뒤로가기_버튼.snp.makeConstraints { make in
+//            make.leading.equalToSuperview().offset(40)
+//            make.bottom.equalTo(인기_디테일_컬렉션뷰.snp.top).offset(-10)
+//        }
+
+        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
+            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
-         뒤로가기_버튼.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(40)
-            make.bottom.equalTo(인기_디테일_컬렉션뷰.snp.top).offset(-10)
-        }
+
         유저_블록.snp.makeConstraints { make in
             make.top.equalTo(인기_디테일_컬렉션뷰.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(12)
@@ -299,7 +331,7 @@ extension PopularReviewDetail {
     func 컬렉션뷰_레이아웃() {
         view.addSubview(인기_디테일_컬렉션뷰)
         인기_디테일_컬렉션뷰.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(130)
+            make.top.equalToSuperview().offset(80)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-365)
