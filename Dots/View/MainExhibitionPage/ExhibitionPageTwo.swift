@@ -11,6 +11,7 @@ import SnapKit
 import UIKit
 import FirebaseStorage
 import Firebase
+import Toast_Swift
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -19,6 +20,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -28,6 +36,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "headset help_"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
         button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -36,6 +50,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "heartIcon"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+
         button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
@@ -45,12 +66,180 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.setImage(UIImage(named: "Union 4"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
         button.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
 
+    lazy var AddInfoButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .white
+        button.setImage(UIImage(named: "Group 167"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+
+        button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+        button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
+        return button
+    }()
+
+    lazy var modalLoadButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "Union 6"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        // 그림자 설정
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
+        return button
+    }()
+
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "현대차 시리즈 2023 : 정연두 - 백년여행"
+        label.textColor = .white
+        label.font = UIFont(name: "Pretendard-Bold", size: 25)
+        label.textAlignment = .left
+        label.numberOfLines = 0
+
+        // 그림자 설정
+        label.layer.shadowOpacity = 0.9
+        label.layer.shadowRadius = 2
+        label.layer.shadowOffset = CGSize(width: 1, height: 1)
+        label.layer.shadowColor = UIColor.black.cgColor
+
+        return label
+    }()
+
+
+    private lazy var blurEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.frame = self.view.bounds
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
+
+    private lazy var customAlertView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        view.layer.cornerRadius = 20
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
+
+    private func setupTitleLabel() {
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(50)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-80) // 하단 가장자리에서 10포인트 떨어진 위치
+
+        }
+    }
+
+    private lazy var alertTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "언제 다녀오셨나요?"
+        label.textColor = .black
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
+        label.textAlignment = .center
+        return label
+    }()
+
+    private lazy var alertSubtitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
+        label.textColor = .darkGray
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }()
+
+    private lazy var datePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .wheels
+        picker.overrideUserInterfaceStyle = .light
+
+        // 한국어 로케일 설정
+        picker.locale = Locale(identifier: "ko-KR")
+
+        picker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
+        return picker
+    }()
+
+
+    @objc func datePickerChanged(_ sender: UIDatePicker) {
+        // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
+        // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
+    }
+
+
+    private lazy var confirmButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("등록하기", for: .normal)
+        button.backgroundColor = .black
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 25 // 모서리 둥글게
+        button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
+    @objc func confirmButtonTapped() {
+        // 버튼을 눌렀을 때 수행할 동작을 여기에 추가합니다.
+
+
+        let isSelected = recordButton.isSelected
+        recordButton.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
+
+        let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
+        recordButton.setImage(UIImage(named: newImageName), for: .normal)
+
+        customAlertView.isHidden = true
+        blurEffectView.isHidden = true
+
+    }
+
+
+    @objc func presentInfoModal() {
+        let detailViewController = DetailViewController()
+        detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
+
+        // DetailViewController의 presentationController 설정
+        if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
+            sheetController.prefersGrabberVisible = true
+
+            // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
+            sheetController.detents = [.medium(), .large()]
+            detailViewController.isModalInPresentation = false
+            sheetController.largestUndimmedDetentIdentifier = .large // 최대 높이를 커스텀 detent로 설정합니다.
+            sheetController.prefersScrollingExpandsWhenScrolledToEdge = true // 스크롤할 때 시트가 확장되도록 설정합니다.
+            sheetController.preferredCornerRadius = 30 // 둥근 모서리 설정을 유지합니다.
+        }
+
+        // 모달 표시 설정
+        detailViewController.modalPresentationStyle = .pageSheet
+        self.present(detailViewController, animated: true, completion: nil)
+    }
+
+
     var posterImageName: String?
-    
+    var titleName : String?
+
     private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView(frame: self.view.bounds)
         imageView.contentMode = .scaleAspectFill
@@ -59,17 +248,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }()
 
 
-//    override func viewWillAppear(_ animated: Bool) {
-//        if let glassTabBar = tabBarController as? GlassTabBar {
-//            glassTabBar.customTabBarView.isHidden = true
-//        }
-//    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
 
-        presentModalViewController() // 뷰가 나타날 때 모달을 바로 표시합니다.
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -87,108 +270,200 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     override func viewDidLoad() {
-         super.viewDidLoad()
-         view.backgroundColor = .black
+        super.viewDidLoad()
+        view.backgroundColor = .black
 
-         // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
-         view.addSubview(backgroundImageView)
-         view.sendSubviewToBack(backgroundImageView)
+        // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
+        view.addSubview(backgroundImageView)
+        view.sendSubviewToBack(backgroundImageView)
 
-         setupBackButton()
+        setupBackButton()
 
-         // 이미지 로딩을 위한 함수 호출
-         if let posterName = posterImageName {
-             setupBackgroundImage(with: posterName)
-         }
-     }
+        // 이미지 로딩을 위한 함수 호출
+        if let posterName = posterImageName {
+            setupBackgroundImage(with: posterName)
+        }
 
-    private func fetchExhibitionData() {
-        let collectionRef = Firestore.firestore().collection("메인페이지_첫번째_섹션")
 
-        collectionRef.getDocuments { [weak self] (snapshot, error) in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("An error occurred: \(error)")
-                } else if let snapshot = snapshot, let firstDocument = snapshot.documents.first {
-                    let data = firstDocument.data()
-                    let posterImageName = data["poster"] as? String ?? "" // 'poster' 필드에서 이미지 이름 가져오기
+        setupTitleLabel() // 타이틀 레이블 설정 호출
 
-                    // 디버깅을 위한 print 문
-                    print("Fetched image name: \(posterImageName)")
+        if let titleName = titleName {
+            titleLabel.text = titleName
+        }
 
-                    self?.setupBackgroundImage(with: posterImageName)
-                }
+        view.addSubview(blurEffectView)
+        view.addSubview(customAlertView)
+        setupCustomAlertView()
+
+
+        // 스와이프 제스처 인식기 추가
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
+        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
+        view.addGestureRecognizer(swipeGesture)
+
+        // blurEffectView에 탭 제스처 인식기 추가
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
+            blurEffectView.addGestureRecognizer(tapGesture)
+            blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
+    }
+
+    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
+        if gesture.direction == .right {
+            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
+            navigationController?.popViewController(animated: true)
+        }
+    }
+    @objc func blurViewTapped() {
+        customAlertView.isHidden = true
+        blurEffectView.isHidden = true
+    }
+
+
+    private func setupCustomAlertView() {
+        customAlertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(310)
+            make.height.equalTo(390)
+        }
+
+        customAlertView.addSubview(alertTitleLabel)
+        customAlertView.addSubview(alertSubtitleLabel)
+
+        alertTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(customAlertView.snp.top).offset(20)
+            make.left.right.equalTo(customAlertView).inset(10)
+        }
+
+        alertSubtitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(alertTitleLabel.snp.bottom).offset(10)
+            make.left.right.equalTo(customAlertView).inset(30)
+        }
+
+        customAlertView.addSubview(datePicker)
+        datePicker.snp.makeConstraints { make in
+            make.top.equalTo(alertSubtitleLabel.snp.bottom).offset(20)
+
+            make.centerX.equalTo(customAlertView.snp.centerX)
+        }
+
+        customAlertView.addSubview(confirmButton)
+        confirmButton.snp.makeConstraints { make in
+            make.top.equalTo(datePicker.snp.bottom).offset(10)
+            make.centerX.equalTo(customAlertView.snp.centerX)
+            make.width.equalTo(273) // 버튼의 너비
+            make.height.equalTo(56) // 버튼의 높이
+            make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
+        }
+    }
+
+
+
+
+
+    private func setupBackgroundImage(with imageName: String) {
+        let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+        storageRef.downloadURL { [weak self] (url, error) in
+            if let error = error {
+                print("Error getting download URL: \(error)")
+            } else if let url = url {
+                // 이미지 로드
+                URLSession.shared.dataTask(with: url) { (data, _, error) in
+                    guard let data = data, error == nil else { return }
+                    DispatchQueue.main.async {
+                        self?.backgroundImageView.image = UIImage(data: data)
+                    }
+                }.resume()
             }
         }
     }
 
-    private func setupBackgroundImage(with imageName: String) {
-           let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
-           storageRef.downloadURL { [weak self] (url, error) in
-               if let error = error {
-                   print("Error getting download URL: \(error)")
-               } else if let url = url {
-                   // 이미지 로드
-                   URLSession.shared.dataTask(with: url) { (data, _, error) in
-                       guard let data = data, error == nil else { return }
-                       DispatchQueue.main.async {
-                           self?.backgroundImageView.image = UIImage(data: data)
-                       }
-                   }.resume()
-               }
-           }
-       }
+
+
 
     private func setupBackButton() {
         view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
-
+        view.addSubview(AddInfoButton)
+        view.addSubview(modalLoadButton)
 
 
         backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
-            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10) // leading edge로부터 10포인트 떨어진 곳에 위치
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
             make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
-        
-        recordButton.snp.makeConstraints{ make in
+
+
+
+        headsetIcon.snp.makeConstraints{ make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
+            make.trailing.equalTo(view.snp.trailing).offset(-16)
+            make.width.height.equalTo(40)
+        }
+
+        recordButton.snp.makeConstraints{ make in
+            make.bottom.equalTo(heartIcon.snp.top).inset(-10)
+            make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
         }
 
         heartIcon.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(recordButton.snp.leading).offset(-10)
+            make.bottom.equalTo(AddInfoButton.snp.top).inset(-10)
+            make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
         }
 
-        headsetIcon.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(heartIcon.snp.leading).offset(-10)
+        AddInfoButton.snp.makeConstraints{ make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(73)
+            make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
+        }
+
+        modalLoadButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(26)
+            make.leading.trailing.equalToSuperview().inset(150)
         }
     }
 
 
 
     @objc func heartIconTapped() {
-        let isSelected = heartIcon.isSelected
-        heartIcon.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
+        // 버튼의 현재 선택 상태를 반전시킵니다.
+        heartIcon.isSelected.toggle()
 
-        let newImageName = isSelected ? "heartIcon" : "Vector 1" // 새 이미지 이름
-        heartIcon.setImage(UIImage(named: newImageName), for: .normal)
+        if heartIcon.isSelected {
+            // 선택된 경우: 토스트 메시지 표시 및 이미지 변경
+            let newImageName = "Vector 1" // 선택된 상태의 이미지
+            heartIcon.setImage(UIImage(named: newImageName), for: .normal)
+
+            var toastStyle = ToastStyle()
+            toastStyle.messageColor = .white
+            toastStyle.messageFont = UIFont(name: "Pretendard-Bold", size: 16) ?? .boldSystemFont(ofSize: 20)
+
+            self.view.makeToast("전시가 맘에 드셨군요!", duration: 1.5, position: .center, style: toastStyle)
+        } else {
+            // 선택 해제된 경우: 원래의 이미지로 변경 (토스트는 표시하지 않음)
+            let originalImageName = "heartIcon"
+            heartIcon.setImage(UIImage(named: originalImageName), for: .normal)
+        }
     }
+
 
     @objc func recordButtonTapped() {
-        let isSelected = recordButton.isSelected
-        recordButton.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
 
-        let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
-        recordButton.setImage(UIImage(named: newImageName), for: .normal)
+        // 현재 표시된 모든 모달 뷰 컨트롤러를 닫습니다.
+        self.dismiss(animated: true) {
+            // 모달 뷰가 닫힌 후에 얼럿 뷰를 표시합니다.
+            self.blurEffectView.isHidden = false
+            self.customAlertView.isHidden = false
+        }
+
+        
     }
+
+
 
 
     @objc func backButtonTapped() {
@@ -211,40 +486,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     private func presentModalViewController() {
-          let detailViewController = DetailViewController()
-          detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
-          presentDetailViewController(detailViewController)
-      }
-
-    private func presentDetailViewController(_ detailViewController: DetailViewController) {
-        if let sheetController = detailViewController.presentationController as? UISheetPresentationController {
-            // 사용자 정의 detent 생성
-            let detentIdentifier = UISheetPresentationController.Detent.Identifier("customDetent")
-            let customDetent = UISheetPresentationController.Detent.custom(identifier: detentIdentifier) { _ in
-                // safe area bottom을 구하기 위한 선언.
-                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                let safeAreaBottom = windowScene?.windows.first?.safeAreaInsets.bottom ?? 0
-
-
-                // 모든 기기에서 항상 높이가 700인 detent를 만들어낼 수 있다.
-                return 700 - safeAreaBottom
-            }
-
-
-
-            // 중간 높이와 사용자 정의 높이를 포함하는 detent 설정
-            sheetController.detents = [.medium(), customDetent]
-            sheetController.largestUndimmedDetentIdentifier = detentIdentifier // 최대 높이를 커스텀 detent로 설정합니다.
-            sheetController.prefersScrollingExpandsWhenScrolledToEdge = true // 스크롤할 때 시트가 확장되도록 설정합니다.
-            sheetController.preferredCornerRadius = 30 // 둥근 모서리 설정을 유지합니다.
-
-
-        }
-
-        // 모달 표시 설정
-        detailViewController.modalPresentationStyle = .pageSheet
-        self.present(detailViewController, animated: true, completion: nil)
+        let detailViewController = DetailViewController()
+        detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
     }
+
 
 
 }

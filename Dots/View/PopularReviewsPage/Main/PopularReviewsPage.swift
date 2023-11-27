@@ -11,27 +11,27 @@ class PopularReviewsPage: UIViewController {
     var 전시정보_메인셀_인스턴스 = 전시정보_택스트(전시아티스트이름: "", 전시장소이름: "", 본문제목: "", 본문내용: "")
     var selectedCellIndex: Int?
 
-    let 상단_반투명_블록: UIView = {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
-        gradientLayer.colors = [
-            UIColor.black.withAlphaComponent(1).cgColor,
-            UIColor.black.withAlphaComponent(0.8).cgColor
-        ]
-        gradientLayer.locations = [0, 1]
-        let uiView = UIView()
-        uiView.layer.addSublayer(gradientLayer)
-        return uiView
-    }()
+//    let 상단_반투명_블록: UIView = {
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
+//        gradientLayer.colors = [
+//            UIColor.black.withAlphaComponent(1).cgColor,
+//            UIColor.black.withAlphaComponent(0.8).cgColor
+//        ]
+//        gradientLayer.locations = [0, 1]
+//        let uiView = UIView()
+//        uiView.layer.addSublayer(gradientLayer)
+//        return uiView
+//    }()
     
-    let 페이지_제목 = {
-        let label = UILabel()
-        label.text = "Popular Review"
-        label.textColor = .white
-        label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.textAlignment = .center
-        return label
-    }()
+//    let 페이지_제목 = {
+//        let label = UILabel()
+//        label.text = "Popular Review"
+//        label.textColor = .white
+//        label.font = UIFont.boldSystemFont(ofSize: 20)
+//        label.textAlignment = .center
+//        return label
+//    }()
     
     let 인기순_버튼 = {
         let button = UIButton()
@@ -70,9 +70,9 @@ class PopularReviewsPage: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.scrollDirection = .vertical
         layout.collectionView?.showsVerticalScrollIndicator = false
-        layout.minimumLineSpacing = 3
+        layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 130, left: 0, bottom: 50, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         
         collectionView.backgroundColor = .black
         collectionView.layer.cornerRadius = 10
@@ -108,7 +108,7 @@ extension PopularReviewsPage {
         view.addSubview(인기_컬렉션_뷰)
 
         인기_컬렉션_뷰.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(50)
             make.leading.equalToSuperview().offset(13)
             make.trailing.equalToSuperview().offset(-13)
             make.bottom.equalToSuperview()
@@ -116,24 +116,24 @@ extension PopularReviewsPage {
         }
     }
     func ui레이아웃() {
-        view.addSubview(상단_반투명_블록)
-        view.addSubview(페이지_제목)
+//        view.addSubview(상단_반투명_블록)
+//        view.addSubview(페이지_제목)
         view.addSubview(인기순_버튼)
         view.addSubview(구분선)
         view.addSubview(추천순_버튼)
         
-        상단_반투명_블록.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-634)
-            make.leading.trailing.equalToSuperview()
-        }
-        페이지_제목.snp.makeConstraints { make in
-            
-            make.top.equalToSuperview().offset(60)
-            make.centerX.equalToSuperview()
-        }
+//        상단_반투명_블록.snp.makeConstraints { make in
+//            make.top.equalToSuperview()
+//            make.bottom.equalToSuperview().offset(-634)
+//            make.leading.trailing.equalToSuperview()
+//        }
+//        페이지_제목.snp.makeConstraints { make in
+//            
+//            make.top.equalToSuperview().offset(60)
+//            make.centerX.equalToSuperview()
+//        }
         인기순_버튼.snp.makeConstraints { make in
-            make.top.equalTo(페이지_제목.snp.bottom).offset(28)
+            make.top.equalTo(view.snp.bottom).offset(28)
             make.trailing.equalTo(구분선.snp.leading).offset(-5)
             make.bottom.equalTo(구분선)
         }
@@ -176,15 +176,37 @@ extension PopularReviewsPage: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width * 1
-        let height = collectionView.frame.height * 0.6
+        let width = collectionView.frame.width // 컬렉션 뷰의 전체 너비
+        let height: CGFloat = 360 // 원하는 셀의 높이
+
         return CGSize(width: width, height: height)
     }
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
         print(indexPath.row + 1)
             let 인기리뷰페이지_디테일_화면 = PopularReviewDetail()
             인기리뷰페이지_디테일_화면.selectedCellIndex = indexPath.row
             self.navigationController?.pushViewController(인기리뷰페이지_디테일_화면, animated: true)
+    }
+}
+
+
+import SwiftUI
+import UIKit
+
+struct PopularReviewsPagePreview: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> PopularReviewsPage {
+        return PopularReviewsPage()
+    }
+
+    func updateUIViewController(_ uiViewController: PopularReviewsPage, context: Context) {
+        // 여기서 업데이트가 필요한 경우 코드를 추가합니다.
+    }
+}
+
+struct PopularReviewsPagePreview_Previews: PreviewProvider {
+    static var previews: some View {
+        PopularReviewsPagePreview()
     }
 }

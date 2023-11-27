@@ -8,8 +8,8 @@ class PopularReviewCell: UICollectionViewCell {
     var 백_블록 = {
         let uiView = UIView()
 //        uiView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.8)
-        uiView.backgroundColor = UIColor.black
-        uiView.layer.cornerRadius = 20
+        uiView.backgroundColor = .darkGray
+        uiView.layer.cornerRadius = 40
         return uiView
     } ()
     
@@ -46,7 +46,7 @@ class PopularReviewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = ""
         label.textColor = UIColor.black
-        label.font = UIFont(name: "HelveticaNeue", size: 16)
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
         label.textAlignment = .left
         return label
     }()
@@ -61,7 +61,7 @@ class PopularReviewCell: UICollectionViewCell {
     
     let 좋아요_카운트 = {
         let label = UILabel()
-        label.text = "카운트"
+        label.text = "30"
         label.font = UIFont(name: "HelveticaNeue", size: 10)
         label.textColor = UIColor.white
         return label
@@ -76,7 +76,7 @@ class PopularReviewCell: UICollectionViewCell {
     
     let 조회수_카운트 = {
         let label = UILabel()
-        label.text = "카운트"
+        label.text = "40"
         label.font = UIFont(name: "HelveticaNeue", size: 10)
         label.textColor = UIColor.darkGray
         return label
@@ -101,7 +101,7 @@ class PopularReviewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = ""
         label.textColor = UIColor.white
-        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.font =  UIFont(name: "Pretendard-Medium", size: 24)
         label.textAlignment = .center
         return label
     } ()
@@ -110,7 +110,7 @@ class PopularReviewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = ""
         label.textColor = UIColor.white
-        label.font = UIFont(name: "HelveticaNeue", size: 14)
+        label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.numberOfLines = 3
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .justified
@@ -126,7 +126,7 @@ class PopularReviewCell: UICollectionViewCell {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
-        collectionView.layer.cornerRadius = 10
+        collectionView.layer.cornerRadius = 30
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
         
@@ -164,7 +164,7 @@ extension PopularReviewCell {
     func 백layout () {
         contentView.addSubview(백_블록)
         백_블록.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(1)
+            make.top.leading.trailing.equalToSuperview().offset(1)
             make.bottom.trailing.equalToSuperview().offset(-1)
         }
     }
@@ -187,17 +187,17 @@ extension PopularReviewCell {
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
-            make.bottom.equalToSuperview().offset(-157)
+            make.height.equalTo(200)
         }
     
         인기셀_리뷰제목.snp.makeConstraints { make in
-            make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(41)
+            make.top.equalTo(유저_블록.snp.bottom)
             make.leading.equalTo(인기셀_이미지_묶음_컬렉션뷰).offset(5)
             
         }
         
         인기셀_리뷰내용.snp.makeConstraints { make in
-            make.top.equalTo(인기셀_리뷰제목.snp.bottom).offset(10)
+            make.top.equalTo(인기셀_리뷰제목.snp.bottom)
             make.leading.equalTo(인기셀_이미지_묶음_컬렉션뷰).offset(5)
             make.trailing.equalTo(인기셀_이미지_묶음_컬렉션뷰).offset(-5)
             make.bottom.equalToSuperview().offset(-23)
@@ -205,7 +205,7 @@ extension PopularReviewCell {
         유저_블록.snp.makeConstraints { make in
             make.top.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(-20)
             make.bottom.equalTo(인기셀_이미지_묶음_컬렉션뷰.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(30)
+            make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-220)
         }
         조회수_블록.snp.makeConstraints { make in
@@ -247,14 +247,14 @@ extension PopularReviewCell {
         }
         조회수_카운트.snp.makeConstraints { make in
             make.top.equalTo(조회수_버튼.snp.bottom).offset(-3)
-            make.leading.equalTo(조회수_블록.snp.leading).offset(6)
-            make.trailing.equalTo(조회수_블록.snp.trailing).offset(-5)
+            make.centerX.equalTo(조회수_블록.snp.centerX) // 블록의 가운데에 수평 위치
+
 
         }
         좋아요_카운트.snp.makeConstraints { make in
             make.top.equalTo(좋아요_버튼.snp.bottom).offset(-3)
-            make.leading.equalTo(좋아요_블록.snp.leading).offset(6)
-            make.trailing.equalTo(좋아요_블록.snp.trailing).offset(-5)
+            make.centerX.equalTo(좋아요_블록.snp.centerX) // 블록의 가운데에 수평 위치
+
         }
         
         

@@ -48,7 +48,16 @@ class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
         label.numberOfLines = 0
         label.textColor = .white  // 텍스트 색상을 하얀색으로 설정
         label.textAlignment = .right
+
+
+        label.layer.shadowOpacity = 0.9
+        label.layer.shadowRadius = 2
+        label.layer.shadowOffset = CGSize(width: 1, height: 1)
+        label.layer.shadowColor = UIColor.black.cgColor
+
         contentView.addSubview(label)
+
+        
 
         label.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.centerY).offset(10)
