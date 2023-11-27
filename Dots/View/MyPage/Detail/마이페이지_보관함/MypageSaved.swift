@@ -7,7 +7,6 @@ class 마이페이지_보관함 : UIViewController {
     let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
-        button.setImage(UIImage(named: ""), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = .white
         button.layer.cornerRadius = 20

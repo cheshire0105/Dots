@@ -15,7 +15,6 @@ class 마이페이지_설정_페이지 : UIViewController {
     private let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
-        button.setImage(UIImage(named: ""), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
@@ -188,20 +187,28 @@ extension 마이페이지_설정_페이지 {
     
     //일반 뷰전환 버튼
     @objc private func 프로필변경_버튼_클릭 () {
-        let 프로필변경_모달 = 프로필변경_모달()
-        present(프로필변경_모달, animated: true, completion: nil)
+        let 프로필변경_화면 = 프로필변경_화면()
+//        present(프로필변경_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(프로필변경_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func 비밀번호변경_버튼_클릭 () {
-        let 비밀번호변경_모달 = 비밀번호변경_모달()
-        present(비밀번호변경_모달, animated: true, completion: nil)
+        let 비밀번호변경_화면 = 비밀번호변경_화면()
+//        present(비밀번호변경_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(비밀번호변경_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func  알림설정_버튼_클릭 () {
-        let 알림설정_모달 = 알림설정_모달()
-        present(알림설정_모달, animated: true, completion: nil)
+        let 알림설정_화면 = 알림설정_화면()
+//        present(알림설정_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(알림설정_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func 서비스설정_버튼_클릭 () {
-        let 서비스설정_모달 = 서비스설정_모달()
-        present(서비스설정_모달, animated: true, completion: nil)
+        let 서비스설정_화면 = 서비스설정_화면()
+//        present(서비스설정_모달, animated: true, completion: nil)
+        self.navigationController?.pushViewController(서비스설정_화면, animated: false)
+        navigationItem.hidesBackButton = true
     }
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
@@ -227,55 +234,6 @@ extension 마이페이지_설정_페이지 {
         
     }
     
-    
-    //로그아웃 로직
-//    func 로그아웃_유저로그아웃() {
-//        do {
-//            if let 현제접속중인_유저 = Auth.auth().currentUser {
-//                print("로그아웃한 사용자 정보:")
-//                print("UID: \(현제접속중인_유저.uid)")
-//                print("이메일: \(현제접속중인_유저.email ?? "없음")")
-//                
-//                let 파이어스토어 = Firestore.firestore()
-//                let 이메일 = 현제접속중인_유저.email ?? ""
-//                
-//                let 유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
-//                
-//                유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, 에러) in
-//                    guard let self = self else { return }
-//                    
-//                    if let 에러 = 에러 {
-//                        print("Firestore 조회 에러: \(에러.localizedDescription)")
-//                    } else {
-//                        if let 문서조회 = querySnapshot?.documents, !문서조회.isEmpty {
-//                            let 문서 = 문서조회[0]
-//                            let 현재날짜시간 = Timestamp(date: Date())
-//                            
-//                            문서.reference.updateData(["로그인상태": false,"마지막로그아웃": 현재날짜시간]) { (에러) in
-//                                if let 에러 = 에러 {
-//                                    print("Firestore 업데이트 에러: \(에러.localizedDescription)")
-//                                } else {
-//                                    print("Firestore: 로그인 상태 : false")
-//                                }
-//                            }
-//                        } else {
-//                            print("Firestore: 일치하는 이메일이 없습니다.")
-//                        }
-//                    }
-//                }
-//            }
-//            
-//            try Auth.auth().signOut()
-//            print("계정이 로그아웃되었습니다.")
-//            let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
-//            let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
-//            로그인화면_이동.modalPresentationStyle = .fullScreen
-//            present(로그인화면_이동, animated: true, completion: nil)
-//            UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-//        } catch {
-//            print("로그아웃 실패: \(error.localizedDescription)")
-//        }
-//    }
     func 로그아웃_유저로그아웃() {
         do {
             if let 현재접속중인유저 = Auth.auth().currentUser {
