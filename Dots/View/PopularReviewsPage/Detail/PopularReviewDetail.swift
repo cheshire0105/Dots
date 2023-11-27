@@ -4,8 +4,6 @@
 // 최신화 머지 2023년... 오후 5시 38분
 import UIKit
 import SwiftUI
-import RxSwift
-import RxCocoa
 import SnapKit
 import Toast_Swift
 
@@ -290,8 +288,6 @@ extension PopularReviewDetail : UICollectionViewDelegate, UICollectionViewDataSo
 
 }
 
-import RxCocoa
-import RxSwift
 import SnapKit
 import UIKit
 
