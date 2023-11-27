@@ -4,7 +4,6 @@ class 알림설정_화면 : UIViewController {
     private let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
-        button.setImage(UIImage(named: ""), for: .normal)
         button.isSelected = !button.isSelected
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
