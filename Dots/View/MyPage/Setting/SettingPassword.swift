@@ -28,14 +28,14 @@ class 비밀번호변경_화면 : UIViewController {
     private let 현재_비밀번호_텍스트필드 = { ()
         let textField = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.lightGray,
+            .foregroundColor: UIColor.darkGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
         textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
-        textField.layer.cornerRadius = 25
+        textField.layer.cornerRadius = 10
        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
@@ -58,14 +58,14 @@ class 비밀번호변경_화면 : UIViewController {
     private let 새_비밀번호_텍스트필드 = { ()
         let textField = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.lightGray,
+            .foregroundColor: UIColor.darkGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
+        textField.attributedPlaceholder = NSAttributedString(string: "8~16자사이의 영문(소문자) + 숫자를 입력해주세요", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
-        textField.layer.cornerRadius = 25
+        textField.layer.cornerRadius = 10
        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
@@ -90,14 +90,14 @@ class 비밀번호변경_화면 : UIViewController {
     private let 새_비밀번호_확인_텍스트필드 = { ()
         let textField = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.lightGray,
+            .foregroundColor: UIColor.darkGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
+        textField.attributedPlaceholder = NSAttributedString(string: "8~16자사이의 영문(소문자) + 숫자를 입력해주세요", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
-        textField.layer.cornerRadius = 25
+        textField.layer.cornerRadius = 10
        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
@@ -119,6 +119,33 @@ class 비밀번호변경_화면 : UIViewController {
         imageView.backgroundColor = .clear
         return imageView
     }()
+    
+    
+    private let 현재비밀번호_라벨 = {
+        let label = UILabel()
+        label.text = "현재 비밀번호"
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.textAlignment = .left
+        return label
+    }()
+    private let 새비밀번호_라벨 = {
+        let label = UILabel()
+        label.text = "새 비밀번호 입력"
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.textAlignment = .left
+        return label
+    }()
+    private let 새비밀번호확인_라벨 = {
+        let label = UILabel()
+        label.text = "새 비밀번호 확인"
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.textAlignment = .left
+        return label
+    }()
+    
     
     private let 변경_버튼 = {
         let button = UIButton()
@@ -156,6 +183,9 @@ extension 비밀번호변경_화면{
         view.addSubview(새_비밀번호_확인_텍스트필드)
         view.addSubview(구분선)
         view.addSubview(변경_버튼)
+        view.addSubview(현재비밀번호_라벨)
+        view.addSubview(새비밀번호_라벨)
+        view.addSubview(새비밀번호확인_라벨)
         
         뒤로가기_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(페이지_제목.snp.centerY)
@@ -212,6 +242,21 @@ extension 비밀번호변경_화면{
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(32)
             make.width.equalTo(74)
+        }
+        현재비밀번호_라벨.snp.makeConstraints { make in
+            make.bottom.equalTo(현재_비밀번호_백.snp.top)
+            make.leading.equalTo(현재_비밀번호_백.snp.leading)
+            make.height.equalTo(22)
+        }
+        새비밀번호_라벨.snp.makeConstraints { make in
+            make.bottom.equalTo(새_비밀번호_백.snp.top)
+            make.leading.equalTo(새_비밀번호_백.snp.leading)
+            make.height.equalTo(22)
+        }
+        새비밀번호확인_라벨.snp.makeConstraints { make in
+            make.bottom.equalTo(새_비밀번호_확인_백.snp.top)
+            make.leading.equalTo(새_비밀번호_확인_백.snp.leading)
+            make.height.equalTo(22)
         }
         
     }
