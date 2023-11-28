@@ -648,10 +648,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         return button
     }()
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -678,6 +685,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @objc func backButtonTapped() {
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
         navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
+        self.dismiss(animated: true, completion: nil)
+
     }
 
 
