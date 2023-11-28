@@ -81,7 +81,7 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
         imageView.backgroundColor = .clear
         return imageView
     }()
-    private let 변경_버튼: UIButton? = {
+    private let 변경_버튼 = {
         let button = UIButton()
         button.setTitle("변경", for: .selected)
         button.setTitle("변경", for: .normal)
@@ -120,7 +120,7 @@ extension 프로필변경_화면{
         view.addSubview(새_닉네임_백)
         view.addSubview(새_닉네임_텍스트필드)
         view.addSubview(구분선)
-        view.addSubview(변경_버튼!)
+        view.addSubview(변경_버튼)
         
         
         뒤로가기_버튼.snp.makeConstraints { make in
@@ -159,8 +159,8 @@ extension 프로필변경_화면{
         구분선.snp.makeConstraints { make in
             make.top.equalTo(새_닉네임_텍스트필드.snp.bottom).offset(170)
         }
-        변경_버튼!.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(18)
+        변경_버튼.snp.makeConstraints { make in
+            make.top.equalTo(구분선.snp.bottom).offset(15)
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(32)
             make.width.equalTo(74)
