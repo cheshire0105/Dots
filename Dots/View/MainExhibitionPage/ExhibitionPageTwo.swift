@@ -199,6 +199,16 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
+
+    private lazy var mapAlertView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        view.layer.cornerRadius = 20
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
+
+
     @objc func confirmButtonTapped() {
         // 버튼을 눌렀을 때 수행할 동작을 여기에 추가합니다.
 
@@ -214,12 +224,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     }
 
-    @objc func mapPageLoad() {
-        let mapViewController = MapViewController()
-        mapViewController.imageName = self.posterImageName // 이미지 이름을 MapViewController에 전달
-        print(mapViewController.imageName)
-        self.navigationController?.pushViewController(mapViewController, animated: true)
-    }
+
 
 
 
@@ -343,9 +348,80 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 //           view.addSubview(gradientView)
 
 
-
+        view.addSubview(mapAlertView)
+            setupMapAlertView()
 
     }
+
+    private func setupMapAlertView() {
+        mapAlertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(310)
+            make.height.equalTo(247)
+        }
+
+        // "공유" 타이틀 레이블 생성 및 설정
+        let titleLabel = UILabel()
+        titleLabel.text = "공유"
+        titleLabel.textColor = .black
+        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 18)
+        titleLabel.textAlignment = .center
+
+        mapAlertView.addSubview(titleLabel)
+
+        // 타이틀 레이블의 제약 조건 설정
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(mapAlertView.snp.top).offset(20)
+            make.left.right.equalTo(mapAlertView).inset(10)
+        }
+
+        // 새로운 뷰 생성 및 설정
+        let newView = UIView()
+        newView.layer.backgroundColor = UIColor(red: 0.736, green: 0.832, blue: 0.018, alpha: 1).cgColor
+        newView.layer.cornerRadius = 5
+
+        mapAlertView.addSubview(newView)
+
+        // 새로운 뷰의 제약 조건 설정
+        newView.snp.makeConstraints { make in
+            make.width.equalTo(261)
+            make.height.equalTo(60)
+            make.centerX.equalTo(mapAlertView.snp.centerX)
+            make.centerY.equalTo(mapAlertView.snp.centerY).offset(-21.5)
+        }
+
+        // 새로운 뷰에 이미지 뷰 추가
+         let imageView = UIImageView()
+         imageView.contentMode = .scaleAspectFit // 콘텐츠 모드 설정
+         imageView.image = UIImage(named: "tabler_link") // 이미지 설정
+
+         newView.addSubview(imageView)
+
+         // 이미지 뷰의 제약 조건 설정
+         imageView.snp.makeConstraints { make in
+             make.left.equalTo(newView.snp.left).offset(17) // 왼쪽 여백 설정
+             make.centerY.equalTo(newView.snp.centerY) // 세로 중앙 정렬
+             make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
+         }
+
+        // 새로운 뷰에 텍스트 레이블 추가
+        let textLabel = UILabel()
+        textLabel.text = "http://www.m.dots.com/fdfsdsd/2039488384034" // 임시 URL
+        textLabel.textColor = .black
+        textLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        textLabel.numberOfLines = 0
+        textLabel.textAlignment = .center
+        newView.addSubview(textLabel)
+
+        textLabel.snp.makeConstraints { make in
+            make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
+            make.centerY.equalTo(newView.snp.centerY)
+            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
+        }
+    }
+
+
+
 
     @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
         if gesture.direction == .right {
@@ -355,11 +431,22 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
     @objc func blurViewTapped() {
         customAlertView.isHidden = true
+        mapAlertView.isHidden = true // mapAlertView도 숨깁니다.
         blurEffectView.isHidden = true
     }
 
 
+    @objc func mapPageLoad() {
+        // mapAlertView를 표시하는 코드
+        mapAlertView.isHidden = false
+        blurEffectView.isHidden = false
+
+        // 필요한 경우 여기에 추가적인 동작을 구현합니다.
+    }
+
     private func setupCustomAlertView() {
+
+
         customAlertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(310)
