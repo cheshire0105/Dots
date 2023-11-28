@@ -47,7 +47,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }()
     lazy var heartIcon: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "좋아요 1"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
 //        button.backgroundColor = .white
 //        button.layer.cornerRadius = 20
 //
@@ -80,7 +80,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     lazy var mapPageButton: UIButton = {
         let button = UIButton()
 
-        button.setImage(UIImage(named: "공유"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        button.setImage(UIImage(named: "쉐어"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
 //        button.backgroundColor = .white
 //        button.layer.cornerRadius = 20
 //
@@ -610,7 +610,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             self.view.makeToast("전시가 맘에 드셨군요!", duration: 1.5, position: .center, style: toastStyle)
         } else {
             // 선택 해제된 경우: 원래의 이미지로 변경 (토스트는 표시하지 않음)
-            let originalImageName = "좋아요 1"
+            let originalImageName = "라이크"
             heartIcon.setImage(UIImage(named: originalImageName), for: .normal)
         }
     }
