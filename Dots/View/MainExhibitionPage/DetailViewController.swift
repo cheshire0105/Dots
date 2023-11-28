@@ -5,7 +5,7 @@
 //  Created by cheshire on 11/13/23.
 //  [최신화] : 2023년 11월 23일
 //  새 브랜치 생성 - 2023년 11월 23일
-
+//  [최신화] : 2023년 11월 28일 오후 2:45
 import Foundation
 
 import MapKit // MapKit 프레임워크를 임포트합니다.
@@ -470,6 +470,28 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
     }
+
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        let mapVC = MapViewController()
+        mapVC.imageName = self.posterImageName // 필요한 데이터를 설정합니다.
+        let navController = UINavigationController(rootViewController: mapVC)
+        navController.modalPresentationStyle = .fullScreen // 전체 화면 설정
+
+        // 현재 뷰 컨트롤러가 모달 방식으로 표시되었고, 네비게이션 컨트롤러가 없는 경우
+        if self.presentingViewController != nil {
+            self.dismiss(animated: true) {
+                // 모달이 닫힌 후 새로운 네비게이션 컨트롤러를 모달로 표시
+                UIApplication.shared.windows.first?.rootViewController?.present(navController, animated: true, completion: nil)
+            }
+        } else if let navigationController = self.navigationController {
+            // 현재 뷰 컨트롤러가 네비게이션 컨트롤러에 포함되어 있는 경우
+            navigationController.pushViewController(mapVC, animated: true)
+        } else {
+            // 다른 경우 (예: 루트 뷰 컨트롤러에서 직접 호출)
+            UIApplication.shared.windows.first?.rootViewController?.present(navController, animated: true, completion: nil)
+        }
+    }
+
 
 
     @objc func segmentChanged(_ sender: UISegmentedControl) {

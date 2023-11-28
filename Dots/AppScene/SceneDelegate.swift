@@ -73,6 +73,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              let host = components.host else {
+            return
+        }
+
+        if host == "backgroundImage",
+           let queryItems = components.queryItems,
+           let posterImageName = queryItems.first(where: { $0.name == "poster" })?.value {
+
+            // BackgroundImageViewController 인스턴스 생성 및 설정
+            let backgroundImageVC = BackgroundImageViewController()
+            backgroundImageVC.posterImageName = posterImageName
+
+//            // 네비게이션 컨트롤러를 찾아서 뷰 컨트롤러 푸시
+//            if let rootVC = self.window?.rootViewController as? UINavigationController {
+//                rootVC.pushViewController(backgroundImageVC, animated: true)
+//            }
+            // 또는 다른 네비게이션/프레젠테이션 로직을 여기에 추가
+        }
+
+        // 다른 URL 스키마 처리 (예: Google 로그인)
+        // ...
+    }
 
 }
 
