@@ -631,17 +631,55 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var mapView: MKMapView!
     let database = Firestore.firestore()
     var imageName: String? // 이미지 이름을 저장할 프로퍼티
+    
+    lazy var backButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
 
 
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        return button
+    }()
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 탭바를 숨깁니다.
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
+        tabBarController?.tabBar.isHidden = false
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMapView()
         fetchLocationData()
         print(imageName)
+        view.addSubview(backButton)
+
+        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
+            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
+        }
+
+    }
+    
+    @objc func backButtonTapped() {
+        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
+        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
     }
 
-    
 
     private func setupMapView() {
         mapView = MKMapView(frame: self.view.bounds)
@@ -702,7 +740,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
      }
 
      private func centerMapOnLocation(location: CLLocationCoordinate2D) {
-         let regionRadius: CLLocationDistance = 1000
+         let regionRadius: CLLocationDistance = 200
          let coordinateRegion = MKCoordinateRegion(center: location,
                                                    latitudinalMeters: regionRadius,
                                                    longitudinalMeters: regionRadius)
