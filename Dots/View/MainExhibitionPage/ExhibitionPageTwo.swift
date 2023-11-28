@@ -413,14 +413,46 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         textLabel.textAlignment = .center
         newView.addSubview(textLabel)
 
-        textLabel.snp.makeConstraints { make in
-            make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
-            make.centerY.equalTo(newView.snp.centerY)
-            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-        }
+//        textLabel.snp.makeConstraints { make in
+//            make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
+//            make.centerY.equalTo(newView.snp.centerY)
+//            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
+//        }
+
+        // 딥 링크 URL 생성
+           let deepLink = createDeepLink()
+
+           // 딥 링크를 표시하는 레이블 생성
+           let deepLinkLabel = UILabel()
+           deepLinkLabel.text = deepLink
+           deepLinkLabel.textColor = .black
+           deepLinkLabel.font = UIFont.systemFont(ofSize: 14)
+           deepLinkLabel.textAlignment = .center
+           deepLinkLabel.numberOfLines = 0
+           deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
+
+           mapAlertView.addSubview(deepLinkLabel)
+
+        // 레이블에 탭 제스처 인식기 추가
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shareDeepLink))
+            deepLinkLabel.addGestureRecognizer(tapGesture)
+
+          deepLinkLabel.snp.makeConstraints { make in
+              make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
+              make.centerY.equalTo(newView.snp.centerY)
+              make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
+          }
     }
 
+    @objc private func shareDeepLink() {
+        let deepLink = createDeepLink()
+        let items = [deepLink]
 
+        let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // 아이패드에서 사용할 경우
+
+        self.present(activityViewController, animated: true, completion: nil)
+    }
 
 
     @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
@@ -483,6 +515,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
+
+    func createDeepLink() -> String {
+        // 여기서는 'backgroundImage'를 페이지 식별자로 사용하고 'posterImageName'을 쿼리 매개변수로 추가합니다.
+        let deepLinkURL = "Dots://backgroundImage?poster=\(posterImageName ?? "")"
+        return deepLinkURL
+    }
 
 
 
