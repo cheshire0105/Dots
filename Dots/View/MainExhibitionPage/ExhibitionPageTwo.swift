@@ -47,14 +47,14 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }()
     lazy var heartIcon: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "heartIcon"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 20
-
-        button.layer.shadowOpacity = 0.9
-        button.layer.shadowRadius = 2
-        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.setImage(UIImage(named: "좋아요 1"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+//        button.backgroundColor = .white
+//        button.layer.cornerRadius = 20
+//
+//        button.layer.shadowOpacity = 0.9
+//        button.layer.shadowRadius = 2
+//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+//        button.layer.shadowColor = UIColor.black.cgColor
 
 
         button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
@@ -63,15 +63,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     lazy var recordButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "Union 4"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 20
-
-
-        button.layer.shadowOpacity = 0.9
-        button.layer.shadowRadius = 2
-        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.setImage(UIImage(named: "footprint"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+//        button.backgroundColor = .white
+//        button.layer.cornerRadius = 20
+//
+//
+//        button.layer.shadowOpacity = 0.9
+//        button.layer.shadowRadius = 2
+//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+//        button.layer.shadowColor = UIColor.black.cgColor
 
         button.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
@@ -79,15 +79,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     lazy var mapPageButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .white
-        button.setImage(UIImage(named: "Group 167"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
 
-        button.layer.cornerRadius = 20
-
-        button.layer.shadowOpacity = 0.9
-        button.layer.shadowRadius = 2
-        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-        button.layer.shadowColor = UIColor.black.cgColor
+        button.setImage(UIImage(named: "공유"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+//        button.backgroundColor = .white
+//        button.layer.cornerRadius = 20
+//
+//        button.layer.shadowOpacity = 0.9
+//        button.layer.shadowRadius = 2
+//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+//        button.layer.shadowColor = UIColor.black.cgColor
 
         button.addTarget(self, action: #selector(mapPageLoad), for: .touchUpInside) // 버튼 액션 추가
         return button
@@ -206,7 +206,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let isSelected = recordButton.isSelected
         recordButton.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
 
-        let newImageName = isSelected ? "Union 4" : "footprint_sleected" // 새 이미지 이름
+        let newImageName = isSelected ? "footprint" : "footprint 1" // 새 이미지 이름
         recordButton.setImage(UIImage(named: newImageName), for: .normal)
 
         customAlertView.isHidden = true
@@ -286,6 +286,30 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(backgroundImageView)
         view.sendSubviewToBack(backgroundImageView)
 
+        let gradientView = UIView()
+        view.insertSubview(gradientView, aboveSubview: backgroundImageView)
+
+        // 스냅킷을 사용하여 그라데이션 뷰의 제약 조건 설정
+        gradientView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor(red: 0, green: 0, blue: 0, alpha: 0).cgColor,
+            UIColor(red: 0, green: 0, blue: 0, alpha: 0.35).cgColor,
+            UIColor(red: 0, green: 0, blue: 0, alpha: 0.80).cgColor,
+            UIColor(red: 0, green: 0, blue: 0, alpha: 1).cgColor
+        ]
+        gradientLayer.locations = [0, 0.37, 0.68, 1]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0) // 그라데이션 시작점을 위쪽 중앙으로 설정
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1) // 그라데이션 끝점을 아래쪽 중앙으로 설정
+
+        // 뷰의 크기가 결정된 후에 그라데이션 레이어의 크기를 업데이트합니다.
+        gradientView.layer.layoutIfNeeded()
+        gradientLayer.frame = gradientView.bounds
+
+        gradientView.layer.addSublayer(gradientLayer)
         setupBackButton()
 
         // 이미지 로딩을 위한 함수 호출
@@ -314,6 +338,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
             blurEffectView.addGestureRecognizer(tapGesture)
             blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
+
+        // 그라데이션 뷰 추가
+//           view.addSubview(gradientView)
+
+
+
+
     }
 
     @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
@@ -444,7 +475,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         if heartIcon.isSelected {
             // 선택된 경우: 토스트 메시지 표시 및 이미지 변경
-            let newImageName = "Vector 1" // 선택된 상태의 이미지
+            let newImageName = "Vector 2" // 선택된 상태의 이미지
             heartIcon.setImage(UIImage(named: newImageName), for: .normal)
 
             var toastStyle = ToastStyle()
@@ -454,7 +485,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             self.view.makeToast("전시가 맘에 드셨군요!", duration: 1.5, position: .center, style: toastStyle)
         } else {
             // 선택 해제된 경우: 원래의 이미지로 변경 (토스트는 표시하지 않음)
-            let originalImageName = "heartIcon"
+            let originalImageName = "좋아요 1"
             heartIcon.setImage(UIImage(named: originalImageName), for: .normal)
         }
     }
