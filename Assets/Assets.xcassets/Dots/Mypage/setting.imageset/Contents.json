@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Group 127.png",
+      "filename" : "solar_settings-bold.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Group 127@2x.png",
+      "filename" : "solar_settings-bold@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Group 127@3x.png",
+      "filename" : "solar_settings-bold@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
