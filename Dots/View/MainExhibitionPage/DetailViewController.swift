@@ -11,7 +11,7 @@ import Foundation
 import MapKit // MapKit 프레임워크를 임포트합니다.
 import Firebase
 
-class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate {
 
     let segmentControl = UISegmentedControl(items: ["후기", "상세정보"])
     var reviewsTableView = UITableView()
@@ -27,11 +27,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     let galleryAddressLabel = UILabel()
 
+    let additionalInfoLabel = UILabel()
+
+
     var labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
 
     var mapView: MKMapView!
     let squaresStackView = UIStackView()
-
+    var locationCoordinate: CLLocationCoordinate2D?
+    var exhibitionDetail : String?
 
 
     override func viewDidLoad() {
@@ -44,9 +48,31 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         configureDetailScrollView()
         configureFloatingActionButton()
         fetchExhibitionDetails() // Firestore에서 전시 상세 정보를 가져오는 함수 호출
-
+        
+        mapView.delegate = self
 
     }
+
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "CustomPin"
+
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+        if annotationView == nil {
+            // 새로운 MKAnnotationView 생성
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true // 필요한 경우 콜아웃 활성화
+        } else {
+            // 재사용 가능한 뷰 업데이트
+            annotationView?.annotation = annotation
+        }
+
+        // 여기에서 커스텀 이미지를 설정합니다.
+        annotationView?.image = UIImage(named: "place") // "customPinImage"를 프로젝트에 있는 이미지 이름으로 교체
+
+        return annotationView
+    }
+
 
     // UI를 전시 상세 정보로 업데이트하는 함수
     private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
@@ -57,6 +83,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             // exhibitionTitleLabel에 미술관 이름을 설정
             self.exhibitionTitleLabel.text = exhibitionDetail.museumName
             self.galleryAddressLabel.text = exhibitionDetail.museumAddress
+            self.additionalInfoLabel.text = exhibitionDetail.exhibitionDetail
 
             // 스택 뷰에 데이터 바인딩
             self.labelContents = [
@@ -87,19 +114,37 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
     // Firestore에서 전시 상세 정보를 가져오는 함수
-      private func fetchExhibitionDetails() {
-          guard let posterName = posterImageName else { return }
-          let documentRef = Firestore.firestore().collection("전시_상세").document(posterName)
-          documentRef.getDocument { [weak self] (document, error) in
-              if let document = document, document.exists {
-                  let data = document.data()
-                  let exhibitionDetail = ExhibitionDetailModel(dictionary: data ?? [:])
-                  self?.updateUIWithExhibitionDetails(exhibitionDetail)
-              } else {
-                  print("Document does not exist or error fetching document: \(error?.localizedDescription ?? "")")
-              }
-          }
-      }
+    // Firestore에서 전시 상세 정보를 가져오는 함수
+    // Firestore에서 전시 상세 정보를 가져오는 함수
+    private func fetchExhibitionDetails() {
+        guard let posterName = posterImageName else {
+            print("posterImageName is nil")
+            return
+        }
+
+        let documentRef = Firestore.firestore().collection("전시_상세").document(posterName)
+        documentRef.getDocument { [weak self] (document, error) in
+            if let document = document, document.exists {
+                let data = document.data()
+                print("Fetched document data: \(data ?? [:])")
+
+                if let geoPoint = data?["전시_좌표"] as? GeoPoint {
+                    // GeoPoint에서 위도와 경도를 추출합니다.
+                    let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                    // 지도 뷰 위치 업데이트 함수 호출
+                    self?.updateMapViewWithLocation(location: location)
+                }
+
+                let exhibitionDetail = ExhibitionDetailModel(dictionary: data ?? [:])
+                self?.updateUIWithExhibitionDetails(exhibitionDetail)
+            } else {
+                print("Document does not exist or error fetching document: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
+
+
+
 
 //    // UI를 전시 상세 정보로 업데이트하는 함수
 //    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
@@ -113,6 +158,19 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 //
 //        }
 //    }
+
+    // 지도 위치 업데이트 함수
+    private func updateMapViewWithLocation(location: CLLocationCoordinate2D) {
+        DispatchQueue.main.async {
+            let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
+            self.mapView.setRegion(region, animated: true)
+
+            // 지도에 핀 추가
+            let pin = MKPointAnnotation()
+            pin.coordinate = location
+            self.mapView.addAnnotation(pin)
+        }
+    }
 
     func configureFloatingActionButton() {
         floatingActionButton.translatesAutoresizingMaskIntoConstraints = false
@@ -268,16 +326,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.height.equalTo(mapView.snp.width).multipliedBy(0.6) // 지도의 높이를 너비의 0.6배로 설정합니다.
         }
 
-        // 지도 위치 설정
-        let coordinate = CLLocationCoordinate2D(latitude: 37.582691, longitude: 127.00175) // 갤러리바톤의 위치 좌표로 가정
-        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-        mapView.setRegion(region, animated: true)
 
-        // 지도에 핀 추가
-        let pin = MKPointAnnotation()
-        pin.coordinate = coordinate
-        pin.title = "갤러리바톤"
-        mapView.addAnnotation(pin)
 
         // 스크롤 뷰 제약 조건 설정
         // 스크롤 뷰의 제약 조건 설정
@@ -392,9 +441,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
         // 보더 라인 아래에 추가할 레이블 생성
-        let additionalInfoLabel = UILabel()
         additionalInfoLabel.text = """
-«김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다. 이번 전시는 1950년대부터 현재까지 다양한 매체, 장르, 주제를 넘나들며 예술의 최전선에서 독자적인 영역을 구축해 온 작가의 전위적인 면모를 확인할 수 있다. 비디오 아트, 설치, 판화, 퍼포먼스, 회화 등 미술의 범주를 넘어 무용, 연극, 영화, 음악에 이르기까지 다양한 분야에서 활발한 활동을 펼쳐 온 작가를 입체적으로 만나볼 수 있는 자리이기도 하다. 한국 현대미술사에서 중요한 위치를 차지하는 작가임에도 불구하고 김구림의 작품을 설명하거나 깊이 있게 경험할 기회는 충분치 않았기에 이번 전시를 통해 김구림의 미술사적 성과를 재확인하고, 현재진행형 작가로서 오늘날 그의 행보를 살펴보고자 한다. 전시는 1960년대 초 한국전쟁 이후 실존적인 문제에 매달리며 제작한 초기 회화, 1960-70년대 한국 실험미술의 중심에서 발표했던 퍼포먼스와 설치, 1980년대 중반부터 지속하는 <음과 양> 시리즈 등을 고루 소개한다. 또한 김구림 작가의 동시대적 면모를 확인할 수 있는 대형 설치와 함께 영화-무용-음악-연극을 한데 모은 공연을 새롭게 선보인다. 1950년대부터 이어진 김구림의 전방위적 활동과 거침없는 도전은 시대에 대한 반응이었고, 관습에 대한 저항이었던 바 그와 다른 시간대를 영위하는 이들이 단숨에 파악하기에는 어려운 낯선 영역일 것이다. 따라서 이번 전시는 부분적으로 밖에 파악할 수밖에 없었던 김구림의 세계를 최대한 온전하게 전달하는 데 초점을 두었다. 김구림과 함께 그의 결정적 순간들을 재방문해 보길 바라며, 김구림의 발자취를 경유하는 가운데 한국 미술사에 대한 이해의 폭을 넓히는 기회가 되길 바란다.
+«김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다.
 """
         additionalInfoLabel.textColor = .white
         additionalInfoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)

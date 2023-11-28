@@ -77,7 +77,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
-    lazy var AddInfoButton: UIButton = {
+    lazy var mapPageButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .white
         button.setImage(UIImage(named: "Group 167"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
@@ -89,7 +89,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.layer.shadowOffset = CGSize(width: 1, height: 1)
         button.layer.shadowColor = UIColor.black.cgColor
 
-        button.addTarget(self, action: #selector(presentInfoModal), for: .touchUpInside) // 버튼 액션 추가
+        button.addTarget(self, action: #selector(mapPageLoad), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
 
@@ -213,6 +213,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         blurEffectView.isHidden = true
 
     }
+
+    @objc func mapPageLoad() {
+        let mapViewController = MapViewController()
+        mapViewController.imageName = self.posterImageName // 이미지 이름을 MapViewController에 전달
+        print(mapViewController.imageName)
+        self.navigationController?.pushViewController(mapViewController, animated: true)
+    }
+
+
 
 
     @objc func presentInfoModal() {
@@ -385,7 +394,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
-        view.addSubview(AddInfoButton)
+        view.addSubview(mapPageButton)
         view.addSubview(modalLoadButton)
 
 
@@ -410,12 +419,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         heartIcon.snp.makeConstraints{ make in
-            make.bottom.equalTo(AddInfoButton.snp.top).inset(-10)
+            make.bottom.equalTo(mapPageButton.snp.top).inset(-10)
             make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
         }
 
-        AddInfoButton.snp.makeConstraints{ make in
+        mapPageButton.snp.makeConstraints{ make in
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(73)
             make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
@@ -613,3 +622,130 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
     }
 }
 
+import UIKit
+import MapKit
+import FirebaseFirestore
+
+
+class MapViewController: UIViewController, MKMapViewDelegate {
+    var mapView: MKMapView!
+    let database = Firestore.firestore()
+    var imageName: String? // 이미지 이름을 저장할 프로퍼티
+    
+    lazy var backButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 20
+
+        button.layer.shadowOpacity = 0.9
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        return button
+    }()
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 탭바를 숨깁니다.
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
+        tabBarController?.tabBar.isHidden = false
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupMapView()
+        fetchLocationData()
+        print(imageName)
+        view.addSubview(backButton)
+
+        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
+            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
+        }
+
+    }
+    
+    @objc func backButtonTapped() {
+        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
+        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
+    }
+
+
+    private func setupMapView() {
+        mapView = MKMapView(frame: self.view.bounds)
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView = MKMapView(frame: self.view.bounds)
+                mapView.delegate = self // MapView의 델리게이트를 설정합니다.
+        // 여기에 추가적인 지도 설정을 할 수 있습니다. 예를 들어, 사용자의 현재 위치를 표시하거나 특정 위치로 지도 중심을 이동시킬 수 있습니다.
+
+        self.view.addSubview(mapView)
+    }
+
+    private func fetchLocationData() {
+        guard let imageName = self.imageName else {
+            print("이미지 이름이 설정되지 않았습니다.")
+            return
+        }
+
+        // "전시_상세" 컬렉션에서 해당 이미지 이름의 문서를 조회합니다.
+        let docRef = database.collection("전시_상세").document(imageName)
+
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let locationData = document.get("전시_좌표") as? GeoPoint {
+                    let location = CLLocationCoordinate2D(latitude: locationData.latitude, longitude: locationData.longitude)
+                    self.centerMapOnLocation(location: location)
+                } else {
+                    print("장소_좌표 필드가 없습니다.")
+                }
+            } else {
+                print("문서를 찾을 수 없거나 오류가 발생했습니다: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
+    
+    // 지도에 핀을 추가하는 메서드
+     private func addPinAtLocation(location: CLLocationCoordinate2D) {
+         let annotation = MKPointAnnotation()
+         annotation.coordinate = location
+         mapView.addAnnotation(annotation)
+     }
+
+     // MKMapViewDelegate 메서드
+     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+         let identifier = "MyPin"
+         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+         if annotationView == nil {
+             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+             annotationView?.canShowCallout = true // 필요한 경우 콜아웃을 표시할 수 있습니다.
+         } else {
+             annotationView?.annotation = annotation
+         }
+
+         // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
+         annotationView?.image = UIImage(named: "place")
+
+         return annotationView
+     }
+
+     private func centerMapOnLocation(location: CLLocationCoordinate2D) {
+         let regionRadius: CLLocationDistance = 200
+         let coordinateRegion = MKCoordinateRegion(center: location,
+                                                   latitudinalMeters: regionRadius,
+                                                   longitudinalMeters: regionRadius)
+         addPinAtLocation(location: location)
+
+         mapView.setRegion(coordinateRegion, animated: true)
+     }
+}
