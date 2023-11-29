@@ -96,6 +96,8 @@ class TweetTableViewCell: UITableViewCell {
     let additionalImageView2 = UIImageView()
     let additionalLabel2 = UILabel()
 
+    let lineView = UIView()
+
     let moreLabel = UILabel()
 
 
@@ -133,7 +135,8 @@ class TweetTableViewCell: UITableViewCell {
     private func setupLayout() {
         // 프로필 이미지 뷰 설정
         profileImageView.snp.makeConstraints { make in
-            make.top.left.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(30)
+            make.left.equalToSuperview().offset(10)
             make.width.height.equalTo(50)
         }
         profileImageView.layer.cornerRadius = 25
@@ -238,7 +241,7 @@ class TweetTableViewCell: UITableViewCell {
 
         tweetContentLabel.attributedText = attributedString
         tweetContentLabel.numberOfLines = 3
-        tweetContentLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        tweetContentLabel.font = UIFont(name: "Pretendard-Regular", size: 13)
         tweetContentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
 
 
@@ -274,10 +277,13 @@ class TweetTableViewCell: UITableViewCell {
 
 
         // "더보기" 레이블 설정
-        moreLabel.text = "더보기"
+        moreLabel.text = "더 보기"
         moreLabel.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
         moreLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
         moreLabel.textAlignment = .left
+
+        lineView.backgroundColor = UIColor(red: 0.237, green: 0.237, blue: 0.237, alpha: 1)
+
 
     }
 
@@ -286,12 +292,13 @@ class TweetTableViewCell: UITableViewCell {
         contentView.addSubview(additionalLabel1)
         contentView.addSubview(additionalImageView2)
         contentView.addSubview(additionalLabel2)
+        contentView.addSubview(lineView)
     }
 
     private func setupAdditionalLayout() {
         // 첫 번째 추가 이미지 뷰와 레이블 레이아웃
         additionalImageView1.snp.makeConstraints { make in
-            make.top.equalTo(moreLabel.snp.bottom).offset(10)
+            make.top.equalTo(moreLabel.snp.bottom).offset(30)
             make.left.equalTo(tweetContentLabel.snp.left)
             make.width.equalTo(17.5)
             make.height.equalTo(14.5)
@@ -306,7 +313,7 @@ class TweetTableViewCell: UITableViewCell {
 
         // 두 번째 추가 이미지 뷰와 레이블 레이아웃
         additionalImageView2.snp.makeConstraints { make in
-            make.top.equalTo(moreLabel.snp.bottom).offset(5)
+            make.top.equalTo(moreLabel.snp.bottom).offset(25)
             make.left.equalTo(additionalLabel1.snp.right).offset(10)
             make.width.height.equalTo(24)
         }
@@ -315,6 +322,14 @@ class TweetTableViewCell: UITableViewCell {
             make.centerY.equalTo(additionalImageView2)
             make.left.equalTo(additionalImageView2.snp.right).offset(8)
         }
+
+        lineView.snp.makeConstraints { make in
+            make.top.equalTo(additionalImageView1.snp.bottom).offset(20)
+            make.height.equalTo(1)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+
+
     }
 
 
