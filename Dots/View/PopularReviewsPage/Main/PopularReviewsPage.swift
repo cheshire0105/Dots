@@ -91,10 +91,14 @@ class TweetTableViewCell: UITableViewCell {
     let titelLabel = UILabel()
 
     // 새로운 컴포넌트 선언
-        let additionalImageView1 = UIImageView()
-        let additionalLabel1 = UILabel()
-        let additionalImageView2 = UIImageView()
-        let additionalLabel2 = UILabel()
+    let additionalImageView1 = UIImageView()
+    let additionalLabel1 = UILabel()
+    let additionalImageView2 = UIImageView()
+    let additionalLabel2 = UILabel()
+
+    let moreLabel = UILabel()
+
+
 
 
     // 커스텀 셀의 기본 설정을 위한 초기화 메서드
@@ -105,8 +109,8 @@ class TweetTableViewCell: UITableViewCell {
         setupLayout()
 
         // 새로운 컴포넌트 추가
-               addAdditionalSubviews()
-               setupAdditionalLayout()
+        addAdditionalSubviews()
+        setupAdditionalLayout()
     }
 
     required init?(coder: NSCoder) {
@@ -122,6 +126,7 @@ class TweetTableViewCell: UITableViewCell {
         contentView.addSubview(tweetContentLabel)
         contentView.addSubview(timeLabel)
         contentView.addSubview(titelLabel)
+        contentView.addSubview(moreLabel)
 
     }
 
@@ -155,7 +160,7 @@ class TweetTableViewCell: UITableViewCell {
             make.centerY.equalTo(nameLabel)
         }
 
-        
+
 
         // 피드 이미지 뷰 설정
         tweetImageView.snp.makeConstraints { make in
@@ -176,9 +181,17 @@ class TweetTableViewCell: UITableViewCell {
             make.top.equalTo(titelLabel.snp.bottom).offset(10)
             make.leading.equalTo(tweetImageView.snp.leading)
             make.trailing.equalTo(tweetImageView.snp.trailing)
-//            make.bottom.equalToSuperview().offset(-10)
+            //            make.bottom.equalToSuperview().offset(-10)
         }
         tweetContentLabel.numberOfLines = 0
+
+
+        // "더보기" 레이블 레이아웃 설정
+        moreLabel.snp.makeConstraints { make in
+            make.top.equalTo(tweetContentLabel.snp.bottom).offset(10)
+            make.leading.equalTo(tweetContentLabel.snp.leading)
+            make.trailing.equalTo(tweetContentLabel.snp.trailing)
+        }
     }
 
     // 임시 데이터 바인딩을 위한 메서드
@@ -205,26 +218,30 @@ class TweetTableViewCell: UITableViewCell {
         tweetImageView.image = UIImage(named: "morningStar")
 
         // 트윗 내용 레이블 설정
-            let originalText = """
+        let originalText = """
             오늘 전시회를 방문해서 정말 멋진 시간을 보냈습니다. 작품들은 아름답고 감동적이었고, 예술가들의 역량과 창의성에 감탄했습니다. 특히, 회화와 조각 작품들은 각기 다른 스타일과 표현력을 가지고 있어서 볼 때마다 새로운 감정을 느끼게 해주었습니다. 전시 공간 자체도 아주 아름다웠는데, 조명과 배치가 조화롭게 어우러져 작품들을 더욱 빛나게 했습니다. 또한, 전시 관람 도중 아티스트와 대화할 기회가 있어서 그들의 작업에 대한 인사이트를 얻을 수 있어서 특별한 경험이었습니다. 전시 후기를 쓰며, 예술의 아름다움과 힘을 다시 한 번 느낄 수 있었습니다. 이런 멋진 전시회를 기획하고 준비한 모든 분들에게 감사의 인사를 전하고 싶습니다. 더 많은 사람들이 이런 아름다운 예술을 만끽할 수 있기를 바랍니다.
             """
 
-            let moreText = "더보기..."
+        let moreText = "더보기..."
 
-            let attributedString = NSMutableAttributedString(string: originalText)
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-                .foregroundColor: UIColor.white
-            ]
+        let attributedString = NSMutableAttributedString(string: originalText)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 14, weight: .regular),
+            .foregroundColor: UIColor.white
+        ]
 
-            attributedString.addAttributes(attributes, range: NSRange(location: 0, length: attributedString.length))
+        attributedString.addAttributes(attributes, range: NSRange(location: 0, length: attributedString.length))
 
-            if attributedString.string.count > 100 { // 100자를 초과하는 경우에만 "더보기..." 추가
-                attributedString.mutableString.setString(String(attributedString.string.prefix(100)) + "..." + moreText)
-            }
+        if attributedString.string.count > 100 { // 100자를 초과하는 경우에만 "더보기..." 추가
+            attributedString.mutableString.setString(String(attributedString.string.prefix(100)) + "..." + moreText)
+        }
 
-            tweetContentLabel.attributedText = attributedString
-            tweetContentLabel.numberOfLines = 3
+        tweetContentLabel.attributedText = attributedString
+        tweetContentLabel.numberOfLines = 3
+        tweetContentLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        tweetContentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
+
+
 
         // "8분 전" 레이블 설정
         timeLabel.text = "8분 전"
@@ -237,61 +254,68 @@ class TweetTableViewCell: UITableViewCell {
 
 
         // 첫 번째 추가 이미지 뷰 및 레이블 구성
-               additionalImageView1.image = UIImage(named: "Vector 3")
+        additionalImageView1.image = UIImage(named: "Vector 3")
 
-               additionalLabel1.text = "123"
+        additionalLabel1.text = "123"
         additionalLabel1.textColor = .white
         additionalLabel1.font = UIFont(name: "Pretendard-Light", size: 12)
         additionalLabel1.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
-               // 스타일 및 글꼴 설정 등
+        // 스타일 및 글꼴 설정 등
 
-               // 두 번째 추가 이미지 뷰 및 레이블 구성
-               additionalImageView2.image = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view")
+        // 두 번째 추가 이미지 뷰 및 레이블 구성
+        additionalImageView2.image = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view")
         additionalLabel2.textColor = .white
         additionalLabel2.font = UIFont(name: "Pretendard-Light", size: 12)
         additionalLabel2.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
 
 
-               additionalLabel2.text = "456"
-               // 스타일 및 글꼴 설정 등
+        additionalLabel2.text = "456"
+        // 스타일 및 글꼴 설정 등
+
+
+        // "더보기" 레이블 설정
+        moreLabel.text = "더보기"
+        moreLabel.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+        moreLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        moreLabel.textAlignment = .left
 
     }
 
     private func addAdditionalSubviews() {
-         contentView.addSubview(additionalImageView1)
-         contentView.addSubview(additionalLabel1)
-         contentView.addSubview(additionalImageView2)
-         contentView.addSubview(additionalLabel2)
-     }
+        contentView.addSubview(additionalImageView1)
+        contentView.addSubview(additionalLabel1)
+        contentView.addSubview(additionalImageView2)
+        contentView.addSubview(additionalLabel2)
+    }
 
-     private func setupAdditionalLayout() {
-         // 첫 번째 추가 이미지 뷰와 레이블 레이아웃
-         additionalImageView1.snp.makeConstraints { make in
-             make.top.equalTo(tweetContentLabel.snp.bottom).offset(10)
-             make.left.equalTo(tweetContentLabel.snp.left)
-             make.width.equalTo(17.5)
-             make.height.equalTo(14.5)
-             make.bottom.equalToSuperview().offset(-10)
+    private func setupAdditionalLayout() {
+        // 첫 번째 추가 이미지 뷰와 레이블 레이아웃
+        additionalImageView1.snp.makeConstraints { make in
+            make.top.equalTo(moreLabel.snp.bottom).offset(10)
+            make.left.equalTo(tweetContentLabel.snp.left)
+            make.width.equalTo(17.5)
+            make.height.equalTo(14.5)
+            make.bottom.equalToSuperview().offset(-10)
 
-         }
+        }
 
-         additionalLabel1.snp.makeConstraints { make in
-             make.centerY.equalTo(additionalImageView1)
-             make.left.equalTo(additionalImageView1.snp.right).offset(10)
-         }
+        additionalLabel1.snp.makeConstraints { make in
+            make.centerY.equalTo(additionalImageView1)
+            make.left.equalTo(additionalImageView1.snp.right).offset(10)
+        }
 
-         // 두 번째 추가 이미지 뷰와 레이블 레이아웃
-         additionalImageView2.snp.makeConstraints { make in
-             make.top.equalTo(tweetContentLabel.snp.bottom).offset(5)
-             make.left.equalTo(additionalLabel1.snp.right).offset(10)
-             make.width.height.equalTo(24)
-         }
+        // 두 번째 추가 이미지 뷰와 레이블 레이아웃
+        additionalImageView2.snp.makeConstraints { make in
+            make.top.equalTo(moreLabel.snp.bottom).offset(5)
+            make.left.equalTo(additionalLabel1.snp.right).offset(10)
+            make.width.height.equalTo(24)
+        }
 
-         additionalLabel2.snp.makeConstraints { make in
-             make.centerY.equalTo(additionalImageView2)
-             make.left.equalTo(additionalImageView2.snp.right).offset(8)
-         }
-     }
+        additionalLabel2.snp.makeConstraints { make in
+            make.centerY.equalTo(additionalImageView2)
+            make.left.equalTo(additionalImageView2.snp.right).offset(8)
+        }
+    }
 
 
 }
