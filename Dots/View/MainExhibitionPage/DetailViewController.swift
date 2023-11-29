@@ -317,6 +317,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 지도 뷰 모서리 둥글게 설정
         mapView.layer.cornerRadius = 10
         mapView.clipsToBounds = true
+        mapView.overrideUserInterfaceStyle = .dark
 
         // 지도 뷰 제약 조건 설정
         mapView.snp.makeConstraints { make in

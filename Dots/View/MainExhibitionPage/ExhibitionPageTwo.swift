@@ -357,7 +357,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         mapAlertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(310)
-            make.height.equalTo(247)
+            make.height.equalTo(200)
         }
 
         // "공유" 타이틀 레이블 생성 및 설정
@@ -384,10 +384,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         // 새로운 뷰의 제약 조건 설정
         newView.snp.makeConstraints { make in
-            make.width.equalTo(261)
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().inset(20)
+            make.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
-            make.centerX.equalTo(mapAlertView.snp.centerX)
-            make.centerY.equalTo(mapAlertView.snp.centerY).offset(-21.5)
         }
 
         // 새로운 뷰에 이미지 뷰 추가
@@ -404,20 +404,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
              make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
          }
 
-        // 새로운 뷰에 텍스트 레이블 추가
-        let textLabel = UILabel()
-        textLabel.text = "http://www.m.dots.com/fdfsdsd/2039488384034" // 임시 URL
-        textLabel.textColor = .black
-        textLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-        textLabel.numberOfLines = 0
-        textLabel.textAlignment = .center
-        newView.addSubview(textLabel)
-
-//        textLabel.snp.makeConstraints { make in
-//            make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
-//            make.centerY.equalTo(newView.snp.centerY)
-//            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-//        }
 
         // 딥 링크 URL 생성
            let deepLink = createDeepLink()
@@ -426,19 +412,37 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
            let deepLinkLabel = UILabel()
            deepLinkLabel.text = deepLink
            deepLinkLabel.textColor = .black
-           deepLinkLabel.font = UIFont.systemFont(ofSize: 14)
+           deepLinkLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
            deepLinkLabel.textAlignment = .center
            deepLinkLabel.numberOfLines = 0
            deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
 
            mapAlertView.addSubview(deepLinkLabel)
 
-        // 레이블에 탭 제스처 인식기 추가
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shareDeepLink))
-            deepLinkLabel.addGestureRecognizer(tapGesture)
+
+         let confirmButton = UIButton()
+        confirmButton.setTitle("공유 하기", for: .normal)
+        confirmButton.backgroundColor = .black
+        confirmButton.setTitleColor(.white, for: .normal)
+        confirmButton.layer.cornerRadius = 20 // 모서리 둥글게
+        confirmButton.addTarget(self, action: #selector(shareDeepLink), for: .touchUpInside)
+
+
+        mapAlertView.addSubview(confirmButton)
+
+        confirmButton.snp.makeConstraints { make in
+            make.top.equalTo(newView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(50)
+            make.height.equalTo(40)
+        }
+
+
+//        // 레이블에 탭 제스처 인식기 추가
+//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shareDeepLink))
+//            deepLinkLabel.addGestureRecognizer(tapGesture)
 
           deepLinkLabel.snp.makeConstraints { make in
-              make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
+              make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
               make.centerY.equalTo(newView.snp.centerY)
               make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
           }
@@ -852,6 +856,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView = MKMapView(frame: self.view.bounds)
                 mapView.delegate = self // MapView의 델리게이트를 설정합니다.
         // 여기에 추가적인 지도 설정을 할 수 있습니다. 예를 들어, 사용자의 현재 위치를 표시하거나 특정 위치로 지도 중심을 이동시킬 수 있습니다.
+        mapView.overrideUserInterfaceStyle = .dark
 
         self.view.addSubview(mapView)
     }
@@ -899,8 +904,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
          }
 
          // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
-         annotationView?.image = UIImage(named: "place")
-
+         annotationView?.image = UIImage(named: "place 1")
          return annotationView
      }
 
