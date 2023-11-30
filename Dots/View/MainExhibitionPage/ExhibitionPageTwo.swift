@@ -15,36 +15,34 @@ import Toast_Swift
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
-    lazy var backButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+    private func createCustomBackButton() -> UIButton {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "loginBack"), for: .normal)
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-
         button.layer.shadowOpacity = 0.9
         button.layer.shadowRadius = 2
         button.layer.shadowOffset = CGSize(width: 1, height: 1)
         button.layer.shadowColor = UIColor.black.cgColor
-
-
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40) // 버튼 크기 설정
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         return button
-    }()
+    }
 
-    lazy var headsetIcon: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "headset help_"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+
+    private func createCustomHeadsetIcon() -> UIButton {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "headset help_"), for: .normal)
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-
         button.layer.shadowOpacity = 0.9
         button.layer.shadowRadius = 2
         button.layer.shadowOffset = CGSize(width: 1, height: 1)
         button.layer.shadowColor = UIColor.black.cgColor
-
-        button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside) // 버튼 액션 추가
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside)
         return button
-    }()
+    }
     lazy var heartIcon: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
@@ -265,7 +263,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
+        print(self.navigationController?.interactivePopGestureRecognizer?.isEnabled)
+        print(self.navigationController?.interactivePopGestureRecognizer?.delegate)
 
     }
 
@@ -273,12 +272,14 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
-        tabBarController?.tabBar.isHidden = false
+//        tabBarController?.tabBar.isHidden = false
     }
 
 
@@ -286,7 +287,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
 
+        // 네비게이션 백 버튼 설정
+            setupNavigationBackButton()
         // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
         view.addSubview(backgroundImageView)
         view.sendSubviewToBack(backgroundImageView)
@@ -334,10 +339,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         setupCustomAlertView()
 
 
-        // 스와이프 제스처 인식기 추가
-        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
-        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
-        view.addGestureRecognizer(swipeGesture)
+//        // 스와이프 제스처 인식기 추가
+//        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
+//        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
+//        view.addGestureRecognizer(swipeGesture)
 
         // blurEffectView에 탭 제스처 인식기 추가
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
@@ -353,11 +358,24 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     }
 
+    private func setupNavigationBackButton() {
+        let backButton = createCustomBackButton()
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+        let headsetButton = createCustomHeadsetIcon()
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: headsetButton)
+    }
+
+
+    @objc func backButtonTapped() {
+        // 네비게이션 컨트롤러로 뒤로 가기
+        navigationController?.popViewController(animated: true)
+    }
+
     private func setupMapAlertView() {
         mapAlertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(310)
-            make.height.equalTo(247)
+            make.height.equalTo(200)
         }
 
         // "공유" 타이틀 레이블 생성 및 설정
@@ -384,10 +402,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         // 새로운 뷰의 제약 조건 설정
         newView.snp.makeConstraints { make in
-            make.width.equalTo(261)
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().inset(20)
+            make.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
-            make.centerX.equalTo(mapAlertView.snp.centerX)
-            make.centerY.equalTo(mapAlertView.snp.centerY).offset(-21.5)
         }
 
         // 새로운 뷰에 이미지 뷰 추가
@@ -404,20 +422,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
              make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
          }
 
-        // 새로운 뷰에 텍스트 레이블 추가
-        let textLabel = UILabel()
-        textLabel.text = "http://www.m.dots.com/fdfsdsd/2039488384034" // 임시 URL
-        textLabel.textColor = .black
-        textLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-        textLabel.numberOfLines = 0
-        textLabel.textAlignment = .center
-        newView.addSubview(textLabel)
-
-//        textLabel.snp.makeConstraints { make in
-//            make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
-//            make.centerY.equalTo(newView.snp.centerY)
-//            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-//        }
 
         // 딥 링크 URL 생성
            let deepLink = createDeepLink()
@@ -426,19 +430,37 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
            let deepLinkLabel = UILabel()
            deepLinkLabel.text = deepLink
            deepLinkLabel.textColor = .black
-           deepLinkLabel.font = UIFont.systemFont(ofSize: 14)
+           deepLinkLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
            deepLinkLabel.textAlignment = .center
            deepLinkLabel.numberOfLines = 0
            deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
 
            mapAlertView.addSubview(deepLinkLabel)
 
-        // 레이블에 탭 제스처 인식기 추가
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shareDeepLink))
-            deepLinkLabel.addGestureRecognizer(tapGesture)
+
+         let confirmButton = UIButton()
+        confirmButton.setTitle("공유 하기", for: .normal)
+        confirmButton.backgroundColor = .black
+        confirmButton.setTitleColor(.white, for: .normal)
+        confirmButton.layer.cornerRadius = 20 // 모서리 둥글게
+        confirmButton.addTarget(self, action: #selector(shareDeepLink), for: .touchUpInside)
+
+
+        mapAlertView.addSubview(confirmButton)
+
+        confirmButton.snp.makeConstraints { make in
+            make.top.equalTo(newView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(50)
+            make.height.equalTo(40)
+        }
+
+
+//        // 레이블에 탭 제스처 인식기 추가
+//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shareDeepLink))
+//            deepLinkLabel.addGestureRecognizer(tapGesture)
 
           deepLinkLabel.snp.makeConstraints { make in
-              make.left.equalTo(imageView.snp.right).offset(12) // 이미지 뷰 오른쪽에 여백을 두고 배치
+              make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
               make.centerY.equalTo(newView.snp.centerY)
               make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
           }
@@ -455,12 +477,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
-        if gesture.direction == .right {
-            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
-            navigationController?.popViewController(animated: true)
-        }
-    }
+//    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
+//        if gesture.direction == .right {
+//            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
+//            navigationController?.popViewController(animated: true)
+//        }
+//    }
     @objc func blurViewTapped() {
         customAlertView.isHidden = true
         mapAlertView.isHidden = true // mapAlertView도 숨깁니다.
@@ -546,27 +568,27 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     private func setupBackButton() {
-        view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
-        view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
+//        view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
+//        view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
         view.addSubview(mapPageButton)
         view.addSubview(modalLoadButton)
 
 
-        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
-            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
-            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
-        }
+//        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
+//            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
+//            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
+//        }
 
 
 
-        headsetIcon.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(view.snp.trailing).offset(-16)
-            make.width.height.equalTo(40)
-        }
+//        headsetIcon.snp.makeConstraints{ make in
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+//            make.trailing.equalTo(view.snp.trailing).offset(-16)
+//            make.width.height.equalTo(40)
+//        }
 
         recordButton.snp.makeConstraints{ make in
             make.bottom.equalTo(heartIcon.snp.top).inset(-10)
@@ -630,11 +652,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-
-    @objc func backButtonTapped() {
-        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
-        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
-    }
+//
+//    @objc func backButtonTapped() {
+//        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
+//        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
+//    }
 
     // 오디오 가이드 페이지로 이동하는 메서드
     // AudioGuideViewController를 표시하는 버튼 액션 또는 메서드 내부
@@ -852,6 +874,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView = MKMapView(frame: self.view.bounds)
                 mapView.delegate = self // MapView의 델리게이트를 설정합니다.
         // 여기에 추가적인 지도 설정을 할 수 있습니다. 예를 들어, 사용자의 현재 위치를 표시하거나 특정 위치로 지도 중심을 이동시킬 수 있습니다.
+        mapView.overrideUserInterfaceStyle = .dark
 
         self.view.addSubview(mapView)
     }
@@ -899,8 +922,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
          }
 
          // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
-         annotationView?.image = UIImage(named: "place")
-
+         annotationView?.image = UIImage(named: "place 1")
          return annotationView
      }
 

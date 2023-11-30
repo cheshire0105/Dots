@@ -6,6 +6,8 @@
 //  [최신화] : 2023년 11월 23일
 //  새 브랜치 생성 - 2023년 11월 23일
 //  [최신화] : 2023년 11월 28일 오후 2:45
+//  [브랜치 생성] : 2023년 11월 29일 오전 9시 16분
+
 import Foundation
 
 import MapKit // MapKit 프레임워크를 임포트합니다.
@@ -317,6 +319,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 지도 뷰 모서리 둥글게 설정
         mapView.layer.cornerRadius = 10
         mapView.clipsToBounds = true
+        mapView.overrideUserInterfaceStyle = .dark
 
         // 지도 뷰 제약 조건 설정
         mapView.snp.makeConstraints { make in
