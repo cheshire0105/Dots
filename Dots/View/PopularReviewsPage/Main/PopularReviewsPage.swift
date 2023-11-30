@@ -15,7 +15,7 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 //        tableView.register(TweetTableViewCell.self, forCellReuseIdentifier: "TweetCell")
 
         // 라이트 모드로 강제 설정
-            overrideUserInterfaceStyle = .light
+//            overrideUserInterfaceStyle = .light
 
     }
 
@@ -24,6 +24,12 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = .black
+
+
+        // 셀 사이의 경계선을 없애기
+
+        tableView.separatorStyle = .none
+
 
         // UITableViewCell.self 대신 TweetTableViewCell.self로 변경해야 합니다.
         tableView.register(TweetTableViewCell.self, forCellReuseIdentifier: "TweetTableViewCell")
@@ -160,7 +166,7 @@ class TweetTableViewCell: UITableViewCell {
     private func setupLayout() {
         // 프로필 이미지 뷰 설정
         profileImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(30)
+            make.top.equalToSuperview().offset(10)
             make.left.equalToSuperview().offset(10)
             make.width.height.equalTo(50)
         }
@@ -319,7 +325,7 @@ class TweetTableViewCell: UITableViewCell {
         // "더보기" 레이블 설정
         moreLabel.text = "더 보기"
         moreLabel.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
-        moreLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        moreLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
         moreLabel.textAlignment = .left
 
         lineView.backgroundColor = UIColor(red: 0.237, green: 0.237, blue: 0.237, alpha: 1)
@@ -342,7 +348,7 @@ class TweetTableViewCell: UITableViewCell {
             make.left.equalTo(tweetContentLabel.snp.left)
             make.width.equalTo(17.5)
             make.height.equalTo(14.5)
-            make.bottom.equalToSuperview().offset(-10)
+//            make.bottom.equalToSuperview().offset(-10)
 
         }
 
@@ -367,6 +373,8 @@ class TweetTableViewCell: UITableViewCell {
             make.top.equalTo(additionalImageView1.snp.bottom).offset(20)
             make.height.equalTo(1)
             make.leading.trailing.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview().offset(-10)
+
         }
 
 
