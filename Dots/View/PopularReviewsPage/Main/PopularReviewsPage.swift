@@ -46,18 +46,18 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
     func setupNavigationBar() {
         // 네비게이션 타이틀 설정
         self.navigationItem.title = "인기"
-        // 네비게이션 바 배경색과 타이틀 색상 설정
-        let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
-
-        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.standardAppearance = appearance
-
-        // 네비게이션 바 대형 타이틀 설정
-        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
+//        // 네비게이션 바 배경색과 타이틀 색상 설정
+//        let appearance = UINavigationBarAppearance()
+//        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
+//        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
+//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
+//
+//        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.standardAppearance = appearance
+//
+//        // 네비게이션 바 대형 타이틀 설정
+//        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
     }
 
 
@@ -97,14 +97,21 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 셀 선택 시 동작
         print("Selected row: \(indexPath.row)")
+
+        // 셀 선택 시 디테일 페이지로 넘어가는 코드
+        let detailViewController = ReviewDetailViewController() // 상세 페이지 뷰 컨트롤러 인스턴스 생성
+        // 네비게이션 컨트롤러를 사용하여 디테일 뷰로 이동
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 
-    // UITableViewDelegate
-    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        return false // 셀 하이라이트를 꺼줍니다.
-    }
+
+
+
 
 }
+
+
+
 
 
 import SnapKit
@@ -373,7 +380,7 @@ class TweetTableViewCell: UITableViewCell {
             make.top.equalTo(additionalImageView1.snp.bottom).offset(20)
             make.height.equalTo(1)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalToSuperview().offset(-10)
+            make.bottom.equalToSuperview()
 
         }
 
