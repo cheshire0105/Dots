@@ -28,6 +28,7 @@ class 유저_비밀번호찾기_뷰컨트롤러 : UIViewController {
         
         UI레이아웃()
         버튼_클릭()
+        화면_제스쳐_실행()
     }
 }
 
@@ -64,3 +65,19 @@ extension 유저_비밀번호찾기_뷰컨트롤러 {
         
     }
 }
+
+
+
+extension 유저_비밀번호찾기_뷰컨트롤러 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
+

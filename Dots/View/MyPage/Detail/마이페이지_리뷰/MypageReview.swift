@@ -44,6 +44,7 @@ override func viewDidLoad() {
     마이페이지_리뷰_컬렉션뷰.dataSource = self
     마이페이지_리뷰_컬렉션뷰.delegate = self
     마이페이지_리뷰_컬렉션뷰.register(마이페이지_리뷰_셀.self, forCellWithReuseIdentifier: "마이페이지_리뷰_셀")
+    화면_제스쳐_실행()
 }
 
 func UI레이아웃() {
@@ -99,3 +100,18 @@ extension 마이페이지_리뷰 : UICollectionViewDelegate, UICollectionViewDat
 //        self.navigationController?.pushViewController(마이페이지_티켓_화면, animated: true)
     }
 }
+
+
+extension 마이페이지_리뷰 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
+

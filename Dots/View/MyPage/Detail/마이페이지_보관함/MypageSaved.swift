@@ -104,6 +104,7 @@ class 마이페이지_보관함 : UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.보관함_전시_버튼_클릭()
         }
+        화면_제스쳐_실행()
     }
     
     func UI레이아웃() {
@@ -349,3 +350,19 @@ extension 마이페이지_보관함 : UICollectionViewDelegate, UICollectionView
         //        self.navigationController?.pushViewController(마이페이지_티켓_화면, animated: true)
     }
 }
+
+
+
+extension 마이페이지_보관함 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
+

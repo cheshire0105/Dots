@@ -98,9 +98,12 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        
         UI레이아웃()
         버튼_클릭()
         새_닉네임_텍스트필드.delegate = self
+        화면_제스쳐_실행()
     }
     
     
@@ -301,4 +304,18 @@ class 사진_라이브러리: UIViewController {
     }
 }
 
+
+
+extension 프로필변경_화면 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
 

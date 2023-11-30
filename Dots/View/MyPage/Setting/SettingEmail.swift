@@ -1,4 +1,8 @@
 import UIKit
+import Firebase
+import FirebaseAuth
+import FirebaseFirestore
+import GoogleSignIn
 
 class 이메일변경_화면 : UIViewController {
     var 활성화된텍스트필드: UITextField?
@@ -32,7 +36,7 @@ class 이메일변경_화면 : UIViewController {
             .foregroundColor: UIColor.lightGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
+        textField.attributedPlaceholder = NSAttributedString(string: "사용중인 이메일", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
@@ -47,6 +51,8 @@ class 이메일변경_화면 : UIViewController {
         
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
+        textField.isEnabled = false
+
         return textField
     } ()
     private let 새_이메일_백 = {
@@ -62,7 +68,7 @@ class 이메일변경_화면 : UIViewController {
             .foregroundColor: UIColor.lightGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
+        textField.attributedPlaceholder = NSAttributedString(string: "새 이메일", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
@@ -105,7 +111,20 @@ class 이메일변경_화면 : UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         UI레이아웃()
         버튼_클릭()
+        화면_제스쳐_실행()
+        현재_이메일_텍스트필드.delegate = self
+        새_이메일_텍스트필드.delegate = self
+        
+        if let currentLoggedInEmail = getCurrentLoggedInEmail() {
+               현재_이메일_텍스트필드.text = currentLoggedInEmail
+           }
     }
+    func getCurrentLoggedInEmail() -> String? {
+        if let user = Auth.auth().currentUser {
+               return user.email
+           }
+           return nil
+       }
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -261,4 +280,19 @@ extension 이메일변경_화면 {
             }
         }
     }
+
+
+
+extension 이메일변경_화면 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
 

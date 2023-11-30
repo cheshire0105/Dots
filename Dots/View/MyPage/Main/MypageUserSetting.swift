@@ -167,6 +167,7 @@ class 마이페이지_설정_페이지 : UIViewController {
         UI레이아웃()
         화살표_레이아웃()
         버튼_클릭()
+        화면_제스쳐_실행()
         
     }
     
@@ -465,3 +466,19 @@ extension 마이페이지_설정_페이지 {
         }
     }
 }
+
+
+
+extension 마이페이지_설정_페이지 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
+
