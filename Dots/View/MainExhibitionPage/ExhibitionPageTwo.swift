@@ -15,36 +15,34 @@ import Toast_Swift
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
-    lazy var backButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+    private func createCustomBackButton() -> UIButton {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "loginBack"), for: .normal)
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-
         button.layer.shadowOpacity = 0.9
         button.layer.shadowRadius = 2
         button.layer.shadowOffset = CGSize(width: 1, height: 1)
         button.layer.shadowColor = UIColor.black.cgColor
-
-
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40) // 버튼 크기 설정
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         return button
-    }()
+    }
 
-    lazy var headsetIcon: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "headset help_"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+
+    private func createCustomHeadsetIcon() -> UIButton {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "headset help_"), for: .normal)
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
-
         button.layer.shadowOpacity = 0.9
         button.layer.shadowRadius = 2
         button.layer.shadowOffset = CGSize(width: 1, height: 1)
         button.layer.shadowColor = UIColor.black.cgColor
-
-        button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside) // 버튼 액션 추가
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside)
         return button
-    }()
+    }
     lazy var heartIcon: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
@@ -265,7 +263,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
+        print(self.navigationController?.interactivePopGestureRecognizer?.isEnabled)
+        print(self.navigationController?.interactivePopGestureRecognizer?.delegate)
 
     }
 
@@ -273,12 +272,14 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
-        tabBarController?.tabBar.isHidden = false
+//        tabBarController?.tabBar.isHidden = false
     }
 
 
@@ -286,7 +287,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
 
+        // 네비게이션 백 버튼 설정
+            setupNavigationBackButton()
         // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
         view.addSubview(backgroundImageView)
         view.sendSubviewToBack(backgroundImageView)
@@ -334,10 +339,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         setupCustomAlertView()
 
 
-        // 스와이프 제스처 인식기 추가
-        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
-        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
-        view.addGestureRecognizer(swipeGesture)
+//        // 스와이프 제스처 인식기 추가
+//        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
+//        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
+//        view.addGestureRecognizer(swipeGesture)
 
         // blurEffectView에 탭 제스처 인식기 추가
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
@@ -351,6 +356,19 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(mapAlertView)
             setupMapAlertView()
 
+    }
+
+    private func setupNavigationBackButton() {
+        let backButton = createCustomBackButton()
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+        let headsetButton = createCustomHeadsetIcon()
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: headsetButton)
+    }
+
+
+    @objc func backButtonTapped() {
+        // 네비게이션 컨트롤러로 뒤로 가기
+        navigationController?.popViewController(animated: true)
     }
 
     private func setupMapAlertView() {
@@ -459,12 +477,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
-        if gesture.direction == .right {
-            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
-            navigationController?.popViewController(animated: true)
-        }
-    }
+//    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
+//        if gesture.direction == .right {
+//            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
+//            navigationController?.popViewController(animated: true)
+//        }
+//    }
     @objc func blurViewTapped() {
         customAlertView.isHidden = true
         mapAlertView.isHidden = true // mapAlertView도 숨깁니다.
@@ -550,27 +568,27 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     private func setupBackButton() {
-        view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
-        view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
+//        view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
+//        view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
         view.addSubview(mapPageButton)
         view.addSubview(modalLoadButton)
 
 
-        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
-            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
-            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
-        }
+//        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
+//            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
+//            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
+//        }
 
 
 
-        headsetIcon.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(view.snp.trailing).offset(-16)
-            make.width.height.equalTo(40)
-        }
+//        headsetIcon.snp.makeConstraints{ make in
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+//            make.trailing.equalTo(view.snp.trailing).offset(-16)
+//            make.width.height.equalTo(40)
+//        }
 
         recordButton.snp.makeConstraints{ make in
             make.bottom.equalTo(heartIcon.snp.top).inset(-10)
@@ -634,11 +652,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-
-    @objc func backButtonTapped() {
-        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
-        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
-    }
+//
+//    @objc func backButtonTapped() {
+//        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
+//        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
+//    }
 
     // 오디오 가이드 페이지로 이동하는 메서드
     // AudioGuideViewController를 표시하는 버튼 액션 또는 메서드 내부

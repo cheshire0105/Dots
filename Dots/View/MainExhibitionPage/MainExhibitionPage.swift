@@ -73,15 +73,23 @@ class MainExhibitionPage: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+//        tabBarController?.tabBar.isHidden = false
+
     }
-    
+
+    override func viewDidAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = false
+
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // 네비게이션 바의 아이템들을 숨깁니다.
         navigationController?.setNavigationBarHidden(true, animated: false)
-        
+
+
         setupCollectionView()
         setupNewCollectionView()
         fetchExhibitionData()
