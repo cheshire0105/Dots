@@ -112,6 +112,8 @@ class 이메일변경_화면 : UIViewController {
         UI레이아웃()
         버튼_클릭()
         화면_제스쳐_실행()
+        현재_이메일_텍스트필드.delegate = self
+        새_이메일_텍스트필드.delegate = self
         
         if let currentLoggedInEmail = getCurrentLoggedInEmail() {
                현재_이메일_텍스트필드.text = currentLoggedInEmail

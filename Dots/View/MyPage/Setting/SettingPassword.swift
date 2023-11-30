@@ -1,6 +1,9 @@
 import UIKit
 
 class 비밀번호변경_화면 : UIViewController {
+    
+    var 활성화된텍스트필드: UITextField?
+    
     private let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -164,10 +167,23 @@ class 비밀번호변경_화면 : UIViewController {
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
         
+        NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
         UI레이아웃()
         버튼_클릭()
         화면_제스쳐_실행()
+        
+        새_비밀번호_텍스트필드.delegate = self
+        현재_비밀번호_텍스트필드.delegate = self
+        새_비밀번호_확인_텍스트필드.delegate = self
     }
+    
+    deinit {
+        // 메모리 해제 시 리스너 제거
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
 }
 
 
@@ -283,4 +299,104 @@ extension 비밀번호변경_화면 {
     }
     
 }
+
+
+
+extension 비밀번호변경_화면 {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == 현재_비밀번호_텍스트필드 {
+            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            let 글자수제한 = (textField.text?.count ?? 0) + string.count
+            return 제한사항준수 && (글자수제한 <= 16)
+        }
+        
+        else if textField == 새_비밀번호_텍스트필드 {
+            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            let 글자수제한 = (textField.text?.count ?? 0) + string.count
+            return 제한사항준수 && (글자수제한 <= 16)
+        }
+        
+        else if textField == 새_비밀번호_확인_텍스트필드 {
+            // 비밀번호 규칙: 숫자와 영문 소문자만 가능, 8~16자
+            let 입력제한사항 = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyz")
+            let 제한사항준수 = string.rangeOfCharacter(from: 입력제한사항.inverted) == nil
+            let 글자수제한 = (textField.text?.count ?? 0) + string.count
+            return 제한사항준수 && (글자수제한 <= 16)
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if textField == 현재_비밀번호_텍스트필드 {
+            새_비밀번호_텍스트필드.becomeFirstResponder()
+        } else if textField == 새_비밀번호_텍스트필드 {
+            새_비밀번호_확인_텍스트필드.becomeFirstResponder()
+        } else if textField == 새_비밀번호_확인_텍스트필드 {
+            새_비밀번호_확인_텍스트필드.resignFirstResponder()
+        }
+        return true
+    }
+    
+}
+extension 비밀번호변경_화면: UITextFieldDelegate {
+    
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = textField
+        if textField == 현재_비밀번호_텍스트필드 {
+            현재_비밀번호_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            현재_비밀번호_백.layer.borderWidth = 1
+        }
+        else if textField == 새_비밀번호_텍스트필드 {
+            새_비밀번호_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            새_비밀번호_백.layer.borderWidth = 1
+        }
+        else if textField == 새_비밀번호_확인_텍스트필드 {
+            새_비밀번호_확인_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+            새_비밀번호_확인_백.layer.borderWidth = 1
+        }
+    }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        활성화된텍스트필드 = nil
+        if textField == 현재_비밀번호_텍스트필드 {
+            현재_비밀번호_백.layer.borderColor = UIColor.clear.cgColor
+        }
+        else if textField == 새_비밀번호_텍스트필드 {
+            새_비밀번호_백.layer.borderColor = UIColor.clear.cgColor
+        }
+        else if textField == 새_비밀번호_확인_텍스트필드 {
+            새_비밀번호_확인_백.layer.borderColor = UIColor.clear.cgColor
+        }
+    }
+}
+
+extension 비밀번호변경_화면 {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        self.view.frame.origin.y = 0
+    }
+    
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let 활성화된텍스트필드 = 활성화된텍스트필드 else {
+            return
+        }
+        
+        let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+        let 키보드시작 = view.frame.size.height - 키보드크기.height
+        
+        if 텍스트필드끝 > 키보드시작 {
+            let 이동거리 = 키보드시작 - 텍스트필드끝
+            view.frame.origin.y = 이동거리
+        }
+    }
+}
+
 
