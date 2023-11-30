@@ -145,15 +145,18 @@ class 알림설정_화면 : UIViewController {
         return toggle
     } ()
    
-    
+   
     override func viewDidLoad() {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
-        
+
         UI레이아웃()
         버튼_클릭()
+        화면_제스쳐_실행 ()
     }
+    
+   
 }
 
 
@@ -296,13 +299,11 @@ extension 알림설정_화면{
             make.trailing.equalTo(도트공지사항및약관변경_백.snp.trailing).offset(-16)
         }
         
-        
         이벤트관련정보_백.snp.makeConstraints { make in
             make.top.equalTo(도트공지사항및약관변경_백.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.equalTo(44)
-            
         }
         이벤트관련정보_라벨.snp.makeConstraints { make in
             make.centerY.equalTo(이벤트관련정보_백.snp.centerY)
@@ -320,4 +321,17 @@ extension 알림설정_화면{
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
     }
+}
+
+extension 알림설정_화면 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
 }

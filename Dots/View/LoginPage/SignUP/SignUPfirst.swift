@@ -212,6 +212,8 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         회원가입_닉네임_텍스트필드.delegate = self
         회원가입_이메일_텍스트필드.delegate = self
         회원가입_비밀번호_텍스트필드.delegate = self
+        
+        화면_제스쳐_실행()
     }
     
     deinit {
@@ -550,4 +552,19 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     }
 }
 
+
+
+
+extension 회원가입_첫번째_뷰컨트롤러 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
 

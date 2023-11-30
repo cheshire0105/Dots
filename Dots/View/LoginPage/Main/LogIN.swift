@@ -174,7 +174,7 @@ class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelega
         
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        
+        화면_제스쳐_실행()
     }
     
     deinit {
@@ -474,3 +474,18 @@ extension 로그인_뷰컨트롤러 {
         self.view.frame.origin.y = 0
     }
 }
+
+
+extension 로그인_뷰컨트롤러 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
+

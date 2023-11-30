@@ -105,6 +105,7 @@ class 이메일변경_화면 : UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         UI레이아웃()
         버튼_클릭()
+        화면_제스쳐_실행()
     }
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -261,4 +262,19 @@ extension 이메일변경_화면 {
             }
         }
     }
+
+
+
+extension 이메일변경_화면 {
+    
+    func 화면_제스쳐_실행 () {
+        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
+        화면_제스쳐.direction = .right
+        view.addGestureRecognizer(화면_제스쳐)
+    }
+    @objc private func 화면_제스쳐_뒤로_가기() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+}
 
