@@ -1,4 +1,8 @@
 import UIKit
+import Firebase
+import FirebaseAuth
+import FirebaseFirestore
+import GoogleSignIn
 
 class 이메일변경_화면 : UIViewController {
     var 활성화된텍스트필드: UITextField?
@@ -32,7 +36,7 @@ class 이메일변경_화면 : UIViewController {
             .foregroundColor: UIColor.lightGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
+        textField.attributedPlaceholder = NSAttributedString(string: "사용중인 이메일", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
@@ -47,6 +51,8 @@ class 이메일변경_화면 : UIViewController {
         
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
+        textField.isEnabled = false
+
         return textField
     } ()
     private let 새_이메일_백 = {
@@ -62,7 +68,7 @@ class 이메일변경_화면 : UIViewController {
             .foregroundColor: UIColor.lightGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
+        textField.attributedPlaceholder = NSAttributedString(string: "새 이메일", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
@@ -106,7 +112,17 @@ class 이메일변경_화면 : UIViewController {
         UI레이아웃()
         버튼_클릭()
         화면_제스쳐_실행()
+        
+        if let currentLoggedInEmail = getCurrentLoggedInEmail() {
+               현재_이메일_텍스트필드.text = currentLoggedInEmail
+           }
     }
+    func getCurrentLoggedInEmail() -> String? {
+        if let user = Auth.auth().currentUser {
+               return user.email
+           }
+           return nil
+       }
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
