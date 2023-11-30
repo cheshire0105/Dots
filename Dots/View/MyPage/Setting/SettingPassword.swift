@@ -34,7 +34,7 @@ class 비밀번호변경_화면 : UIViewController {
             .foregroundColor: UIColor.darkGray,
             .font: UIFont.boldSystemFont(ofSize: 14)
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "이메일", attributes: attributes)
+        textField.attributedPlaceholder = NSAttributedString(string: "현재 비밀번호", attributes: attributes)
         textField.textColor = UIColor.white
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
@@ -49,6 +49,8 @@ class 비밀번호변경_화면 : UIViewController {
         
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
+        textField.isEnabled = false
+        
         return textField
     } ()
     private let 새_비밀번호_백 = {
