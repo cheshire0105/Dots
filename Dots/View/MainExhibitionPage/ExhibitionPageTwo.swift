@@ -665,6 +665,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         self.dismiss(animated: true) {
             if let navigationController = self.navigationController {
                 let audioGuideViewController = AudioGuideViewController()
+                audioGuideViewController.hidesBottomBarWhenPushed = true // 탭 바 숨기기
+
                 navigationController.pushViewController(audioGuideViewController, animated: true)
             }
         }

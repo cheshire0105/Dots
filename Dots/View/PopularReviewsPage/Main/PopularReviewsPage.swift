@@ -7,6 +7,11 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
     var tableView: UITableView!
 
+//    override func viewDidAppear(_ animated: Bool) {
+//        tabBarController?.tabBar.isHidden = false
+//
+//    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
@@ -15,7 +20,7 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 //        tableView.register(TweetTableViewCell.self, forCellReuseIdentifier: "TweetCell")
 
         // 라이트 모드로 강제 설정
-            overrideUserInterfaceStyle = .light
+//            overrideUserInterfaceStyle = .light
 
     }
 
@@ -24,6 +29,12 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = .black
+
+
+        // 셀 사이의 경계선을 없애기
+
+        tableView.separatorStyle = .none
+
 
         // UITableViewCell.self 대신 TweetTableViewCell.self로 변경해야 합니다.
         tableView.register(TweetTableViewCell.self, forCellReuseIdentifier: "TweetTableViewCell")
@@ -40,18 +51,18 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
     func setupNavigationBar() {
         // 네비게이션 타이틀 설정
         self.navigationItem.title = "인기"
-        // 네비게이션 바 배경색과 타이틀 색상 설정
-        let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
-
-        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.standardAppearance = appearance
-
-        // 네비게이션 바 대형 타이틀 설정
-        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
+//        // 네비게이션 바 배경색과 타이틀 색상 설정
+//        let appearance = UINavigationBarAppearance()
+//        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
+//        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
+//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
+//
+//        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.standardAppearance = appearance
+//
+//        // 네비게이션 바 대형 타이틀 설정
+//        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
     }
 
 
@@ -87,18 +98,26 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
 
 
-    // UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 셀 선택 시 동작
         print("Selected row: \(indexPath.row)")
+
+        // 셀 선택 시 디테일 페이지로 넘어가는 코드
+        let detailViewController = ReviewDetailViewController() // 상세 페이지 뷰 컨트롤러 인스턴스 생성
+        detailViewController.hidesBottomBarWhenPushed = true // 탭 바 숨기기
+        // 네비게이션 컨트롤러를 사용하여 디테일 뷰로 이동
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 
-    // UITableViewDelegate
-    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        return false // 셀 하이라이트를 꺼줍니다.
-    }
+
+
+
+
 
 }
+
+
+
 
 
 import SnapKit
@@ -160,7 +179,7 @@ class TweetTableViewCell: UITableViewCell {
     private func setupLayout() {
         // 프로필 이미지 뷰 설정
         profileImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(30)
+            make.top.equalToSuperview().offset(10)
             make.left.equalToSuperview().offset(10)
             make.width.height.equalTo(50)
         }
@@ -319,7 +338,7 @@ class TweetTableViewCell: UITableViewCell {
         // "더보기" 레이블 설정
         moreLabel.text = "더 보기"
         moreLabel.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
-        moreLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        moreLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
         moreLabel.textAlignment = .left
 
         lineView.backgroundColor = UIColor(red: 0.237, green: 0.237, blue: 0.237, alpha: 1)
@@ -342,7 +361,7 @@ class TweetTableViewCell: UITableViewCell {
             make.left.equalTo(tweetContentLabel.snp.left)
             make.width.equalTo(17.5)
             make.height.equalTo(14.5)
-            make.bottom.equalToSuperview().offset(-10)
+//            make.bottom.equalToSuperview().offset(-10)
 
         }
 
@@ -367,6 +386,8 @@ class TweetTableViewCell: UITableViewCell {
             make.top.equalTo(additionalImageView1.snp.bottom).offset(20)
             make.height.equalTo(1)
             make.leading.trailing.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview()
+
         }
 
 
