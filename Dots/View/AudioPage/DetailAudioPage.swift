@@ -295,9 +295,9 @@ class DetailAudioPage: UIViewController {
 
         roundedRectangleView.addSubview(rightActionButton)
         rightActionButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-20) // 오른쪽 여백 설정
+            make.right.equalToSuperview().inset(25) // 오른쪽 여백 설정
             make.centerY.equalToSuperview() // 세로 중앙 정렬
-            make.width.height.equalTo(20) // 버튼 크기 설정
+            make.width.height.equalTo(14) // 버튼 크기 설정
         }
     }
     @objc private func rightActionButtonTapped() {
