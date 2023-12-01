@@ -313,3 +313,54 @@ extension 프로필변경_화면 {
     
 }
 
+extension 프로필변경_화면 {
+    
+    private func 프로필변경_업데이트() {
+        guard let 유저 = Auth.auth().currentUser else {
+            print("로그인 상태가 아님")
+            return
+        }
+
+        if let 제공업체 = 유저.providerData.first?.providerID {
+            if 제공업체 == "password" {
+                print(" 제공업체 : 도트 ")
+                유저프로필_업데이트(유저: 유저)
+            } else if 제공업체 == "google.com" {
+                print(" 제공업체 : 구글 ")
+                알럿(message: "구글 연동 계정은 해당 서비스를 이용할 수 없습니다.")
+            }
+        }
+    }
+    private func 유저프로필_업데이트(유저: User) {
+        guard let 이메일 = 유저.email else {
+            print("이메일이 없음")
+            return
+        }
+
+        let 파이어스토어 = Firestore.firestore()
+        파이어스토어.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
+            guard let self = self else { return }
+
+            if let 에러 = 에러 {
+                print("문서 조회 에러: \(에러.localizedDescription)")
+                return
+            }
+
+            guard let 문서 = 컬렉션?.documents.first else {
+                print("계정과 일치하는 문서가 없음")
+                return
+            }
+
+           
+        }
+    }
+
+    private func 알럿(message: String) {
+        let 알럿 = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+        알럿.addAction(okAction)
+        present(알럿, animated: true, completion: nil)
+    }
+    
+    
+}
