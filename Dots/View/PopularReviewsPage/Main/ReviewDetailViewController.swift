@@ -27,9 +27,25 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
     private let detailLabel = UILabel()
 
     private let scrollView = UIScrollView()
-        private let squareView = UIView()
-        private let contentLabel = UILabel()
+    private let squareView = UIView()
+    private let contentLabel = UILabel()
 
+    private let profileImageView = UIImageView()
+    private let nameLabel = UILabel()
+    private let timeLabel = UILabel()
+
+    // 새로운 컴포넌트 선언
+    let additionalImageView1 = UIImageView()
+    let additionalLabel1 = UILabel()
+    let additionalImageView2 = UIImageView()
+    let additionalLabel2 = UILabel()
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 탭바를 숨깁니다.
+        tabBarController?.tabBar.isHidden = true
+
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,11 +57,13 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
 
         setupScrollView()
-                setupSquareViewAndLabel()
+        setupSquareViewAndLabel()
+
 
         // 대형 네비게이션 타이틀 비활성화
         self.navigationController?.navigationBar.prefersLargeTitles = false
     }
+
 
     private func setupScrollView() {
         view.addSubview(scrollView)
@@ -65,6 +83,35 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
             make.height.equalTo(squareView.snp.width) // 정사각형 유지
         }
 
+        scrollView.addSubview(profileImageView)
+        profileImageView.backgroundColor = .gray // 임시 색상, 실제 이미지로 교체 필요
+        profileImageView.layer.cornerRadius = 16 // 동그란 이미지를 위해
+        profileImageView.clipsToBounds = true
+        profileImageView.snp.makeConstraints { make in
+            make.top.equalTo(squareView.snp.bottom).offset(20)
+            make.leading.equalTo(scrollView.snp.leading).offset(20)
+            make.width.height.equalTo(32) // 동그란 이미지 크기
+        }
+
+        scrollView.addSubview(nameLabel)
+        nameLabel.text = "닉네임"
+        nameLabel.font =  UIFont(name: "Pretendard-SemiBold", size: 16)
+        nameLabel.textColor = .white
+        nameLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(profileImageView.snp.centerY)
+            make.leading.equalTo(profileImageView.snp.trailing).offset(10)
+        }
+
+        scrollView.addSubview(timeLabel)
+        timeLabel.text = "8분전"
+        timeLabel.textColor = .white
+        timeLabel.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+        timeLabel.font = UIFont(name: "Pretendard-Light", size: 14)
+        timeLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(profileImageView.snp.centerY)
+            make.trailing.equalTo(scrollView.snp.trailing).offset(-20)
+        }
+
         scrollView.addSubview(contentLabel)
         contentLabel.text = """
 최근 다녀온 인상주의 작가전에서 많은 영감을 받았습니다. 이번 전시에서는 다양한 작가들의 작품을 통해 인상주의의 다양한 표현과 미학에 대한 통찰을 얻을 수 있었습니다. 먼저, 전시에는 독특하고 선명한 색채가 돋보이는 작품들이 많았습니다. 작가들은 강렬한 색상을 통해 감정과 분위기를 전달하며 관람자에게 강한 인상을 남겼습니다. 특히, 대조적인 색감을 활용한 작품은 눈에 띄게 독창적이었습니다.
@@ -74,12 +121,79 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 """
         contentLabel.textColor = .white
         contentLabel.numberOfLines = 0
+        contentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
+        contentLabel.font = UIFont(name: "Pretendard-Regular", size: 18)
+        contentLabel.lineBreakMode = .byWordWrapping
+        var paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.21
+        // Line height: 26 pt
+
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(squareView.snp.bottom).offset(20)
+            make.top.equalTo(profileImageView.snp.bottom).offset(20)
             make.leading.equalTo(squareView.snp.leading)
             make.trailing.equalTo(squareView.snp.trailing)
-            make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
+//            make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
         }
+
+
+        // 첫 번째 추가 이미지 뷰 및 레이블 구성
+        additionalImageView1.image = UIImage(named: "Vector 3")
+
+//        additionalLabel1.text = "123"
+        additionalLabel1.text = "123"
+        additionalLabel1.textColor = .white
+        additionalLabel1.font = UIFont(name: "Pretendard-Light", size: 12)
+        additionalLabel1.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+        // 스타일 및 글꼴 설정 등
+
+        // 두 번째 추가 이미지 뷰 및 레이블 구성
+        additionalImageView2.image = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view")
+        additionalLabel2.textColor = .white
+        additionalLabel2.font = UIFont(name: "Pretendard-Light", size: 12)
+        additionalLabel2.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+
+
+//        additionalLabel2.text = "456"
+        additionalLabel2.text = "456"
+
+        // 스타일 및 글꼴 설정 등
+
+        scrollView.addSubview(additionalImageView1)
+        scrollView.addSubview(additionalLabel1)
+        scrollView.addSubview(additionalImageView2)
+        scrollView.addSubview(additionalLabel2)
+
+
+
+        additionalImageView1.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(30)
+            make.left.equalTo(contentLabel.snp.left)
+            make.width.equalTo(17.5)
+            make.height.equalTo(14.5)
+//            make.bottom.equalToSuperview().offset(-10)//      
+            make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
+
+
+        }
+
+        additionalLabel1.snp.makeConstraints { make in
+            make.centerY.equalTo(additionalImageView1)
+            make.left.equalTo(additionalImageView1.snp.right).offset(10)
+        }
+
+        // 두 번째 추가 이미지 뷰와 레이블 레이아웃
+        additionalImageView2.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(25)
+            make.left.equalTo(additionalLabel1.snp.right).offset(10)
+            make.width.height.equalTo(24)
+        }
+
+        additionalLabel2.snp.makeConstraints { make in
+            make.centerY.equalTo(additionalImageView2)
+            make.left.equalTo(additionalImageView2.snp.right).offset(8)
+        }
+
+
     }
 
     private func setupNavigationTitleAndSubtitle() {

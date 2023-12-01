@@ -7,6 +7,11 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
     var tableView: UITableView!
 
+    override func viewDidAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = false
+
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
