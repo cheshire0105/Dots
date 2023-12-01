@@ -297,12 +297,6 @@ extension 프로필변경_화면: UIImagePickerControllerDelegate {
     }
 }
 
-class 사진_라이브러리: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-    }
-}
 
 
 
