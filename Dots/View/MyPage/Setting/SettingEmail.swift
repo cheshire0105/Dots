@@ -117,7 +117,7 @@ class 이메일변경_화면 : UIViewController {
         
         if let currentLoggedInEmail = getCurrentLoggedInEmail() {
                현재_이메일_텍스트필드.text = currentLoggedInEmail
-           }
+        }
     }
     func getCurrentLoggedInEmail() -> String? {
         if let user = Auth.auth().currentUser {

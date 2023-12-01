@@ -518,12 +518,23 @@ extension 비밀번호변경_화면 {
                 } else if 제공업체 == "google.com" {
                     
                     현재_비밀번호_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
+                    현재_비밀번호_텍스트필드.textColor = UIColor.red
                     현재_비밀번호_텍스트필드.isEnabled = false
+                    현재_비밀번호_텍스트필드.isSecureTextEntry = false
+                    현재_비밀번호_표시_온오프.isHidden = true
+
                     새_비밀번호_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
+                    새_비밀번호_텍스트필드.textColor = UIColor.red
                     새_비밀번호_텍스트필드.isEnabled = false
-                    새_비밀번호_확인_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
-                    새_비밀번호_확인_텍스트필드.isEnabled = false
+                    새_비밀번호_텍스트필드.isSecureTextEntry = false
+                    새_비밀번호_표시_온오프.isHidden = true
                     
+                    새_비밀번호_확인_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
+                    새_비밀번호_확인_텍스트필드.textColor = UIColor.red
+                    새_비밀번호_확인_텍스트필드.isEnabled = false
+                    새_비밀번호_확인_텍스트필드.isSecureTextEntry = false
+                    새_비밀번호_확인_표시_온오프.isHidden = true
+
                 }
             }
         } else {
