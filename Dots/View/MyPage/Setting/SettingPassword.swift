@@ -54,7 +54,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
         textField.isEnabled = false
-        
+        textField.isSecureTextEntry = true
         return textField
     } ()
     
@@ -88,7 +88,8 @@ class 비밀번호변경_화면 : UIViewController {
         
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
-        
+        textField.isSecureTextEntry = true
+
         return textField
     } ()
     
@@ -122,7 +123,8 @@ class 비밀번호변경_화면 : UIViewController {
         
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
-        
+        textField.isSecureTextEntry = true
+
         return textField
     } ()
     
