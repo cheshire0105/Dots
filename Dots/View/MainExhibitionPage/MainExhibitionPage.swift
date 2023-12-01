@@ -78,7 +78,7 @@ class MainExhibitionPage: UIViewController {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        tabBarController?.tabBar.isHidden = false
+//        tabBarController?.tabBar.isHidden = false
 
     }
 
@@ -407,7 +407,8 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == MainExhibitionCollectionView {
             let exhibitionPage = BackgroundImageViewController()
-            
+            exhibitionPage.hidesBottomBarWhenPushed = true // 탭 바 숨기기
+
             var selectedExhibition: ExhibitionModel?
             if indexPath.section == 0 {
                 selectedExhibition = exhibitions.count > indexPath.item ? exhibitions[indexPath.item] : nil

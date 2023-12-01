@@ -7,10 +7,10 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
     var tableView: UITableView!
 
-    override func viewDidAppear(_ animated: Bool) {
-        tabBarController?.tabBar.isHidden = false
-
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        tabBarController?.tabBar.isHidden = false
+//
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,16 +98,17 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
 
 
-    // UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 셀 선택 시 동작
         print("Selected row: \(indexPath.row)")
 
         // 셀 선택 시 디테일 페이지로 넘어가는 코드
         let detailViewController = ReviewDetailViewController() // 상세 페이지 뷰 컨트롤러 인스턴스 생성
+        detailViewController.hidesBottomBarWhenPushed = true // 탭 바 숨기기
         // 네비게이션 컨트롤러를 사용하여 디테일 뷰로 이동
         navigationController?.pushViewController(detailViewController, animated: true)
     }
+
 
 
 

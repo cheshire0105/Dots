@@ -40,12 +40,12 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
     let additionalImageView2 = UIImageView()
     let additionalLabel2 = UILabel()
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        // 탭바를 숨깁니다.
-        tabBarController?.tabBar.isHidden = true
-
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        // 탭바를 숨깁니다.
+//        tabBarController?.tabBar.isHidden = true
+//
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
