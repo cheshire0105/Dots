@@ -43,7 +43,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 10
-       
+        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
@@ -78,7 +78,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 10
-       
+        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
@@ -112,7 +112,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 10
-       
+        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
@@ -177,7 +177,21 @@ class 비밀번호변경_화면 : UIViewController {
         button.layer.cornerRadius = 10
         return button
     } ()
-    
+    private let 현재_비밀번호_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
+    private let 새_비밀번호_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
+    private let 새_비밀번호_확인_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
     override func viewDidLoad() {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
@@ -201,8 +215,6 @@ class 비밀번호변경_화면 : UIViewController {
             }
         }
         
-      
-           
         현재_비밀번호_실시간_조회_불러오기()
         
     }
@@ -213,8 +225,37 @@ class 비밀번호변경_화면 : UIViewController {
     }
     
     
-}
-
+    @objc func 현재_비밀번호_표시_온오프_클릭() {
+        if 현재_비밀번호_텍스트필드.isSecureTextEntry == true {
+            현재_비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+            현재_비밀번호_표시_온오프.tintColor = UIColor(named: "neon")
+            현재_비밀번호_텍스트필드.isSecureTextEntry = false
+        } else if 현재_비밀번호_텍스트필드.isSecureTextEntry == false {
+            현재_비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+            현재_비밀번호_텍스트필드.isSecureTextEntry = true
+        }
+    }
+    @objc func 새_비밀번호_표시_온오프_클릭() {
+        if 새_비밀번호_텍스트필드.isSecureTextEntry == true {
+            새_비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+            새_비밀번호_표시_온오프.tintColor = UIColor(named: "neon")
+            새_비밀번호_텍스트필드.isSecureTextEntry = false
+        } else if 새_비밀번호_텍스트필드.isSecureTextEntry == false {
+            새_비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+            새_비밀번호_텍스트필드.isSecureTextEntry = true
+        }
+    }
+    @objc func 새_비밀번호_확인_표시_온오프_클릭() {
+            if 새_비밀번호_확인_텍스트필드.isSecureTextEntry == true {
+                새_비밀번호_확인_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+                새_비밀번호_확인_표시_온오프.tintColor = UIColor(named: "neon")
+                새_비밀번호_확인_텍스트필드.isSecureTextEntry = false
+            } else if 새_비밀번호_확인_텍스트필드.isSecureTextEntry == false {
+                새_비밀번호_확인_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+                새_비밀번호_확인_텍스트필드.isSecureTextEntry = true
+            }
+        }
+    }
 
 extension 비밀번호변경_화면{
     
@@ -232,6 +273,9 @@ extension 비밀번호변경_화면{
         view.addSubview(현재비밀번호_라벨)
         view.addSubview(새비밀번호_라벨)
         view.addSubview(새비밀번호확인_라벨)
+        view.addSubview(현재_비밀번호_표시_온오프)
+        view.addSubview(새_비밀번호_표시_온오프)
+        view.addSubview(새_비밀번호_확인_표시_온오프)
         
         뒤로가기_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(페이지_제목.snp.centerY)
@@ -304,10 +348,27 @@ extension 비밀번호변경_화면{
             make.leading.equalTo(새_비밀번호_확인_백.snp.leading)
             make.height.equalTo(22)
         }
-        
+        현재_비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(현재_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(현재_비밀번호_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
+        새_비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(새_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(새_비밀번호_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
+        새_비밀번호_확인_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(새_비밀번호_확인_텍스트필드.snp.centerY)
+            make.trailing.equalTo(새_비밀번호_확인_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
     }
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        현재_비밀번호_표시_온오프.addTarget(self, action: #selector(현재_비밀번호_표시_온오프_클릭), for: .touchUpInside)
+        새_비밀번호_표시_온오프.addTarget(self, action: #selector(새_비밀번호_표시_온오프_클릭), for: .touchUpInside)
+        새_비밀번호_확인_표시_온오프.addTarget(self, action: #selector(새_비밀번호_확인_표시_온오프_클릭), for: .touchUpInside)
     }
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
@@ -326,7 +387,6 @@ extension 비밀번호변경_화면 {
     @objc private func 화면_제스쳐_뒤로_가기() {
         navigationController?.popViewController(animated: true)
     }
-    
 }
 
 
@@ -454,12 +514,14 @@ extension 비밀번호변경_화면 {
                         print("조회 결과 등록된 이메일이 없음")
                     }
                 } else if 제공업체 == "google.com" {
+                    
                     현재_비밀번호_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
                     현재_비밀번호_텍스트필드.isEnabled = false
                     새_비밀번호_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
                     새_비밀번호_텍스트필드.isEnabled = false
                     새_비밀번호_확인_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
                     새_비밀번호_확인_텍스트필드.isEnabled = false
+                    
                 }
             }
         } else {
