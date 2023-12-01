@@ -1,4 +1,6 @@
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 class 비밀번호변경_화면 : UIViewController {
     
@@ -28,6 +30,8 @@ class 비밀번호변경_화면 : UIViewController {
         uiView.layer.cornerRadius = 10
         return uiView
     }()
+    
+    
     private let 현재_비밀번호_텍스트필드 = { ()
         let textField = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [
@@ -39,7 +43,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 10
-       
+        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
@@ -53,12 +57,15 @@ class 비밀번호변경_화면 : UIViewController {
         
         return textField
     } ()
+    
+    
     private let 새_비밀번호_백 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         uiView.layer.cornerRadius = 10
         return uiView
     }()
+    
     
     private let 새_비밀번호_텍스트필드 = { ()
         let textField = UITextField()
@@ -71,7 +78,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 10
-       
+        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
@@ -85,6 +92,7 @@ class 비밀번호변경_화면 : UIViewController {
         return textField
     } ()
     
+    
     private let 새_비밀번호_확인_백 = {
         let uiView = UIView()
         uiView.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
@@ -92,7 +100,8 @@ class 비밀번호변경_화면 : UIViewController {
         return uiView
     }()
     
-    private let 새_비밀번호_확인_텍스트필드 = { ()
+    
+    private let 새_비밀번호_확인_텍스트필드 = {
         let textField = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.darkGray,
@@ -103,7 +112,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.tintColor = UIColor(named: "neon")
         textField.layer.masksToBounds = true
         textField.layer.cornerRadius = 10
-       
+        
         textField.backgroundColor = UIColor.clear
         textField.textAlignment = .left
         textField.font = UIFont.boldSystemFont(ofSize: 14)
@@ -116,6 +125,7 @@ class 비밀번호변경_화면 : UIViewController {
         
         return textField
     } ()
+    
     
     var 구분선 = {
         var imageView = UIImageView()
@@ -134,6 +144,8 @@ class 비밀번호변경_화면 : UIViewController {
         label.textAlignment = .left
         return label
     }()
+    
+    
     private let 새비밀번호_라벨 = {
         let label = UILabel()
         label.text = "새 비밀번호 입력"
@@ -142,6 +154,8 @@ class 비밀번호변경_화면 : UIViewController {
         label.textAlignment = .left
         return label
     }()
+    
+    
     private let 새비밀번호확인_라벨 = {
         let label = UILabel()
         label.text = "새 비밀번호 확인"
@@ -163,7 +177,21 @@ class 비밀번호변경_화면 : UIViewController {
         button.layer.cornerRadius = 10
         return button
     } ()
-    
+    private let 현재_비밀번호_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
+    private let 새_비밀번호_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
+    private let 새_비밀번호_확인_표시_온오프 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "passwordOFF"), for: .normal)
+        return button
+    }()
     override func viewDidLoad() {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
@@ -178,6 +206,17 @@ class 비밀번호변경_화면 : UIViewController {
         새_비밀번호_텍스트필드.delegate = self
         현재_비밀번호_텍스트필드.delegate = self
         새_비밀번호_확인_텍스트필드.delegate = self
+        
+        if let user = Auth.auth().currentUser {
+            for profile in user.providerData {
+                // profile.providerID에는 제공 업체의 식별자가 들어 있습니다.
+                let providerId = profile.providerID
+                print("Provider ID: \(providerId)")
+            }
+        }
+        
+        현재_비밀번호_실시간_조회_불러오기()
+        
     }
     
     deinit {
@@ -186,8 +225,37 @@ class 비밀번호변경_화면 : UIViewController {
     }
     
     
-}
-
+    @objc func 현재_비밀번호_표시_온오프_클릭() {
+        if 현재_비밀번호_텍스트필드.isSecureTextEntry == true {
+            현재_비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+            현재_비밀번호_표시_온오프.tintColor = UIColor(named: "neon")
+            현재_비밀번호_텍스트필드.isSecureTextEntry = false
+        } else if 현재_비밀번호_텍스트필드.isSecureTextEntry == false {
+            현재_비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+            현재_비밀번호_텍스트필드.isSecureTextEntry = true
+        }
+    }
+    @objc func 새_비밀번호_표시_온오프_클릭() {
+        if 새_비밀번호_텍스트필드.isSecureTextEntry == true {
+            새_비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+            새_비밀번호_표시_온오프.tintColor = UIColor(named: "neon")
+            새_비밀번호_텍스트필드.isSecureTextEntry = false
+        } else if 새_비밀번호_텍스트필드.isSecureTextEntry == false {
+            새_비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+            새_비밀번호_텍스트필드.isSecureTextEntry = true
+        }
+    }
+    @objc func 새_비밀번호_확인_표시_온오프_클릭() {
+            if 새_비밀번호_확인_텍스트필드.isSecureTextEntry == true {
+                새_비밀번호_확인_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
+                새_비밀번호_확인_표시_온오프.tintColor = UIColor(named: "neon")
+                새_비밀번호_확인_텍스트필드.isSecureTextEntry = false
+            } else if 새_비밀번호_확인_텍스트필드.isSecureTextEntry == false {
+                새_비밀번호_확인_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
+                새_비밀번호_확인_텍스트필드.isSecureTextEntry = true
+            }
+        }
+    }
 
 extension 비밀번호변경_화면{
     
@@ -205,6 +273,9 @@ extension 비밀번호변경_화면{
         view.addSubview(현재비밀번호_라벨)
         view.addSubview(새비밀번호_라벨)
         view.addSubview(새비밀번호확인_라벨)
+        view.addSubview(현재_비밀번호_표시_온오프)
+        view.addSubview(새_비밀번호_표시_온오프)
+        view.addSubview(새_비밀번호_확인_표시_온오프)
         
         뒤로가기_버튼.snp.makeConstraints { make in
             make.centerY.equalTo(페이지_제목.snp.centerY)
@@ -277,10 +348,27 @@ extension 비밀번호변경_화면{
             make.leading.equalTo(새_비밀번호_확인_백.snp.leading)
             make.height.equalTo(22)
         }
-        
+        현재_비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(현재_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(현재_비밀번호_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
+        새_비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(새_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(새_비밀번호_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
+        새_비밀번호_확인_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(새_비밀번호_확인_텍스트필드.snp.centerY)
+            make.trailing.equalTo(새_비밀번호_확인_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
     }
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        현재_비밀번호_표시_온오프.addTarget(self, action: #selector(현재_비밀번호_표시_온오프_클릭), for: .touchUpInside)
+        새_비밀번호_표시_온오프.addTarget(self, action: #selector(새_비밀번호_표시_온오프_클릭), for: .touchUpInside)
+        새_비밀번호_확인_표시_온오프.addTarget(self, action: #selector(새_비밀번호_확인_표시_온오프_클릭), for: .touchUpInside)
     }
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
@@ -299,7 +387,6 @@ extension 비밀번호변경_화면 {
     @objc private func 화면_제스쳐_뒤로_가기() {
         navigationController?.popViewController(animated: true)
     }
-    
 }
 
 
@@ -402,3 +489,43 @@ extension 비밀번호변경_화면 {
 }
 
 
+extension 비밀번호변경_화면 {
+    func 현재_비밀번호_실시간_조회_불러오기() {
+        if let 유저 = Auth.auth().currentUser {
+            for auth에등록된계정 in 유저.providerData {
+                let 제공업체 = auth에등록된계정.providerID
+                if 제공업체 == "password" {
+                    let 이메일 = 유저.email
+                    if let 이메일 = 이메일 {
+                        let 데이터베이스 = Firestore.firestore()
+                        let 유저데이터조회 = 데이터베이스.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일)
+                        
+                        유저데이터조회.addSnapshotListener { [weak self] (snapshot, error) in
+                            guard let self = self, let 문서 = snapshot?.documents.first else { return }
+                            
+                            if 문서.exists {
+                                let 비밀번호 = 문서["비밀번호"] as? String
+                                self.현재_비밀번호_텍스트필드.text = 비밀번호
+                            } else {
+                                print("유저 데이터를 찾을 수 없음")
+                            }
+                        }
+                    } else {
+                        print("조회 결과 등록된 이메일이 없음")
+                    }
+                } else if 제공업체 == "google.com" {
+                    
+                    현재_비밀번호_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
+                    현재_비밀번호_텍스트필드.isEnabled = false
+                    새_비밀번호_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
+                    새_비밀번호_텍스트필드.isEnabled = false
+                    새_비밀번호_확인_텍스트필드.text = "구글 연동 로그인의 경우 사용 변경 불가"
+                    새_비밀번호_확인_텍스트필드.isEnabled = false
+                    
+                }
+            }
+        } else {
+            print("접속중인 계정이 없는 경우 이 프린트가 출력됩니다. (뜨는 경우는 없을걸로 예상")
+        }
+    }
+}

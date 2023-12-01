@@ -118,6 +118,7 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         button.setImage(UIImage(named: "passwordOFF"), for: .normal)
         return button
     }()
+    
     private let 회원가입_회원가입_버튼 = {
         let button = UIButton()
         button.layer.cornerRadius = 30
@@ -252,7 +253,6 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         } else {
             비밀번호_표시_온오프.setImage(UIImage(named: "passwordOFF"), for: .normal)
             회원가입_비밀번호_텍스트필드.isSecureTextEntry = true
-            
         }
     }
     
