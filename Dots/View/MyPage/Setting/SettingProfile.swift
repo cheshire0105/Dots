@@ -8,7 +8,9 @@ import FirebaseStorage
 
 class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate {
     var 활성화된텍스트필드: UITextField?
+    var imageURL: URL?
 
+    
     private let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -103,7 +105,6 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
         UI레이아웃()
         버튼_클릭()
         새_닉네임_텍스트필드.delegate = self
-        화면_제스쳐_실행()
     }
     
     
@@ -111,6 +112,134 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
         NotificationCenter.default.removeObserver(self)
     }
 }
+
+extension 프로필변경_화면 {
+    private func 버튼_클릭() {
+        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        새_프로필_이미지_버튼.addTarget(self, action: #selector(새_프로필_이미지_버튼_클릭), for: .touchUpInside)
+        변경_버튼.addTarget(self, action: #selector(변경_버튼_클릭), for: .touchUpInside)
+    }
+    @objc private func 뒤로가기_버튼_클릭() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func 새_프로필_이미지_버튼_클릭() {
+        let 이미지피커_컨트롤러 = UIImagePickerController()
+        이미지피커_컨트롤러.delegate = self
+        이미지피커_컨트롤러.sourceType = .photoLibrary
+        present(이미지피커_컨트롤러, animated: true, completion: nil)
+    }
+    @objc private func 변경_버튼_클릭() {
+        guard let email = Auth.auth().currentUser?.email else {
+            print("현재 로그인된 이메일을 가져올 수 없습니다.")
+            return
+        }
+
+        if let 제공업체 = Auth.auth().currentUser?.providerData {
+            for 유저정보 in 제공업체 {
+                if 유저정보.providerID == "password" {
+               
+                    print("도트회원 조회완료")
+                    
+        
+                    guard let image = 새_프로필_이미지_버튼.image(for: .selected) else {
+                        print("프로필 이미지가 선택되지 않았습니다.")
+                        return
+                    }
+                    
+                    이미지_업로드(image) { result in
+                        if case .success(let url) = result {
+                            print("이미지 업로드 성공. URL: \(url)")
+                            self.imageURL = url
+                            
+                            let 데이터베이스 = Firestore.firestore()
+                            let 유저컬렉션 = 데이터베이스.collection("도트_유저_데이터_관리")
+                            let 쿼리 = 유저컬렉션.whereField("이메일", isEqualTo: email)
+                            
+                            쿼리.addSnapshotListener { (querySnapshot, 에러) in
+                                if let 에러 = 에러 {
+                                    print("도트_유저_데이터_관리에서 문서 조회 에러: \(에러.localizedDescription)")
+                                } else {
+                                    guard let 문서 = querySnapshot?.documents, !문서.isEmpty else {
+                                        print("도트_유저_데이터_관리에서 문서를 찾을 수 없습니다.")
+                                        return
+                                    }
+                                    let 문서UID = 문서[0].documentID
+                                    let 업데이트필드: [String: Any] = ["프로필이미지URL": url.absoluteString]
+                                    
+                                 
+                                    유저컬렉션.document(문서UID).updateData(업데이트필드) { 에러 in
+                                        if let 에러 = 에러 {
+                                            print("도트_유저_데이터_관리에서 문서 업데이트 에러: \(에러.localizedDescription)")
+                                        } else {
+                                            print("프로필 이미지 URL 업데이트 성공")
+                                        }
+                                    }
+                                }
+                            }
+                        } else if case .failure(let 에러) = result {
+                            print("이미지 업로드 실패. 에러: \(에러.localizedDescription)")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+    
+    private func 이미지_업로드(_ 이미지: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
+        guard let 이미지데이터 = 이미지.jpegData(compressionQuality: 0.5) else {
+            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to data"])))
+            return
+        }
+        
+        let 이미지생성 = "\(UUID().uuidString).jpg"
+        
+        let 스토리지_참조 = Storage.storage().reference().child("profile_images/\(이미지생성)")
+        스토리지_참조.putData(이미지데이터, metadata: nil) { (metadata, 에러) in
+            if let 이미지업로드실패 = 에러 {
+                completion(.failure(이미지업로드실패))
+            } else {
+                스토리지_참조.downloadURL { (url, error) in
+                    if let url = url {
+                        
+                        completion(.success(url))
+                    } else {
+                        completion(.failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get image URL"])))
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+//사진라이브러리 접근관련 Extension
+extension 프로필변경_화면: UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let selectedImage = info[.originalImage] as? UIImage {
+            새_프로필_이미지_버튼.setImage(selectedImage, for: .selected)
+        }
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 extension 프로필변경_화면{
@@ -169,23 +298,7 @@ extension 프로필변경_화면{
             make.width.equalTo(74)
         }
     }
-    private func 버튼_클릭() {
-        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
-        새_프로필_이미지_버튼.addTarget(self, action: #selector(새_프로필_이미지_버튼_클릭), for: .touchUpInside)
-    }
-    @objc private func 뒤로가기_버튼_클릭() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-    @objc func 새_프로필_이미지_버튼_클릭() {
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        present(imagePickerController, animated: true, completion: nil)
-    }
-
 }
-
 
 extension 프로필변경_화면: UITextFieldDelegate {
     
@@ -228,139 +341,26 @@ extension 프로필변경_화면 {
 }
 
 extension 프로필변경_화면 {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        self.view.frame.origin.y = 0
+    }
+    
+    @objc func 키보드가올라올때(notification: NSNotification) {
+        guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let 활성화된텍스트필드 = 활성화된텍스트필드 else {
+            return
+        }
         
-        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-            self.view.endEditing(true)
-            self.view.frame.origin.y = 0
-        }
+        let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
+        let 키보드시작 = view.frame.size.height - 키보드크기.height
         
-        @objc func 키보드가올라올때(notification: NSNotification) {
-            guard let 키보드크기 = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-                  let 활성화된텍스트필드 = 활성화된텍스트필드 else {
-                return
-            }
-            
-            let 텍스트필드끝 = 활성화된텍스트필드.frame.origin.y + 활성화된텍스트필드.frame.size.height
-            let 키보드시작 = view.frame.size.height - 키보드크기.height
-            
-            if 텍스트필드끝 > 키보드시작 {
-                let 이동거리 = 키보드시작 - 텍스트필드끝
-                view.frame.origin.y = 이동거리
-            }
+        if 텍스트필드끝 > 키보드시작 {
+            let 이동거리 = 키보드시작 - 텍스트필드끝
+            view.frame.origin.y = 이동거리
         }
-    }
-
-
-
-    private func 회원가입_이미지_업로드(_ 이미지: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
-        guard let 이미지데이터 = 이미지.jpegData(compressionQuality: 0.5) else {
-            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to data"])))
-            return
-        }
-
-        let 이미지생성 = "\(UUID().uuidString).jpg"
-
-        let 스토리지_참조 = Storage.storage().reference().child("profile_images/\(이미지생성)")
-        스토리지_참조.putData(이미지데이터, metadata: nil) { (metadata, 에러) in
-            if let 이미지업로드실패 = 에러 {
-                completion(.failure(이미지업로드실패))
-            } else {
-                스토리지_참조.downloadURL { (url, error) in
-                    if let url = url {
-                        completion(.success(url))
-                    } else {
-                        completion(.failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get image URL"])))
-                    }
-                }
-            }
-        }
-    }
-
-
-
-
-
-
-
-//사진라이브러리 접근관련 Extension
-extension 프로필변경_화면: UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        if let selectedImage = info[.originalImage] as? UIImage {
-            새_프로필_이미지_버튼.setImage(selectedImage, for: .selected)
-        }
-
-        picker.dismiss(animated: true, completion: nil)
-    }
-
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
     }
 }
 
 
-
-
-extension 프로필변경_화면 {
-    
-    func 화면_제스쳐_실행 () {
-        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
-        화면_제스쳐.direction = .right
-        view.addGestureRecognizer(화면_제스쳐)
-    }
-    @objc private func 화면_제스쳐_뒤로_가기() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-}
-
-extension 프로필변경_화면 {
-    
-    private func 프로필변경_업데이트() {
-        guard let 유저 = Auth.auth().currentUser else {
-            print("로그인 상태가 아님")
-            return
-        }
-
-        if let 제공업체 = 유저.providerData.first?.providerID {
-            if 제공업체 == "password" {
-                print(" 제공업체 : 도트 ")
-                유저프로필_업데이트(유저: 유저)
-            } else if 제공업체 == "google.com" {
-                print(" 제공업체 : 구글 ")
-                알럿(message: "구글 연동 계정은 해당 서비스를 이용할 수 없습니다.")
-            }
-        }
-    }
-    private func 유저프로필_업데이트(유저: User) {
-        guard let 이메일 = 유저.email else {
-            print("이메일이 없음")
-            return
-        }
-
-        let 파이어스토어 = Firestore.firestore()
-        파이어스토어.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
-            guard let self = self else { return }
-
-            if let 에러 = 에러 {
-                print("문서 조회 에러: \(에러.localizedDescription)")
-                return
-            }
-
-            guard let 문서 = 컬렉션?.documents.first else {
-                print("계정과 일치하는 문서가 없음")
-                return
-            }
-
-           
-        }
-    }
-
-    private func 알럿(message: String) {
-        let 알럿 = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
-        알럿.addAction(okAction)
-        present(알럿, animated: true, completion: nil)
-    }
-    
-    
-}
