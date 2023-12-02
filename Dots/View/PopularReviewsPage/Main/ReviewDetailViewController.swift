@@ -39,6 +39,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
     let additionalLabel1 = UILabel()
     let additionalImageView2 = UIImageView()
     let additionalLabel2 = UILabel()
+    let reviewTitle = UILabel()
 
 //    override func viewWillAppear(_ animated: Bool) {
 //        super.viewWillAppear(animated)
@@ -93,6 +94,8 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
             make.width.height.equalTo(32) // 동그란 이미지 크기
         }
 
+
+
         scrollView.addSubview(nameLabel)
         nameLabel.text = "닉네임"
         nameLabel.font =  UIFont(name: "Pretendard-SemiBold", size: 16)
@@ -110,6 +113,14 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         timeLabel.snp.makeConstraints { make in
             make.centerY.equalTo(profileImageView.snp.centerY)
             make.trailing.equalTo(scrollView.snp.trailing).offset(-20)
+        }
+
+
+        scrollView.addSubview(reviewTitle)
+        reviewTitle.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(20)
+            make.leading.equalTo(profileImageView.snp.leading)
+            make.trailing.equalTo(timeLabel.snp.trailing)
         }
 
         scrollView.addSubview(contentLabel)
@@ -132,7 +143,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
             attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
             contentLabel.attributedText = attrString
             contentLabel.snp.makeConstraints { make in
-              make.top.equalTo(profileImageView.snp.bottom).offset(20)
+              make.top.equalTo(reviewTitle.snp.bottom).offset(20)
               make.leading.equalTo(squareView.snp.leading)
               make.trailing.equalTo(squareView.snp.trailing)
         //      make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
@@ -148,6 +159,12 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         additionalLabel1.font = UIFont(name: "Pretendard-Light", size: 12)
         additionalLabel1.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
         // 스타일 및 글꼴 설정 등
+
+
+        reviewTitle.text = "후기 제목 입니다."
+        reviewTitle.textColor = .white
+        reviewTitle.font = UIFont(name: "Pretendard-Medium", size: 20)
+
 
         // 두 번째 추가 이미지 뷰 및 레이블 구성
         additionalImageView2.image = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view")
