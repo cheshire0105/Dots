@@ -446,8 +446,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.height.equalTo(1) // 보더 라인의 높이 설정
         }
 
-
-        // 보더 라인 아래에 추가할 레이블 생성
+       // 보더 라인 아래에 추가할 레이블 생성
         additionalInfoLabel.text = """
 «김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다.
 """
