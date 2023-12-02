@@ -153,15 +153,11 @@ extension 프로필변경_화면 {
         present(이미지피커_컨트롤러, animated: true, completion: nil)
     }
     @objc private func 변경_버튼_클릭() {
-//        guard let email = Auth.auth().currentUser?.email else {
-//            print("현재 로그인된 이메일을 가져올 수 없습니다.")
-//            return
-//        }
         guard let email = Auth.auth().currentUser?.email,
-                  let newNickname = 새_닉네임_텍스트필드.text else {
+              let newNickname = 새_닉네임_텍스트필드.text else {
                 print("현재 로그인된 이메일 또는 새 닉네임을 가져올 수 없습니다.")
                 return
-            }
+        }
 
         if let 제공업체 = Auth.auth().currentUser?.providerData {
             for 유저정보 in 제공업체 {
@@ -184,7 +180,7 @@ extension 프로필변경_화면 {
                             let 유저컬렉션 = 데이터베이스.collection("도트_유저_데이터_관리")
                             let 쿼리 = 유저컬렉션.whereField("이메일", isEqualTo: email)
                             
-                            쿼리.addSnapshotListener { (querySnapshot, 에러) in
+                            쿼리.getDocuments { (querySnapshot, 에러) in
                                 if let 에러 = 에러 {
                                     print("도트_유저_데이터_관리에서 문서 조회 에러: \(에러.localizedDescription)")
                                 } else {
