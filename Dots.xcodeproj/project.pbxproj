@@ -7,16 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F9325C22AE67DC400C27F1B /* PopularReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9325C12AE67DC400C27F1B /* PopularReviewCell.swift */; };
-		1FDD34842AE9A114002A72BB /* PopularReviewImagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */; };
-		1FF9CB0C2AEAABB9002B0F61 /* PopularReviewDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */; };
 		37051B7B2B04F43800D33C07 /* MypageUserSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B7A2B04F43800D33C07 /* MypageUserSetting.swift */; };
 		37051B7E2B05F86B00D33C07 /* SettingProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B7D2B05F86B00D33C07 /* SettingProfile.swift */; };
 		37051B802B05F87700D33C07 /* SettingPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B7F2B05F87700D33C07 /* SettingPassword.swift */; };
 		37051B822B05F88D00D33C07 /* SettingNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B812B05F88D00D33C07 /* SettingNotification.swift */; };
 		37051B842B05F89900D33C07 /* SettingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B832B05F89900D33C07 /* SettingService.swift */; };
 		370F3F0A2AEEC11000C4A8F5 /* MyPageExhibitionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */; };
-		3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */; };
 		373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F22B0D500D000A7BCD /* Alert.swift */; };
 		373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */; };
 		37404DEE2B1491C600D16F60 /* SettingEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37404DED2B1491C600D16F60 /* SettingEmail.swift */; };
@@ -107,16 +103,12 @@
 
 /* Begin PBXFileReference section */
 		11C543E865FC39B95C159CDC /* Pods-Dots.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.release.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.release.xcconfig"; sourceTree = "<group>"; };
-		1F9325C12AE67DC400C27F1B /* PopularReviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewCell.swift; sourceTree = "<group>"; };
-		1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewImagesCell.swift; sourceTree = "<group>"; };
-		1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDataModel.swift; sourceTree = "<group>"; };
 		37051B7A2B04F43800D33C07 /* MypageUserSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageUserSetting.swift; sourceTree = "<group>"; };
 		37051B7D2B05F86B00D33C07 /* SettingProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfile.swift; sourceTree = "<group>"; };
 		37051B7F2B05F87700D33C07 /* SettingPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingPassword.swift; sourceTree = "<group>"; };
 		37051B812B05F88D00D33C07 /* SettingNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingNotification.swift; sourceTree = "<group>"; };
 		37051B832B05F89900D33C07 /* SettingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingService.swift; sourceTree = "<group>"; };
 		370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyPageExhibitionCell.swift; path = "../마이페이지_전시폴더/MyPageExhibitionCell.swift"; sourceTree = "<group>"; };
-		3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReviewDetail.swift; sourceTree = "<group>"; };
 		373FC7F22B0D500D000A7BCD /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
 		37404DED2B1491C600D16F60 /* SettingEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEmail.swift; sourceTree = "<group>"; };
@@ -289,8 +281,6 @@
 		37D0A99E2AF51469000D59AB /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				1FDD34832AE9A114002A72BB /* PopularReviewImagesCell.swift */,
-				1F9325C12AE67DC400C27F1B /* PopularReviewCell.swift */,
 				FF58FB2B2AE6010F00853006 /* PopularReviewsPage.swift */,
 				FFBD77AD2B18D1E30078F6CB /* ReviewDetailViewController.swift */,
 			);
@@ -300,7 +290,6 @@
 		37D0A99F2AF5149D000D59AB /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				3727BE092AF21FCC0055AD24 /* PopularReviewDetail.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -504,7 +493,6 @@
 			children = (
 				37D0A99F2AF5149D000D59AB /* Detail */,
 				37D0A99E2AF51469000D59AB /* Main */,
-				1FF9CB0B2AEAABB9002B0F61 /* PopularReviewDataModel.swift */,
 			);
 			path = PopularReviewsPage;
 			sourceTree = "<group>";
@@ -743,7 +731,6 @@
 				FFBD77AE2B18D1E30078F6CB /* ReviewDetailViewController.swift in Sources */,
 				377130242AFB88C40018D4C1 /* SignUPthird.swift in Sources */,
 				FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */,
-				1FF9CB0C2AEAABB9002B0F61 /* PopularReviewDataModel.swift in Sources */,
 				37DE8FA12B04A6C90086FC58 /* SavedReviewCell.swift in Sources */,
 				37DE8F902B0396EA0086FC58 /* MypageSaved.swift in Sources */,
 				37051B7B2B04F43800D33C07 /* MypageUserSetting.swift in Sources */,
@@ -754,10 +741,8 @@
 				37404DEE2B1491C600D16F60 /* SettingEmail.swift in Sources */,
 				FF3C971F2AE5FEA1006FEF23 /* MainExhibitionPage.swift in Sources */,
 				373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */,
-				3727BE0A2AF21FCC0055AD24 /* PopularReviewDetail.swift in Sources */,
 				FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */,
 				37DE8F9D2B04A6A30086FC58 /* SavedArtgalleryCel.swift in Sources */,
-				1FDD34842AE9A114002A72BB /* PopularReviewImagesCell.swift in Sources */,
 				FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */,
 				FFAFCB802B01B01E0030C3C9 /* DetailViewController.swift in Sources */,
 				FF3C971D2AE5FEA1006FEF23 /* SceneDelegate.swift in Sources */,
@@ -768,7 +753,6 @@
 				377130222AFB88B00018D4C1 /* SignUPsecond.swift in Sources */,
 				FF47B5EE2AE61BA5006A5004 /* TabBar.swift in Sources */,
 				37DE8F992B03B46A0086FC58 /* MypageReviewCell.swift in Sources */,
-				1F9325C22AE67DC400C27F1B /* PopularReviewCell.swift in Sources */,
 				373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

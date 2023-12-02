@@ -85,7 +85,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             // exhibitionTitleLabel에 미술관 이름을 설정
             self.exhibitionTitleLabel.text = exhibitionDetail.museumName
             self.galleryAddressLabel.text = exhibitionDetail.museumAddress
-            self.additionalInfoLabel.text = exhibitionDetail.exhibitionDetail
+//            self.additionalInfoLabel.text = exhibitionDetail.exhibitionDetail
+
+            // additionalInfoLabel에 전시 상세 정보를 설정하고 줄바꿈 처리
+                   let detailTextWithLineBreaks = exhibitionDetail.exhibitionDetail.replacingOccurrences(of: "\\n", with: "\n")
+                   self.additionalInfoLabel.text = detailTextWithLineBreaks
 
             // 스택 뷰에 데이터 바인딩
             self.labelContents = [
@@ -308,6 +312,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 미술관 주소 레이블 초기화
         galleryAddressLabel.text = "서울 종로구 삼청로 30"
         galleryAddressLabel.textColor = .white
+        galleryAddressLabel.numberOfLines = 2
         galleryAddressLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
 
         // 컨텐츠 뷰에 레이블 추가
@@ -348,6 +353,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         galleryAddressLabel.snp.makeConstraints { make in
             make.top.equalTo(exhibitionTitleLabel.snp.bottom).offset(8) // 전시 제목 레이블 아래 간격
             make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
+            make.trailing.equalTo(mapView.snp.leading).offset(10)
         }
 
 
@@ -442,14 +448,27 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             make.height.equalTo(1) // 보더 라인의 높이 설정
         }
 
-
-        // 보더 라인 아래에 추가할 레이블 생성
+       // 보더 라인 아래에 추가할 레이블 생성
         additionalInfoLabel.text = """
 «김구림»은 실험미술의 선구자인 김구림의 예술 세계를 조명하는 개인전이다.
 """
         additionalInfoLabel.textColor = .white
         additionalInfoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
         additionalInfoLabel.numberOfLines = 0 // 제한 없이 여러 줄 표시 가능
+
+
+        additionalInfoLabel.numberOfLines = 0
+        additionalInfoLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
+        additionalInfoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        additionalInfoLabel.lineBreakMode = .byWordWrapping
+        var paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.02
+        // Line height: 18 pt
+        paragraphStyle.alignment = .justified
+        let attrString = NSMutableAttributedString(string: additionalInfoLabel.text!)
+        paragraphStyle.lineSpacing = 1
+        attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
+        additionalInfoLabel.attributedText = attrString
 
         // contentView에 추가 정보 레이블 추가
         detailContentView.addSubview(additionalInfoLabel)
@@ -509,20 +528,26 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         return reviews.count
     }
 
+    // tableView(_:cellForRowAt:) 메서드 수정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "새로운_ReviewTableViewCell", for: indexPath) as? 새로운_ReviewTableViewCell else {
             return UITableViewCell()
         }
 
         // 리뷰 제목, 내용, 프로필 이미지, 닉네임 설정
-        let reviewTitle = "리뷰 제목" // 임시 제목
-        let reviewContent = reviews[indexPath.row] // 실제 리뷰 내용
-        let profileImage = UIImage(named: "morningStar") // 기본 이미지 or 실제 이미지 이름
-        let nickname = "닉네임" // 임시 닉네임
+        let reviewTitle = "chsshire"
+        let reviewContent = reviews[indexPath.row]
+        let profileImage = UIImage(named: "morningStar")
+        let nickname = "8분 전"
+        let newTitle = "새로운 제목" // 새로운 제목 설정
+        let extraImageView1 = UIImage(named: "Vector 4")
+        let extraImageView2 = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1")
+        // 추가 텍스트 설정
+            let text123 = "123"
+            let text456 = "456"
 
-        // 셀에 정보를 설정하는 부분
-        cell.setReview(title: reviewTitle, content: reviewContent, profileImage: profileImage, nickname: nickname)
-
+        // 셀에 정보를 설정하는 부분 (새로운 제목 포함)
+        cell.setReview(title: reviewTitle, content: reviewContent, profileImage: profileImage, nickname: nickname, newTitle: newTitle, extraImageView1: extraImageView1, extraImageView2: extraImageView2, text123: text123, text456: text456)
 
 
         return cell

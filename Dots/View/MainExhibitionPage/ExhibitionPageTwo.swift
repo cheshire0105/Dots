@@ -685,20 +685,19 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-
 class 새로운_ReviewTableViewCell: UITableViewCell {
 
     // UI 컴포넌트 선언
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont(name: "Pretendard-Bold", size: 12)
         label.textColor = .white
         return label
     }()
 
     private lazy var contentLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont(name: "Pretendard-Regular", size: 10)
         label.textColor = .white
         label.numberOfLines = 0 // 멀티라인을 허용합니다.
         return label
@@ -714,12 +713,48 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
 
     private lazy var nicknameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont(name: "Pretendard-Bold", size: 10)
         label.textColor = .white
         return label
     }()
 
     private let container = UIView()
+
+    private lazy var newTitleLabel: UILabel = {
+         let label = UILabel()
+         label.font = UIFont(name: "Pretendard-Regular", size: 18)
+         label.textColor = .white
+         return label
+     }()
+
+    private lazy var extraImageView1: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    private lazy var extraImageView2: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    private lazy var label123: UILabel = {
+            let label = UILabel()
+            label.font = UIFont(name: "Pretendard-Regular", size: 10)
+            label.textColor = .white
+            return label
+        }()
+
+        private lazy var label456: UILabel = {
+            let label = UILabel()
+            label.font = UIFont(name: "Pretendard-Regular", size: 10)
+            label.textColor = .white
+            return label
+        }()
+
 
 
     // 초기화 메서드
@@ -743,6 +778,14 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         container.addSubview(contentLabel)
         container.addSubview(profileImageView)
         container.addSubview(nicknameLabel)
+        // 컨테이너 뷰에 새로운 서브뷰를 추가합니다.
+               container.addSubview(newTitleLabel)
+        // 컨테이너 뷰에 새로운 서브뷰들을 추가합니다.
+                container.addSubview(extraImageView1)
+                container.addSubview(extraImageView2)
+        // 새로운 서브뷰들을 컨테이너 뷰에 추가합니다.
+               container.addSubview(label123)
+               container.addSubview(label456)
 
         // 컨테이너 뷰에 대한 제약조건을 설정합니다.
         container.snp.makeConstraints { make in
@@ -750,6 +793,8 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
             make.bottom.equalTo(contentView.snp.bottom).offset(-10) // 하단에 10포인트의 여백을 추가합니다.
             make.left.equalTo(contentView.snp.left).offset(10) // 좌측에 10포인트의 여백을 추가합니다.
             make.right.equalTo(contentView.snp.right).offset(-10) // 우측에 10포인트의 여백을 추가합니다.
+
+            
         }
 
         // 다른 UI 컴포넌트들의 레이아웃 설정을 업데이트합니다. (titleLabel, contentLabel, profileImageView, nicknameLabel 제약조건은 container 기준으로 업데이트합니다)
@@ -766,41 +811,82 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
 
         // 제목 레이블의 레이아웃 설정
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(15) // 상단 여백 설정
-            make.left.equalToSuperview().offset(10) // 좌측 여백 설정
-            make.right.equalToSuperview().offset(-10) // 우측 여백 설정
+//            make.top.equalToSuperview().offset(15) // 상단 여백 설정
+            make.centerY.equalTo(profileImageView)
+            make.left.equalTo(profileImageView.snp.right).offset(10)
         }
 
         // 내용 레이블의 레이아웃 설정
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(10) // 제목 레이블 아래 간격을 둡니다.
-            make.left.right.equalTo(titleLabel)
-            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
+            make.top.equalTo(newTitleLabel.snp.bottom).offset(10) // 제목 레이블 아래 간격을 둡니다.
+            make.left.right.equalToSuperview().inset(10)
 
         }
 
         // 프로필 이미지 뷰의 레이아웃 설정
         profileImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
-            make.right.equalToSuperview().offset(-10) // 좌측 여백 설정
+            make.left.equalToSuperview().offset(10) // 좌측 여백 설정
             make.width.height.equalTo(30) // 이미지 크기를 30x30으로 설정
         }
 
         // 닉네임 레이블의 레이아웃 설정
         nicknameLabel.snp.makeConstraints { make in
-            make.right.equalTo(profileImageView.snp.left).offset(-10) // 프로필 이미지 오른쪽에 위치
-            make.centerY.equalTo(profileImageView.snp.centerY) // 프로필 이미지와 중앙 정렬
+            make.left.equalTo(titleLabel.snp.right).offset(10) // 프로필 이미지 오른쪽에 위치
+            make.centerY.equalTo(titleLabel.snp.centerY) // 프로필 이미지와 중앙 정렬
         }
+
+        // 새로운 제목 레이블 레이아웃 설정
+           newTitleLabel.snp.makeConstraints { make in
+               make.top.equalTo(profileImageView.snp.bottom).offset(10)
+               make.left.right.equalToSuperview().inset(10)
+           }
+
+        // 첫 번째 이미지 뷰 레이아웃 설정
+           extraImageView1.snp.makeConstraints { make in
+               make.top.equalTo(contentLabel.snp.bottom).offset(15)
+               make.left.equalToSuperview().offset(10)
+               make.width.equalTo(11.82)
+               make.height.equalTo(10) // 원하는 크기로 조정
+               make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
+
+           }
+
+           // 두 번째 이미지 뷰 레이아웃 설정
+           extraImageView2.snp.makeConstraints { make in
+               make.top.equalTo(contentLabel.snp.bottom).offset(13)
+               make.left.equalTo(label123.snp.right).offset(10)
+               make.width.height.equalTo(15) // 원하는 크기로 조정
+           }
+
+        // label123 레이아웃 설정
+         label123.snp.makeConstraints { make in
+             make.centerY.equalTo(extraImageView1.snp.centerY)
+             make.left.equalTo(extraImageView1.snp.right).offset(4)
+         }
+
+         // label456 레이아웃 설정
+         label456.snp.makeConstraints { make in
+             make.centerY.equalTo(extraImageView2.snp.centerY)
+             make.left.equalTo(extraImageView2.snp.right).offset(4)
+         }
     }
 
     // 셀에 리뷰 정보를 설정하는 메서드
-    func setReview(title: String, content: String, profileImage: UIImage?, nickname: String) {
+    func setReview(title: String, content: String, profileImage: UIImage?, nickname: String, newTitle: String, extraImageView1: UIImage?, extraImageView2: UIImage?, text123: String, text456: String) {
+
         titleLabel.text = title
         contentLabel.text = content
         profileImageView.image = profileImage
         nicknameLabel.text = nickname
+        newTitleLabel.text = newTitle
+        self.extraImageView1.image = extraImageView1
+        self.extraImageView2.image = extraImageView2
+        label123.text = text123
+             label456.text = text456
     }
 }
+
 
 import UIKit
 import MapKit
