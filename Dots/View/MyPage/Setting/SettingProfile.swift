@@ -94,7 +94,9 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
         button.layer.cornerRadius = 10
         return button
     } ()
-    
+    override func viewWillAppear(_ animated: Bool) {
+        현재_유저_프로필이미지_적용하기()
+    }
     override func viewDidLoad() {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
@@ -110,6 +112,9 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
                 }
             }
         }
+        현재_유저_프로필이미지_적용하기()
+  
+        
         UI레이아웃()
         버튼_클릭()
         새_닉네임_텍스트필드.delegate = self
@@ -389,3 +394,47 @@ extension 프로필변경_화면 {
 }
 
 
+
+
+extension 프로필변경_화면 {
+    
+    private func 현재_유저_프로필이미지_적용하기() {
+            guard let 현재접속중인유저 = Auth.auth().currentUser else {
+                return
+            }
+
+        let 파이어스토어 = Firestore.firestore()
+        let 이메일 = 현재접속중인유저.email ?? ""
+        let 유저컬렉션: CollectionReference
+
+        if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
+            유저컬렉션 = 파이어스토어.collection("구글_유저_데이터_관리")
+        } else {
+            유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+        }
+
+            유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in
+                guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+                    print("컬렉션 조회 실패")
+                    return
+                }
+
+                if let userDocument = documents.first {
+                    let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
+                    let 닉네임 = userDocument["닉네임"] as? String ?? ""
+
+
+                    DispatchQueue.main.async {
+                        if let url = URL(string: 프로필이미지URL) {
+                            self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
+                            self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .selected, completed: nil)
+                        }
+                        self.새_닉네임_텍스트필드.text = 닉네임
+
+
+                    
+                    }
+                }
+            }
+        }
+}
