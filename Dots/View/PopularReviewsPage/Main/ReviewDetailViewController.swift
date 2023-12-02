@@ -119,7 +119,6 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         또한, 작품들은 각자의 시대적 맥락과 문화적 배경을 반영하면서도 개인적인 감성을 잘 표현했습니다. 이는 인상주의의 특징 중 하나로, 개인적인 경험과 감정을 작품에 담아내어 관람자와 소통하는 데 성공한 결과로 보입니다.
         이번 전시를 통해 인상주의의 다양한 스타일과 접근법을 경험하면서 예술의 폭넓은 가능성에 대한 새로운 시각을 얻을 수 있었습니다. 작가들의 창의적인 시도와 자유로운 표현이 예술의 다양성을 더욱 풍부하게 만들어준 것 같습니다.
         """
-            contentLabel.textColor = .white
             contentLabel.numberOfLines = 0
             contentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
             contentLabel.font = UIFont(name: "Pretendard-Regular", size: 18)
@@ -138,18 +137,6 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
               make.trailing.equalTo(squareView.snp.trailing)
         //      make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
             }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         // 첫 번째 추가 이미지 뷰 및 레이블 구성

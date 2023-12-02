@@ -85,7 +85,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             // exhibitionTitleLabel에 미술관 이름을 설정
             self.exhibitionTitleLabel.text = exhibitionDetail.museumName
             self.galleryAddressLabel.text = exhibitionDetail.museumAddress
-            self.additionalInfoLabel.text = exhibitionDetail.exhibitionDetail
+//            self.additionalInfoLabel.text = exhibitionDetail.exhibitionDetail
+
+            // additionalInfoLabel에 전시 상세 정보를 설정하고 줄바꿈 처리
+                   let detailTextWithLineBreaks = exhibitionDetail.exhibitionDetail.replacingOccurrences(of: "\\n", with: "\n")
+                   self.additionalInfoLabel.text = detailTextWithLineBreaks
 
             // 스택 뷰에 데이터 바인딩
             self.labelContents = [
@@ -450,6 +454,20 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         additionalInfoLabel.textColor = .white
         additionalInfoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
         additionalInfoLabel.numberOfLines = 0 // 제한 없이 여러 줄 표시 가능
+
+
+        additionalInfoLabel.numberOfLines = 0
+        additionalInfoLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
+        additionalInfoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        additionalInfoLabel.lineBreakMode = .byWordWrapping
+        var paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.02
+        // Line height: 18 pt
+        paragraphStyle.alignment = .justified
+        let attrString = NSMutableAttributedString(string: additionalInfoLabel.text!)
+        paragraphStyle.lineSpacing = 1
+        attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
+        additionalInfoLabel.attributedText = attrString
 
         // contentView에 추가 정보 레이블 추가
         detailContentView.addSubview(additionalInfoLabel)

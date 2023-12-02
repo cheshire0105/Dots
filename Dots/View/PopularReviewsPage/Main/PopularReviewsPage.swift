@@ -22,6 +22,7 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
         // 라이트 모드로 강제 설정
 //            overrideUserInterfaceStyle = .light
 
+        
     }
 
     func setupTableView() {
