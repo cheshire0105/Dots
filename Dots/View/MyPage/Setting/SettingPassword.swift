@@ -201,6 +201,16 @@ class 비밀번호변경_화면 : UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         
+        if let 제공업체 = Auth.auth().currentUser?.providerData {
+            for 유저정보 in 제공업체 {
+                if 유저정보.providerID == "google.com" {
+                    // Google에 연동된 계정일 경우 알림 표시
+                    showAlert(message: "구글 연동 계정입니다")
+                    break
+                }
+            }
+        }
+        
         UI레이아웃()
         버튼_클릭()
         화면_제스쳐_실행()
@@ -219,6 +229,15 @@ class 비밀번호변경_화면 : UIViewController {
         
         현재_비밀번호_실시간_조회_불러오기()
         
+    }
+    private func showAlert(message: String) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
     
     deinit {
