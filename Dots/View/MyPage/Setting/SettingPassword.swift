@@ -89,7 +89,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
         textField.isSecureTextEntry = true
-
+        
         return textField
     } ()
     
@@ -124,7 +124,7 @@ class 비밀번호변경_화면 : UIViewController {
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
         textField.isSecureTextEntry = true
-
+        
         return textField
     } ()
     
@@ -201,6 +201,16 @@ class 비밀번호변경_화면 : UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         
+        if let 제공업체 = Auth.auth().currentUser?.providerData {
+            for 유저정보 in 제공업체 {
+                if 유저정보.providerID == "google.com" {
+                    // Google 연동 계정이면 알럿을 바로 띄우고 되돌려보냄
+                    showAlert(message: "구글 연동 계정입니다")
+                    break
+                }
+            }
+        }
+        
         UI레이아웃()
         버튼_클릭()
         화면_제스쳐_실행()
@@ -209,24 +219,114 @@ class 비밀번호변경_화면 : UIViewController {
         현재_비밀번호_텍스트필드.delegate = self
         새_비밀번호_확인_텍스트필드.delegate = self
         
-        if let user = Auth.auth().currentUser {
-            for profile in user.providerData {
-                // profile.providerID에는 제공 업체의 식별자가 들어 있습니다.
-                let providerId = profile.providerID
-                print("Provider ID: \(providerId)")
+        if let 유저 = Auth.auth().currentUser {
+            for profile in 유저.providerData {
+                // 계정의 제공업체를 출력하기위함
+                let 제공업체UID = profile.providerID
+                print("Provider ID: \(제공업체UID)")
             }
         }
         
         현재_비밀번호_실시간_조회_불러오기()
         
     }
+    private func showAlert(message: String) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    private func 확인알럿(message: String) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "확인", style: .default) 
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
     
     deinit {
         // 메모리 해제 시 리스너 제거
         NotificationCenter.default.removeObserver(self)
     }
-    
-    
+}
+    extension 비밀번호변경_화면 {
+        
+        
+        private func 버튼_클릭() {
+            뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+            현재_비밀번호_표시_온오프.addTarget(self, action: #selector(현재_비밀번호_표시_온오프_클릭), for: .touchUpInside)
+            새_비밀번호_표시_온오프.addTarget(self, action: #selector(새_비밀번호_표시_온오프_클릭), for: .touchUpInside)
+            새_비밀번호_확인_표시_온오프.addTarget(self, action: #selector(새_비밀번호_확인_표시_온오프_클릭), for: .touchUpInside)
+            변경_버튼.addTarget(self, action: #selector(변경_버튼_클릭), for: .touchUpInside)
+
+        }
+        @objc private func 뒤로가기_버튼_클릭() {
+            navigationController?.popViewController(animated: true)
+        }
+        
+        @objc private func 변경_버튼_클릭() {
+               guard let 새비밀번호 = 새_비밀번호_텍스트필드.text, !새비밀번호.isEmpty,
+                     let 새비밀번호확인 = 새_비밀번호_확인_텍스트필드.text, !새비밀번호확인.isEmpty else {
+                   확인알럿(message: "새 비밀번호와 확인 비밀번호를 모두 입력해주세요.")
+                   return
+               }
+
+               if 새비밀번호 != 새비밀번호확인 {
+                   확인알럿(message: "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.")
+                   return
+               }
+
+               if let 유저 = Auth.auth().currentUser {
+                   for auth에등록된계정 in 유저.providerData {
+                       let 제공업체 = auth에등록된계정.providerID
+                       if 제공업체 == "password" {
+                           유저.updatePassword(to: 새비밀번호) { [weak self] (error) in
+                               if let error = error {
+                                   self?.확인알럿(message: "비밀번호 업데이트 실패: \(error.localizedDescription)")
+                               } else {
+                                   self?.확인알럿(message: "비밀번호가 성공적으로 변경되었습니다.")
+                               }
+                           }
+
+                           let 이메일 = 유저.email
+                           if let 이메일 = 이메일 {
+                               let 데이터베이스 = Firestore.firestore()
+                               let 유저데이터조회 = 데이터베이스.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일)
+
+                               유저데이터조회.getDocuments { [weak self] (snapshot, error) in
+                                   guard let self = self, let 문서 = snapshot?.documents.first else {
+                                       return
+                                   }
+
+                                   if 문서.exists {
+                                       let 문서참조 = 데이터베이스.collection("도트_유저_데이터_관리").document(문서.documentID)
+                                       문서참조.updateData(["비밀번호": 새비밀번호]) { error in
+                                           if let error = error {
+                                               self.확인알럿(message: "파이어스토어 비밀번호 업데이트 실패: \(error.localizedDescription)")
+                                           } else {
+                                               print("파이어스토어 비밀번호가 성공적으로 변경되었습니다.")
+                                           }
+                                       }
+                                   } else {
+                                       print("유저 데이터를 찾을 수 없음")
+                                   }
+                               }
+                           } else {
+                               print("조회 결과 등록된 이메일이 없음")
+                           }
+                       } else {
+                           확인알럿(message: "현재는 비밀번호 연동 계정만 변경이 가능합니다.")
+                       }
+                   }
+               } else {
+                   확인알럿(message: "접속중인 계정이 없습니다.")
+               }
+           }
+       
+        
     @objc func 현재_비밀번호_표시_온오프_클릭() {
         if 현재_비밀번호_텍스트필드.isSecureTextEntry == true {
             현재_비밀번호_표시_온오프.setImage(UIImage(systemName: "eye"), for: .normal)
@@ -257,124 +357,6 @@ class 비밀번호변경_화면 : UIViewController {
                 새_비밀번호_확인_텍스트필드.isSecureTextEntry = true
             }
         }
-    }
-
-extension 비밀번호변경_화면{
-    
-    private func UI레이아웃 () {
-        view.addSubview(뒤로가기_버튼)
-        view.addSubview(페이지_제목)
-        view.addSubview(현재_비밀번호_백)
-        view.addSubview(현재_비밀번호_텍스트필드)
-        view.addSubview(새_비밀번호_백)
-        view.addSubview(새_비밀번호_텍스트필드)
-        view.addSubview(새_비밀번호_확인_백)
-        view.addSubview(새_비밀번호_확인_텍스트필드)
-        view.addSubview(구분선)
-        view.addSubview(변경_버튼)
-        view.addSubview(현재비밀번호_라벨)
-        view.addSubview(새비밀번호_라벨)
-        view.addSubview(새비밀번호확인_라벨)
-        view.addSubview(현재_비밀번호_표시_온오프)
-        view.addSubview(새_비밀번호_표시_온오프)
-        view.addSubview(새_비밀번호_확인_표시_온오프)
-        
-        뒤로가기_버튼.snp.makeConstraints { make in
-            make.centerY.equalTo(페이지_제목.snp.centerY)
-            make.leading.equalToSuperview().offset(16)
-            make.size.equalTo(40)
-        }
-        페이지_제목.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(60)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(44)
-        }
-        현재_비밀번호_백.snp.makeConstraints { make in
-            make.top.equalTo(페이지_제목.snp.bottom).offset(86)
-            make.leading.equalToSuperview().offset(16)
-            make.trailing.equalToSuperview().offset(-16)
-            make.height.equalTo(44)
-        }
-        현재_비밀번호_텍스트필드.snp.makeConstraints { make in
-            make.top.equalTo(현재_비밀번호_백)
-            make.leading.equalTo(현재_비밀번호_백).offset(15)
-            make.trailing.equalTo(현재_비밀번호_백).offset(-15)
-            make.height.equalTo(44)
-        }
-        
-        새_비밀번호_백.snp.makeConstraints { make in
-            make.top.equalTo(현재_비밀번호_텍스트필드.snp.bottom).offset(60)
-            make.leading.equalToSuperview().offset(16)
-            make.trailing.equalToSuperview().offset(-16)
-            make.height.equalTo(44)
-        }
-        새_비밀번호_텍스트필드.snp.makeConstraints { make in
-            make.top.equalTo(새_비밀번호_백)
-            make.leading.equalTo(새_비밀번호_백).offset(15)
-            make.trailing.equalTo(새_비밀번호_백).offset(-15)
-            make.height.equalTo(44)
-        }
-        새_비밀번호_확인_백.snp.makeConstraints { make in
-            make.top.equalTo(새_비밀번호_텍스트필드.snp.bottom).offset(45)
-            make.leading.equalToSuperview().offset(16)
-            make.trailing.equalToSuperview().offset(-16)
-            make.height.equalTo(44)
-        }
-        새_비밀번호_확인_텍스트필드.snp.makeConstraints { make in
-            make.top.equalTo(새_비밀번호_확인_백)
-            make.leading.equalTo(새_비밀번호_확인_백).offset(15)
-            make.trailing.equalTo(새_비밀번호_확인_백).offset(-15)
-            make.height.equalTo(44)
-        }
-        구분선.snp.makeConstraints { make in
-            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
-        }
-        변경_버튼.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(15)
-            make.trailing.equalToSuperview().offset(-16)
-            make.height.equalTo(32)
-            make.width.equalTo(74)
-        }
-        현재비밀번호_라벨.snp.makeConstraints { make in
-            make.bottom.equalTo(현재_비밀번호_백.snp.top)
-            make.leading.equalTo(현재_비밀번호_백.snp.leading)
-            make.height.equalTo(22)
-        }
-        새비밀번호_라벨.snp.makeConstraints { make in
-            make.bottom.equalTo(새_비밀번호_백.snp.top)
-            make.leading.equalTo(새_비밀번호_백.snp.leading)
-            make.height.equalTo(22)
-        }
-        새비밀번호확인_라벨.snp.makeConstraints { make in
-            make.bottom.equalTo(새_비밀번호_확인_백.snp.top)
-            make.leading.equalTo(새_비밀번호_확인_백.snp.leading)
-            make.height.equalTo(22)
-        }
-        현재_비밀번호_표시_온오프.snp.makeConstraints { make in
-            make.centerY.equalTo(현재_비밀번호_텍스트필드.snp.centerY)
-            make.trailing.equalTo(현재_비밀번호_백.snp.trailing).offset(-10)
-            make.size.equalTo(20)
-        }
-        새_비밀번호_표시_온오프.snp.makeConstraints { make in
-            make.centerY.equalTo(새_비밀번호_텍스트필드.snp.centerY)
-            make.trailing.equalTo(새_비밀번호_백.snp.trailing).offset(-10)
-            make.size.equalTo(20)
-        }
-        새_비밀번호_확인_표시_온오프.snp.makeConstraints { make in
-            make.centerY.equalTo(새_비밀번호_확인_텍스트필드.snp.centerY)
-            make.trailing.equalTo(새_비밀번호_확인_백.snp.trailing).offset(-10)
-            make.size.equalTo(20)
-        }
-    }
-    private func 버튼_클릭() {
-        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
-        현재_비밀번호_표시_온오프.addTarget(self, action: #selector(현재_비밀번호_표시_온오프_클릭), for: .touchUpInside)
-        새_비밀번호_표시_온오프.addTarget(self, action: #selector(새_비밀번호_표시_온오프_클릭), for: .touchUpInside)
-        새_비밀번호_확인_표시_온오프.addTarget(self, action: #selector(새_비밀번호_확인_표시_온오프_클릭), for: .touchUpInside)
-    }
-    @objc private func 뒤로가기_버튼_클릭() {
-        navigationController?.popViewController(animated: true)
-    }
 }
 
 
@@ -539,6 +521,117 @@ extension 비밀번호변경_화면 {
             }
         } else {
             print("접속중인 계정이 없는 경우 이 프린트가 출력됩니다. (뜨는 경우는 없을걸로 예상")
+        }
+    }
+}
+
+
+//레이아웃
+extension 비밀번호변경_화면{
+    
+    private func UI레이아웃 () {
+        view.addSubview(뒤로가기_버튼)
+        view.addSubview(페이지_제목)
+        view.addSubview(현재_비밀번호_백)
+        view.addSubview(현재_비밀번호_텍스트필드)
+        view.addSubview(새_비밀번호_백)
+        view.addSubview(새_비밀번호_텍스트필드)
+        view.addSubview(새_비밀번호_확인_백)
+        view.addSubview(새_비밀번호_확인_텍스트필드)
+        view.addSubview(구분선)
+        view.addSubview(변경_버튼)
+        view.addSubview(현재비밀번호_라벨)
+        view.addSubview(새비밀번호_라벨)
+        view.addSubview(새비밀번호확인_라벨)
+        view.addSubview(현재_비밀번호_표시_온오프)
+        view.addSubview(새_비밀번호_표시_온오프)
+        view.addSubview(새_비밀번호_확인_표시_온오프)
+        
+        뒤로가기_버튼.snp.makeConstraints { make in
+            make.centerY.equalTo(페이지_제목.snp.centerY)
+            make.leading.equalToSuperview().offset(16)
+            make.size.equalTo(40)
+        }
+        페이지_제목.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(60)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(44)
+        }
+        현재_비밀번호_백.snp.makeConstraints { make in
+            make.top.equalTo(페이지_제목.snp.bottom).offset(86)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+            make.height.equalTo(44)
+        }
+        현재_비밀번호_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(현재_비밀번호_백)
+            make.leading.equalTo(현재_비밀번호_백).offset(15)
+            make.trailing.equalTo(현재_비밀번호_백).offset(-15)
+            make.height.equalTo(44)
+        }
+        
+        새_비밀번호_백.snp.makeConstraints { make in
+            make.top.equalTo(현재_비밀번호_텍스트필드.snp.bottom).offset(60)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+            make.height.equalTo(44)
+        }
+        새_비밀번호_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(새_비밀번호_백)
+            make.leading.equalTo(새_비밀번호_백).offset(15)
+            make.trailing.equalTo(새_비밀번호_백).offset(-15)
+            make.height.equalTo(44)
+        }
+        새_비밀번호_확인_백.snp.makeConstraints { make in
+            make.top.equalTo(새_비밀번호_텍스트필드.snp.bottom).offset(45)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+            make.height.equalTo(44)
+        }
+        새_비밀번호_확인_텍스트필드.snp.makeConstraints { make in
+            make.top.equalTo(새_비밀번호_확인_백)
+            make.leading.equalTo(새_비밀번호_확인_백).offset(15)
+            make.trailing.equalTo(새_비밀번호_확인_백).offset(-15)
+            make.height.equalTo(44)
+        }
+        구분선.snp.makeConstraints { make in
+            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
+        }
+        변경_버튼.snp.makeConstraints { make in
+            make.top.equalTo(구분선.snp.bottom).offset(15)
+            make.trailing.equalToSuperview().offset(-16)
+            make.height.equalTo(32)
+            make.width.equalTo(74)
+        }
+        현재비밀번호_라벨.snp.makeConstraints { make in
+            make.bottom.equalTo(현재_비밀번호_백.snp.top)
+            make.leading.equalTo(현재_비밀번호_백.snp.leading)
+            make.height.equalTo(22)
+        }
+        새비밀번호_라벨.snp.makeConstraints { make in
+            make.bottom.equalTo(새_비밀번호_백.snp.top)
+            make.leading.equalTo(새_비밀번호_백.snp.leading)
+            make.height.equalTo(22)
+        }
+        새비밀번호확인_라벨.snp.makeConstraints { make in
+            make.bottom.equalTo(새_비밀번호_확인_백.snp.top)
+            make.leading.equalTo(새_비밀번호_확인_백.snp.leading)
+            make.height.equalTo(22)
+        }
+        현재_비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(현재_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(현재_비밀번호_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
+        새_비밀번호_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(새_비밀번호_텍스트필드.snp.centerY)
+            make.trailing.equalTo(새_비밀번호_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
+        }
+        새_비밀번호_확인_표시_온오프.snp.makeConstraints { make in
+            make.centerY.equalTo(새_비밀번호_확인_텍스트필드.snp.centerY)
+            make.trailing.equalTo(새_비밀번호_확인_백.snp.trailing).offset(-10)
+            make.size.equalTo(20)
         }
     }
 }

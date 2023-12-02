@@ -1,4 +1,4 @@
-//23 . 11 . 29. 12:24 am  최신화
+
 import UIKit
 import SnapKit
 import FSCalendar
@@ -167,11 +167,10 @@ class Mypage: UIViewController {
     
     
     
-    //    override func viewWillAppear(_ animated: Bool) {
-    //        if let glassTabBar = tabBarController as? GlassTabBar {
-    //            glassTabBar.customTabBarView.isHidden = false
-    //        }
-    //    }
+        override func viewWillAppear(_ animated: Bool) {
+            접속_유저_데이터_마이페이지_적용하기()
+
+        }
     override func viewDidLoad() {
         super.viewDidLoad()
         print("My Page")
@@ -381,30 +380,24 @@ extension Mypage {
             유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
         }
 
-            // 현재 로그인한 사용자의 이메일을 이용해 Firestore에서 데이터 조회
             유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in
                 guard let self = self, let documents = querySnapshot?.documents, error == nil else {
-                    // 에러 처리
+                    print("컬렉션 조회 실패")
                     return
                 }
 
                 if let userDocument = documents.first {
-                    // 사용자 문서에서 필요한 정보 추출
                     let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
                     let 닉네임 = userDocument["닉네임"] as? String ?? ""
                     let 이메일 = userDocument["이메일"] as? String ?? ""
 
-                    // UI 업데이트
                     DispatchQueue.main.async {
-                        // 프로필 이미지 업데이트
                         if let url = URL(string: 프로필이미지URL) {
                             self.마이페이지_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
                         }
 
-                        // 닉네임 업데이트
                         self.마이페이지_프로필_닉네임.text = 닉네임
 
-                        // 이메일 업데이트
                         self.마이페이지_프로필_이메일.text = 이메일
                     }
                 }

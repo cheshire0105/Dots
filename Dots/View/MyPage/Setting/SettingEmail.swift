@@ -109,6 +109,15 @@ class 이메일변경_화면 : UIViewController {
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
+        if let 제공업체 = Auth.auth().currentUser?.providerData {
+            for 유저정보 in 제공업체 {
+                if 유저정보.providerID == "google.com" {
+                    // Google에 연동된 계정일 경우 알림 표시
+                    showAlert(message: "구글 연동 계정입니다")
+                    break
+                }
+            }
+        }
         UI레이아웃()
         버튼_클릭()
         화면_제스쳐_실행()
@@ -118,6 +127,15 @@ class 이메일변경_화면 : UIViewController {
         if let currentLoggedInEmail = getCurrentLoggedInEmail() {
                현재_이메일_텍스트필드.text = currentLoggedInEmail
         }
+    }
+    private func showAlert(message: String) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
     func getCurrentLoggedInEmail() -> String? {
         if let user = Auth.auth().currentUser {
