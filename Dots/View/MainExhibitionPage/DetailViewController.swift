@@ -534,10 +534,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         // 리뷰 제목, 내용, 프로필 이미지, 닉네임 설정
-        let reviewTitle = "리뷰 제목" // 임시 제목
+        let reviewTitle = "chsshire" // 임시 제목
         let reviewContent = reviews[indexPath.row] // 실제 리뷰 내용
         let profileImage = UIImage(named: "morningStar") // 기본 이미지 or 실제 이미지 이름
-        let nickname = "닉네임" // 임시 닉네임
+        let nickname = "8분 전" // 임시 닉네임
 
         // 셀에 정보를 설정하는 부분
         cell.setReview(title: reviewTitle, content: reviewContent, profileImage: profileImage, nickname: nickname)
