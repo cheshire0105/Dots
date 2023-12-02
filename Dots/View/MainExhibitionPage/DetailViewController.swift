@@ -528,20 +528,26 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         return reviews.count
     }
 
+    // tableView(_:cellForRowAt:) 메서드 수정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "새로운_ReviewTableViewCell", for: indexPath) as? 새로운_ReviewTableViewCell else {
             return UITableViewCell()
         }
 
         // 리뷰 제목, 내용, 프로필 이미지, 닉네임 설정
-        let reviewTitle = "chsshire" // 임시 제목
-        let reviewContent = reviews[indexPath.row] // 실제 리뷰 내용
-        let profileImage = UIImage(named: "morningStar") // 기본 이미지 or 실제 이미지 이름
-        let nickname = "8분 전" // 임시 닉네임
+        let reviewTitle = "chsshire"
+        let reviewContent = reviews[indexPath.row]
+        let profileImage = UIImage(named: "morningStar")
+        let nickname = "8분 전"
+        let newTitle = "새로운 제목" // 새로운 제목 설정
+        let extraImageView1 = UIImage(named: "Vector 4")
+        let extraImageView2 = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1")
+        // 추가 텍스트 설정
+            let text123 = "123"
+            let text456 = "456"
 
-        // 셀에 정보를 설정하는 부분
-        cell.setReview(title: reviewTitle, content: reviewContent, profileImage: profileImage, nickname: nickname)
-
+        // 셀에 정보를 설정하는 부분 (새로운 제목 포함)
+        cell.setReview(title: reviewTitle, content: reviewContent, profileImage: profileImage, nickname: nickname, newTitle: newTitle, extraImageView1: extraImageView1, extraImageView2: extraImageView2, text123: text123, text456: text456)
 
 
         return cell
