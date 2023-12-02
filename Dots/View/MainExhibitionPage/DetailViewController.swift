@@ -312,6 +312,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 미술관 주소 레이블 초기화
         galleryAddressLabel.text = "서울 종로구 삼청로 30"
         galleryAddressLabel.textColor = .white
+        galleryAddressLabel.numberOfLines = 2
         galleryAddressLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
 
         // 컨텐츠 뷰에 레이블 추가
@@ -352,6 +353,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         galleryAddressLabel.snp.makeConstraints { make in
             make.top.equalTo(exhibitionTitleLabel.snp.bottom).offset(8) // 전시 제목 레이블 아래 간격
             make.leading.equalTo(exhibitionTitleLabel.snp.leading) // 좌측 정렬
+            make.trailing.equalTo(mapView.snp.leading).offset(10)
         }
 
 
