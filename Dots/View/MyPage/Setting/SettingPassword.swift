@@ -241,7 +241,7 @@ class 비밀번호변경_화면 : UIViewController {
     }
     private func 확인알럿(message: String) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: "확인", style: .default) 
+        let confirmAction = UIAlertAction(title: "확인", style: .default)
         alertController.addAction(confirmAction)
         
         present(alertController, animated: true, completion: nil)
@@ -557,12 +557,14 @@ extension 비밀번호변경_화면{
             make.centerX.equalToSuperview()
             make.height.equalTo(44)
         }
+        
         현재_비밀번호_백.snp.makeConstraints { make in
             make.top.equalTo(페이지_제목.snp.bottom).offset(86)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(44)
         }
+        
         현재_비밀번호_텍스트필드.snp.makeConstraints { make in
             make.top.equalTo(현재_비밀번호_백)
             make.leading.equalTo(현재_비밀번호_백).offset(15)
@@ -635,3 +637,4 @@ extension 비밀번호변경_화면{
         }
     }
 }
+
