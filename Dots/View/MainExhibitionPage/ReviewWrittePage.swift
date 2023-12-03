@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위해 필요합니다.
 import SnapKit
+import Firebase
+import FirebaseStorage
 
 class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource {
 
@@ -26,9 +28,19 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     // 컬렉션 뷰 높이 제약 조건을 위한 변수 선언
     var collectionViewHeightConstraint: Constraint?
 
+    var posterName: String?
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // posterName 값 확인
+          if let posterName = posterName {
+              print("Poster name: \(posterName)")
+          } else {
+              print("Poster name not provided")
+          }
 
         self.view.backgroundColor = .black
 
@@ -405,9 +417,73 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     }
 
     @objc func registerButtonTapped() {
-        // 등록 버튼 액션 처리
-        // 여기에 등록 로직을 구현합니다.
+        guard let posterName = posterName, !posterName.isEmpty,
+              let title = titleTextField.text, !title.isEmpty,
+              let content = contentTextView.text, !content.isEmpty else {
+            print("필요한 정보가 부족합니다.")
+            return
+        }
+
+        let reviewData: [String: Any] = [
+            "title": title,
+            "content": content,
+            // 다른 필요한 데이터를 여기에 추가
+        ]
+
+        let docRef = Firestore.firestore().collection("reviews").document(posterName)
+        docRef.setData(reviewData) { error in
+            if let error = error {
+                print("Error writing document: \(error)")
+            } else {
+                print("Document successfully written!")
+                // 이미지 업로드 함수 호출
+                self.uploadImages(posterName: posterName)
+            }
+        }
     }
+
+    func uploadImages(posterName: String) {
+        for (index, image) in selectedImages.enumerated() {
+            guard let imageData = image.jpegData(compressionQuality: 0.75) else { continue }
+
+            let imageName = "\(posterName)_\(index).jpg"
+            let storageRef = Storage.storage().reference().child("reviewImages/\(imageName)")
+
+            storageRef.putData(imageData, metadata: nil) { metadata, error in
+                guard metadata != nil else {
+                    print("Error uploading image: \(error?.localizedDescription ?? "")")
+                    return
+                }
+
+                storageRef.downloadURL { (url, error) in
+                    guard let downloadURL = url else {
+                        print("Error getting download URL: \(error?.localizedDescription ?? "")")
+                        return
+                    }
+
+                    // 이제 Firestore 문서에 이미지 URL을 추가합니다.
+                    self.addImageUrlToFirestore(posterName: posterName, imageUrl: downloadURL.absoluteString)
+                }
+            }
+        }
+    }
+
+    func addImageUrlToFirestore(posterName: String, imageUrl: String) {
+        let docRef = Firestore.firestore().collection("reviews").document(posterName)
+
+        docRef.updateData([
+            "images": FieldValue.arrayUnion([imageUrl])
+        ]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Image URL successfully added to document!")
+            }
+        }
+    }
+
+
+
 
 
 
@@ -460,6 +536,8 @@ extension ReviewWritePage: PHPickerViewControllerDelegate {
         }
     }
 }
+
+
 
 class ImageCollectionViewCell: UICollectionViewCell {
     let imageView = UIImageView()

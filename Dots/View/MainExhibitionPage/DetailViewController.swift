@@ -215,6 +215,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     @objc func floatingActionButtonTapped() {
         let reviewWriteVC = ReviewWritePage()
+        reviewWriteVC.posterName = self.posterImageName // 여기서 포스터 이름을 전달합니다.
+
         let navController = UINavigationController(rootViewController: reviewWriteVC) // UINavigationController를 생성하고 rootViewController로 설정합니다.
         navController.modalPresentationStyle = .fullScreen // 전체 화면으로 설정
         self.present(navController, animated: true, completion: nil) // UINavigationController를 모달로 표시합니다.
