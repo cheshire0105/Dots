@@ -39,10 +39,16 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     weak var delegate: ReviewWritePageDelegate?
 
+    var contentTextViewBottomConstraint: Constraint?
+
+
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        titleTextField.becomeFirstResponder()
+
 
         // posterName 값 확인
           if let posterName = posterName {
@@ -125,21 +131,39 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
 
-    @objc func keyboardWillShow(notification: NSNotification) {
-        // 키보드가 표시될 때 필요한 동작을 구현
-        // 예를 들어, 텍스트 필드의 위치 조정 등
-    }
 
-    @objc func keyboardWillHide(notification: NSNotification) {
-        // 키보드가 숨겨질 때 필요한 동작을 구현
-        // 예를 들어, 텍스트 필드의 위치를 원래대로 복원
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+
+        // contentTextView 레이아웃 설정
+        contentTextView.snp.makeConstraints { make in
+            make.top.equalTo(separatorView.snp.bottom).offset(10)
+            make.left.right.equalTo(view).inset(10)
+            self.contentTextViewBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).constraint
+        }
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+
+            contentTextViewBottomConstraint?.update(inset: keyboardHeight)
+            view.layoutIfNeeded()
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        contentTextViewBottomConstraint?.update(inset: 0)
+        view.layoutIfNeeded()
+    }
+
+
 
 
     func setupCollectionView() {
