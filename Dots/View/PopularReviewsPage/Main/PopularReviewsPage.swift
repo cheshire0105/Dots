@@ -7,30 +7,19 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
     var tableView: UITableView!
 
-//    override func viewDidAppear(_ animated: Bool) {
-//        tabBarController?.tabBar.isHidden = false
-//
-//    }
-
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = false
-    }
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupNavigationBar()
         view.backgroundColor = .black
-//        tableView.register(TweetTableViewCell.self, forCellReuseIdentifier: "TweetCell")
 
-        // 라이트 모드로 강제 설정
-//            overrideUserInterfaceStyle = .light
 
 
     }
@@ -111,15 +100,17 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 셀 선택 시 동작
         print("Selected row: \(indexPath.row)")
 
-        // 셀 선택 시 디테일 페이지로 넘어가는 코드
-        let detailViewController = ReviewDetailViewController() // 상세 페이지 뷰 컨트롤러 인스턴스 생성
-        detailViewController.hidesBottomBarWhenPushed = true // 탭 바 숨기기
-        // 네비게이션 컨트롤러를 사용하여 디테일 뷰로 이동
+        let detailViewController = ReviewDetailViewController()
+        detailViewController.hidesBottomBarWhenPushed = true
+
+        // 다음 페이지로 넘어갈 때 대형 타이틀을 없애고 일반 타이틀로 전환
+        detailViewController.navigationItem.largeTitleDisplayMode = .never
+
         navigationController?.pushViewController(detailViewController, animated: true)
     }
+
 
 
 

@@ -48,15 +48,17 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 //
 //    }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = false
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        navigationController?.navigationBar.prefersLargeTitles = false
+//    }
+//
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        navigationController?.navigationBar.prefersLargeTitles = true
+//    }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = true
-    }
+    
 
 
     override func viewDidLoad() {
@@ -71,7 +73,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         setupScrollView()
         setupSquareViewAndLabel()
         
-
+        
        
     }
 
