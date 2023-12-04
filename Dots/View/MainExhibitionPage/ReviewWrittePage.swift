@@ -417,7 +417,8 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     }
 
     @objc func registerButtonTapped() {
-        guard let posterName = posterName, !posterName.isEmpty,
+        guard let userId = Auth.auth().currentUser?.uid,
+              let posterName = posterName, !posterName.isEmpty,
               let title = titleTextField.text, !title.isEmpty,
               let content = contentTextView.text, !content.isEmpty else {
             print("필요한 정보가 부족합니다.")
@@ -427,27 +428,31 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         let reviewData: [String: Any] = [
             "title": title,
             "content": content,
-            // 다른 필요한 데이터를 여기에 추가
+            "createdAt": FieldValue.serverTimestamp() // 현재 시간
+
+            // 필요한 추가 데이터
         ]
 
-        let docRef = Firestore.firestore().collection("reviews").document(posterName)
+        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에 리뷰 저장, 문서 ID는 유저의 UUID로 설정
+        let docRef = Firestore.firestore().collection("posters").document(posterName)
+                          .collection("reviews").document(userId)
+
         docRef.setData(reviewData) { error in
             if let error = error {
                 print("Error writing document: \(error)")
             } else {
                 print("Document successfully written!")
-                // 이미지 업로드 함수 호출
-                self.uploadImages(posterName: posterName)
+                self.uploadImages(userId: userId, posterName: posterName)
             }
         }
     }
 
-    func uploadImages(posterName: String) {
+    func uploadImages(userId: String, posterName: String) {
         for (index, image) in selectedImages.enumerated() {
             guard let imageData = image.jpegData(compressionQuality: 0.75) else { continue }
 
-            let imageName = "\(posterName)_\(index).jpg"
-            let storageRef = Storage.storage().reference().child("reviewImages/\(imageName)")
+            let imageName = "\(userId)_\(index).jpg"
+            let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
 
             storageRef.putData(imageData, metadata: nil) { metadata, error in
                 guard metadata != nil else {
@@ -461,15 +466,16 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                         return
                     }
 
-                    // 이제 Firestore 문서에 이미지 URL을 추가합니다.
-                    self.addImageUrlToFirestore(posterName: posterName, imageUrl: downloadURL.absoluteString)
+                    // Firestore 문서에 이미지 URL을 추가합니다.
+                    self.addImageUrlToFirestore(userId: userId, posterName: posterName, imageUrl: downloadURL.absoluteString)
                 }
             }
         }
     }
 
-    func addImageUrlToFirestore(posterName: String, imageUrl: String) {
-        let docRef = Firestore.firestore().collection("reviews").document(posterName)
+    func addImageUrlToFirestore(userId: String, posterName: String, imageUrl: String) {
+        let docRef = Firestore.firestore().collection("posters").document(posterName)
+                            .collection("reviews").document(userId)
 
         docRef.updateData([
             "images": FieldValue.arrayUnion([imageUrl])
@@ -481,9 +487,6 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             }
         }
     }
-
-
-
 
 
 
