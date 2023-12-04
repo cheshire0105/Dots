@@ -213,9 +213,71 @@ extension 이메일변경_화면 {
     
     private func 버튼_클릭() {
         뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+        변경_버튼.addTarget(self, action: #selector(변경_버튼_클릭), for: .touchUpInside)
+        
     }
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
+    }
+}
+
+extension 이메일변경_화면 {
+    @objc func 변경_버튼_클릭() {
+        guard let 새이메일 = 새_이메일_텍스트필드.text, !새이메일.isEmpty else {
+            showAlert(message: "새 이메일을 입력하세요.")
+            return
+        }
+        
+        guard let 현재이메일 = getCurrentLoggedInEmail() else {
+            showAlert(message: "현재 이메일을 가져올 수 없습니다.")
+            return
+        }
+        
+        if let 제공업체 = Auth.auth().currentUser?.providerData {
+            for 유저정보 in 제공업체 {
+                if 유저정보.providerID == "password" {
+                    updateEmailInFirestore(현재이메일: 현재이메일, 새이메일: 새이메일)
+                    break
+                }
+            }
+        }
+    }
+
+     func updateEmailInFirestore(현재이메일: String, 새이메일: String) {
+        let 파이어스토어 = Firestore.firestore()
+        let 유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+        
+        유저컬렉션.whereField("이메일", isEqualTo: 현재이메일).getDocuments { [weak self] (querySnapshot, 에러) in
+            guard let self = self else { return }
+            
+            if let 에러 = 에러 {
+                print("Firestore 조회 에러: \(에러.localizedDescription)")
+                self.showAlert(message: "Firestore 조회 에러")
+            } else {
+                if let 문서조회 = querySnapshot?.documents, let 문서 = 문서조회.first {
+                    문서.reference.updateData(["이메일": 새이메일]) { (에러) in
+                        if let 에러 = 에러 {
+                            print("Firestore 업데이트 에러: \(에러.localizedDescription)")
+                            self.showAlert(message: "Firestore 업데이트 에러")
+                        } else {
+                            print("Firestore: 이메일 업데이트 성공")
+                            Auth.auth().currentUser?.updateEmail(to: 새이메일) { (에러) in
+                                if let 에러 = 에러 {
+                                    print("Auth 이메일 업데이트 에러: \(에러.localizedDescription)")
+                                    self.showAlert(message: "Auth 이메일 업데이트 에러")
+                                } else {
+                                    print("Auth: 이메일 업데이트 성공")
+                                    self.showAlert(message: "이메일이 성공적으로 변경되었습니다.")
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    print("Firestore: 일치하는 이메일이 없습니다.")
+                    self.showAlert(message: "일치하는 이메일이 없습니다.")
+                }
+            }
+        }
     }
 }
 
