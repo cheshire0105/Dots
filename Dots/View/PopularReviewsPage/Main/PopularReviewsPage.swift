@@ -12,6 +12,16 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 //
 //    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
@@ -22,7 +32,7 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
         // 라이트 모드로 강제 설정
 //            overrideUserInterfaceStyle = .light
 
-        
+
     }
 
     func setupTableView() {
@@ -52,18 +62,19 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
     func setupNavigationBar() {
         // 네비게이션 타이틀 설정
         self.navigationItem.title = "인기"
-//        // 네비게이션 바 배경색과 타이틀 색상 설정
-//        let appearance = UINavigationBarAppearance()
-//        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
-//        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
-//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
-//
-//        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-//        navigationController?.navigationBar.standardAppearance = appearance
-//
-//        // 네비게이션 바 대형 타이틀 설정
-//        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
+        // 네비게이션 바 배경색과 타이틀 색상 설정
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
+        
+
+        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.standardAppearance = appearance
+
+        // 네비게이션 바 대형 타이틀 설정
+        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
     }
 
 

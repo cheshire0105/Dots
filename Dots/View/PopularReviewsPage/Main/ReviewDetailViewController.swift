@@ -48,6 +48,17 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 //
 //    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -59,10 +70,9 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 
         setupScrollView()
         setupSquareViewAndLabel()
+        
 
-
-        // 대형 네비게이션 타이틀 비활성화
-        self.navigationController?.navigationBar.prefersLargeTitles = false
+       
     }
 
 
