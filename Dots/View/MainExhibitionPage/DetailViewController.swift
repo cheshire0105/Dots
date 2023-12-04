@@ -250,6 +250,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     @objc func floatingActionButtonTapped() {
         let reviewWriteVC = ReviewWritePage()
+        reviewWriteVC.delegate = self
+
         reviewWriteVC.posterName = self.posterImageName // 여기서 포스터 이름을 전달합니다.
         reviewWriteVC.reviewTitle = self.exhibitionTitle // 전시 타이틀을 ReviewWritePage에 전달합니다.
 
@@ -606,3 +608,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 }
 
+extension DetailViewController: ReviewWritePageDelegate {
+    func didSubmitReview() {
+        loadReviews() // 리뷰를 다시 로드합니다.
+    }
+}

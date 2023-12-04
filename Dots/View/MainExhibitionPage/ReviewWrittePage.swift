@@ -12,6 +12,11 @@ import SnapKit
 import Firebase
 import FirebaseStorage
 
+protocol ReviewWritePageDelegate: AnyObject {
+    func didSubmitReview()
+}
+
+
 class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource {
 
     // 텍스트 필드 속성 정의
@@ -31,6 +36,9 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     var posterName: String?
 
     var reviewTitle: String?
+
+    weak var delegate: ReviewWritePageDelegate?
+
 
 
     override func viewDidLoad() {
@@ -454,6 +462,10 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             } else {
                 print("Document successfully written!")
                 self.uploadImages(userId: userId, posterName: posterName)
+
+                // 성공적으로 저장된 후에:
+                    self.delegate?.didSubmitReview()
+                    self.dismiss(animated: true, completion: nil) // 페이지 닫기
             }
         }
     }
