@@ -82,23 +82,25 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                     let data = document.data()
                     let userId = document.documentID // UUID로 가정
 
-                    Firestore.firestore().collection("유저_프로필").document(userId).getDocument { (userDoc, error) in
-                        if let userDoc = userDoc, userDoc.exists {
-                            let userData = userDoc.data()
-                            let nickname = userData?["닉네임"] as? String ?? ""
-                            let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
+                    // 실시간 리스너 추가
+                    Firestore.firestore().collection("유저_데이터_관리").document(userId)
+                        .addSnapshotListener { (userDoc, error) in
+                            if let userDoc = userDoc, userDoc.exists {
+                                let userData = userDoc.data()
+                                let nickname = userData?["닉네임"] as? String ?? ""
+                                let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
 
-                            let review = Review(
-                                title: data["title"] as? String ?? "",
-                                content: data["content"] as? String ?? "",
-                                createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
-                                nickname: nickname,
-                                profileImageUrl: profileImageUrl
-                            )
-                            newReviews.append(review)
+                                let review = Review(
+                                    title: data["title"] as? String ?? "",
+                                    content: data["content"] as? String ?? "",
+                                    createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
+                                    nickname: nickname,
+                                    profileImageUrl: profileImageUrl
+                                )
+                                newReviews.append(review)
+                            }
+//                            group.leave()
                         }
-                        group.leave()
-                    }
                 }
 
                 group.notify(queue: .main) {
