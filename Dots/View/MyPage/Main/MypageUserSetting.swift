@@ -267,25 +267,35 @@ extension 마이페이지_설정_페이지 {
                                     print("Firestore 업데이트 에러: \(에러.localizedDescription)")
                                 } else {
                                     print("Firestore: 로그인 상태 : false")
+                                    self.로그아웃_프로세스_완료()
                                 }
                             }
                         } else {
                             print("Firestore: 일치하는 이메일이 없습니다.")
+                            self.로그아웃_프로세스_완료()
                         }
                     }
                 }
             }
-                try Auth.auth().signOut()
-                print("계정이 로그아웃되었습니다.")
-                        let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
-                        let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
-                        로그인화면_이동.modalPresentationStyle = .fullScreen
-                        present(로그인화면_이동, animated: true, completion: nil)
-                        UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-            } catch {
+        } catch {
             print("로그아웃 실패: \(error.localizedDescription)")
         }
     }
+
+    func 로그아웃_프로세스_완료() {
+        do {
+            try Auth.auth().signOut()
+            print("계정이 로그아웃되었습니다.")
+            let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
+            let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
+            로그인화면_이동.modalPresentationStyle = .fullScreen
+            present(로그인화면_이동, animated: true, completion: nil)
+            UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+        } catch {
+            print("로그아웃 실패: \(error.localizedDescription)")
+        }
+    }
+
 }
 
 //유저 회원탈퇴 관련
