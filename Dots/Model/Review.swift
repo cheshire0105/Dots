@@ -11,6 +11,7 @@ struct Review {
     var title: String
     var content: String
     var createdAt: Date
-    var nickname: String // 현재는 userId를 사용하지만, 이를 닉네임으로 변환하는 로직이 필요합니다.
-    // 이미지 URL, 좋아요 수, 조회수 등 필요한 추가 필드를 여기에 포함시킵니다.
+    var nickname: String
+    var profileImageUrl: String // 프로필 이미지 URL을 저장할 필드 추가
 }
+
