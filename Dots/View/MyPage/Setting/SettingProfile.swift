@@ -177,15 +177,15 @@ extension 프로필변경_화면 {
                             self.imageURL = url
                             
                             let 데이터베이스 = Firestore.firestore()
-                            let 유저컬렉션 = 데이터베이스.collection("도트_유저_데이터_관리")
+                            let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
                             let 쿼리 = 유저컬렉션.whereField("이메일", isEqualTo: email)
                             
                             쿼리.getDocuments { (querySnapshot, 에러) in
                                 if let 에러 = 에러 {
-                                    print("도트_유저_데이터_관리에서 문서 조회 에러: \(에러.localizedDescription)")
+                                    print("유저_데이터_관리에서 문서 조회 에러: \(에러.localizedDescription)")
                                 } else {
                                     guard let 문서 = querySnapshot?.documents, !문서.isEmpty else {
-                                        print("도트_유저_데이터_관리에서 문서를 찾을 수 없습니다.")
+                                        print("유저_데이터_관리에서 문서를 찾을 수 없습니다.")
                                         return
                                     }
                                     let 문서UID = 문서[0].documentID
@@ -196,7 +196,7 @@ extension 프로필변경_화면 {
                                  
                                     유저컬렉션.document(문서UID).updateData(업데이트필드) { 에러 in
                                         if let 에러 = 에러 {
-                                            print("도트_유저_데이터_관리에서 문서 업데이트 에러: \(에러.localizedDescription)")
+                                            print("유저_데이터_관리에서 문서 업데이트 에러: \(에러.localizedDescription)")
                                         } else {
                                             print("프로필 이미지 URL 및 닉네임 업데이트 성공")
                                         }
@@ -404,9 +404,9 @@ extension 프로필변경_화면 {
         let 유저컬렉션: CollectionReference
 
         if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
-            유저컬렉션 = 파이어스토어.collection("구글_유저_데이터_관리")
+            유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         } else {
-            유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+            유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         }
 
             유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in

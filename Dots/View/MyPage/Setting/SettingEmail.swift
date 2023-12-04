@@ -245,7 +245,7 @@ extension 이메일변경_화면 {
 
      func updateEmailInFirestore(현재이메일: String, 새이메일: String) {
         let 파이어스토어 = Firestore.firestore()
-        let 유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+        let 유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         
         유저컬렉션.whereField("이메일", isEqualTo: 현재이메일).getDocuments { [weak self] (querySnapshot, 에러) in
             guard let self = self else { return }

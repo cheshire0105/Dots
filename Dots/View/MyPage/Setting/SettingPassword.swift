@@ -309,7 +309,7 @@ extension 비밀번호변경_화면 {
                 return
             }
             let 데이터베이스 = Firestore.firestore()
-            let 유저데이터조회 = 데이터베이스.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일)
+            let 유저데이터조회 = 데이터베이스.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일)
             
             유저데이터조회.getDocuments { [weak self] (snapshot, error) in
                 guard let self = self, let 문서 = snapshot?.documents.first else {
@@ -317,7 +317,7 @@ extension 비밀번호변경_화면 {
                 }
                 
                 if 문서.exists {
-                    let 문서참조 = 데이터베이스.collection("도트_유저_데이터_관리").document(문서.documentID)
+                    let 문서참조 = 데이터베이스.collection("유저_데이터_관리").document(문서.documentID)
                     문서참조.updateData(["비밀번호": 새비밀번호]) { error in
                         if let error = error {
                             self.확인알럿(message: "파이어스토어 비밀번호 업데이트 실패: \(error.localizedDescription)")
@@ -342,9 +342,9 @@ extension 비밀번호변경_화면 {
             let 유저컬렉션: CollectionReference
             
             if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
-                유저컬렉션 = 파이어스토어.collection("구글_유저_데이터_관리")
+                유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
             } else {
-                유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+                유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
             }
             
             유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, 에러) in
@@ -546,7 +546,7 @@ extension 비밀번호변경_화면 {
                     let 이메일 = 유저.email
                     if let 이메일 = 이메일 {
                         let 데이터베이스 = Firestore.firestore()
-                        let 유저데이터조회 = 데이터베이스.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일)
+                        let 유저데이터조회 = 데이터베이스.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일)
                         
                         유저데이터조회.addSnapshotListener { [weak self] (snapshot, error) in
                             guard let self = self, let 문서 = snapshot?.documents.first else { return }
