@@ -84,9 +84,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                     let data = document.data()
                     let userId = document.documentID // UUID로 가정
 
-                    // 실시간 리스너 추가
                     Firestore.firestore().collection("유저_데이터_관리").document(userId)
-                        .addSnapshotListener { (userDoc, error) in
+                        .getDocument { (userDoc, error) in
                             if let userDoc = userDoc, userDoc.exists {
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
@@ -101,7 +100,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                 )
                                 newReviews.append(review)
                             }
-//                            group.leave()
+                            group.leave()
                         }
                 }
 

@@ -95,6 +95,9 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
         )
 
         cell.configure(with: tweetData)
+
+        cell.selectionStyle = .none
+
         return cell
     }
 
@@ -216,8 +219,8 @@ class TweetTableViewCell: UITableViewCell {
         // 피드 이미지 뷰 설정
         tweetImageView.snp.makeConstraints { make in
             make.top.equalTo(profileImageView.snp.bottom).offset(10)
-            make.leading.equalTo(exhibitionInfoLabel.snp.leading)
-            make.trailing.equalToSuperview()
+            make.leading.equalToSuperview().inset(10)
+            make.trailing.equalToSuperview().inset(10)
             make.height.equalTo(tweetImageView.snp.width)
         }
 
@@ -278,7 +281,7 @@ class TweetTableViewCell: UITableViewCell {
         let tweetContent = data.tweetContent // 데이터에서 트윗 내용을 가져옵니다.
 
         
-        let moreText = "더보기..."
+
             let attributedString = NSMutableAttributedString(string: tweetContent)
             let attributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: 14, weight: .regular),
@@ -288,12 +291,18 @@ class TweetTableViewCell: UITableViewCell {
             attributedString.addAttributes(attributes, range: NSRange(location: 0, length: attributedString.length))
 
             if attributedString.string.count > 100 { // 100자를 초과하는 경우에만 "더보기..." 추가
-                attributedString.mutableString.setString(String(attributedString.string.prefix(100)) + "..." + moreText)
+                attributedString.mutableString.setString(String(attributedString.string.prefix(100)) + "..." )
             }
+
+        tweetContentLabel.lineBreakMode = .byWordWrapping
+        var paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.21
+        // Line height: 23 pt
+        tweetContentLabel.textAlignment = .justified
 
             tweetContentLabel.attributedText = attributedString
             tweetContentLabel.numberOfLines = 3
-            tweetContentLabel.font = UIFont(name: "Pretendard-Regular", size: 13)
+            tweetContentLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
             tweetContentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
 
 
@@ -389,7 +398,7 @@ class TweetTableViewCell: UITableViewCell {
         lineView.snp.makeConstraints { make in
             make.top.equalTo(additionalImageView1.snp.bottom).offset(20)
             make.height.equalTo(1)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalToSuperview()
 
         }
