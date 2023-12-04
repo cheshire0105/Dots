@@ -30,6 +30,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     var posterName: String?
 
+    var reviewTitle: String?
 
 
     override func viewDidLoad() {
@@ -42,10 +43,20 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
               print("Poster name not provided")
           }
 
+
+
+
         self.view.backgroundColor = .black
 
         // 타이틀 설정
         self.title = "리암 길릭 : Alterants"
+
+        // 타이틀 설정
+          if let reviewTitle = reviewTitle {
+              self.title = reviewTitle // 여기에서 reviewTitle을 self.title에 바인딩합니다.
+          } else {
+              self.title = "기본 타이틀" // reviewTitle이 nil일 경우의 기본 값
+          }
 
         // 취소 버튼 설정
         let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(cancelButtonTapped))

@@ -42,6 +42,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var locationCoordinate: CLLocationCoordinate2D?
     var exhibitionDetail : String?
 
+    var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
 
 
@@ -174,6 +175,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                 }
 
                 let exhibitionDetail = ExhibitionDetailModel(dictionary: data ?? [:])
+                self?.exhibitionTitle = exhibitionDetail.exhibitionTitle // 전시 타이틀 저장
+
                 self?.updateUIWithExhibitionDetails(exhibitionDetail)
             } else {
                 print("Document does not exist or error fetching document: \(error?.localizedDescription ?? "Unknown error")")
@@ -248,6 +251,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     @objc func floatingActionButtonTapped() {
         let reviewWriteVC = ReviewWritePage()
         reviewWriteVC.posterName = self.posterImageName // 여기서 포스터 이름을 전달합니다.
+        reviewWriteVC.reviewTitle = self.exhibitionTitle // 전시 타이틀을 ReviewWritePage에 전달합니다.
+
 
         let navController = UINavigationController(rootViewController: reviewWriteVC) // UINavigationController를 생성하고 rootViewController로 설정합니다.
         navController.modalPresentationStyle = .fullScreen // 전체 화면으로 설정
