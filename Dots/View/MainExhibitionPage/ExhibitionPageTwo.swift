@@ -688,7 +688,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 class 새로운_ReviewTableViewCell: UITableViewCell {
 
     // UI 컴포넌트 선언
-    private lazy var titleLabel: UILabel = {
+    private lazy var nickNameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Bold", size: 12)
         label.textColor = .white
@@ -697,7 +697,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
 
     private lazy var contentLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 10)
+        label.font = UIFont(name: "Pretendard-Regular", size: 12)
         label.textColor = .white
         label.numberOfLines = 0 // 멀티라인을 허용합니다.
         return label
@@ -711,7 +711,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         return imageView
     }()
 
-    private lazy var nicknameLabel: UILabel = {
+    private lazy var timeLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Bold", size: 10)
         label.textColor = .white
@@ -741,14 +741,14 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         return imageView
     }()
 
-    private lazy var label123: UILabel = {
+    private lazy var likeCount: UILabel = {
             let label = UILabel()
             label.font = UIFont(name: "Pretendard-Regular", size: 10)
             label.textColor = .white
             return label
         }()
 
-        private lazy var label456: UILabel = {
+        private lazy var viewCount: UILabel = {
             let label = UILabel()
             label.font = UIFont(name: "Pretendard-Regular", size: 10)
             label.textColor = .white
@@ -763,7 +763,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         // 컨테이너 뷰 설정
-        container.backgroundColor = .darkGray
+        container.backgroundColor = UIColor(red: 0.169, green: 0.169, blue: 0.169, alpha: 1)
         container.layer.cornerRadius = 10
         container.clipsToBounds = true
 
@@ -774,18 +774,18 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         contentView.addSubview(container)
 
         // 모든 서브뷰를 컨테이너 뷰에 추가합니다.
-        container.addSubview(titleLabel)
+        container.addSubview(nickNameLabel)
         container.addSubview(contentLabel)
         container.addSubview(profileImageView)
-        container.addSubview(nicknameLabel)
+        container.addSubview(timeLabel)
         // 컨테이너 뷰에 새로운 서브뷰를 추가합니다.
                container.addSubview(newTitleLabel)
         // 컨테이너 뷰에 새로운 서브뷰들을 추가합니다.
                 container.addSubview(extraImageView1)
                 container.addSubview(extraImageView2)
         // 새로운 서브뷰들을 컨테이너 뷰에 추가합니다.
-               container.addSubview(label123)
-               container.addSubview(label456)
+               container.addSubview(likeCount)
+               container.addSubview(viewCount)
 
         // 컨테이너 뷰에 대한 제약조건을 설정합니다.
         container.snp.makeConstraints { make in
@@ -810,7 +810,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
     private func setupLayout() {
 
         // 제목 레이블의 레이아웃 설정
-        titleLabel.snp.makeConstraints { make in
+        nickNameLabel.snp.makeConstraints { make in
 //            make.top.equalToSuperview().offset(15) // 상단 여백 설정
             make.centerY.equalTo(profileImageView)
             make.left.equalTo(profileImageView.snp.right).offset(10)
@@ -831,9 +831,9 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         }
 
         // 닉네임 레이블의 레이아웃 설정
-        nicknameLabel.snp.makeConstraints { make in
-            make.left.equalTo(titleLabel.snp.right).offset(10) // 프로필 이미지 오른쪽에 위치
-            make.centerY.equalTo(titleLabel.snp.centerY) // 프로필 이미지와 중앙 정렬
+        timeLabel.snp.makeConstraints { make in
+            make.left.equalTo(nickNameLabel.snp.right).offset(10) // 프로필 이미지 오른쪽에 위치
+            make.centerY.equalTo(nickNameLabel.snp.centerY) // 프로필 이미지와 중앙 정렬
         }
 
         // 새로운 제목 레이블 레이아웃 설정
@@ -855,36 +855,38 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
            // 두 번째 이미지 뷰 레이아웃 설정
            extraImageView2.snp.makeConstraints { make in
                make.top.equalTo(contentLabel.snp.bottom).offset(13)
-               make.left.equalTo(label123.snp.right).offset(10)
+               make.left.equalTo(likeCount.snp.right).offset(10)
                make.width.height.equalTo(15) // 원하는 크기로 조정
            }
 
         // label123 레이아웃 설정
-         label123.snp.makeConstraints { make in
+         likeCount.snp.makeConstraints { make in
              make.centerY.equalTo(extraImageView1.snp.centerY)
              make.left.equalTo(extraImageView1.snp.right).offset(4)
          }
 
          // label456 레이아웃 설정
-         label456.snp.makeConstraints { make in
+         viewCount.snp.makeConstraints { make in
              make.centerY.equalTo(extraImageView2.snp.centerY)
              make.left.equalTo(extraImageView2.snp.right).offset(4)
          }
     }
 
     // 셀에 리뷰 정보를 설정하는 메서드
-    func setReview(title: String, content: String, profileImage: UIImage?, nickname: String, newTitle: String, extraImageView1: UIImage?, extraImageView2: UIImage?, text123: String, text456: String) {
+    func setReview(nikeName: String, content: String, profileImage: UIImage?, nickname: String, newTitle: String, extraImageView1: UIImage?, extraImageView2: UIImage?, text123: String, text456: String) {
 
-        titleLabel.text = title
+        nickNameLabel.text = nikeName
         contentLabel.text = content
         profileImageView.image = profileImage
-        nicknameLabel.text = nickname
+        timeLabel.text = nickname
         newTitleLabel.text = newTitle
         self.extraImageView1.image = extraImageView1
         self.extraImageView2.image = extraImageView2
-        label123.text = text123
-             label456.text = text456
+        likeCount.text = text123
+             viewCount.text = text456
     }
+
+    
 }
 
 

@@ -7,22 +7,21 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
     var tableView: UITableView!
 
-//    override func viewDidAppear(_ animated: Bool) {
-//        tabBarController?.tabBar.isHidden = false
-//
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        navigationItem.largeTitleDisplayMode = .always
+
+    }
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupNavigationBar()
         view.backgroundColor = .black
-//        tableView.register(TweetTableViewCell.self, forCellReuseIdentifier: "TweetCell")
 
-        // 라이트 모드로 강제 설정
-//            overrideUserInterfaceStyle = .light
 
-        
+
     }
 
     func setupTableView() {
@@ -52,18 +51,19 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
     func setupNavigationBar() {
         // 네비게이션 타이틀 설정
         self.navigationItem.title = "인기"
-//        // 네비게이션 바 배경색과 타이틀 색상 설정
-//        let appearance = UINavigationBarAppearance()
-//        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
-//        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
-//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
-//
-//        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-//        navigationController?.navigationBar.standardAppearance = appearance
-//
-//        // 네비게이션 바 대형 타이틀 설정
-//        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
+        // 네비게이션 바 배경색과 타이틀 색상 설정
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .black // 배경색을 검은색으로 설정
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
+        
+
+        // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.standardAppearance = appearance
+
+        // 네비게이션 바 대형 타이틀 설정
+        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
     }
 
 
@@ -100,15 +100,17 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 셀 선택 시 동작
         print("Selected row: \(indexPath.row)")
 
-        // 셀 선택 시 디테일 페이지로 넘어가는 코드
-        let detailViewController = ReviewDetailViewController() // 상세 페이지 뷰 컨트롤러 인스턴스 생성
-        detailViewController.hidesBottomBarWhenPushed = true // 탭 바 숨기기
-        // 네비게이션 컨트롤러를 사용하여 디테일 뷰로 이동
+        let detailViewController = ReviewDetailViewController()
+        detailViewController.hidesBottomBarWhenPushed = true
+
+        // 다음 페이지로 넘어갈 때 대형 타이틀을 없애고 일반 타이틀로 전환
+        detailViewController.navigationItem.largeTitleDisplayMode = .never
+
         navigationController?.pushViewController(detailViewController, animated: true)
     }
+
 
 
 

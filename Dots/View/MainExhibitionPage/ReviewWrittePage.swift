@@ -9,6 +9,13 @@ import Foundation
 import UIKit
 import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위해 필요합니다.
 import SnapKit
+import Firebase
+import FirebaseStorage
+
+protocol ReviewWritePageDelegate: AnyObject {
+    func didSubmitReview()
+}
+
 
 class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource {
 
@@ -26,14 +33,61 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     // 컬렉션 뷰 높이 제약 조건을 위한 변수 선언
     var collectionViewHeightConstraint: Constraint?
 
+    var posterName: String?
+
+    var reviewTitle: String?
+
+    weak var delegate: ReviewWritePageDelegate?
+
+    var contentTextViewBottomConstraint: Constraint?
+
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        titleTextField.becomeFirstResponder()
+
+
+        // posterName 값 확인
+          if let posterName = posterName {
+              print("Poster name: \(posterName)")
+          } else {
+              print("Poster name not provided")
+          }
+
+
+
 
         self.view.backgroundColor = .black
 
         // 타이틀 설정
         self.title = "리암 길릭 : Alterants"
+
+        // Custom Title View 생성 및 설정
+           let titleLabel = UILabel()
+           titleLabel.numberOfLines = 0 // 여러 줄 표시 허용
+           titleLabel.text = reviewTitle ?? "기본 타이틀" // 여기에 여러 줄 텍스트 설정
+           titleLabel.textAlignment = .center
+           titleLabel.textColor = .white
+           titleLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+           titleLabel.lineBreakMode = .byWordWrapping
+
+           // Navigation Item에 Title View 설정
+           self.navigationItem.titleView = titleLabel
+
+           // Title View의 제약 조건 설정 (필요한 경우)
+           titleLabel.snp.makeConstraints { make in
+               make.width.lessThanOrEqualTo(self.view.frame.width - 40) // 적절한 너비 제한 설정
+           }
+
+        // 타이틀 설정
+          if let reviewTitle = reviewTitle {
+              self.title = reviewTitle // 여기에서 reviewTitle을 self.title에 바인딩합니다.
+          } else {
+              self.title = "기본 타이틀" // reviewTitle이 nil일 경우의 기본 값
+          }
 
         // 취소 버튼 설정
         let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(cancelButtonTapped))
@@ -77,21 +131,39 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
 
-    @objc func keyboardWillShow(notification: NSNotification) {
-        // 키보드가 표시될 때 필요한 동작을 구현
-        // 예를 들어, 텍스트 필드의 위치 조정 등
-    }
 
-    @objc func keyboardWillHide(notification: NSNotification) {
-        // 키보드가 숨겨질 때 필요한 동작을 구현
-        // 예를 들어, 텍스트 필드의 위치를 원래대로 복원
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+
+        // contentTextView 레이아웃 설정
+        contentTextView.snp.makeConstraints { make in
+            make.top.equalTo(separatorView.snp.bottom).offset(10)
+            make.left.right.equalTo(view).inset(10)
+            self.contentTextViewBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).constraint
+        }
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+
+            contentTextViewBottomConstraint?.update(inset: keyboardHeight)
+            view.layoutIfNeeded()
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        contentTextViewBottomConstraint?.update(inset: 0)
+        view.layoutIfNeeded()
+    }
+
+
 
 
     func setupCollectionView() {
@@ -405,8 +477,79 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     }
 
     @objc func registerButtonTapped() {
-        // 등록 버튼 액션 처리
-        // 여기에 등록 로직을 구현합니다.
+        guard let userId = Auth.auth().currentUser?.uid,
+              let posterName = posterName, !posterName.isEmpty,
+              let title = titleTextField.text, !title.isEmpty,
+              let content = contentTextView.text, !content.isEmpty else {
+            print("필요한 정보가 부족합니다.")
+            return
+        }
+
+        let reviewData: [String: Any] = [
+            "title": title,
+            "content": content,
+            "createdAt": FieldValue.serverTimestamp() // 현재 시간
+
+            // 필요한 추가 데이터
+        ]
+
+        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에 리뷰 저장, 문서 ID는 유저의 UUID로 설정
+        let docRef = Firestore.firestore().collection("posters").document(posterName)
+                          .collection("reviews").document(userId)
+
+        docRef.setData(reviewData) { error in
+            if let error = error {
+                print("Error writing document: \(error)")
+            } else {
+                print("Document successfully written!")
+                self.uploadImages(userId: userId, posterName: posterName)
+
+                // 성공적으로 저장된 후에:
+                    self.delegate?.didSubmitReview()
+                    self.dismiss(animated: true, completion: nil) // 페이지 닫기
+            }
+        }
+    }
+
+    func uploadImages(userId: String, posterName: String) {
+        for (index, image) in selectedImages.enumerated() {
+            guard let imageData = image.jpegData(compressionQuality: 0.75) else { continue }
+
+            let imageName = "\(userId)_\(index).jpg"
+            let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
+
+            storageRef.putData(imageData, metadata: nil) { metadata, error in
+                guard metadata != nil else {
+                    print("Error uploading image: \(error?.localizedDescription ?? "")")
+                    return
+                }
+
+                storageRef.downloadURL { (url, error) in
+                    guard let downloadURL = url else {
+                        print("Error getting download URL: \(error?.localizedDescription ?? "")")
+                        return
+                    }
+
+                    // Firestore 문서에 이미지 URL을 추가합니다.
+                    self.addImageUrlToFirestore(userId: userId, posterName: posterName, imageUrl: downloadURL.absoluteString)
+                }
+            }
+        }
+    }
+
+    func addImageUrlToFirestore(userId: String, posterName: String, imageUrl: String) {
+        let docRef = Firestore.firestore().collection("posters").document(posterName)
+                            .collection("reviews").document(userId)
+
+        docRef.updateData([
+            "images": FieldValue.arrayUnion([imageUrl])
+        ]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Image URL successfully added to document!")
+            }
+        }
     }
 
 
@@ -460,6 +603,8 @@ extension ReviewWritePage: PHPickerViewControllerDelegate {
         }
     }
 }
+
+
 
 class ImageCollectionViewCell: UICollectionViewCell {
     let imageView = UIImageView()
