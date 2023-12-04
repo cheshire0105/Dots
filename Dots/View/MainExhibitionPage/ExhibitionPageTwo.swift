@@ -873,17 +873,27 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
     }
 
     // 셀에 리뷰 정보를 설정하는 메서드
-    func setReview(nikeName: String, content: String, profileImage: UIImage?, nickname: String, newTitle: String, extraImageView1: UIImage?, extraImageView2: UIImage?, text123: String, text456: String) {
-
+    // 셀에 리뷰 정보를 설정하는 메서드
+    func setReview(nikeName: String, content: String, profileImageUrl: String, nickname: String, newTitle: String, extraImageView1: UIImage?, extraImageView2: UIImage?, text123: String, text456: String) {
         nickNameLabel.text = nikeName
         contentLabel.text = content
-        profileImageView.image = profileImage
         timeLabel.text = nickname
         newTitleLabel.text = newTitle
         self.extraImageView1.image = extraImageView1
         self.extraImageView2.image = extraImageView2
         likeCount.text = text123
-             viewCount.text = text456
+        viewCount.text = text456
+
+        // 프로필 이미지 URL을 사용하여 이미지 다운로드
+        if let url = URL(string: profileImageUrl) {
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.profileImageView.image = image
+                    }
+                }
+            }.resume()
+        }
     }
 
     

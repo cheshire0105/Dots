@@ -318,7 +318,26 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             }
         }
     }
-    
+
+    private func 유저_프로필_저장(유저ID: String, 닉네임: String, 프로필이미지URL: String) {
+        let 데이터베이스 = Firestore.firestore()
+        let 유저프로필컬렉션 = 데이터베이스.collection("유저_프로필")
+
+        let userProfileData: [String: Any] = [
+            "닉네임": 닉네임,
+            "프로필이미지URL": 프로필이미지URL
+        ]
+
+        유저프로필컬렉션.document(유저ID).setData(userProfileData) { 에러 in
+            if let 에러 = 에러 {
+                print("유저 프로필 정보 저장 실패: \(에러.localizedDescription)")
+            } else {
+                print("유저 프로필 정보 저장 성공")
+            }
+        }
+    }
+
+
     
     @objc func 회원가입_회원가입_버튼_클릭() {
 //        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
@@ -341,11 +360,18 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             print("회원가입 성공")
             
             self.회원가입_유저정보_업로드(회원가입_타입: "도트", 닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL, 마지막로그인: "로그인 기록이 없음",마지막로그아웃: "로그아웃 기록이 없음")
-            
+
+            // UID를 사용하여 유저 프로필 정보를 저장
+               if let 유저ID = authResult?.user.uid {
+                   self.유저_프로필_저장(유저ID: 유저ID, 닉네임: 닉네임, 프로필이미지URL: 기본프로필이미지URL)
+               }
+
             let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
             self.navigationController?.pushViewController(다음화면_이동, animated: true)
             self.navigationItem.hidesBackButton = true
         }
+
+        
     }
 }
 

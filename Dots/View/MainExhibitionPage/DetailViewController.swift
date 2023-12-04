@@ -74,17 +74,40 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                     print("Error getting documents: \(error)")
                     return
                 }
-                self.reviews = querySnapshot?.documents.compactMap { document -> Review? in
+                var newReviews: [Review] = []
+                let group = DispatchGroup()
+
+                querySnapshot?.documents.forEach { document in
+                    group.enter()
                     let data = document.data()
-                    let title = data["title"] as? String ?? ""
-                    let content = data["content"] as? String ?? ""
-                    let createdAt = (data["createdAt"] as? Timestamp)?.dateValue() ?? Date()
-                    let nickname = data["nickname"] as? String ?? "" // 실제로는 userId를 닉네임으로 변환하는 로직이 필요합니다.
-                    return Review(title: title, content: content, createdAt: createdAt, nickname: nickname)
-                } ?? []
-                self.reviewsTableView.reloadData() // 테이블 뷰를 새로 고침합니다.
+                    let userId = document.documentID // UUID로 가정
+
+                    Firestore.firestore().collection("유저_프로필").document(userId).getDocument { (userDoc, error) in
+                        if let userDoc = userDoc, userDoc.exists {
+                            let userData = userDoc.data()
+                            let nickname = userData?["닉네임"] as? String ?? ""
+                            let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
+
+                            let review = Review(
+                                title: data["title"] as? String ?? "",
+                                content: data["content"] as? String ?? "",
+                                createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
+                                nickname: nickname,
+                                profileImageUrl: profileImageUrl
+                            )
+                            newReviews.append(review)
+                        }
+                        group.leave()
+                    }
+                }
+
+                group.notify(queue: .main) {
+                    self.reviews = newReviews
+                    self.reviewsTableView.reloadData()
+                }
             }
     }
+
 
 
 
@@ -577,11 +600,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let review = reviews[indexPath.row]
         let timeString = convertDateToString(review.createdAt) // 리뷰 작성 시간을 문자열로 변환
 
-        // 셀에 정보를 설정합니다. newTitle 파라미터에 review.title을 할당합니다.
-        cell.setReview(nikeName: "임시 유저 아이디", content: review.content, profileImage: UIImage(named: "기본 이미지 이름"), nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "Vector 4"), extraImageView2: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1"), text123: "123", text456: "456")
+        // 셀에 리뷰 정보를 설정합니다.
+        cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "Vector 4"), extraImageView2: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1"), text123: "123", text456: "456")
 
         return cell
     }
+
 
 
     // 날짜 변환 함수 (예제)
@@ -603,7 +627,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
 
-
+    
 
 
 }
