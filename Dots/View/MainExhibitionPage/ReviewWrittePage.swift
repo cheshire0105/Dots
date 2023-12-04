@@ -59,6 +59,23 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         // 타이틀 설정
         self.title = "리암 길릭 : Alterants"
 
+        // Custom Title View 생성 및 설정
+           let titleLabel = UILabel()
+           titleLabel.numberOfLines = 0 // 여러 줄 표시 허용
+           titleLabel.text = reviewTitle ?? "기본 타이틀" // 여기에 여러 줄 텍스트 설정
+           titleLabel.textAlignment = .center
+           titleLabel.textColor = .white
+           titleLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+           titleLabel.lineBreakMode = .byWordWrapping
+
+           // Navigation Item에 Title View 설정
+           self.navigationItem.titleView = titleLabel
+
+           // Title View의 제약 조건 설정 (필요한 경우)
+           titleLabel.snp.makeConstraints { make in
+               make.width.lessThanOrEqualTo(self.view.frame.width - 40) // 적절한 너비 제한 설정
+           }
+
         // 타이틀 설정
           if let reviewTitle = reviewTitle {
               self.title = reviewTitle // 여기에서 reviewTitle을 self.title에 바인딩합니다.
