@@ -63,6 +63,7 @@
 		FF77BFBD2AF7736900EA5A1B /* LogIN.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFBC2AF7736900EA5A1B /* LogIN.swift */; };
 		FF77BFBF2AF780AC00EA5A1B /* SignUPfirst.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFBE2AF780AC00EA5A1B /* SignUPfirst.swift */; };
 		FF77BFC12AF79D3A00EA5A1B /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF77BFC02AF79D3A00EA5A1B /* LaunchScreenViewController.swift */; };
+		FF90EFF82B1D5E3000CE3C41 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF90EFF72B1D5E3000CE3C41 /* Review.swift */; };
 		FFAFCB2D2AFA23E30030C3C9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB2C2AFA23E30030C3C9 /* FirebaseAnalytics */; };
 		FFAFCB2F2AFA23E30030C3C9 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB2E2AFA23E30030C3C9 /* FirebaseAnalyticsOnDeviceConversion */; };
 		FFAFCB312AFA23E30030C3C9 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FFAFCB302AFA23E30030C3C9 /* FirebaseAnalyticsSwift */; };
@@ -162,6 +163,7 @@
 		FF77BFBC2AF7736900EA5A1B /* LogIN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogIN.swift; sourceTree = "<group>"; };
 		FF77BFBE2AF780AC00EA5A1B /* SignUPfirst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfirst.swift; sourceTree = "<group>"; };
 		FF77BFC02AF79D3A00EA5A1B /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
+		FF90EFF72B1D5E3000CE3C41 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
 		FFAFCB732AFB71080030C3C9 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		FFAFCB752AFB76220030C3C9 /* ExhibitionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExhibitionModel.swift; sourceTree = "<group>"; };
 		FFAFCB772AFB76460030C3C9 /* 선별_전시_컬렉션_셀.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "선별_전시_컬렉션_셀.swift"; sourceTree = "<group>"; };
@@ -436,6 +438,7 @@
 			isa = PBXGroup;
 			children = (
 				FFAFCB752AFB76220030C3C9 /* ExhibitionModel.swift */,
+				FF90EFF72B1D5E3000CE3C41 /* Review.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -724,6 +727,7 @@
 				FFAFCB822B01DCE00030C3C9 /* ReviewWrittePage.swift in Sources */,
 				FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */,
 				37051B822B05F88D00D33C07 /* SettingNotification.swift in Sources */,
+				FF90EFF82B1D5E3000CE3C41 /* Review.swift in Sources */,
 				FF77BFBD2AF7736900EA5A1B /* LogIN.swift in Sources */,
 				FFAFCB762AFB76220030C3C9 /* ExhibitionModel.swift in Sources */,
 				FF77BFB82AF3E0DB00EA5A1B /* searchPageTableViewCell.swift in Sources */,

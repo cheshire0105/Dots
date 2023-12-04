@@ -12,12 +12,15 @@ import Foundation
 
 import MapKit // MapKit 프레임워크를 임포트합니다.
 import Firebase
+import FirebaseStorage
 
 class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate {
 
     let segmentControl = UISegmentedControl(items: ["후기", "상세정보"])
     var reviewsTableView = UITableView()
-    var reviews: [String] = []
+//    var reviews: [String] = []
+    var reviews = [Review]() // 클래스 프로퍼티로 리뷰 배열을 선언합니다.
+
     var detailScrollView: UIScrollView!
     var detailContentView: UIView!
     let floatingActionButton = UIButton(type: .custom)
@@ -40,12 +43,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var exhibitionDetail : String?
 
 
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadReviews()
         view.backgroundColor = .black
         configureSegmentControl()
         configureTableView()
-        loadSampleReviews()
+//        loadSampleReviews()
 
         configureDetailScrollView()
         configureFloatingActionButton()
@@ -54,6 +60,32 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         mapView.delegate = self
 
     }
+
+    func loadReviews() {
+        guard let posterName = posterImageName else {
+            print("posterImageName is nil")
+            return
+        }
+
+        Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    print("Error getting documents: \(error)")
+                    return
+                }
+                self.reviews = querySnapshot?.documents.compactMap { document -> Review? in
+                    let data = document.data()
+                    let title = data["title"] as? String ?? ""
+                    let content = data["content"] as? String ?? ""
+                    let createdAt = (data["createdAt"] as? Timestamp)?.dateValue() ?? Date()
+                    let nickname = data["nickname"] as? String ?? "" // 실제로는 userId를 닉네임으로 변환하는 로직이 필요합니다.
+                    return Review(title: title, content: content, createdAt: createdAt, nickname: nickname)
+                } ?? []
+                self.reviewsTableView.reloadData() // 테이블 뷰를 새로 고침합니다.
+            }
+    }
+
+
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "CustomPin"
@@ -530,29 +562,26 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         return reviews.count
     }
 
-    // tableView(_:cellForRowAt:) 메서드 수정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "새로운_ReviewTableViewCell", for: indexPath) as? 새로운_ReviewTableViewCell else {
             return UITableViewCell()
         }
 
-        // 리뷰 제목, 내용, 프로필 이미지, 닉네임 설정
-        let reviewTitle = "chsshire"
-        let reviewContent = reviews[indexPath.row]
-        let profileImage = UIImage(named: "morningStar")
-        let nickname = "8분 전"
-        let newTitle = "새로운 제목" // 새로운 제목 설정
-        let extraImageView1 = UIImage(named: "Vector 4")
-        let extraImageView2 = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1")
-        // 추가 텍스트 설정
-            let text123 = "123"
-            let text456 = "456"
+        let review = reviews[indexPath.row]
+        let timeString = convertDateToString(review.createdAt) // 리뷰 작성 시간을 문자열로 변환
 
-        // 셀에 정보를 설정하는 부분 (새로운 제목 포함)
-        cell.setReview(title: reviewTitle, content: reviewContent, profileImage: profileImage, nickname: nickname, newTitle: newTitle, extraImageView1: extraImageView1, extraImageView2: extraImageView2, text123: text123, text456: text456)
-
+        // 셀에 정보를 설정합니다. newTitle 파라미터에 review.title을 할당합니다.
+        cell.setReview(nikeName: "임시 유저 아이디", content: review.content, profileImage: UIImage(named: "기본 이미지 이름"), nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "Vector 4"), extraImageView2: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1"), text123: "123", text456: "456")
 
         return cell
+    }
+
+
+    // 날짜 변환 함수 (예제)
+    func convertDateToString(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
 
     // UITableViewDelegate 메서드
@@ -566,10 +595,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
 
-    private func loadSampleReviews() {
-        reviews = ["이번 한국 명화 전시는 정말 감동적이었습니다. 작품들은 아름다운 색채와 섬세한 선으로 구성되어 있어 예술의 아름다움을 느낄 수 있었습니다.", "다시 방문하고 싶어요.", "추천합니다!", "생각보다 별로였어요.", "인상적인 작품이 많았습니다.", "전시장은 조용하고 아름다웠고, 명화들은 고요한 분위기를 자아냈습니다. 화가들의 정성이 느껴지는 작품들을 감상하면서 시간이 흘렀습니다.", "작품 설명이 잘 되어 있어서 좋았습니다.", "아이와 같이 가기 좋은 전시였어요.", "주차 공간이 넉넉해서 좋았어요.","정말 좋았어요!", "멋진 전시였습니다.", "다시 방문하고 싶어요.", "추천합니다!", "생각보다 별로였어요.", "전시를 통해 한국의 아름다운 풍경과 역사를 더 깊이 이해할 수 있었습니다. 명화들은 과거와 현재의 연결고리가 된 느낌이었습니다.", "전시가 너무 혼잡했어요.", "작품 설명이 잘 되어 있어서 좋았습니다. 작품 설명이 잘 되어 있어서 좋았습니다. 작품 설명이 잘 되어 있어서 좋았습니다. 작품 설명이 잘 되어 있어서 좋았습니다.", "아이와 같이 가기 좋은 전시였어요.", "주차 공간이 넉넉해서 좋았어요."]
-        reviewsTableView.reloadData()
-    }
+
 
 }
 

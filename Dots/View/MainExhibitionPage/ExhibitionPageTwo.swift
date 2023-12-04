@@ -873,9 +873,9 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
     }
 
     // 셀에 리뷰 정보를 설정하는 메서드
-    func setReview(title: String, content: String, profileImage: UIImage?, nickname: String, newTitle: String, extraImageView1: UIImage?, extraImageView2: UIImage?, text123: String, text456: String) {
+    func setReview(nikeName: String, content: String, profileImage: UIImage?, nickname: String, newTitle: String, extraImageView1: UIImage?, extraImageView2: UIImage?, text123: String, text456: String) {
 
-        nickNameLabel.text = title
+        nickNameLabel.text = nikeName
         contentLabel.text = content
         profileImageView.image = profileImage
         timeLabel.text = nickname
@@ -885,6 +885,8 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         likeCount.text = text123
              viewCount.text = text456
     }
+
+    
 }
 
 
