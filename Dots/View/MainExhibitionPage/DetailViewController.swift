@@ -580,9 +580,11 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     // 날짜 변환 함수 (예제)
     func convertDateToString(_ date: Date) -> String {
         let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
+        formatter.locale = Locale(identifier: "ko-KR") // 한국어로 설정
+        formatter.unitsStyle = .full // 전체 스타일로 표시 ('3분 전' 등)
         return formatter.localizedString(for: date, relativeTo: Date())
     }
+
 
     // UITableViewDelegate 메서드
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
