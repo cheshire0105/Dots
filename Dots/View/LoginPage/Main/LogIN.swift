@@ -243,7 +243,7 @@ extension 로그인_뷰컨트롤러 {
             } else {
                 print("로그인 성공")
                 let 파이어스토어 = Firestore.firestore()
-                파이어스토어.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
+                파이어스토어.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
                     guard let self = self else { return }
                     
                     if let 에러 = 에러 {
@@ -261,7 +261,7 @@ extension 로그인_뷰컨트롤러 {
     private func 이중_로그인_확인_장치(이메일: String) {
         let 파이어스토어 = Firestore.firestore()
         
-        파이어스토어.collection("도트_유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
+        파이어스토어.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
             guard let self = self else { return }
             
             if let 에러 = 에러 {

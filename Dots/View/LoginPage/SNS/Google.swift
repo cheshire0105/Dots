@@ -76,11 +76,14 @@ extension 로그인_뷰컨트롤러 {
 
     func 구글계정정보_파이어스토어_업로드(회원가입_타입: String, 구글이메일: String, 구글닉네임: String, 식별id: String, 로그인상태: Bool, 프로필이미지URL: String, 유저UID: String) {
         let 데이터베이스 = Firestore.firestore()
-        let 유저컬렉션 = 데이터베이스.collection("구글_유저_데이터_관리").document(식별id)
+
+        // 유저UID를 문서 이름으로 사용
+        let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리").document(유저UID)
+
         let 현재날짜시간 = Timestamp(date: Date())
         let userData: [String: Any] = [
-            "회원가입_타입": "구글",
-            "로그인상태": true, // 로그인이 성공시 true
+            "회원가입_타입": 회원가입_타입,
+            "로그인상태": 로그인상태,
             "닉네임": 구글닉네임,
             "이메일": 구글이메일,
             "프로필이미지URL": 프로필이미지URL,
@@ -95,24 +98,8 @@ extension 로그인_뷰컨트롤러 {
                 print("구글 계정 auth 등록후 필요 데이터를 Firestore에 구글 데이터 등록 성공")
             }
         }
-
-        // 새로운 컬렉션에 저장할 데이터 설정
-        let 새로운userData: [String: Any] = [
-            "닉네임": 구글닉네임,
-            "프로필이미지URL": 프로필이미지URL,
-            "UUID": 유저UID  // UUID 필드 추가
-        ]
-
-        // 새로운 컬렉션에 데이터 저장
-        let 새로운유저컬렉션 = 데이터베이스.collection("유저_프로필").document(유저UID) // UUID를 문서 ID로 사용
-        새로운유저컬렉션.setData(새로운userData) { 에러 in
-            if let 에러 = 에러 {
-                print("새로운 컬렉션에 데이터 등록 실패: \(에러.localizedDescription)")
-            } else {
-                print("새로운 컬렉션에 데이터 등록 성공")
-            }
-        }
     }
+
 }
 
 extension 회원가입_첫번째_뷰컨트롤러 {
@@ -166,7 +153,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 
     func 구글계정정보_파이어스토어_업로드(회원가입_타입: String,구글이메일: String, 구글닉네임: String, 식별id: String,로그인상태: Bool, 프로필이미지URL: String) {
         let 데이터베이스 = Firestore.firestore()
-        let 유저컬렉션 = 데이터베이스.collection("구글_유저_데이터_관리").document(식별id)
+        let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리").document(식별id)
         let 현재날짜시간 = Timestamp(date: Date())
 
         let userData: [String: Any] = [

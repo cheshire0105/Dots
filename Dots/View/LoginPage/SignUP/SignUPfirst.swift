@@ -295,29 +295,28 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 // 회원가입 유저 정보 업로드 관련
 extension 회원가입_첫번째_뷰컨트롤러 {
     
-    private func 회원가입_유저정보_업로드(회원가입_타입: String,닉네임: String, 이메일: String, 비밀번호: String,로그인상태: Bool ,프로필이미지URL: String, 마지막로그인: String,마지막로그아웃:String) {
+    private func 회원가입_유저정보_업로드(유저ID: String, 회원가입_타입: String, 닉네임: String, 이메일: String, 비밀번호: String, 로그인상태: Bool, 프로필이미지URL: String, 마지막로그인: String, 마지막로그아웃: String) {
         let 데이터베이스 = Firestore.firestore()
-        let 유저컬렉션 = 데이터베이스.collection("도트_유저_데이터_관리")
         let userData: [String: Any] = [
-            "회원가입_타입": "도트",
+            "회원가입_타입": 회원가입_타입,
             "닉네임": 닉네임,
             "이메일": 이메일,
             "비밀번호": 비밀번호,
-            "로그인상태": false,
+            "로그인상태": 로그인상태,
             "프로필이미지URL": 프로필이미지URL,
-            "마지막로그인": "로그인 기록이 없음",
-            "마지막로그아웃": "로그아웃 기록이 없음"
-
+            "마지막로그인": 마지막로그인,
+            "마지막로그아웃": 마지막로그아웃
         ]
-        
-        유저컬렉션.addDocument(data: userData) { 에러 in
-            if let 유저데이터_실패 = 에러 {
-                print("Firestore에 사용자 정보 저장 실패: \(유저데이터_실패.localizedDescription)")
+
+        데이터베이스.collection("유저_데이터_관리").document(유저ID).setData(userData) { 에러 in
+            if let 에러 = 에러 {
+                print("Firestore에 사용자 정보 저장 실패: \(에러.localizedDescription)")
             } else {
                 print("Firestore에 사용자 정보 저장 성공")
             }
         }
     }
+
 
     private func 유저_프로필_저장(유저ID: String, 닉네임: String, 프로필이미지URL: String) {
         let 데이터베이스 = Firestore.firestore()
@@ -351,21 +350,23 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         }
         let 기본프로필이미지URL = "https://firebasestorage.googleapis.com/v0/b/dots-3ad09.appspot.com/o/profile_default_images%2FdotsMan.png?alt=media&token=c412cd87-160c-4ebf-bd7d-53ebac38a720"
         
-        Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { (authResult, 에러) in
-            if let 회원가입_실패 = 에러 {
-                print("회원가입 실패: \(회원가입_실패.localizedDescription)")
+        Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { [weak self] (authResult, 에러) in
+            guard let self = self else { return }
+
+            if let 에러 = 에러 {
+                print("회원가입 실패: \(에러.localizedDescription)")
                 return
             }
-            
+
             print("회원가입 성공")
-            
-            self.회원가입_유저정보_업로드(회원가입_타입: "도트", 닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL, 마지막로그인: "로그인 기록이 없음",마지막로그아웃: "로그아웃 기록이 없음")
 
-            // UID를 사용하여 유저 프로필 정보를 저장
-               if let 유저ID = authResult?.user.uid {
-                   self.유저_프로필_저장(유저ID: 유저ID, 닉네임: 닉네임, 프로필이미지URL: 기본프로필이미지URL)
-               }
+            // 생성된 UUID를 가져옵니다.
+            guard let 유저ID = authResult?.user.uid else { return }
 
+            // Firestore에 사용자 정보 저장
+            self.회원가입_유저정보_업로드(유저ID: 유저ID, 회원가입_타입: "도트", 닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL, 마지막로그인: "로그인 기록이 없음", 마지막로그아웃: "로그아웃 기록이 없음")
+
+            // 다음 화면으로 이동
             let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
             self.navigationController?.pushViewController(다음화면_이동, animated: true)
             self.navigationItem.hidesBackButton = true

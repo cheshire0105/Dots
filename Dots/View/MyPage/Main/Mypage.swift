@@ -375,9 +375,9 @@ extension Mypage {
         let 유저컬렉션: CollectionReference
 
         if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
-            유저컬렉션 = 파이어스토어.collection("구글_유저_데이터_관리")
+            유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         } else {
-            유저컬렉션 = 파이어스토어.collection("도트_유저_데이터_관리")
+            유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         }
 
             유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in
