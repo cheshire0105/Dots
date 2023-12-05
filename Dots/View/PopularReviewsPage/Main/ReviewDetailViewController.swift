@@ -249,9 +249,16 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 
 
     @objc func backButtonTapped() {
-        // 네비게이션 컨트롤러로 뒤로 가기
-        navigationController?.popViewController(animated: true)
+        // 네비게이션 컨트롤러에 푸시된 경우
+        if let navController = self.navigationController, navController.viewControllers.contains(self) {
+            // 네비게이션 스택에서 이전 뷰 컨트롤러로 이동
+            navController.popViewController(animated: true)
+            self.dismiss(animated: true, completion: nil)
+
+        } 
     }
+
+
 
     private func setupNavigationBackButton() {
         let backButton = createCustomBackButton()
