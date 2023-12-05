@@ -19,6 +19,7 @@ import SnapKit
 import SDWebImage
 import Firebase
 import FirebaseStorage
+import SkeletonView
 
 // 1. Section Model을 정의합니다.
 struct 메인페이지_전체_전시_섹션 {

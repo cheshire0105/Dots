@@ -17,6 +17,7 @@ PODS:
   - SDWebImage (5.18.5):
     - SDWebImage/Core (= 5.18.5)
   - SDWebImage/Core (5.18.5)
+  - SkeletonView (1.30.4)
   - SnapKit (5.6.0)
   - Toast-Swift (5.0.1)
 
@@ -24,6 +25,7 @@ DEPENDENCIES:
   - FSCalendar
   - GoogleSignIn
   - SDWebImage
+  - SkeletonView
   - SnapKit
   - Toast-Swift
 
@@ -35,6 +37,7 @@ SPEC REPOS:
     - GTMAppAuth
     - GTMSessionFetcher
     - SDWebImage
+    - SkeletonView
     - SnapKit
     - Toast-Swift
 
@@ -45,9 +48,10 @@ SPEC CHECKSUMS:
   GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
   SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
+  SkeletonView: 5a050f6411e697abd4cda0a8d767013399dccd69
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 
-PODFILE CHECKSUM: f5565e12c008925e98fd4c4cdc0e63eeb8faaeca
+PODFILE CHECKSUM: e07983b299d55634cc94187f8041a0070bc136cc
 
 COCOAPODS: 1.14.2

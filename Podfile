@@ -13,5 +13,6 @@ target 'Dots' do
   pod 'FSCalendar'
   pod 'GoogleSignIn'
   pod 'Toast-Swift'
-  
+  pod 'SkeletonView'
+
 end
