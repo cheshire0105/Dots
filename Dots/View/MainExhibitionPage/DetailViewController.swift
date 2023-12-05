@@ -46,7 +46,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
-
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -630,15 +630,33 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
 
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let detailViewController = ReviewDetailViewController()
+//        detailViewController.hidesBottomBarWhenPushed = true
+//
+//        // 네비게이션 컨트롤러를 생성하고, detailViewController를 루트 뷰 컨트롤러로 설정합니다.
+//        let navigationController = UINavigationController(rootViewController: detailViewController)
+//        navigationController.modalPresentationStyle = .fullScreen
+//
+//        
+//
+//        // 현재 뷰 컨트롤러에서 직접 새 모달 뷰 컨트롤러를 표시합니다.
+//        self.present(navigationController, animated: true, completion: nil)
+//    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = ReviewDetailViewController()
         detailViewController.hidesBottomBarWhenPushed = true
 
-        // 네비게이션 컨트롤러를 생성하고, detailViewController를 루트 뷰 컨트롤러로 설정합니다.
+        // 선택된 리뷰 데이터 전달
+        let selectedReview = reviews[indexPath.row]
+        detailViewController.review = selectedReview
+
+        // UINavigationController를 생성하여 ReviewDetailViewController를 루트 뷰 컨트롤러로 설정
         let navigationController = UINavigationController(rootViewController: detailViewController)
         navigationController.modalPresentationStyle = .fullScreen
 
-        // 현재 뷰 컨트롤러에서 직접 새 모달 뷰 컨트롤러를 표시합니다.
+        // 현재 뷰 컨트롤러에서 navigationController를 모달로 표시
         self.present(navigationController, animated: true, completion: nil)
     }
 

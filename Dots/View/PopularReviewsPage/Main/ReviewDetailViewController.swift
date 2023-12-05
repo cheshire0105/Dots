@@ -41,6 +41,9 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
     let additionalLabel2 = UILabel()
     let reviewTitle = UILabel()
 
+    var review: Review? // 추가된 프로퍼티
+
+
 //    override func viewWillAppear(_ animated: Bool) {
 //        super.viewWillAppear(animated)
 //        // 탭바를 숨깁니다.
@@ -74,7 +77,16 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         setupSquareViewAndLabel()
         
         
-       
+        if let reviewData = review {
+             // UI 컴포넌트에 데이터 바인딩
+             nameLabel.text = reviewData.nickname
+//             timeLabel.text = convertDateToString(reviewData.createdAt)
+             reviewTitle.text = reviewData.title
+             contentLabel.text = reviewData.content
+             // profileImageView에 이미지 로드 (예: URL에서 이미지를 로드하는 경우)
+
+             // 추가적인 데이터 바인딩 (additionalImageView1, additionalLabel1 등)
+         }
     }
 
 
