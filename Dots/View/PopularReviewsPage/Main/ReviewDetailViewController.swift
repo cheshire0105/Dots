@@ -43,6 +43,10 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 
     var review: Review? // 추가된 프로퍼티
 
+    // 추가된 프로퍼티
+       var museumName: String?
+       var exhibitionTitle: String?
+
 
 //    override func viewWillAppear(_ animated: Bool) {
 //        super.viewWillAppear(animated)
@@ -75,18 +79,73 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 
         setupScrollView()
         setupSquareViewAndLabel()
-        
+        setupNavigationTitleView() // 변경된 메서드 호출
+
         
         if let reviewData = review {
              // UI 컴포넌트에 데이터 바인딩
              nameLabel.text = reviewData.nickname
-//             timeLabel.text = convertDateToString(reviewData.createdAt)
+             timeLabel.text = convertDateToString(reviewData.createdAt)
              reviewTitle.text = reviewData.title
              contentLabel.text = reviewData.content
              // profileImageView에 이미지 로드 (예: URL에서 이미지를 로드하는 경우)
+            // URL 문자열을 사용하여 이미지 로드
+             if let imageUrl = URL(string: reviewData.profileImageUrl) {
+                 // URL에서 이미지 데이터를 가져옵니다.
+                 URLSession.shared.dataTask(with: imageUrl) { data, response, error in
+                     guard let data = data, error == nil else { return }
 
-             // 추가적인 데이터 바인딩 (additionalImageView1, additionalLabel1 등)
+                     // 메인 스레드에서 이미지 뷰에 이미지 설정
+                     DispatchQueue.main.async {
+                         self.profileImageView.image = UIImage(data: data)
+                     }
+                 }.resume()
+             }
          }
+    }
+
+
+    private func setupNavigationTitleView() {
+        let titleLabel = UILabel()
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        titleLabel.textColor = .white
+        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        titleLabel.lineBreakMode = .byWordWrapping
+
+        let subtitleLabel = UILabel()
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.textColor = .lightGray
+        subtitleLabel.font = UIFont.systemFont(ofSize: 12)
+
+        if let museumName = museumName, let exhibitionTitle = exhibitionTitle {
+            titleLabel.text = exhibitionTitle
+            subtitleLabel.text = museumName
+        } else {
+            titleLabel.text = "기본 타이틀"
+            subtitleLabel.text = "기본 부제목"
+        }
+
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        titleStackView.axis = .vertical
+        titleStackView.alignment = .center
+        titleStackView.distribution = .equalSpacing
+
+        self.navigationItem.titleView = titleStackView
+
+        // Title Stack View의 제약 조건 설정
+        titleStackView.snp.makeConstraints { make in
+            make.width.lessThanOrEqualTo(self.view.frame.width - 40)
+        }
+    }
+
+
+    func convertDateToString(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.locale = Locale(identifier: "ko-KR") // 한국어로 설정
+        formatter.unitsStyle = .full // 전체 스타일로 표시 ('3분 전' 등)
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
 
 
@@ -242,14 +301,16 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 
     private func setupNavigationTitleAndSubtitle() {
         let titleLabel = UILabel()
-        titleLabel.text = "올해의 작가상"
+        titleLabel.text = exhibitionTitle // 여기에 전시 타이틀을 설정
         titleLabel.textColor = .white
         titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
+        titleLabel.numberOfLines = 0 // 여러 줄 표시를 위해 0으로 설정
 
         let subtitleLabel = UILabel()
-        subtitleLabel.text = "국립현대미술관 서울"
+        subtitleLabel.text = museumName // 여기에 뮤지엄 이름을 설정
         subtitleLabel.textColor = .lightGray
         subtitleLabel.font = UIFont.systemFont(ofSize: 12)
+        subtitleLabel.numberOfLines = 0 // 여러 줄 표시를 위해 0으로 설정
 
         let titleStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
         titleStackView.axis = .vertical
@@ -258,6 +319,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
 
         self.navigationItem.titleView = titleStackView
     }
+
 
 
     @objc func backButtonTapped() {

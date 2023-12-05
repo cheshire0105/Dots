@@ -648,17 +648,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let detailViewController = ReviewDetailViewController()
         detailViewController.hidesBottomBarWhenPushed = true
 
-        // 선택된 리뷰 데이터 전달
+        // 선택된 리뷰 데이터와 전시 정보 전달
         let selectedReview = reviews[indexPath.row]
         detailViewController.review = selectedReview
+        detailViewController.museumName = exhibitionTitleLabel.text
+        detailViewController.exhibitionTitle = exhibitionTitle
 
-        // UINavigationController를 생성하여 ReviewDetailViewController를 루트 뷰 컨트롤러로 설정
         let navigationController = UINavigationController(rootViewController: detailViewController)
         navigationController.modalPresentationStyle = .fullScreen
-
-        // 현재 뷰 컨트롤러에서 navigationController를 모달로 표시
         self.present(navigationController, animated: true, completion: nil)
     }
+
 
 
 
