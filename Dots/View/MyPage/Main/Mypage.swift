@@ -8,13 +8,13 @@ import FirebaseFirestore
 import GoogleSignIn
 
 class Mypage: UIViewController {
-    
+     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
         imageButton.clipsToBounds = true
-//        imageButton.setImage(UIImage(named: "cabanel"), for: .selected)
-//        imageButton.setImage(UIImage(named: "cabanel"), for: .normal)
+        //        imageButton.setImage(UIImage(named: "cabanel"), for: .selected)
+        //        imageButton.setImage(UIImage(named: "cabanel"), for: .normal)
         imageButton.isSelected = !imageButton.isSelected
         return imageButton
     }()
@@ -143,7 +143,7 @@ class Mypage: UIViewController {
         calendar.backgroundColor = UIColor.clear
         calendar.layer.cornerRadius = 15
         calendar.layer.borderWidth = 0.3
-        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
+        //        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
         calendar.dataSource = self
         calendar.delegate = self
         
@@ -153,7 +153,7 @@ class Mypage: UIViewController {
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
         calendar.appearance.weekdayTextColor = UIColor.darkGray
         calendar.appearance.todayColor = UIColor(named: "neon")?.withAlphaComponent(0.3)
-        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
+        //        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
         calendar.appearance.selectionColor = UIColor.green.withAlphaComponent(0.1)
         calendar.appearance.titleDefaultColor = UIColor.white
         calendar.appearance.titleSelectionColor = UIColor.white
@@ -167,10 +167,10 @@ class Mypage: UIViewController {
     
     
     
-        override func viewWillAppear(_ animated: Bool) {
-            접속_유저_데이터_마이페이지_적용하기()
-
-        }
+    override func viewWillAppear(_ animated: Bool) {
+        접속_유저_데이터_마이페이지_적용하기()
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         print("My Page")
@@ -187,8 +187,17 @@ class Mypage: UIViewController {
         캘린더_레이아웃()
         
         접속_유저_데이터_마이페이지_적용하기()
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
+          tapGestureRecognizer.delegate = self
+        view.addGestureRecognizer(tapGestureRecognizer)
     }
-    
+    @objc private func handleOutsideTap() {
+        // 모달이 표시 중이면 dismiss
+        if presentedViewController != nil {
+               dismiss(animated: true, completion: nil)
+           }
+    }
     private func 버튼_백_레이아웃 () {
         for 버튼배치 in [마이페이지_전시_버튼,마이페이지_후기_버튼,마이페이지_보관함_버튼,마이페이지_전시_아이콘,마이페이지_후기_아이콘,마이페이지_보관함_아이콘,마이페이지_전시_라벨,마이페이지_후기_라벨,마이페이지_보관함_라벨] {
             버튼_백.addSubview(버튼배치)
@@ -198,7 +207,7 @@ class Mypage: UIViewController {
         마이페이지_전시_버튼.snp.makeConstraints { make in
             make.top.equalTo(버튼_백.snp.top).offset(15)
             make.bottom.equalTo(버튼_백.snp.bottom).offset(-15)
-
+            
             make.trailing.equalTo(마이페이지_후기_버튼.snp.leading).offset(-11)
             make.height.equalTo(마이페이지_후기_버튼)
             make.width.equalTo(마이페이지_후기_버튼)
@@ -218,11 +227,11 @@ class Mypage: UIViewController {
             make.height.equalTo(마이페이지_후기_버튼)
             make.trailing.equalTo(버튼_백.snp.trailing).offset(-10)
             make.bottom.equalTo(버튼_백.snp.bottom).offset(-15)
-
+            
             
             
         }
-       
+        
         마이페이지_전시_아이콘.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_전시_버튼.snp.centerX)
             make.bottom.equalTo(마이페이지_전시_버튼.snp.centerY)
@@ -246,16 +255,18 @@ class Mypage: UIViewController {
             make.centerX.equalTo(마이페이지_후기_버튼.snp.centerX)
             make.top.equalTo(마이페이지_후기_버튼.snp.centerY).offset(6)
         }
-       
+        
         마이페이지_보관함_라벨.snp.makeConstraints { make in
             make.centerX.equalTo(마이페이지_보관함_버튼.snp.centerX)
             make.top.equalTo(마이페이지_보관함_버튼.snp.centerY).offset(6)
         }
         
+    
+        
     }
     private func UI레이아웃 () {
         
-        for UI뷰 in [마이페이지_프로필_이미지_버튼,마이페이지_설정_버튼,마이페이지_알림_버튼,마이페이지_프로필_닉네임,마이페이지_프로필_이메일,버튼_백,구분선]{
+        for UI뷰 in [마이페이지_프로필_이미지_버튼,마이페이지_설정_버튼,마이페이지_알림_버튼,마이페이지_프로필_닉네임,마이페이지_프로필_이메일,버튼_백,구분선,]{
             view.addSubview(UI뷰)
         }
         마이페이지_프로필_이미지_버튼.snp.makeConstraints { make in
@@ -264,16 +275,16 @@ class Mypage: UIViewController {
             make.size.equalTo(76)
         }
         마이페이지_설정_버튼.snp.makeConstraints { make in
-//            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(3)
-//            make.bottom.equalTo(마이페이지_프로필_닉네임.snp.bottom)
+            //            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+            //            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(3)
+            //            make.bottom.equalTo(마이페이지_프로필_닉네임.snp.bottom)
             make.top.equalToSuperview().offset(65)
             make.trailing.equalToSuperview().offset(-26)
         }
         마이페이지_알림_버튼.snp.makeConstraints { make in
-//            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(3)
-//            make.bottom.equalTo(마이페이지_프로필_닉네임.snp.bottom)
+            //            make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY)
+            //            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(3)
+            //            make.bottom.equalTo(마이페이지_프로필_닉네임.snp.bottom)
             make.top.equalToSuperview().offset(65)
             make.trailing.equalTo(마이페이지_설정_버튼.snp.leading ).offset(-20)
         }
@@ -298,6 +309,7 @@ class Mypage: UIViewController {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
+     
     }
     
     func 캘린더_레이아웃() {
@@ -309,6 +321,7 @@ class Mypage: UIViewController {
             make.bottom.equalToSuperview().offset(-90)
         }
     }
+ 
 }
 
 extension Mypage {
@@ -322,43 +335,69 @@ extension Mypage {
         let 설정_이동 = 마이페이지_설정_페이지()
         self.navigationController?.pushViewController(설정_이동, animated: false)
         self.navigationItem.hidesBackButton = true
+        self.dismiss(animated: true, completion: nil)
+
     }
     
     @objc func 마이페이지_알림_버튼_클릭() {
         let 알림_이동 = 마이페이지_알림()
         self.navigationController?.pushViewController(알림_이동, animated: true)
         self.navigationItem.hidesBackButton = true
+        self.dismiss(animated: true, completion: nil)
+
     }
     @objc func 마이페이지_전시_버튼_클릭 () {
         let 전시_이동 = 마이페이지_전시()
         self.navigationController?.pushViewController(전시_이동, animated: true)
         self.navigationItem.hidesBackButton = true
+        self.dismiss(animated: true, completion: nil)
+
     }
     @objc func 마이페이지_후기_버튼_클릭 () {
         let 후기_이동 = 마이페이지_리뷰()
         self.navigationController?.pushViewController(후기_이동, animated: true)
         self.navigationItem.hidesBackButton = true
+        self.dismiss(animated: true, completion: nil)
+
     }
     @objc func 마이페이지_보관함_버튼_클릭 () {
         let 보관함_이동 = 마이페이지_보관함()
         self.navigationController?.pushViewController(보관함_이동, animated: true)
         self.navigationItem.hidesBackButton = true
+        self.dismiss(animated: true, completion: nil)
+
     }
+    
 }
 
 
 extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-        return 1
+        return 0
     }
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-        present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+        
+            // DetailViewController의 presentationController 설정
+            if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
+                sheetPresent.prefersGrabberVisible = true
+
+                sheetPresent.detents = [.medium(), .large()]
+                캘린더_스케쥴_등록_모달.isModalInPresentation = false
+                sheetPresent.largestUndimmedDetentIdentifier = .large
+                sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
+                sheetPresent.preferredCornerRadius = 30
+                sheetPresent.prefersGrabberVisible = false
+
+            }
+       
+        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
+            self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+        }
         
     }
     
-}
 
 
 
@@ -403,4 +442,13 @@ extension Mypage {
                 }
             }
         }
+}
+extension Mypage: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // 모달 외부를 탭하면 모달을 dismiss
+        if presentedViewController != nil && touch.view == view {
+            return true
+        }
+        return false
+    }
 }
