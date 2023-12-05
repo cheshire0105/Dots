@@ -63,6 +63,8 @@ class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
+//        navigationController?.setNavigationBarHidden(true, animated: animated)
+
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -78,7 +80,7 @@ class AudioGuideViewController: UIViewController, UITableViewDelegate, UITableVi
 
         view.backgroundColor = .black
 
-        navigationController?.setNavigationBarHidden(true, animated: false)
+//        navigationController?.setNavigationBarHidden(true, animated: false)
 
 
         setupCustomBackButton()

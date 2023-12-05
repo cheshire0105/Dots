@@ -15,7 +15,7 @@ import Toast_Swift
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
-    private func createCustomBackButton() -> UIButton {
+    lazy var createCustomBackButton : UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "loginBack"), for: .normal)
         button.backgroundColor = .white
@@ -27,10 +27,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.frame = CGRect(x: 0, y: 0, width: 40, height: 40) // 버튼 크기 설정
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         return button
-    }
+    }()
 
 
-    private func createCustomHeadsetIcon() -> UIButton {
+    lazy var createCustomHeadsetIcon :  UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "headset help_"), for: .normal)
         button.backgroundColor = .white
@@ -42,7 +42,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         button.addTarget(self, action: #selector(presentAudioGuideViewController), for: .touchUpInside)
         return button
-    }
+    }()
+
     lazy var heartIcon: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
@@ -261,18 +262,18 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        print(self.navigationController?.interactivePopGestureRecognizer?.isEnabled)
-        print(self.navigationController?.interactivePopGestureRecognizer?.delegate)
-
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        print(self.navigationController?.interactivePopGestureRecognizer?.isEnabled)
+//        print(self.navigationController?.interactivePopGestureRecognizer?.delegate)
+//
+//    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
-        navigationController?.setNavigationBarHidden(false, animated: animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
 
     }
 
@@ -280,6 +281,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         super.viewWillDisappear(animated)
         // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
 //        tabBarController?.tabBar.isHidden = false
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+
     }
 
 
@@ -289,6 +292,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.backgroundColor = .black
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+
+        // 네비게이션 바 대형 타이틀 비활성화
 
         // 네비게이션 백 버튼 설정
             setupNavigationBackButton()
@@ -359,10 +364,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
     private func setupNavigationBackButton() {
-        let backButton = createCustomBackButton()
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-        let headsetButton = createCustomHeadsetIcon()
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: headsetButton)
+//        let backButton = createCustomBackButton()
+//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+//        let headsetButton = createCustomHeadsetIcon()
+//            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: headsetButton)
     }
 
 
@@ -570,25 +575,28 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     private func setupBackButton() {
 //        view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
 //        view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
+        view.addSubview(createCustomBackButton)
+        view.addSubview(createCustomHeadsetIcon)
+
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
         view.addSubview(mapPageButton)
         view.addSubview(modalLoadButton)
 
 
-//        backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
-//            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
-//            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
-//        }
+        createCustomBackButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
+            make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
+        }
 
 
 
-//        headsetIcon.snp.makeConstraints{ make in
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-//            make.trailing.equalTo(view.snp.trailing).offset(-16)
-//            make.width.height.equalTo(40)
-//        }
+        createCustomHeadsetIcon.snp.makeConstraints{ make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.trailing.equalTo(view.snp.trailing).offset(-16)
+            make.width.height.equalTo(40)
+        }
 
         recordButton.snp.makeConstraints{ make in
             make.bottom.equalTo(heartIcon.snp.top).inset(-10)
@@ -936,6 +944,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: animated)
+
 
     }
 
