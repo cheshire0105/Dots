@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate {
+class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate {
 
     private func createCustomBackButton() -> UIButton {
         let button = UIButton(type: .custom)
@@ -27,7 +27,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
     private let detailLabel = UILabel()
 
     private let scrollView = UIScrollView()
-    private let squareView = UIView()
+    private var photoCollectionView: UICollectionView!
     private let contentLabel = UILabel()
 
     private let profileImageView = UIImageView()
@@ -48,26 +48,6 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
        var exhibitionTitle: String?
 
 
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        // 탭바를 숨깁니다.
-//        tabBarController?.tabBar.isHidden = true
-//
-//    }
-
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        navigationController?.navigationBar.prefersLargeTitles = false
-//    }
-//
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//    }
-
-    
-
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -82,6 +62,8 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         setupNavigationTitleView() // 변경된 메서드 호출
         configureNavigationBar()
 
+
+        
 
         
         if let reviewData = review {
@@ -105,6 +87,19 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
              }
          }
     }
+
+
+
+     // UICollectionViewDataSource 및 UICollectionViewDelegate 메서드 구현
+     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+         return 10 // 임시 데이터 개수
+     }
+
+     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+         cell.backgroundColor = .red // 임시 색상
+         return cell
+     }
 
     private func configureNavigationBar() {
         // 네비게이션 바 색상 설정
@@ -181,23 +176,34 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
     }
 
     private func setupSquareViewAndLabel() {
-        scrollView.addSubview(squareView)
-        squareView.backgroundColor = .blue
-        squareView.snp.makeConstraints { make in
-            make.top.equalTo(scrollView.snp.top).offset(20)
-            make.leading.equalTo(scrollView.snp.leading).offset(20)
-            make.trailing.equalTo(scrollView.snp.trailing).offset(-20)
-            make.width.equalTo(scrollView.snp.width).offset(-40) // 화면 너비에 맞추기
-            make.height.equalTo(squareView.snp.width) // 정사각형 유지
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 300, height: 300) // 이 부분은 필요에 따라 조정하세요
+
+        if photoCollectionView == nil { // photoCollectionView가 아직 초기화되지 않았다면 생성합니다.
+            photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            photoCollectionView.backgroundColor = .clear
+            photoCollectionView.delegate = self
+            photoCollectionView.dataSource = self
+            photoCollectionView.isPagingEnabled = true
+            photoCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+            scrollView.addSubview(photoCollectionView)
+            photoCollectionView.snp.makeConstraints { make in
+                make.top.equalTo(scrollView.snp.top).offset(20)
+                make.leading.equalTo(view.snp.leading).offset(20)
+                make.trailing.equalTo(view.snp.trailing).offset(-20)
+                make.height.equalTo(photoCollectionView.snp.width) // 세로 크기를 가로 크기와 동일하게 설정
+            }
         }
+
 
         scrollView.addSubview(profileImageView)
         profileImageView.backgroundColor = .gray // 임시 색상, 실제 이미지로 교체 필요
         profileImageView.layer.cornerRadius = 16 // 동그란 이미지를 위해
         profileImageView.clipsToBounds = true
         profileImageView.snp.makeConstraints { make in
-            make.top.equalTo(squareView.snp.bottom).offset(20)
-            make.leading.equalTo(scrollView.snp.leading).offset(20)
+            make.top.equalTo(photoCollectionView.snp.bottom).offset(20)
+            make.leading.equalTo(view.snp.leading).offset(20)
             make.width.height.equalTo(32) // 동그란 이미지 크기
         }
 
@@ -219,7 +225,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         timeLabel.font = UIFont(name: "Pretendard-Light", size: 14)
         timeLabel.snp.makeConstraints { make in
             make.centerY.equalTo(profileImageView.snp.centerY)
-            make.trailing.equalTo(scrollView.snp.trailing).offset(-20)
+            make.trailing.equalTo(view.snp.trailing).offset(-20)
         }
 
 
@@ -251,8 +257,8 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
             contentLabel.attributedText = attrString
             contentLabel.snp.makeConstraints { make in
               make.top.equalTo(reviewTitle.snp.bottom).offset(20)
-              make.leading.equalTo(squareView.snp.leading)
-              make.trailing.equalTo(squareView.snp.trailing)
+                make.leading.equalTo(view.snp.leading).inset(20)
+                make.trailing.equalTo(view.snp.trailing).inset(20)
         //      make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
             }
 
