@@ -62,12 +62,13 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
 
         setupScrollView()
+        collectionViewSetup()
         setupSquareViewAndLabel()
         setupNavigationTitleView() // 변경된 메서드 호출
         configureNavigationBar()
 
 
-        
+
 
         
         if let reviewData = review {
@@ -205,8 +206,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         }
     }
 
-    private func setupSquareViewAndLabel() {
-
+    private func collectionViewSetup() {
 
         let layout = UICollectionViewFlowLayout()
          layout.scrollDirection = .horizontal
@@ -216,22 +216,30 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
          let cellWidth = view.bounds.width - 40 // 20 points의 여유를 좌우에 줌
          layout.itemSize = CGSize(width: cellWidth, height: cellWidth)
 
-         if photoCollectionView == nil { // photoCollectionView가 아직 초기화되지 않았다면 생성합니다.
-             photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-             photoCollectionView.backgroundColor = .clear
-             photoCollectionView.delegate = self
-             photoCollectionView.dataSource = self
-             photoCollectionView.isPagingEnabled = true
-             photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
+        // photoCollectionView가 아직 초기화되지 않았다면 생성합니다.
+          if photoCollectionView == nil {
+              photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+              photoCollectionView.backgroundColor = .clear
+              photoCollectionView.delegate = self
+              photoCollectionView.dataSource = self
+              photoCollectionView.isPagingEnabled = true
+              photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
 
-             scrollView.addSubview(photoCollectionView)
-             photoCollectionView.snp.makeConstraints { make in
-                 make.top.equalTo(scrollView.snp.top).offset(20)
-                 make.centerX.equalTo(view.snp.centerX) // 가로축 중앙에 위치
-                 make.width.equalTo(cellWidth)
-                 make.height.equalTo(cellWidth)
-             }
-         }
+              scrollView.addSubview(photoCollectionView)
+              photoCollectionView.snp.makeConstraints { make in
+                  make.top.equalTo(scrollView.snp.top).offset(20)
+                  make.centerX.equalTo(view.snp.centerX)
+                  make.width.equalTo(cellWidth)
+                  make.height.equalTo(cellWidth)
+              }
+          }
+
+
+    }
+
+    private func setupSquareViewAndLabel() {
+
+        
 
 
         scrollView.addSubview(profileImageView)
