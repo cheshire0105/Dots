@@ -34,6 +34,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     private let nameLabel = UILabel()
     private let timeLabel = UILabel()
 
+    
+
     // 새로운 컴포넌트 선언
     let additionalImageView1 = UIImageView()
     let additionalLabel1 = UILabel()
@@ -51,6 +53,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+
+        
         setupNavigationBackButton()
         setupNavigationTitleAndSubtitle() // 변경된 메서드 호출
 
@@ -86,20 +90,46 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                  }.resume()
              }
          }
+
+            
+    }
+    
+
+
+     // UICollectionViewDataSource 및 UICollectionViewDelegate 메서드 구현
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return review?.photoUrls.count ?? 0
+    }
+
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+
+        if let reviewData = review, indexPath.row < reviewData.photoUrls.count {
+            let photoUrlString = reviewData.photoUrls[indexPath.row]
+            print("Photo URL: \(photoUrlString)") // 디버깅을 위한 URL 출력
+
+            if let photoUrl = URL(string: photoUrlString) {
+                URLSession.shared.dataTask(with: photoUrl) { data, response, error in
+                    guard let data = data, error == nil else {
+                        print("Error downloading image: \(error?.localizedDescription ?? "Unknown error")")
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        cell.imageView.image = UIImage(data: data)
+                    }
+                }.resume()
+            } else {
+                print("Invalid URL: \(photoUrlString)") // URL 형식이 올바르지 않을 경우 출력
+            }
+        }
+        return cell
     }
 
 
 
-     // UICollectionViewDataSource 및 UICollectionViewDelegate 메서드 구현
-     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-         return 10 // 임시 데이터 개수
-     }
-
-     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-         cell.backgroundColor = .red // 임시 색상
-         return cell
-     }
 
     private func configureNavigationBar() {
         // 네비게이션 바 색상 설정
@@ -176,6 +206,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     }
 
     private func setupSquareViewAndLabel() {
+
+
         let layout = UICollectionViewFlowLayout()
          layout.scrollDirection = .horizontal
          layout.minimumLineSpacing = 0  // 셀 사이의 간격을 0으로 설정
@@ -190,7 +222,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
              photoCollectionView.delegate = self
              photoCollectionView.dataSource = self
              photoCollectionView.isPagingEnabled = true
-             photoCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+             photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
 
              scrollView.addSubview(photoCollectionView)
              photoCollectionView.snp.makeConstraints { make in
@@ -375,4 +407,20 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     }
 
+}
+
+class PhotoCollectionViewCell: UICollectionViewCell {
+    let imageView = UIImageView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        contentView.addSubview(imageView)
+        imageView.frame = contentView.bounds
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }

@@ -12,6 +12,8 @@ struct Review {
     var content: String
     var createdAt: Date
     var nickname: String
-    var profileImageUrl: String // 프로필 이미지 URL을 저장할 필드 추가
+    var profileImageUrl: String
+    var photoUrls: [String] // 유저가 올린 사진들의 URL
 }
+
 

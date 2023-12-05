@@ -90,13 +90,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
                                 let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
+//                                let photoUrls = data["photoUrls"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
+
 
                                 let review = Review(
                                     title: data["title"] as? String ?? "",
                                     content: data["content"] as? String ?? "",
                                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                                     nickname: nickname,
-                                    profileImageUrl: profileImageUrl
+                                    profileImageUrl: profileImageUrl, 
+                                    photoUrls: data["images"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
+
                                 )
                                 newReviews.append(review)
                             }
@@ -630,19 +634,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
 
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let detailViewController = ReviewDetailViewController()
-//        detailViewController.hidesBottomBarWhenPushed = true
-//
-//        // 네비게이션 컨트롤러를 생성하고, detailViewController를 루트 뷰 컨트롤러로 설정합니다.
-//        let navigationController = UINavigationController(rootViewController: detailViewController)
-//        navigationController.modalPresentationStyle = .fullScreen
-//
-//        
-//
-//        // 현재 뷰 컨트롤러에서 직접 새 모달 뷰 컨트롤러를 표시합니다.
-//        self.present(navigationController, animated: true, completion: nil)
-//    }
+
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = ReviewDetailViewController()
