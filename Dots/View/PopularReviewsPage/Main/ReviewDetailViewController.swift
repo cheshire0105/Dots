@@ -78,6 +78,11 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
              reviewTitle.text = reviewData.title
              contentLabel.text = reviewData.content
              // profileImageView에 이미지 로드 (예: URL에서 이미지를 로드하는 경우)
+            // 리뷰에 사진이 없는 경우
+                    if reviewData.photoUrls.isEmpty {
+                        photoCollectionView.isHidden = true
+                        adjustLayoutForNoPhotos()
+                    }
             // URL 문자열을 사용하여 이미지 로드
              if let imageUrl = URL(string: reviewData.profileImageUrl) {
                  // URL에서 이미지 데이터를 가져옵니다.
@@ -90,11 +95,37 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                      }
                  }.resume()
              }
+
+            // 사진 유무에 따라 컬렉션 뷰의 가시성 조정
+                  photoCollectionView.isHidden = reviewData.photoUrls.isEmpty
+                  if photoCollectionView.isHidden {
+                      adjustLayoutForNoPhotos()
+                  } else {
+                      adjustLayoutForPhotos()
+                  }
          }
 
             
     }
-    
+
+    private func adjustLayoutForPhotos() {
+
+
+
+
+
+        profileImageView.snp.remakeConstraints { make in
+            make.top.equalTo(photoCollectionView.snp.bottom).offset(20)
+            make.leading.equalTo(view.snp.leading).offset(20)
+            make.width.height.equalTo(32) // 동그란 이미지 크기
+        }
+
+        // 기타 레이아웃 업데이트
+        view.layoutIfNeeded()
+
+
+    }
+
 
 
      // UICollectionViewDataSource 및 UICollectionViewDelegate 메서드 구현
@@ -217,13 +248,15 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
          layout.itemSize = CGSize(width: cellWidth, height: cellWidth)
 
         // photoCollectionView가 아직 초기화되지 않았다면 생성합니다.
-          if photoCollectionView == nil {
-              photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-              photoCollectionView.backgroundColor = .clear
+        if photoCollectionView == nil {
+                photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+                photoCollectionView.backgroundColor = .clear
               photoCollectionView.delegate = self
               photoCollectionView.dataSource = self
               photoCollectionView.isPagingEnabled = true
               photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
+            photoCollectionView.isHidden = true // 기본적으로 숨겨진 상태로 설정
+
 
               scrollView.addSubview(photoCollectionView)
               photoCollectionView.snp.makeConstraints { make in
@@ -233,6 +266,27 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                   make.height.equalTo(cellWidth)
               }
           }
+
+
+    }
+
+
+    private func adjustLayoutForNoPhotos() {
+
+
+        scrollView.addSubview(profileImageView)
+        profileImageView.backgroundColor = .gray // 임시 색상, 실제 이미지로 교체 필요
+        profileImageView.layer.cornerRadius = 16 // 동그란 이미지를 위해
+        profileImageView.clipsToBounds = true
+        profileImageView.snp.remakeConstraints { make in
+            make.top.equalTo(scrollView.snp.top).offset(20) // 여기서 위치 조정
+            make.leading.equalTo(view.snp.leading).offset(20)
+            make.width.height.equalTo(32) // 동그란 이미지 크기
+        }
+
+
+
+
 
 
     }
