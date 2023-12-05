@@ -177,24 +177,29 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     private func setupSquareViewAndLabel() {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 300, height: 300) // 이 부분은 필요에 따라 조정하세요
+         layout.scrollDirection = .horizontal
+         layout.minimumLineSpacing = 0  // 셀 사이의 간격을 0으로 설정
 
-        if photoCollectionView == nil { // photoCollectionView가 아직 초기화되지 않았다면 생성합니다.
-            photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-            photoCollectionView.backgroundColor = .clear
-            photoCollectionView.delegate = self
-            photoCollectionView.dataSource = self
-            photoCollectionView.isPagingEnabled = true
-            photoCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-            scrollView.addSubview(photoCollectionView)
-            photoCollectionView.snp.makeConstraints { make in
-                make.top.equalTo(scrollView.snp.top).offset(20)
-                make.leading.equalTo(view.snp.leading).offset(20)
-                make.trailing.equalTo(view.snp.trailing).offset(-20)
-                make.height.equalTo(photoCollectionView.snp.width) // 세로 크기를 가로 크기와 동일하게 설정
-            }
-        }
+         // 컬렉션 뷰의 셀 크기를 화면 너비에 맞춤
+         let cellWidth = view.bounds.width - 40 // 20 points의 여유를 좌우에 줌
+         layout.itemSize = CGSize(width: cellWidth, height: cellWidth)
+
+         if photoCollectionView == nil { // photoCollectionView가 아직 초기화되지 않았다면 생성합니다.
+             photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+             photoCollectionView.backgroundColor = .clear
+             photoCollectionView.delegate = self
+             photoCollectionView.dataSource = self
+             photoCollectionView.isPagingEnabled = true
+             photoCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+
+             scrollView.addSubview(photoCollectionView)
+             photoCollectionView.snp.makeConstraints { make in
+                 make.top.equalTo(scrollView.snp.top).offset(20)
+                 make.centerX.equalTo(view.snp.centerX) // 가로축 중앙에 위치
+                 make.width.equalTo(cellWidth)
+                 make.height.equalTo(cellWidth)
+             }
+         }
 
 
         scrollView.addSubview(profileImageView)
