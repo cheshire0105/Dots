@@ -239,7 +239,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         """
             contentLabel.numberOfLines = 0
             contentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
-            contentLabel.font = UIFont(name: "Pretendard-Regular", size: 18)
+            contentLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
             contentLabel.lineBreakMode = .byWordWrapping
             var paragraphStyle = NSMutableParagraphStyle()
 //            paragraphStyle.lineHeightMultiple = 1.21
