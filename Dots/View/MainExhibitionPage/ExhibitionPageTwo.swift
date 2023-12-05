@@ -707,7 +707,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 12)
         label.textColor = .white
-        label.numberOfLines = 0 // 멀티라인을 허용합니다.
+        label.numberOfLines = 3 // 멀티라인을 허용합니다.
         return label
     }()
 

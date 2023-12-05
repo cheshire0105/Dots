@@ -80,6 +80,8 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         setupScrollView()
         setupSquareViewAndLabel()
         setupNavigationTitleView() // 변경된 메서드 호출
+        configureNavigationBar()
+
 
         
         if let reviewData = review {
@@ -102,6 +104,28 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
                  }.resume()
              }
          }
+    }
+
+    private func configureNavigationBar() {
+        // 네비게이션 바 색상 설정
+        navigationController?.navigationBar.barTintColor = .black // 배경 색상을 검은색으로 설정
+        navigationController?.navigationBar.isTranslucent = false // 반투명 효과 제거
+
+        // 네비게이션 바 아이템과 타이틀 색상 설정
+        navigationController?.navigationBar.tintColor = .white // 아이템 색상을 흰색으로 설정
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀 색상을 흰색으로 설정
+
+        // iOS 15 이상에서는 다음과 같은 추가 설정이 필요할 수 있습니다.
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .black
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        }
     }
 
 
@@ -218,7 +242,7 @@ class ReviewDetailViewController: UIViewController, UIGestureRecognizerDelegate 
             contentLabel.font = UIFont(name: "Pretendard-Regular", size: 18)
             contentLabel.lineBreakMode = .byWordWrapping
             var paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineHeightMultiple = 1.21
+//            paragraphStyle.lineHeightMultiple = 1.21
             // Line height: 18 pt
             paragraphStyle.alignment = .justified
             let attrString = NSMutableAttributedString(string: contentLabel.text!)
