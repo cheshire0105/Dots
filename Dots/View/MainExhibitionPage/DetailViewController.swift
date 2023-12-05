@@ -631,21 +631,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected row: \(indexPath.row)")
-
-        // 새로운 ReviewDetailViewController 인스턴스를 생성합니다.
         let detailViewController = ReviewDetailViewController()
+        detailViewController.hidesBottomBarWhenPushed = true
 
-        // DetailViewController를 닫습니다.
-        self.dismiss(animated: true) {
-            // DetailViewController가 닫힌 후에 새로운 모달로 ReviewDetailViewController를 표시합니다.
-            if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
-                let navController = UINavigationController(rootViewController: detailViewController)
-                navController.modalPresentationStyle = .fullScreen // 전체 화면으로 설정
-                rootViewController.present(navController, animated: true, completion: nil)
-            }
-        }
+        // 네비게이션 컨트롤러를 생성하고, detailViewController를 루트 뷰 컨트롤러로 설정합니다.
+        let navigationController = UINavigationController(rootViewController: detailViewController)
+        navigationController.modalPresentationStyle = .fullScreen
+
+        // 현재 뷰 컨트롤러에서 직접 새 모달 뷰 컨트롤러를 표시합니다.
+        self.present(navigationController, animated: true, completion: nil)
     }
+
 
 
     
