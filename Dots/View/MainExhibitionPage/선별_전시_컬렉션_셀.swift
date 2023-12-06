@@ -17,6 +17,8 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+
+
         imageView = UIImageView()
         titleLabel = UILabel()
         dateLabel = UILabel()

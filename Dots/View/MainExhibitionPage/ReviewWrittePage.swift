@@ -41,7 +41,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     var contentTextViewBottomConstraint: Constraint?
 
-
+    
 
 
     override func viewDidLoad() {
@@ -421,8 +421,9 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         // 선택한 사진을 처리합니다.
         if let image = info[.originalImage] as? UIImage {
-            // 여기에서 선택된 이미지를 사용할 수 있습니다.
-            // 예를 들어 이미지를 이미지 뷰에 표시하거나 변수에 저장할 수 있습니다.
+            selectedImages.append(image)
+            collectionView.reloadData()
+            updateCollectionViewLayout() // 컬렉션 뷰 레이아웃 업데이트
         }
         picker.dismiss(animated: true, completion: nil)
     }
@@ -488,8 +489,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         let reviewData: [String: Any] = [
             "title": title,
             "content": content,
-            "createdAt": FieldValue.serverTimestamp() // 현재 시간
-
+            "createdAt": FieldValue.serverTimestamp(), // 현재 시간
             // 필요한 추가 데이터
         ]
 
@@ -497,45 +497,63 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         let docRef = Firestore.firestore().collection("posters").document(posterName)
                           .collection("reviews").document(userId)
 
-        docRef.setData(reviewData) { error in
-            if let error = error {
-                print("Error writing document: \(error)")
-            } else {
-                print("Document successfully written!")
-                self.uploadImages(userId: userId, posterName: posterName)
-
-                // 성공적으로 저장된 후에:
-                    self.delegate?.didSubmitReview()
-                    self.dismiss(animated: true, completion: nil) // 페이지 닫기
-            }
-        }
+   
+        docRef.setData(reviewData) { [weak self] error in
+               if let error = error {
+                   print("Error writing document: \(error)")
+               } else {
+                   // 이미지 업로드 후, 결과 URL을 가져와 Firestore 문서에 업데이트
+                   self?.uploadImages(userId: userId, posterName: posterName) { urls in
+                       docRef.updateData(["images": urls]) { error in
+                           if let error = error {
+                               print("Error updating document: \(error)")
+                           } else {
+                               self?.delegate?.didSubmitReview()
+                           }
+                       }
+                   }
+                   self?.dismiss(animated: true, completion: nil)
+               }
+           }
     }
 
-    func uploadImages(userId: String, posterName: String) {
+    func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {
+        var uploadedUrls = [String]()
+        let uploadGroup = DispatchGroup()
+
         for (index, image) in selectedImages.enumerated() {
-            guard let imageData = image.jpegData(compressionQuality: 0.75) else { continue }
+            uploadGroup.enter()
+            guard let imageData = image.jpegData(compressionQuality: 0.75) else {
+                uploadGroup.leave()
+                continue
+            }
 
             let imageName = "\(userId)_\(index).jpg"
             let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
 
             storageRef.putData(imageData, metadata: nil) { metadata, error in
-                guard metadata != nil else {
+                guard let metadata = metadata else {
                     print("Error uploading image: \(error?.localizedDescription ?? "")")
+                    uploadGroup.leave()
                     return
                 }
 
                 storageRef.downloadURL { (url, error) in
-                    guard let downloadURL = url else {
+                    if let downloadURL = url {
+                        uploadedUrls.append(downloadURL.absoluteString)
+                    } else {
                         print("Error getting download URL: \(error?.localizedDescription ?? "")")
-                        return
                     }
-
-                    // Firestore 문서에 이미지 URL을 추가합니다.
-                    self.addImageUrlToFirestore(userId: userId, posterName: posterName, imageUrl: downloadURL.absoluteString)
+                    uploadGroup.leave()
                 }
             }
         }
+
+        uploadGroup.notify(queue: .main) {
+            completion(uploadedUrls)
+        }
     }
+
 
     func addImageUrlToFirestore(userId: String, posterName: String, imageUrl: String) {
         let docRef = Firestore.firestore().collection("posters").document(posterName)

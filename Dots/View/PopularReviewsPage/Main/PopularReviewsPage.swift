@@ -38,7 +38,7 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
 
         // UITableViewCell.self 대신 TweetTableViewCell.self로 변경해야 합니다.
-        tableView.register(TweetTableViewCell.self, forCellReuseIdentifier: "TweetTableViewCell")
+        tableView.register(popularPageCell.self, forCellReuseIdentifier: "TweetTableViewCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
 
@@ -76,7 +76,7 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TweetTableViewCell", for: indexPath) as! TweetTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TweetTableViewCell", for: indexPath) as! popularPageCell
 
         cell.backgroundColor = .black
 
@@ -95,6 +95,9 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
         )
 
         cell.configure(with: tweetData)
+
+        cell.selectionStyle = .none
+
         return cell
     }
 
@@ -126,7 +129,7 @@ class PopularReviewsPage: UIViewController, UITableViewDataSource, UITableViewDe
 
 import SnapKit
 
-class TweetTableViewCell: UITableViewCell {
+class popularPageCell: UITableViewCell {
     // UI 컴포넌트들을 여기에 선언
     let profileImageView = UIImageView()
     let nameLabel = UILabel()
@@ -216,8 +219,8 @@ class TweetTableViewCell: UITableViewCell {
         // 피드 이미지 뷰 설정
         tweetImageView.snp.makeConstraints { make in
             make.top.equalTo(profileImageView.snp.bottom).offset(10)
-            make.leading.equalTo(exhibitionInfoLabel.snp.leading)
-            make.trailing.equalToSuperview()
+            make.leading.equalToSuperview().inset(25)
+            make.trailing.equalToSuperview().inset(25)
             make.height.equalTo(tweetImageView.snp.width)
         }
 
@@ -275,28 +278,18 @@ class TweetTableViewCell: UITableViewCell {
 //        tweetImageView.image = UIImage(named: "morningStar")
         tweetImageView.image = UIImage(named: data.tweetImageName)
 
-        let tweetContent = data.tweetContent // 데이터에서 트윗 내용을 가져옵니다.
+        let tweetContent = "여기에 긴 트윗 내용이 들어갑니다. 텍스트가 길어질 경우, 화면에 전부 표시되지 않을 수 있으며, 이 경우에는 를 추가하여 사용자가 텍스트가 더 있음을 알 수 있도록 합니다."
 
-        
-        let moreText = "더보기..."
-            let attributedString = NSMutableAttributedString(string: tweetContent)
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-                .foregroundColor: UIColor.white
-            ]
+        let attributedString = NSMutableAttributedString(string: tweetContent)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont(name: "Pretendard-Regular", size: 16) as Any,
+            .foregroundColor: UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
+        ]
 
-            attributedString.addAttributes(attributes, range: NSRange(location: 0, length: attributedString.length))
-
-            if attributedString.string.count > 100 { // 100자를 초과하는 경우에만 "더보기..." 추가
-                attributedString.mutableString.setString(String(attributedString.string.prefix(100)) + "..." + moreText)
-            }
-
-            tweetContentLabel.attributedText = attributedString
-            tweetContentLabel.numberOfLines = 3
-            tweetContentLabel.font = UIFont(name: "Pretendard-Regular", size: 13)
-            tweetContentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
-
-
+        attributedString.addAttributes(attributes, range: NSRange(location: 0, length: attributedString.length))
+        tweetContentLabel.attributedText = attributedString
+        tweetContentLabel.lineBreakMode = .byWordWrapping
+        tweetContentLabel.numberOfLines = 3 // 최대 3줄까지만 표시
 
 
 
@@ -389,7 +382,7 @@ class TweetTableViewCell: UITableViewCell {
         lineView.snp.makeConstraints { make in
             make.top.equalTo(additionalImageView1.snp.bottom).offset(20)
             make.height.equalTo(1)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalToSuperview()
 
         }

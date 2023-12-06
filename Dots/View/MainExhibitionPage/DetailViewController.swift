@@ -8,6 +8,8 @@
 //  [최신화] : 2023년 11월 28일 오후 2:45
 //  [브랜치 생성] : 2023년 11월 29일 오전 9시 16분
 // 최신화
+// 최신화
+
 import Foundation
 
 import MapKit // MapKit 프레임워크를 임포트합니다.
@@ -44,7 +46,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
-
+    override func viewWillAppear(_ animated: Bool) {
+           super.viewWillAppear(animated)
+           loadReviews() // 화면이 나타날 때마다 후기 목록을 새로고침합니다.
+       }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,24 +87,27 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                     let data = document.data()
                     let userId = document.documentID // UUID로 가정
 
-                    // 실시간 리스너 추가
                     Firestore.firestore().collection("유저_데이터_관리").document(userId)
-                        .addSnapshotListener { (userDoc, error) in
+                        .getDocument { (userDoc, error) in
                             if let userDoc = userDoc, userDoc.exists {
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
                                 let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
+//                                let photoUrls = data["photoUrls"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
+
 
                                 let review = Review(
                                     title: data["title"] as? String ?? "",
                                     content: data["content"] as? String ?? "",
                                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                                     nickname: nickname,
-                                    profileImageUrl: profileImageUrl
+                                    profileImageUrl: profileImageUrl, 
+                                    photoUrls: data["images"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
+
                                 )
                                 newReviews.append(review)
                             }
-//                            group.leave()
+                            group.leave()
                         }
                 }
 
@@ -629,7 +637,40 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
 
+
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedReview = reviews[indexPath.row]
+        print("Selected Review: \(selectedReview)")
+
+        let detailViewController = ReviewDetailViewController()
+        detailViewController.hidesBottomBarWhenPushed = true
+
+        // 여기에서 전달되는 데이터를 로그로 출력합니다.
+        print("Review Title: \(selectedReview.title)")
+        print("Review Content: \(selectedReview.content)")
+        print("Review Image URLs: \(selectedReview.photoUrls)")
+
+        detailViewController.review = selectedReview
+        detailViewController.museumName = exhibitionTitleLabel.text
+        detailViewController.exhibitionTitle = exhibitionTitle
+
+        // 이미지 URL 배열을 전달합니다.
+        detailViewController.imageUrls = selectedReview.photoUrls
+
+        let navigationController = UINavigationController(rootViewController: detailViewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true, completion: nil)
+    }
+
+
+
+
+
+
+
     
+
 
 
 }

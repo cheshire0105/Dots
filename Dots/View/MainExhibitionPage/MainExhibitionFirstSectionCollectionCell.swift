@@ -17,6 +17,8 @@ class MainExhibitionFirstSectionCollectionCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+
+
         self.backgroundColor = .black  // 셀의 배경색을 검은색으로 설정
         contentView.backgroundColor = .black  // contentView의 배경색도 검은색으로 설정
 
