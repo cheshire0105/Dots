@@ -143,7 +143,7 @@ extension 캘린더_스케쥴_등록_셀 {
     @objc func 내후기_수정_버튼_클릭 () {
         print("내후기_수정_버튼_클릭")
         if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
-               let 수정_뷰 = 켈린더_수정_뷰컨트롤러() // 작은뷰컨트롤러는 작성한 작은 뷰컨트롤러 클래스의 인스턴스여야 합니다.
+               let 수정_뷰 = 켈린더_수정_뷰컨트롤러()
                셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
            }
       }
@@ -151,6 +151,10 @@ extension 캘린더_스케쥴_등록_셀 {
     
     @objc func 내후기_삭제_버튼_클릭 () {
         print("내후기_삭제_버튼_클릭")
+        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
+            let 수정_뷰 = 켈린더_삭제_뷰컨트롤러()
+            셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
+        }
     }
 }
 
