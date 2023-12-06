@@ -7,13 +7,11 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
     let 이미지_백 = {
        let uiView = UIView()
         uiView.layer.cornerRadius = 12
-//        uiView.backgroundColor = .white
         return uiView
     }()
     let 라벨_백 = {
        let uiView = UIView()
         uiView.layer.cornerRadius = 12
-//        uiView.backgroundColor = .white
         return uiView
     }()
     
