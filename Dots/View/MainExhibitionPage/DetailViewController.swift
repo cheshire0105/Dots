@@ -637,19 +637,31 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedReview = reviews[indexPath.row]
+        print("Selected Review: \(selectedReview)")
+
         let detailViewController = ReviewDetailViewController()
         detailViewController.hidesBottomBarWhenPushed = true
 
-        // 선택된 리뷰 데이터와 전시 정보 전달
-        let selectedReview = reviews[indexPath.row]
+        // 여기에서 전달되는 데이터를 로그로 출력합니다.
+        print("Review Title: \(selectedReview.title)")
+        print("Review Content: \(selectedReview.content)")
+        print("Review Image URLs: \(selectedReview.photoUrls)")
+
         detailViewController.review = selectedReview
         detailViewController.museumName = exhibitionTitleLabel.text
         detailViewController.exhibitionTitle = exhibitionTitle
+
+        // 이미지 URL 배열을 전달합니다.
+        detailViewController.imageUrls = selectedReview.photoUrls
 
         let navigationController = UINavigationController(rootViewController: detailViewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true, completion: nil)
     }
+
+
+
 
 
 

@@ -8,6 +8,12 @@
 import Foundation
 import UIKit
 
+struct ImageData {
+    let url: URL
+    var image: UIImage?
+}
+
+
 class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate {
 
     private func createCustomBackButton() -> UIButton {
@@ -34,7 +40,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     private let nameLabel = UILabel()
     private let timeLabel = UILabel()
 
-    
+
 
     // 새로운 컴포넌트 선언
     let additionalImageView1 = UIImageView()
@@ -45,6 +51,13 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     var review: Review? // 추가된 프로퍼티
 
+    var imageDatas: [ImageData] = [] // 이미지 데이터 배열
+
+    var selectedImages: [UIImage] = []
+
+    var imageUrls: [String] = [] // 이미지 URL 배열 추가
+
+
     // 추가된 프로퍼티
        var museumName: String?
        var exhibitionTitle: String?
@@ -53,6 +66,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+//        loadImages() // 이미지 로드
+        loadImages(from: imageUrls)
 
         
         setupNavigationBackButton()
@@ -108,6 +123,24 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             
     }
 
+    // 이미지 로드 함수
+    func loadImages(from urls: [String]) {
+         imageDatas.removeAll() // 기존 이미지 데이터 초기화
+
+         for urlString in urls {
+             guard let url = URL(string: urlString) else { continue }
+             URLSession.shared.dataTask(with: url) { data, _, _ in
+                 if let data = data, let image = UIImage(data: data) {
+                     DispatchQueue.main.async {
+                         self.imageDatas.append(ImageData(url: url, image: image))
+                         self.photoCollectionView.reloadData()
+                     }
+                 }
+             }.resume()
+         }
+     }
+
+
     private func adjustLayoutForPhotos() {
 
 
@@ -129,9 +162,12 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
 
      // UICollectionViewDataSource 및 UICollectionViewDelegate 메서드 구현
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return review?.photoUrls.count ?? 0
-    }
+    // UICollectionViewDataSource 메서드
+      func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+          return imageDatas.count
+      }
+
+
 
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -139,27 +175,11 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             return UICollectionViewCell()
         }
 
-        if let reviewData = review, indexPath.row < reviewData.photoUrls.count {
-            let photoUrlString = reviewData.photoUrls[indexPath.row]
-            print("Photo URL: \(photoUrlString)") // 디버깅을 위한 URL 출력
+        let imageData = imageDatas[indexPath.row]
+        cell.imageView.image = imageData.image // 로드된 이미지 사용
 
-            if let photoUrl = URL(string: photoUrlString) {
-                URLSession.shared.dataTask(with: photoUrl) { data, response, error in
-                    guard let data = data, error == nil else {
-                        print("Error downloading image: \(error?.localizedDescription ?? "Unknown error")")
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        cell.imageView.image = UIImage(data: data)
-                    }
-                }.resume()
-            } else {
-                print("Invalid URL: \(photoUrlString)") // URL 형식이 올바르지 않을 경우 출력
-            }
-        }
         return cell
     }
-
 
 
 
