@@ -26,7 +26,7 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
     }()
     var 전시_포스터_이미지 = {
         var imageView = UIImageView()
-        imageView.image = UIImage(named: "morningStar")
+        imageView.image = UIImage(named: "help")
         imageView.layer.cornerRadius = 15
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
@@ -114,7 +114,8 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         
         
         
-        if let 평균색상_추출 = UIColor.이미지_평균색상(from: UIImage(named: "morningStar")!) {
+//        if let 평균색상_추출 = UIColor.이미지_평균색상(from: UIImage(named: "claude")!)
+            if let 평균색상_추출 = 전시_포스터_이미지.image?.이미지_평균색상(){
             이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
             라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
           }
@@ -268,9 +269,10 @@ extension 캘린더_스케쥴_등록_셀{
 }
 
 
-extension UIColor {
-    static func 이미지_평균색상(from 이미지: UIImage) -> UIColor? {
-        guard let 입력_이미지 = CIImage(image: 이미지) else { return nil }
+extension UIImage {
+    func 이미지_평균색상() -> UIColor? {
+        guard let cgImage = self.cgImage else { return nil }
+        let 입력_이미지 = CIImage(cgImage: cgImage)
         
         let 범위_벡터 = CIVector(x: 입력_이미지.extent.origin.x, y: 입력_이미지.extent.origin.y, z: 입력_이미지.extent.size.width, w: 입력_이미지.extent.size.height)
         let 필터 = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: 입력_이미지, kCIInputExtentKey: 범위_벡터])
