@@ -421,8 +421,9 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         // 선택한 사진을 처리합니다.
         if let image = info[.originalImage] as? UIImage {
-            // 여기에서 선택된 이미지를 사용할 수 있습니다.
-            // 예를 들어 이미지를 이미지 뷰에 표시하거나 변수에 저장할 수 있습니다.
+            selectedImages.append(image)
+            collectionView.reloadData()
+            updateCollectionViewLayout() // 컬렉션 뷰 레이아웃 업데이트
         }
         picker.dismiss(animated: true, completion: nil)
     }

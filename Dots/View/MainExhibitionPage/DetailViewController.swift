@@ -46,7 +46,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
-    
+    override func viewWillAppear(_ animated: Bool) {
+           super.viewWillAppear(animated)
+           loadReviews() // 화면이 나타날 때마다 후기 목록을 새로고침합니다.
+       }
 
     override func viewDidLoad() {
         super.viewDidLoad()
