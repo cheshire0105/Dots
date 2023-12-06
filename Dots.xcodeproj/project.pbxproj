@@ -21,6 +21,9 @@
 		377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130252AFB88FA0018D4C1 /* SignUPfourth.swift */; };
 		3771302A2AFCAB0A0018D4C1 /* SignUPsecondCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */; };
 		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
+		37838F342B1EE46A00E4AFBA /* CalendarScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37838F332B1EE46A00E4AFBA /* CalendarScheduleCell.swift */; };
+		37838F3A2B20608C00E4AFBA /* CalendarEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37838F392B20608C00E4AFBA /* CalendarEdit.swift */; };
+		37838F3C2B20850000E4AFBA /* CalendarDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37838F3B2B20850000E4AFBA /* CalendarDelete.swift */; };
 		37976D532B0F76AD004F278F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37976D522B0F76AD004F278F /* GoogleService-Info.plist */; };
 		37976D5B2B104274004F278F /* Google.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37976D5A2B104274004F278F /* Google.swift */; };
 		37B3D8032B0A1B9100DDCEC2 /* CalendarSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */; };
@@ -118,6 +121,9 @@
 		377130252AFB88FA0018D4C1 /* SignUPfourth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfourth.swift; sourceTree = "<group>"; };
 		377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecondCell.swift; sourceTree = "<group>"; };
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
+		37838F332B1EE46A00E4AFBA /* CalendarScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarScheduleCell.swift; sourceTree = "<group>"; };
+		37838F392B20608C00E4AFBA /* CalendarEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEdit.swift; sourceTree = "<group>"; };
+		37838F3B2B20850000E4AFBA /* CalendarDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDelete.swift; sourceTree = "<group>"; };
 		37976D522B0F76AD004F278F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		37976D5A2B104274004F278F /* Google.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Google.swift; sourceTree = "<group>"; };
 		37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule.swift; sourceTree = "<group>"; };
@@ -276,6 +282,9 @@
 			isa = PBXGroup;
 			children = (
 				37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */,
+				37838F3B2B20850000E4AFBA /* CalendarDelete.swift */,
+				37838F332B1EE46A00E4AFBA /* CalendarScheduleCell.swift */,
+				37838F392B20608C00E4AFBA /* CalendarEdit.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -719,8 +728,10 @@
 				37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */,
 				37976D5B2B104274004F278F /* Google.swift in Sources */,
 				FFAFCB782AFB76460030C3C9 /* 선별_전시_컬렉션_셀.swift in Sources */,
+				37838F3A2B20608C00E4AFBA /* CalendarEdit.swift in Sources */,
 				FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift in Sources */,
 				FFAFCB7A2AFD2D200030C3C9 /* ExhibitionPageTwo.swift in Sources */,
+				37838F342B1EE46A00E4AFBA /* CalendarScheduleCell.swift in Sources */,
 				FF77BFC12AF79D3A00EA5A1B /* LaunchScreenViewController.swift in Sources */,
 				37DE8F8C2B0396CF0086FC58 /* MypageExhibition.swift in Sources */,
 				37DE8F922B039C8E0086FC58 /* MypageNotification.swift in Sources */,
@@ -732,6 +743,7 @@
 				FFAFCB762AFB76220030C3C9 /* ExhibitionModel.swift in Sources */,
 				FF77BFB82AF3E0DB00EA5A1B /* searchPageTableViewCell.swift in Sources */,
 				FF58FB2E2AE6013600853006 /* Mypage.swift in Sources */,
+				37838F3C2B20850000E4AFBA /* CalendarDelete.swift in Sources */,
 				FFBD77AE2B18D1E30078F6CB /* ReviewDetailViewController.swift in Sources */,
 				377130242AFB88C40018D4C1 /* SignUPthird.swift in Sources */,
 				FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */,

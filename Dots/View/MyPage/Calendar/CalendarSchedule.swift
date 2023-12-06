@@ -1,29 +1,17 @@
 import UIKit
 
 class 캘린더_스케쥴_등록_모달 : UIViewController {
-    private let 백 = {
-        let uiView = UIView()
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        gradientLayer.colors = [
-            UIColor.black.withAlphaComponent(0.9).cgColor,
-            UIColor.black.withAlphaComponent(0.9).cgColor
-        ]
-        gradientLayer.locations = [0, 1]
-        uiView.layer.addSublayer(gradientLayer)
-        return uiView
-    } ()
+
     private let 손잡이 = {
         let uiView = UIView()
-        uiView.backgroundColor = .white
+        uiView.backgroundColor = .darkGray
         uiView.layer.cornerRadius = 5
-        uiView.layer.borderColor = UIColor(named: "neon")?.cgColor
         uiView.layer.borderWidth = 0.5
         return uiView
     } ()
     private let 페이지_제목 = {
         let label = UILabel()
-        label.text = "전시 방문 일정 등록"
+        label.text = "다녀온 전시 기록"
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .center
@@ -34,45 +22,88 @@ class 캘린더_스케쥴_등록_모달 : UIViewController {
           let layout = UICollectionViewFlowLayout()
           let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
           layout.minimumLineSpacing = 20
-          layout.minimumInteritemSpacing = 12
+          layout.minimumInteritemSpacing = 0
           layout.sectionInset = UIEdgeInsets(top:5 , left: 0, bottom: 5, right: 0)
           
-          collectionView.backgroundColor = .black
+          collectionView.backgroundColor = .clear
           collectionView.layer.cornerRadius = 10
           collectionView.showsVerticalScrollIndicator = false
           collectionView.decelerationRate = UIScrollView.DecelerationRate.normal
           return collectionView
       }()
+    
+   
+    
     override func viewDidLoad() {
-        view.backgroundColor = .clear
-        view.layer.cornerRadius = 20
-        view.layer.borderColor = UIColor(named: "neon")?.cgColor
+
+        view.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+
         view.layer.borderWidth = 0.3
         
         UI레이아웃()
+        캘린더_전시_컬렉션뷰.delegate = self
+        캘린더_전시_컬렉션뷰.dataSource = self
+        캘린더_전시_컬렉션뷰.register(캘린더_스케쥴_등록_셀.self, forCellWithReuseIdentifier: "캘린더_스케쥴_등록_셀")
+
     }
+    
 }
 
 
 extension 캘린더_스케쥴_등록_모달 {
     
     private func UI레이아웃 () {
-        view.addSubview(백)
         view.addSubview(손잡이)
         view.addSubview(페이지_제목)
-        백.snp.makeConstraints { make in
-            make.top.leading.trailing.bottom.equalToSuperview()
-            
-        }
+        view.addSubview(캘린더_전시_컬렉션뷰)
+
         손잡이.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(10)
             make.centerX.equalToSuperview()
             make.height.equalTo(5)
             make.width.equalTo(40)
         }
         페이지_제목.snp.makeConstraints { make in
-            make.top.equalTo(손잡이.snp.bottom).offset(25)
+            make.top.equalTo(손잡이.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
+        }
+        캘린더_전시_컬렉션뷰.snp.makeConstraints { make in
+            make.top.equalTo(페이지_제목.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(5)
+            make.trailing.equalToSuperview().offset(-5)
+            make.bottom.equalToSuperview().offset(-5)
         }
     }
 }
+
+extension 캘린더_스케쥴_등록_모달 : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "캘린더_스케쥴_등록_셀", for: indexPath) as? 캘린더_스케쥴_등록_셀 else {
+            return UICollectionViewCell()
+        }
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.frame.width * 1
+        let height = collectionView.frame.height * 0.35
+        return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+           if let cell = collectionView.cellForItem(at: indexPath) as? 캘린더_스케쥴_등록_셀 {
+               if cell.transform.isIdentity {
+                   cell.셀_클릭_애니메이션_on()
+               } else {
+                   cell.셀_클릭_애니메이션_off()
+               }
+           }
+       }
+    
+    
+}
+
