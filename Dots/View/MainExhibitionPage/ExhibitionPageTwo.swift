@@ -209,22 +209,41 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     @objc func confirmButtonTapped() {
-        // 버튼을 눌렀을 때 수행할 동작을 여기에 추가합니다.
-
-
         let isSelected = recordButton.isSelected
-        recordButton.isSelected = !isSelected // 버튼의 선택 상태를 토글합니다.
-
-        let newImageName = isSelected ? "footprint" : "footprint 1" // 새 이미지 이름
+        recordButton.isSelected = !isSelected
+        let newImageName = isSelected ? "footprint" : "footprint 1"
         recordButton.setImage(UIImage(named: newImageName), for: .normal)
 
         customAlertView.isHidden = true
         blurEffectView.isHidden = true
 
+        let selectedDate = datePicker.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: selectedDate)
+
+        // Firebase Firestore에 데이터 저장
+        addVisitDateToFirestore(visitDate: dateString)
     }
 
 
 
+    func addVisitDateToFirestore(visitDate: String) {
+        guard let userID = Auth.auth().currentUser?.uid, let posterName = posterImageName else {
+            print("유저 ID 또는 포스터 이름을 가져올 수 없습니다.")
+            return
+        }
+
+        let documentPath = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+
+        documentPath.setData(["유저_다녀옴_날짜": visitDate], merge: true) { error in
+            if let error = error {
+                print("Firestore에 데이터 저장 중 오류 발생: \(error.localizedDescription)")
+            } else {
+                print("Firestore에 날짜 저장 성공")
+            }
+        }
+    }
 
 
 
