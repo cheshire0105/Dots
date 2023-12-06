@@ -32,13 +32,7 @@ class 캘린더_스케쥴_등록_모달 : UIViewController {
           return collectionView
       }()
     
-    let 수정_뷰 = {
-    let view = UIView()
-        view.backgroundColor = UIColor(named: "neon")
-        view.layer.cornerRadius = 15
-       return view
-        
-    }()
+   
     
     override func viewDidLoad() {
 
