@@ -97,30 +97,7 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         return button
     }()
     
-    /* 버튼 클릭 이후로 해당 뷰가 나올 ui들*/
-    let 내후기_수정_뷰 = {
-        let uiView = UIView()
-        uiView.backgroundColor = UIColor(named: "neon")
-        uiView.layer.cornerRadius = 15
-        
-        return uiView
-    }()
-    
   
-    
-    
-    
-    //
-    let 내후기_삭제_뷰 = {
-        let uiView = UIView()
-        uiView.backgroundColor = UIColor(named: "neon")
-        uiView.layer.cornerRadius = 15
-        
-        return uiView
-    }()
- 
-    
-    
     
     
     override func layoutSubviews() {
@@ -164,8 +141,10 @@ extension 캘린더_스케쥴_등록_셀 {
     
     @objc func 내후기_수정_버튼_클릭 () {
         print("내후기_수정_버튼_클릭")
-
-          
+        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
+               let 수정_뷰 = 켈린더_수정_뷰컨트롤러() // 작은뷰컨트롤러는 작성한 작은 뷰컨트롤러 클래스의 인스턴스여야 합니다.
+               셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
+           }
       }
         
     
@@ -303,5 +282,19 @@ extension UIColor {
         컨텍스트.render(출력_이미지, toBitmap: &비트맵, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: CIFormat.RGBA8, colorSpace: nil)
         
         return UIColor(red: CGFloat(비트맵[0]) / 255.0, green: CGFloat(비트맵[1]) / 255.0, blue: CGFloat(비트맵[2]) / 255.0, alpha: CGFloat(비트맵[3]) / 255.0)
+    }
+}
+
+
+extension UIView {
+    func findViewController() -> UIViewController? {
+        var responder: UIResponder? = self
+        while let nextResponder = responder?.next {
+            responder = nextResponder
+            if let viewController = responder as? UIViewController {
+                return viewController
+            }
+        }
+        return nil
     }
 }
