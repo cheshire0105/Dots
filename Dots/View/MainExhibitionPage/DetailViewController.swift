@@ -46,10 +46,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
-    override func viewWillAppear(_ animated: Bool) {
-           super.viewWillAppear(animated)
-           loadReviews() // 화면이 나타날 때마다 후기 목록을 새로고침합니다.
-       }
+//    override func viewWillAppear(_ animated: Bool) {
+//           super.viewWillAppear(animated)
+////           loadReviews() // 화면이 나타날 때마다 후기 목록을 새로고침합니다.
+//       }
+    let refreshControl = UIRefreshControl() // 새로고침 컨트롤 생성
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,8 +66,27 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         fetchExhibitionDetails() // Firestore에서 전시 상세 정보를 가져오는 함수 호출
         
         mapView.delegate = self
+        configureRefreshControl() // 새로고침 컨트롤 설정 메소드 호출
 
     }
+
+    // 새로고침 컨트롤 설정 메소드
+      func configureRefreshControl() {
+          // 새로고침 컨트롤에 대한 타겟-액션 설정
+          refreshControl.addTarget(self, action: #selector(refreshReviewsData(_:)), for: .valueChanged)
+
+          // 테이블 뷰에 새로고침 컨트롤 추가
+          reviewsTableView.refreshControl = refreshControl
+      }
+
+      // 새로고침 시 호출될 메소드
+      @objc private func refreshReviewsData(_ sender: UIRefreshControl) {
+          // 최신 리뷰 데이터 로드
+          loadReviews()
+
+          // 로드 완료 후 새로고침 컨트롤 종료
+          refreshControl.endRefreshing()
+      }
 
     func loadReviews() {
         guard let posterName = posterImageName else {
@@ -74,7 +95,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").getDocuments { (querySnapshot, error) in
+            .collection("reviews")
+            .order(by: "createdAt", descending: true) // 날짜 기준 내림차순 정렬
+            .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error getting documents: \(error)")
                     return
@@ -93,17 +116,14 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
                                 let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
-//                                let photoUrls = data["photoUrls"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
-
 
                                 let review = Review(
                                     title: data["title"] as? String ?? "",
                                     content: data["content"] as? String ?? "",
                                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                                     nickname: nickname,
-                                    profileImageUrl: profileImageUrl, 
-                                    photoUrls: data["images"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
-
+                                    profileImageUrl: profileImageUrl,
+                                    photoUrls: data["images"] as? [String] ?? []
                                 )
                                 newReviews.append(review)
                             }
