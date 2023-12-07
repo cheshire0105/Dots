@@ -152,9 +152,10 @@ class Mypage: UIViewController {
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
         calendar.appearance.weekdayTextColor = UIColor.darkGray
-        calendar.appearance.todayColor = UIColor(named: "neon")?.withAlphaComponent(0.3)
-        //        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
-        calendar.appearance.selectionColor = UIColor.green.withAlphaComponent(0.1)
+        calendar.appearance.todayColor = UIColor(named: "neon")
+        calendar.appearance.todaySelectionColor = UIColor(named: "neon")
+
+        calendar.appearance.selectionColor = UIColor.clear
         calendar.appearance.titleDefaultColor = UIColor.white
         calendar.appearance.titleSelectionColor = UIColor.white
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
