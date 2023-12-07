@@ -577,16 +577,25 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             if let error = error {
                 print("Error getting download URL: \(error)")
             } else if let url = url {
-                // 이미지 로드
-                URLSession.shared.dataTask(with: url) { (data, _, error) in
-                    guard let data = data, error == nil else { return }
-                    DispatchQueue.main.async {
-                        self?.backgroundImageView.image = UIImage(data: data)
-                    }
-                }.resume()
+                // 이미지를 SDWebImage를 사용하여 다운로드 및 캐시합니다.
+                DispatchQueue.main.async {
+                    self?.backgroundImageView.sd_setImage(with: url, completed: { (image, error, cacheType, url) in
+                        if let error = error {
+                            print("Error downloading image: \(error)")
+                        } else {
+                            switch cacheType {
+                            case .none:
+                                print("Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                            default:
+                                print("Image was retrieved from cache")
+                            }
+                        }
+                    })
+                }
             }
         }
     }
+
 
 
 
@@ -730,7 +739,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         return label
     }()
 
-    private lazy var profileImageView: UIImageView = {
+     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 15

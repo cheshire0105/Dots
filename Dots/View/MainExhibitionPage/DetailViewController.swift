@@ -205,8 +205,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
 
-    // Firestore에서 전시 상세 정보를 가져오는 함수
-    // Firestore에서 전시 상세 정보를 가져오는 함수
+
     // Firestore에서 전시 상세 정보를 가져오는 함수
     private func fetchExhibitionDetails() {
         guard let posterName = posterImageName else {
@@ -238,21 +237,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
 
-
-
-//    // UI를 전시 상세 정보로 업데이트하는 함수
-//    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
-//        DispatchQueue.main.async {
-//            // titleLabel에 전시 타이틀을 설정
-//            self.titleLabel.text = exhibitionDetail.exhibitionTitle
-//
-//            // exhibitionTitleLabel에 미술관 이름을 설정
-//            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
-//            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
-//
-//        }
-//    }
-
     // 지도 위치 업데이트 함수
     private func updateMapViewWithLocation(location: CLLocationCoordinate2D) {
         DispatchQueue.main.async {
@@ -273,8 +257,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         floatingActionButton.setTitleColor(.black, for: .normal)
         floatingActionButton.layer.cornerRadius = 23
         floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
-        // Initially hide the floating action button until the first segment is selected
-//               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
 
 
         // 이미지 설정
@@ -321,14 +303,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     func configureSegmentControl() {
 
-//        // 타이틀 레이블을 설정합니다.
-//        titleLabel.text = "현대차 시리즈 2023: 정연두 - 백년여행"
-//        titleLabel.textAlignment = .center
-//        titleLabel.textColor = .white
-//        titleLabel.numberOfLines = 2
-//        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 20)
-//        view.addSubview(titleLabel)
-
         // 세그먼트 컨트롤을 설정합니다.
         segmentControl.selectedSegmentIndex = 0 // 기본 선택 인덱스를 설정합니다.
         segmentControl.backgroundColor = UIColor.black // 배경색 설정
@@ -343,12 +317,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         segmentControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         view.addSubview(segmentControl)
-
-//        titleLabel.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-//            make.centerX.equalTo(view.snp.centerX)
-//            make.left.right.equalToSuperview().inset(20)
-//        }
 
         segmentControl.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
@@ -632,6 +600,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         // 셀에 리뷰 정보를 설정합니다.
         cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "Vector 4"), extraImageView2: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1"), text123: "123", text456: "456")
+
+        // SDWebImage를 사용하여 프로필 이미지 캐시 및 로드
+         if let profileImageUrl = URL(string: review.profileImageUrl) {
+             cell.profileImageView.sd_setImage(with: profileImageUrl, placeholderImage: UIImage(named: "defaultProfileImage"), completed: { (image, error, cacheType, url) in
+                 if cacheType == .none {
+                     print("Profile Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                 } else {
+                     print("Profile Image was retrieved from cache")
+                 }
+             })
+         }
 
         return cell
     }

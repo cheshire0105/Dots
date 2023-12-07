@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import SDWebImage
 
 struct ImageData {
     let url: URL
@@ -101,17 +102,17 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                         adjustLayoutForNoPhotos()
                     }
             // URL 문자열을 사용하여 이미지 로드
-             if let imageUrl = URL(string: reviewData.profileImageUrl) {
-                 // URL에서 이미지 데이터를 가져옵니다.
-                 URLSession.shared.dataTask(with: imageUrl) { data, response, error in
-                     guard let data = data, error == nil else { return }
+            if let imageUrl = URL(string: reviewData.profileImageUrl) {
+                // SDWebImage를 사용하여 프로필 이미지 로드 및 캐시
+                profileImageView.sd_setImage(with: imageUrl, placeholderImage: UIImage(named: "defaultProfileImage"), completed: { (image, error, cacheType, url) in
+                    if cacheType == .none {
+                        print("Profile Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                    } else {
+                        print("Profile Image was retrieved from cache")
+                    }
+                })
+            }
 
-                     // 메인 스레드에서 이미지 뷰에 이미지 설정
-                     DispatchQueue.main.async {
-                         self.profileImageView.image = UIImage(data: data)
-                     }
-                 }.resume()
-             }
 
             // 사진 유무에 따라 컬렉션 뷰의 가시성 조정
                   photoCollectionView.isHidden = reviewData.photoUrls.isEmpty
@@ -127,20 +128,21 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     // 이미지 로드 함수
     func loadImages(from urls: [String]) {
-         imageDatas.removeAll() // 기존 이미지 데이터 초기화
+        imageDatas.removeAll() // 기존 이미지 데이터 초기화
 
-         for urlString in urls {
-             guard let url = URL(string: urlString) else { continue }
-             URLSession.shared.dataTask(with: url) { data, _, _ in
-                 if let data = data, let image = UIImage(data: data) {
-                     DispatchQueue.main.async {
-                         self.imageDatas.append(ImageData(url: url, image: image))
-                         self.photoCollectionView.reloadData()
-                     }
-                 }
-             }.resume()
-         }
-     }
+        for urlString in urls {
+            guard let url = URL(string: urlString) else { continue }
+            // SDWebImage를 사용하여 이미지를 다운로드 및 캐시
+            SDWebImageManager.shared.loadImage(with: url, options: [], progress: nil) { (image, data, error, cacheType, finished, imageURL) in
+                if finished, let image = image {
+                    DispatchQueue.main.async {
+                        self.imageDatas.append(ImageData(url: url, image: image))
+                        self.photoCollectionView.reloadData()
+                    }
+                }
+            }
+        }
+    }
 
 
     private func adjustLayoutForPhotos() {
