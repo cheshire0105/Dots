@@ -47,13 +47,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     lazy var heartIcon: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-//        button.backgroundColor = .white
-//        button.layer.cornerRadius = 20
-//
-//        button.layer.shadowOpacity = 0.9
-//        button.layer.shadowRadius = 2
-//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        button.layer.shadowColor = UIColor.black.cgColor
+
 
 
         button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
@@ -63,14 +57,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     lazy var recordButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "footprint"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-//        button.backgroundColor = .white
-//        button.layer.cornerRadius = 20
-//
-//
-//        button.layer.shadowOpacity = 0.9
-//        button.layer.shadowRadius = 2
-//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        button.layer.shadowColor = UIColor.black.cgColor
+
 
         button.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
@@ -80,13 +67,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let button = UIButton()
 
         button.setImage(UIImage(named: "쉐어"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-//        button.backgroundColor = .white
-//        button.layer.cornerRadius = 20
-//
-//        button.layer.shadowOpacity = 0.9
-//        button.layer.shadowRadius = 2
-//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        button.layer.shadowColor = UIColor.black.cgColor
+
 
         button.addTarget(self, action: #selector(mapPageLoad), for: .touchUpInside) // 버튼 액션 추가
         return button
@@ -144,9 +125,16 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
             make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(50)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-80) // 하단 가장자리에서 10포인트 떨어진 위치
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-110) // 하단 가장자리에서 10포인트 떨어진 위치
 
         }
+
+        // titleLabel 아래에 스택 뷰 추가
+               view.addSubview(visitorStackView)
+               visitorStackView.snp.makeConstraints { make in
+                   make.top.equalTo(titleLabel.snp.bottom).offset(10)
+                   make.leading.equalTo(titleLabel.snp.leading)
+               }
     }
 
     private lazy var alertTitleLabel: UILabel = {
@@ -180,6 +168,29 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         picker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
         return picker
     }()
+
+    private lazy var visitorIconImageView: UIImageView = {
+            let imageView = UIImageView()
+            imageView.image = UIImage(named: "footprint_sleected 1") // 방문자 아이콘 이미지 설정
+            imageView.contentMode = .scaleAspectFit
+            return imageView
+        }()
+
+        private lazy var visitorCountLabel: UILabel = {
+            let label = UILabel()
+            label.text = "00명이 다녀왔어요" // 초기 텍스트 설정
+            label.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+            label.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+            return label
+        }()
+
+        private lazy var visitorStackView: UIStackView = {
+            let stackView = UIStackView(arrangedSubviews: [visitorIconImageView, visitorCountLabel])
+            stackView.axis = .horizontal
+            stackView.spacing = 5 // 이미지와 레이블 사이 간격
+            stackView.alignment = .center
+            return stackView
+        }()
 
 
     @objc func datePickerChanged(_ sender: UIDatePicker) {
@@ -281,13 +292,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        print(self.navigationController?.interactivePopGestureRecognizer?.isEnabled)
-//        print(self.navigationController?.interactivePopGestureRecognizer?.delegate)
-//
-//    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
@@ -362,19 +366,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.addSubview(customAlertView)
         setupCustomAlertView()
 
-
-//        // 스와이프 제스처 인식기 추가
-//        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
-//        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
-//        view.addGestureRecognizer(swipeGesture)
-
         // blurEffectView에 탭 제스처 인식기 추가
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
             blurEffectView.addGestureRecognizer(tapGesture)
             blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
-
-        // 그라데이션 뷰 추가
-//           view.addSubview(gradientView)
 
 
         view.addSubview(mapAlertView)
@@ -383,10 +378,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
     private func setupNavigationBackButton() {
-//        let backButton = createCustomBackButton()
-//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-//        let headsetButton = createCustomHeadsetIcon()
-//            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: headsetButton)
+
     }
 
 
@@ -416,6 +408,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             make.top.equalTo(mapAlertView.snp.top).offset(20)
             make.left.right.equalTo(mapAlertView).inset(10)
         }
+
+
 
         // 새로운 뷰 생성 및 설정
         let newView = UIView()
@@ -479,10 +473,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
 
-//        // 레이블에 탭 제스처 인식기 추가
-//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shareDeepLink))
-//            deepLinkLabel.addGestureRecognizer(tapGesture)
-
           deepLinkLabel.snp.makeConstraints { make in
               make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
               make.centerY.equalTo(newView.snp.centerY)
@@ -501,12 +491,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-//    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
-//        if gesture.direction == .right {
-//            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
-//            navigationController?.popViewController(animated: true)
-//        }
-//    }
     @objc func blurViewTapped() {
         customAlertView.isHidden = true
         mapAlertView.isHidden = true // mapAlertView도 숨깁니다.
@@ -601,8 +585,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     private func setupBackButton() {
-//        view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
-//        view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
+
         view.addSubview(createCustomBackButton)
         view.addSubview(createCustomHeadsetIcon)
 
@@ -687,15 +670,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-
-//
-//    @objc func backButtonTapped() {
-//        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
-//        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
-//    }
-
-    // 오디오 가이드 페이지로 이동하는 메서드
-    // AudioGuideViewController를 표시하는 버튼 액션 또는 메서드 내부
     @objc func presentAudioGuideViewController() {
         // 현재 모달을 닫고, 완료 콜백에서 AudioGuideViewController를 푸시합니다.
         self.dismiss(animated: true) {
