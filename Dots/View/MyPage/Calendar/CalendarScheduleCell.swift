@@ -22,6 +22,7 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+    
     var 전시_포스터_이미지 = {
         var imageView = UIImageView()
         imageView.image = UIImage(named: "help")
@@ -30,6 +31,7 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         return imageView
     } ()
+    
     let 전시명_라벨 = {
         let label = UILabel()
         label.text = "전시 제목"
@@ -111,8 +113,6 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         버튼_클릭()
         
         
-        
-//        if let 평균색상_추출 = UIColor.이미지_평균색상(from: UIImage(named: "claude")!)
             if let 평균색상_추출 = 전시_포스터_이미지.image?.이미지_평균색상(){
             이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
             라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
@@ -142,6 +142,7 @@ extension 캘린더_스케쥴_등록_셀 {
         print("내후기_수정_버튼_클릭")
         if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
                let 수정_뷰 = 켈린더_수정_뷰컨트롤러()
+               수정_뷰.modalPresentationStyle = .fullScreen
                셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
            }
       }
@@ -151,6 +152,7 @@ extension 캘린더_스케쥴_등록_셀 {
         print("내후기_삭제_버튼_클릭")
         if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
             let 수정_뷰 = 켈린더_삭제_뷰컨트롤러()
+            수정_뷰.modalPresentationStyle = .fullScreen
             셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
         }
     }
