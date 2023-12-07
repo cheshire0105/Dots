@@ -99,7 +99,8 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
            super.init(style: style, reuseIdentifier: reuseIdentifier)
            self.isUserInteractionEnabled = true
-           backgroundColor = UIColor.clear
+           backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+
            캘린더_스케쥴_등록_셀_레이아웃()
            버튼_클릭()
            
@@ -112,6 +113,10 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
        required init?(coder aDecoder: NSCoder) {
            fatalError("init(coder:) has not been implemented")
        }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.selectionStyle = .none
+    }
    }
 
 
