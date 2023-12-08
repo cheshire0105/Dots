@@ -120,23 +120,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return view
     }()
 
-    private func setupTitleLabel() {
-        view.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
-            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(50)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-110) // 하단 가장자리에서 10포인트 떨어진 위치
-
-        }
-
-        // titleLabel 아래에 스택 뷰 추가
-               view.addSubview(visitorStackView)
-               visitorStackView.snp.makeConstraints { make in
-                   make.top.equalTo(titleLabel.snp.bottom).offset(10)
-                   make.leading.equalTo(titleLabel.snp.leading)
-               }
-    }
-
     private lazy var alertTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "언제 다녀오셨나요?"
@@ -192,13 +175,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             return stackView
         }()
 
-
-    @objc func datePickerChanged(_ sender: UIDatePicker) {
-        // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
-        // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
-    }
-
-
     private lazy var confirmButton: UIButton = {
         let button = UIButton()
         button.setTitle("등록하기", for: .normal)
@@ -217,6 +193,44 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.isHidden = true // 처음에는 숨겨둡니다.
         return view
     }()
+
+    var posterImageName: String?
+    var titleName : String?
+
+    private lazy var backgroundImageView: UIImageView = {
+        let imageView = UIImageView(frame: self.view.bounds)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+
+
+    private func setupTitleLabel() {
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(50)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-110) // 하단 가장자리에서 10포인트 떨어진 위치
+
+        }
+
+        // titleLabel 아래에 스택 뷰 추가
+               view.addSubview(visitorStackView)
+               visitorStackView.snp.makeConstraints { make in
+                   make.top.equalTo(titleLabel.snp.bottom).offset(10)
+                   make.leading.equalTo(titleLabel.snp.leading)
+               }
+    }
+
+
+
+
+    @objc func datePickerChanged(_ sender: UIDatePicker) {
+        // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
+        // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
+    }
+
 
 
     @objc func confirmButtonTapped() {
@@ -338,15 +352,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-    var posterImageName: String?
-    var titleName : String?
 
-    private lazy var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(frame: self.view.bounds)
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
-    }()
 
 
 
