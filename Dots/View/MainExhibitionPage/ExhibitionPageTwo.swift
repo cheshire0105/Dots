@@ -459,6 +459,20 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             setupBackgroundImage(with: posterName)
         }
 
+        if let posterName = self.posterImageName {
+            checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] visited in
+                DispatchQueue.main.async {
+                    if visited {
+                        // 이미 방문을 등록했다면 변경된 이미지로 설정
+                        self?.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
+                    } else {
+                        // 아직 방문을 등록하지 않았다면 기본 이미지로 설정
+                        self?.recordButton.setImage(UIImage(named: "footprint"), for: .normal)
+                    }
+                }
+            }
+        }
+
 
         setupTitleLabel() // 타이틀 레이블 설정 호출
 
