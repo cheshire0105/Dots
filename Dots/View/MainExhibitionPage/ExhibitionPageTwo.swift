@@ -204,6 +204,44 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return imageView
     }()
 
+    // 사용자가 이미 방문을 등록했는지 확인하는 함수
+    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion(false)
+            return
+        }
+
+        let userVisitDocument = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+
+        userVisitDocument.getDocument { (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                completion(false)
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                // 'visited' 필드를 확인하여 이미 방문했는지 검사
+                let visited = document.data()?["visited"] as? Bool ?? false
+                completion(visited)
+            } else {
+                // 문서가 없으면 아직 방문을 등록하지 않은 것으로 간주
+                completion(false)
+            }
+        }
+    }
+
+
+    func showAlreadyRegisteredAlert() {
+        let alert = UIAlertController(title: "알림", message: "이미 이 전시를 방문하셨습니다.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+
+    func showVisitRegistrationAlert() {
+        self.blurEffectView.isHidden = false
+        self.customAlertView.isHidden = false
+    }
 
 
     private func setupTitleLabel() {
@@ -285,6 +323,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
             // 사용자 방문 날짜 등록
             transaction.setData(["유저_다녀옴_날짜": visitDate], forDocument: userVisitDocument)
+            transaction.setData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument)
+
 
             return nil
         }) { (object, error) in
@@ -725,15 +765,21 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     @objc func recordButtonTapped() {
-
-        // 현재 표시된 모든 모달 뷰 컨트롤러를 닫습니다.
-        self.dismiss(animated: true) {
-            // 모달 뷰가 닫힌 후에 얼럿 뷰를 표시합니다.
-            self.blurEffectView.isHidden = false
-            self.customAlertView.isHidden = false
+        guard let posterName = self.posterImageName else {
+            print("Poster name is not available")
+            return
         }
 
-        
+        // 사용자가 이미 방문을 등록했는지 확인
+        checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] alreadyRegistered in
+            if alreadyRegistered {
+                // 이미 방문을 등록한 경우, 사용자에게 알림 표시
+                self?.showAlreadyRegisteredAlert()
+            } else {
+                // 방문을 아직 등록하지 않은 경우, 얼럿 뷰 표시
+                self?.showVisitRegistrationAlert()
+            }
+        }
     }
 
 
