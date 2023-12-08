@@ -174,7 +174,7 @@ class Mypage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("My Page")
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = UIColor.clear
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
@@ -413,21 +413,36 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
         return true
     }
     private func 날짜에_들어갈_이미지_동그란모양(_ 이미지: UIImage, 사이즈: CGSize) -> UIImage {
-        let 날짜에_들어갈_이미지 = UIImageView(image: 이미지)
-        날짜에_들어갈_이미지.frame = CGRect(origin: .zero, size: CGSize(width: 사이즈.height + 5, height: 사이즈.height + 5))
+        let 날짜에_들어갈_이미지 = UIButton(type: .custom)
+        날짜에_들어갈_이미지.setImage(UIImage(named: "footprint 1"), for: .normal)
+        날짜에_들어갈_이미지.setImage(이미지, for: .selected)
+        날짜에_들어갈_이미지.isSelected = !날짜에_들어갈_이미지.isSelected
+        날짜에_들어갈_이미지.frame = CGRect(origin: .zero, size: CGSize(width: 사이즈.height, height: 사이즈.height))
         날짜에_들어갈_이미지.contentMode = .scaleAspectFill
-        날짜에_들어갈_이미지.layer.cornerRadius = 사이즈.width / 2.0
+        날짜에_들어갈_이미지.layer.cornerRadius = 사이즈.height / 2
         날짜에_들어갈_이미지.layer.masksToBounds = true
         날짜에_들어갈_이미지.clipsToBounds = true
-        
-    
+        날짜에_들어갈_이미지.layer.borderWidth = 1.5
+        날짜에_들어갈_이미지.layer.borderColor = UIColor(named: "neon")?.cgColor
+        날짜에_들어갈_이미지.contentHorizontalAlignment = .center
+
         UIGraphicsBeginImageContextWithOptions(사이즈, false, 0.0)
         defer { UIGraphicsEndImageContext() }
-        
+
         guard let context = UIGraphicsGetCurrentContext() else { return UIImage() }
         날짜에_들어갈_이미지.layer.render(in: context)
-        
-        return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+
+        // 이미지를 오른쪽으로 10만큼 이동
+        if let 이미지_위치 = UIGraphicsGetImageFromCurrentImageContext() {
+            let 이미지_사이즈 = CGSize(width: 이미지_위치.size.width, height: 이미지_위치.size.height)
+            UIGraphicsBeginImageContextWithOptions(이미지_사이즈, false, 0.0)
+            이미지_위치.draw(in: CGRect(x: 0, y: 0, width: 이미지_사이즈.width, height: 이미지_사이즈.height))
+            let 새로운_이미지 = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return 새로운_이미지 ?? UIImage()
+        }
+
+        return UIImage()
     }
   
     func calendar(_ calendar: FSCalendar, imageFor 날짜: Date) -> UIImage? {
