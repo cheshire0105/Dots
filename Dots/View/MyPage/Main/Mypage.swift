@@ -412,6 +412,23 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
     private func isEventScheduled(for date: Date) -> Bool {
         return true
     }
+    private func 날짜에_들어갈_이미지_동그란모양(_ 이미지: UIImage, 사이즈: CGSize) -> UIImage {
+        let 날짜에_들어갈_이미지 = UIImageView(image: 이미지)
+        날짜에_들어갈_이미지.frame = CGRect(origin: .zero, size: CGSize(width: 사이즈.height + 5, height: 사이즈.height + 5))
+        날짜에_들어갈_이미지.contentMode = .scaleAspectFill
+        날짜에_들어갈_이미지.layer.cornerRadius = 사이즈.width / 2.0
+        날짜에_들어갈_이미지.layer.masksToBounds = true
+        날짜에_들어갈_이미지.clipsToBounds = true
+        
+    
+        UIGraphicsBeginImageContextWithOptions(사이즈, false, 0.0)
+        defer { UIGraphicsEndImageContext() }
+        
+        guard let context = UIGraphicsGetCurrentContext() else { return UIImage() }
+        날짜에_들어갈_이미지.layer.render(in: context)
+        
+        return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+    }
   
     func calendar(_ calendar: FSCalendar, imageFor 날짜: Date) -> UIImage? {
         if hasEvent(for: 날짜) {
@@ -419,13 +436,14 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
             let 이미지_사이즈 = CGSize(width: 셀_프레임.width, height: 셀_프레임.height)
             
             if let 날짜에_등록될_이미지 = UIImage(named: "help") {
-                let 이미지_사이즈_재정의 = 날짜에_등록될_이미지.resized(to: 이미지_사이즈)
+                let 이미지_사이즈_재정의 =  날짜에_들어갈_이미지_동그란모양(날짜에_등록될_이미지, 사이즈: 이미지_사이즈)
                 return 이미지_사이즈_재정의
             }
         }
         
         return nil
     }
+   
 }
 extension UIImage {
     func resized(to 사이즈: CGSize) -> UIImage {
