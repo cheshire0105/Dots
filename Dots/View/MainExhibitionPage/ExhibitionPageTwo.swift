@@ -234,27 +234,85 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let dateString = dateFormatter.string(from: selectedDate)
 
         // Firebase Firestore에 데이터 저장
-        addVisitDateToFirestore(visitDate: dateString)
+        // 'posterImageName' 속성을 사용하여 'posterName'을 전달합니다.
+        if let posterName = self.posterImageName {
+            addVisitDateToFirestore(visitDate: dateString, posterName: posterName)
+        } else {
+            print("Poster name is not available")
+        }
     }
 
 
 
-    func addVisitDateToFirestore(visitDate: String) {
-        guard let userID = Auth.auth().currentUser?.uid, let posterName = posterImageName else {
-            print("유저 ID 또는 포스터 이름을 가져올 수 없습니다.")
-            return
-        }
 
-        let documentPath = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+    func addVisitDateToFirestore(visitDate: String, posterName: String) {
+        let db = Firestore.firestore()
+        let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(Auth.auth().currentUser?.uid ?? "")
+        let posterDocument = db.collection("posters").document(posterName)
 
-        documentPath.setData(["유저_다녀옴_날짜": visitDate], merge: true) { error in
-            if let error = error {
-                print("Firestore에 데이터 저장 중 오류 발생: \(error.localizedDescription)")
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let posterDocumentSnapshot: DocumentSnapshot
+            do {
+                try posterDocumentSnapshot = transaction.getDocument(posterDocument)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+
+            let newVisitorCount = (posterDocumentSnapshot.data()?["다녀옴"] as? Int ?? 0) + 1
+
+            if !posterDocumentSnapshot.exists {
+                // 문서가 없는 경우, 초기 데이터로 문서 생성
+                transaction.setData(["다녀옴": newVisitorCount], forDocument: posterDocument)
             } else {
-                print("Firestore에 날짜 저장 성공")
+                // 문서가 있는 경우, 기존 데이터 업데이트
+                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+            }
+
+            // 사용자 방문 날짜 등록
+            transaction.setData(["유저_다녀옴_날짜": visitDate], forDocument: userVisitDocument)
+
+            return nil
+        }) { (object, error) in
+            if let error = error {
+                print("트랜잭션 실패: \(error)")
+            } else {
+                print("트랜잭션이 성공적으로 완료됨")
             }
         }
     }
+
+
+
+    // 서버에서 방문자 수를 가져오고 레이블 업데이트하는 메서드
+    func fetchVisitorCountAndUpdateLabel() {
+        guard let posterName = self.posterImageName else {
+            print("Poster name is not available")
+            return
+        }
+
+        let db = Firestore.firestore()
+        let posterDocument = db.collection("posters").document(posterName)
+
+        posterDocument.getDocument { [weak self] (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                let visitorCount = document.data()?["다녀옴"] as? Int ?? 0
+                DispatchQueue.main.async {
+                    self?.visitorCountLabel.text = "\(visitorCount)명이 다녀왔어요"
+                }
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+
+
+
 
 
 
@@ -374,6 +432,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         view.addSubview(mapAlertView)
             setupMapAlertView()
+
+        fetchVisitorCountAndUpdateLabel()
+
 
     }
 
@@ -695,7 +756,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-class 새로운_ReviewTableViewCell: UITableViewCell {
+class ReviewTableViewCell: UITableViewCell {
 
     // UI 컴포넌트 선언
     private lazy var nickNameLabel: UILabel = {

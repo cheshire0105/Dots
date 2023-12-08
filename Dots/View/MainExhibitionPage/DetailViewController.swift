@@ -327,7 +327,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func configureTableView() {
-        reviewsTableView.register(새로운_ReviewTableViewCell.self, forCellReuseIdentifier: "새로운_ReviewTableViewCell")
+        reviewsTableView.register(ReviewTableViewCell.self, forCellReuseIdentifier: "ReviewTableViewCell")
         reviewsTableView.dataSource = self
         reviewsTableView.delegate = self
         view.addSubview(reviewsTableView)
@@ -591,7 +591,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "새로운_ReviewTableViewCell", for: indexPath) as? 새로운_ReviewTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReviewTableViewCell", for: indexPath) as? ReviewTableViewCell else {
             return UITableViewCell()
         }
 
