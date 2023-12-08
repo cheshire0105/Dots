@@ -382,7 +382,6 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
         
-        // DetailViewController의 presentationController 설정
         if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
             sheetPresent.prefersGrabberVisible = true
             
@@ -399,29 +398,29 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
         self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
         
     }
-    //    func calendar(_ calendar: FSCalendar, imageFor date: Date) -> UIImage? {
-    //
-    //    }
-    //
-    
-    // 특정 날짜에 이미지 세팅
-    private func hasEvent(for date: Date) -> Bool {
-        return isEventScheduled(for: date)
+ 
+    private func hasEvent(for 날짜: Date) -> Bool {
+        let 이미지_생성될_날짜 = Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 5))
+        
+        if let 이미지_생성될_날짜 = 이미지_생성될_날짜 {
+            return Calendar.current.isDate(날짜, inSameDayAs: 이미지_생성될_날짜)
+        } else {
+            return false
+        }
     }
 
     private func isEventScheduled(for date: Date) -> Bool {
         return true
     }
   
-    func calendar(_ calendar: FSCalendar, imageFor date: Date) -> UIImage? {
-        if hasEvent(for: date) {
-            let cellFrame = calendar.frame(for: date)
+    func calendar(_ calendar: FSCalendar, imageFor 날짜: Date) -> UIImage? {
+        if hasEvent(for: 날짜) {
+            let 셀_프레임 = calendar.frame(for: 날짜)
+            let 이미지_사이즈 = CGSize(width: 셀_프레임.width, height: 셀_프레임.height)
             
-            let imageSize = CGSize(width: cellFrame.width, height: cellFrame.height)
-            
-            if let image = UIImage(named: "help") {
-                let resizedImage = image.resized(to: imageSize)
-                return resizedImage
+            if let 날짜에_등록될_이미지 = UIImage(named: "help") {
+                let 이미지_사이즈_재정의 = 날짜에_등록될_이미지.resized(to: 이미지_사이즈)
+                return 이미지_사이즈_재정의
             }
         }
         
@@ -429,9 +428,9 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
     }
 }
 extension UIImage {
-    func resized(to size: CGSize) -> UIImage {
-        return UIGraphicsImageRenderer(size: size).image { _ in
-            draw(in: CGRect(origin: .zero, size: size))
+    func resized(to 사이즈: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size: 사이즈).image { _ in
+            draw(in: CGRect(origin: .zero, size: 사이즈))
         }
     }
 }
