@@ -8,7 +8,7 @@ import FirebaseFirestore
 import GoogleSignIn
 
 class Mypage: UIViewController {
-     
+  
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
@@ -144,8 +144,7 @@ class Mypage: UIViewController {
         calendar.layer.cornerRadius = 15
         calendar.layer.borderWidth = 0.3
         //        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
-        calendar.dataSource = self
-        calendar.delegate = self
+   
         
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
         calendar.appearance.headerDateFormat = "MMMM yyyy"
@@ -166,7 +165,7 @@ class Mypage: UIViewController {
         return calendar
     }()
     
-    
+
     
     override func viewWillAppear(_ animated: Bool) {
         접속_유저_데이터_마이페이지_적용하기()
@@ -186,7 +185,10 @@ class Mypage: UIViewController {
         버튼_백_레이아웃 ()
         
         캘린더_레이아웃()
-        
+        캘린더.dataSource = self
+        캘린더.delegate = self
+        캘린더.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
+
         접속_유저_데이터_마이페이지_적용하기()
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
@@ -380,26 +382,59 @@ extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
         
-            // DetailViewController의 presentationController 설정
-            if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
-                sheetPresent.prefersGrabberVisible = true
-
-                sheetPresent.detents = [.medium(), .large()]
-                캘린더_스케쥴_등록_모달.isModalInPresentation = false
-                sheetPresent.largestUndimmedDetentIdentifier = .large
-                sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-                sheetPresent.preferredCornerRadius = 30
-                sheetPresent.prefersGrabberVisible = false
-
-            }
-       
-        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
-            self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+        // DetailViewController의 presentationController 설정
+        if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
+            sheetPresent.prefersGrabberVisible = true
+            
+            sheetPresent.detents = [.medium(), .large()]
+            캘린더_스케쥴_등록_모달.isModalInPresentation = false
+            sheetPresent.largestUndimmedDetentIdentifier = .large
+            sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
+            sheetPresent.preferredCornerRadius = 30
+            sheetPresent.prefersGrabberVisible = false
+            
         }
         
+        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
+        self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+        
     }
+    //    func calendar(_ calendar: FSCalendar, imageFor date: Date) -> UIImage? {
+    //
+    //    }
+    //
     
+    // 특정 날짜에 이미지 세팅
+    private func hasEvent(for date: Date) -> Bool {
+        return isEventScheduled(for: date)
+    }
 
+    private func isEventScheduled(for date: Date) -> Bool {
+        return true
+    }
+  
+    func calendar(_ calendar: FSCalendar, imageFor date: Date) -> UIImage? {
+        if hasEvent(for: date) {
+            let cellFrame = calendar.frame(for: date)
+            
+            let imageSize = CGSize(width: cellFrame.width, height: cellFrame.height)
+            
+            if let image = UIImage(named: "help") {
+                let resizedImage = image.resized(to: imageSize)
+                return resizedImage
+            }
+        }
+        
+        return nil
+    }
+}
+extension UIImage {
+    func resized(to size: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+}
 
 
 extension Mypage {

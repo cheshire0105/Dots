@@ -118,7 +118,7 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
             print("수정 버튼 클릭")
             
             if let 현제모달 = self.findViewController() {
-                현제모달.dismiss(animated: false) {
+                현제모달.dismiss(animated: true) {
                          let 새모달 = 켈린더_수정_뷰컨트롤러()
                     현제모달.present(새모달, animated: false, completion: nil)
                      }
@@ -134,7 +134,7 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
             print("삭제 버튼 클릭")
             
             if let 현제모달 = self.findViewController() {
-                현제모달.dismiss(animated: false) {
+                현제모달.dismiss(animated: true) {
                          let 새모달 = 켈린더_삭제_뷰컨트롤러()
                     현제모달.present(새모달, animated: false, completion: nil)
                      }

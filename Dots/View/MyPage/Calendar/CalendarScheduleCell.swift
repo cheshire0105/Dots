@@ -3,6 +3,8 @@ import UIKit
 import SnapKit
 
 class 캘린더_스케쥴_등록_셀 : UITableViewCell {
+    
+    
     let 이미지_백 = {
         let uiView = UIView()
         uiView.layer.cornerRadius = 12
@@ -52,7 +54,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     
     let 방문날짜_라벨 = {
         let label = UILabel()
-        label.text = "년월일시"
+        label.text = "2022년 2월 2일"
         label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         
