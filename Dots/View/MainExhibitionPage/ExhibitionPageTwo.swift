@@ -161,7 +161,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         private lazy var visitorCountLabel: UILabel = {
             let label = UILabel()
-            label.text = "00명이 다녀왔어요" // 초기 텍스트 설정
+            label.text = "아직 방문 등록이 되지 않았네요!" // 초기 텍스트 설정
             label.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
             label.font = UIFont(name: "Pretendard-SemiBold", size: 16)
             return label
@@ -203,6 +203,32 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         imageView.clipsToBounds = true
         return imageView
     }()
+
+    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool, String?) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion(false, nil)
+            return
+        }
+
+        let userVisitDocument = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+
+        userVisitDocument.getDocument { (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                completion(false, nil)
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                let visited = document.data()?["visited"] as? Bool ?? false
+                let visitDate = document.data()?["유저_다녀옴_날짜"] as? String
+                completion(visited, visitDate)
+            } else {
+                completion(false, nil)
+            }
+        }
+    }
+
 
     // 사용자가 이미 방문을 등록했는지 확인하는 함수
     func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool) -> Void) {
@@ -784,17 +810,42 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             return
         }
 
-        // 사용자가 이미 방문을 등록했는지 확인
-        checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] alreadyRegistered in
-            if alreadyRegistered {
-                // 이미 방문을 등록한 경우, 사용자에게 알림 표시
-                self?.showAlreadyRegisteredAlert()
-            } else {
-                // 방문을 아직 등록하지 않은 경우, 얼럿 뷰 표시
-                self?.showVisitRegistrationAlert()
+        checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] (alreadyRegistered, visitDate) in
+            DispatchQueue.main.async {
+                if alreadyRegistered {
+                    // 이미 방문을 등록한 경우, 날짜 선택 뷰를 표시
+                    self?.showVisitRegistrationAlert(withEditing: true, existingDate: visitDate)
+                } else {
+                    // 방문을 아직 등록하지 않은 경우, 날짜 선택 뷰를 표시
+                    self?.showVisitRegistrationAlert(withEditing: false, existingDate: nil)
+                }
             }
         }
     }
+
+
+    func showVisitRegistrationAlert(withEditing: Bool, existingDate: String?) {
+        if withEditing {
+            alertSubtitleLabel.text = "방문 날짜를 수정하실 수 있습니다."
+
+            // 날짜 형식 설정
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+            if let existingDate = existingDate, let date = dateFormatter.date(from: existingDate) {
+                datePicker.date = date // UIDatePicker에 날짜 설정
+            }
+        } else {
+            alertSubtitleLabel.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
+        }
+
+        self.blurEffectView.isHidden = false
+        self.customAlertView.isHidden = false
+    }
+
+
+
+
 
 
     @objc func presentAudioGuideViewController() {
