@@ -481,6 +481,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        updateHeartIconStateFromFirestore()
+
 
     }
 
@@ -488,6 +490,34 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
 
+
+
+    }
+
+    func updateHeartIconStateFromFirestore() {
+        guard let posterName = self.posterImageName, let userID = Auth.auth().currentUser?.uid else {
+            return
+        }
+
+        let db = Firestore.firestore()
+        let posterDocument = db.collection("posters").document(posterName)
+
+        posterDocument.getDocument { [weak self] (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                let userLikes = document.data()?["userLikes"] as? [String: Bool] ?? [:]
+                let isLiked = userLikes[userID] ?? false
+
+                DispatchQueue.main.async {
+                    self?.heartIcon.isSelected = isLiked
+                    self?.updateHeartIconState()
+                }
+            }
+        }
     }
 
 
