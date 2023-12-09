@@ -177,10 +177,14 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     private lazy var confirmButton: UIButton = {
         let button = UIButton()
-        button.setTitle("등록하기", for: .normal)
+        button.setTitle("수정", for: .normal)
         button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 20 // 모서리 둥글게
+
+        // 폰트 설정
+        button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+
         button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -206,10 +210,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     private lazy var deleteButton: UIButton = {
         let button = UIButton()
-        button.setTitle("삭제하기", for: .normal)
+        button.setTitle("기록 삭제", for: .normal)
         button.backgroundColor = .red
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 20
+        button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
         button.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -289,16 +294,23 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
             // 수정하는 경우에만 삭제 버튼을 보여줍니다.
             deleteButton.isHidden = false
+
+            // 버튼 제목을 "수정"으로 설정
+            confirmButton.setTitle("수정 하기", for: .normal)
         } else {
             alertSubtitleLabel.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
 
             // 새로 등록하는 경우 삭제 버튼을 숨깁니다.
             deleteButton.isHidden = true
+
+            // 버튼 제목을 "등록하기"로 설정
+            confirmButton.setTitle("등록하기", for: .normal)
         }
 
         self.blurEffectView.isHidden = false
         self.customAlertView.isHidden = false
     }
+
 
 
 
@@ -737,10 +749,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         buttonStackView.axis = .horizontal
         buttonStackView.distribution = .fillEqually
         buttonStackView.spacing = 20
+        buttonStackView.spacing = 10
 
         customAlertView.addSubview(buttonStackView)
         buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(datePicker.snp.bottom).offset(10)
+            make.top.equalTo(datePicker.snp.bottom).offset(13)
             make.centerX.equalTo(customAlertView.snp.centerX)
             make.width.equalTo(273) // 스택 뷰의 너비
             make.height.equalTo(40) // 스택 뷰의 높이
