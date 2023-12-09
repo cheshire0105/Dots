@@ -599,7 +599,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
         view.addSubview(mapAlertView)
-        setupMapAlertView()
+        setupAlertView()
 
         fetchVisitorCountAndUpdateLabel()
 
@@ -616,7 +616,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         navigationController?.popViewController(animated: true)
     }
 
-    private func setupMapAlertView() {
+    private func setupAlertView() {
         mapAlertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(310)
@@ -687,6 +687,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         let confirmButton = UIButton()
         confirmButton.setTitle("공유 하기", for: .normal)
+        confirmButton.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
         confirmButton.backgroundColor = .black
         confirmButton.setTitleColor(.white, for: .normal)
         confirmButton.layer.cornerRadius = 20 // 모서리 둥글게
