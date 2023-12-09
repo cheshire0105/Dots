@@ -153,34 +153,34 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }()
 
     private lazy var visitorIconImageView: UIImageView = {
-            let imageView = UIImageView()
-            imageView.image = UIImage(named: "footprint_sleected 1") // 방문자 아이콘 이미지 설정
-            imageView.contentMode = .scaleAspectFit
-            return imageView
-        }()
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "footprint_sleected 1") // 방문자 아이콘 이미지 설정
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
 
-        private lazy var visitorCountLabel: UILabel = {
-            let label = UILabel()
-            label.text = "아직 방문 등록이 되지 않았네요!" // 초기 텍스트 설정
-            label.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
-            label.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-            return label
-        }()
+    private lazy var visitorCountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "아직 방문 등록이 되지 않았네요!" // 초기 텍스트 설정
+        label.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        return label
+    }()
 
-        private lazy var visitorStackView: UIStackView = {
-            let stackView = UIStackView(arrangedSubviews: [visitorIconImageView, visitorCountLabel])
-            stackView.axis = .horizontal
-            stackView.spacing = 5 // 이미지와 레이블 사이 간격
-            stackView.alignment = .center
-            return stackView
-        }()
+    private lazy var visitorStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [visitorIconImageView, visitorCountLabel])
+        stackView.axis = .horizontal
+        stackView.spacing = 5 // 이미지와 레이블 사이 간격
+        stackView.alignment = .center
+        return stackView
+    }()
 
     private lazy var confirmButton: UIButton = {
         let button = UIButton()
         button.setTitle("등록하기", for: .normal)
         button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 25 // 모서리 둥글게
+        button.layer.cornerRadius = 20 // 모서리 둥글게
         button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -203,6 +203,17 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         imageView.clipsToBounds = true
         return imageView
     }()
+
+    private lazy var deleteButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("삭제하기", for: .normal)
+        button.backgroundColor = .red
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
 
     func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool, String?) -> Void) {
         guard let userID = Auth.auth().currentUser?.uid else {
@@ -264,10 +275,32 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         present(alert, animated: true, completion: nil)
     }
 
-    func showVisitRegistrationAlert() {
+    func showVisitRegistrationAlert(withEditing: Bool, existingDate: String?) {
+        if withEditing {
+            alertSubtitleLabel.text = "방문 날짜를 수정하실 수 있습니다."
+
+            // 날짜 형식 설정
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+            if let existingDate = existingDate, let date = dateFormatter.date(from: existingDate) {
+                datePicker.date = date // UIDatePicker에 날짜 설정
+            }
+
+            // 수정하는 경우에만 삭제 버튼을 보여줍니다.
+            deleteButton.isHidden = false
+        } else {
+            alertSubtitleLabel.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
+
+            // 새로 등록하는 경우 삭제 버튼을 숨깁니다.
+            deleteButton.isHidden = true
+        }
+
         self.blurEffectView.isHidden = false
         self.customAlertView.isHidden = false
     }
+
+
 
 
     private func setupTitleLabel() {
@@ -280,11 +313,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         // titleLabel 아래에 스택 뷰 추가
-               view.addSubview(visitorStackView)
-               visitorStackView.snp.makeConstraints { make in
-                   make.top.equalTo(titleLabel.snp.bottom).offset(10)
-                   make.leading.equalTo(titleLabel.snp.leading)
-               }
+        view.addSubview(visitorStackView)
+        visitorStackView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.leading.equalTo(titleLabel.snp.leading)
+        }
     }
 
 
@@ -314,16 +347,18 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         // Firebase Firestore에 데이터 저장
         // 'posterImageName' 속성을 사용하여 'posterName'을 전달합니다.
         if let posterName = self.posterImageName {
-            addVisitDateToFirestore(visitDate: dateString, posterName: posterName)
-        } else {
-            print("Poster name is not available")
-        }
+              addVisitDateToFirestore(visitDate: dateString, posterName: posterName) {
+                  self.fetchVisitorCountAndUpdateLabel() // 방문자 수 업데이트
+              }
+          } else {
+              print("Poster name is not available")
+          }
     }
 
 
 
 
-    func addVisitDateToFirestore(visitDate: String, posterName: String) {
+    func addVisitDateToFirestore(visitDate: String, posterName: String, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
         let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(Auth.auth().currentUser?.uid ?? "")
         let posterDocument = db.collection("posters").document(posterName)
@@ -433,7 +468,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
-//        tabBarController?.tabBar.isHidden = false
+        //        tabBarController?.tabBar.isHidden = false
         navigationController?.setNavigationBarHidden(true, animated: animated)
 
     }
@@ -449,7 +484,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         // 네비게이션 바 대형 타이틀 비활성화
 
         // 네비게이션 백 버튼 설정
-            setupNavigationBackButton()
+        setupNavigationBackButton()
         // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
         view.addSubview(backgroundImageView)
         view.sendSubviewToBack(backgroundImageView)
@@ -511,13 +546,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         setupCustomAlertView()
 
         // blurEffectView에 탭 제스처 인식기 추가
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
-            blurEffectView.addGestureRecognizer(tapGesture)
-            blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
+        blurEffectView.addGestureRecognizer(tapGesture)
+        blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
 
 
         view.addSubview(mapAlertView)
-            setupMapAlertView()
+        setupMapAlertView()
 
         fetchVisitorCountAndUpdateLabel()
 
@@ -574,41 +609,43 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         // 새로운 뷰에 이미지 뷰 추가
-         let imageView = UIImageView()
-         imageView.contentMode = .scaleAspectFit // 콘텐츠 모드 설정
-         imageView.image = UIImage(named: "tabler_link") // 이미지 설정
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit // 콘텐츠 모드 설정
+        imageView.image = UIImage(named: "tabler_link") // 이미지 설정
 
-         newView.addSubview(imageView)
+        newView.addSubview(imageView)
 
-         // 이미지 뷰의 제약 조건 설정
-         imageView.snp.makeConstraints { make in
-             make.left.equalTo(newView.snp.left).offset(17) // 왼쪽 여백 설정
-             make.centerY.equalTo(newView.snp.centerY) // 세로 중앙 정렬
-             make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
-         }
+        // 이미지 뷰의 제약 조건 설정
+        imageView.snp.makeConstraints { make in
+            make.left.equalTo(newView.snp.left).offset(17) // 왼쪽 여백 설정
+            make.centerY.equalTo(newView.snp.centerY) // 세로 중앙 정렬
+            make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
+        }
 
 
         // 딥 링크 URL 생성
-           let deepLink = createDeepLink()
+        let deepLink = createDeepLink()
 
-           // 딥 링크를 표시하는 레이블 생성
-           let deepLinkLabel = UILabel()
-           deepLinkLabel.text = deepLink
-           deepLinkLabel.textColor = .black
-           deepLinkLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-           deepLinkLabel.textAlignment = .center
-           deepLinkLabel.numberOfLines = 0
-           deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
+        // 딥 링크를 표시하는 레이블 생성
+        let deepLinkLabel = UILabel()
+        deepLinkLabel.text = deepLink
+        deepLinkLabel.textColor = .black
+        deepLinkLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        deepLinkLabel.textAlignment = .center
+        deepLinkLabel.numberOfLines = 0
+        deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
 
-           mapAlertView.addSubview(deepLinkLabel)
+        mapAlertView.addSubview(deepLinkLabel)
 
 
-         let confirmButton = UIButton()
+        let confirmButton = UIButton()
         confirmButton.setTitle("공유 하기", for: .normal)
         confirmButton.backgroundColor = .black
         confirmButton.setTitleColor(.white, for: .normal)
         confirmButton.layer.cornerRadius = 20 // 모서리 둥글게
         confirmButton.addTarget(self, action: #selector(shareDeepLink), for: .touchUpInside)
+
+
 
 
         mapAlertView.addSubview(confirmButton)
@@ -620,11 +657,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
 
-          deepLinkLabel.snp.makeConstraints { make in
-              make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
-              make.centerY.equalTo(newView.snp.centerY)
-              make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-          }
+        deepLinkLabel.snp.makeConstraints { make in
+            make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
+            make.centerY.equalTo(newView.snp.centerY)
+            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
+        }
     }
 
     @objc private func shareDeepLink() {
@@ -690,7 +727,75 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             make.height.equalTo(56) // 버튼의 높이
             make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
         }
+
+        let buttonStackView = UIStackView(arrangedSubviews: [confirmButton, deleteButton])
+        buttonStackView.axis = .horizontal
+        buttonStackView.distribution = .fillEqually
+        buttonStackView.spacing = 20
+
+        customAlertView.addSubview(buttonStackView)
+        buttonStackView.snp.makeConstraints { make in
+            make.top.equalTo(datePicker.snp.bottom).offset(10)
+            make.centerX.equalTo(customAlertView.snp.centerX)
+            make.width.equalTo(273) // 스택 뷰의 너비
+            make.height.equalTo(40) // 스택 뷰의 높이
+        }
     }
+
+    @objc func deleteButtonTapped() {
+        guard let posterName = self.posterImageName else {
+            print("Poster name is not available")
+            return
+        }
+
+        deleteVisitDateInFirestore(posterName: posterName) {
+            self.fetchVisitorCountAndUpdateLabel() // 방문자 수 업데이트
+        }
+    }
+
+
+    func deleteVisitDateInFirestore(posterName: String, completion: @escaping () -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("User ID is not available")
+            return
+        }
+
+        let db = Firestore.firestore()
+        let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(userID)
+        let posterDocument = db.collection("posters").document(posterName)
+
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let posterDocumentSnapshot: DocumentSnapshot
+            do {
+                try posterDocumentSnapshot = transaction.getDocument(posterDocument)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+
+            if let visitorCount = posterDocumentSnapshot.data()?["다녀옴"] as? Int, visitorCount > 0 {
+                // 방문자 수를 1 감소시키는 로직
+                let newVisitorCount = visitorCount - 1
+                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+            }
+
+            // 사용자 방문 날짜 삭제
+            transaction.updateData(["유저_다녀옴_날짜": FieldValue.delete(), "visited": false], forDocument: userVisitDocument)
+
+            return nil
+        }) { (object, error) in
+            if let error = error {
+                print("트랜잭션 실패: \(error)")
+            } else {
+                print("트랜잭션이 성공적으로 완료됨")
+                self.customAlertView.isHidden = true
+                self.blurEffectView.isHidden = true
+                // 필요한 경우 추가 UI 업데이트
+            }
+        }
+    }
+
+
 
 
     func createDeepLink() -> String {
@@ -824,26 +929,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-    func showVisitRegistrationAlert(withEditing: Bool, existingDate: String?) {
-        if withEditing {
-            alertSubtitleLabel.text = "방문 날짜를 수정하실 수 있습니다."
-
-            // 날짜 형식 설정
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-
-            if let existingDate = existingDate, let date = dateFormatter.date(from: existingDate) {
-                datePicker.date = date // UIDatePicker에 날짜 설정
-            }
-        } else {
-            alertSubtitleLabel.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
-        }
-
-        self.blurEffectView.isHidden = false
-        self.customAlertView.isHidden = false
-    }
-
-
 
 
 
@@ -891,7 +976,7 @@ class ReviewTableViewCell: UITableViewCell {
         return label
     }()
 
-     lazy var profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 15
@@ -909,11 +994,11 @@ class ReviewTableViewCell: UITableViewCell {
     private let container = UIView()
 
     private lazy var newTitleLabel: UILabel = {
-         let label = UILabel()
-         label.font = UIFont(name: "Pretendard-Regular", size: 18)
-         label.textColor = .white
-         return label
-     }()
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 18)
+        label.textColor = .white
+        return label
+    }()
 
     private lazy var extraImageView1: UIImageView = {
         let imageView = UIImageView()
@@ -930,18 +1015,18 @@ class ReviewTableViewCell: UITableViewCell {
     }()
 
     private lazy var likeCount: UILabel = {
-            let label = UILabel()
-            label.font = UIFont(name: "Pretendard-Regular", size: 10)
-            label.textColor = .white
-            return label
-        }()
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 10)
+        label.textColor = .white
+        return label
+    }()
 
-        private lazy var viewCount: UILabel = {
-            let label = UILabel()
-            label.font = UIFont(name: "Pretendard-Regular", size: 10)
-            label.textColor = .white
-            return label
-        }()
+    private lazy var viewCount: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 10)
+        label.textColor = .white
+        return label
+    }()
 
 
 
@@ -967,13 +1052,13 @@ class ReviewTableViewCell: UITableViewCell {
         container.addSubview(profileImageView)
         container.addSubview(timeLabel)
         // 컨테이너 뷰에 새로운 서브뷰를 추가합니다.
-               container.addSubview(newTitleLabel)
+        container.addSubview(newTitleLabel)
         // 컨테이너 뷰에 새로운 서브뷰들을 추가합니다.
-                container.addSubview(extraImageView1)
-                container.addSubview(extraImageView2)
+        container.addSubview(extraImageView1)
+        container.addSubview(extraImageView2)
         // 새로운 서브뷰들을 컨테이너 뷰에 추가합니다.
-               container.addSubview(likeCount)
-               container.addSubview(viewCount)
+        container.addSubview(likeCount)
+        container.addSubview(viewCount)
 
         // 컨테이너 뷰에 대한 제약조건을 설정합니다.
         container.snp.makeConstraints { make in
@@ -982,7 +1067,7 @@ class ReviewTableViewCell: UITableViewCell {
             make.left.equalTo(contentView.snp.left).offset(10) // 좌측에 10포인트의 여백을 추가합니다.
             make.right.equalTo(contentView.snp.right).offset(-10) // 우측에 10포인트의 여백을 추가합니다.
 
-            
+
         }
 
         // 다른 UI 컴포넌트들의 레이아웃 설정을 업데이트합니다. (titleLabel, contentLabel, profileImageView, nicknameLabel 제약조건은 container 기준으로 업데이트합니다)
@@ -999,7 +1084,7 @@ class ReviewTableViewCell: UITableViewCell {
 
         // 제목 레이블의 레이아웃 설정
         nickNameLabel.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(15) // 상단 여백 설정
+            //            make.top.equalToSuperview().offset(15) // 상단 여백 설정
             make.centerY.equalTo(profileImageView)
             make.left.equalTo(profileImageView.snp.right).offset(10)
         }
@@ -1025,39 +1110,39 @@ class ReviewTableViewCell: UITableViewCell {
         }
 
         // 새로운 제목 레이블 레이아웃 설정
-           newTitleLabel.snp.makeConstraints { make in
-               make.top.equalTo(profileImageView.snp.bottom).offset(10)
-               make.left.right.equalToSuperview().inset(10)
-           }
+        newTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(10)
+            make.left.right.equalToSuperview().inset(10)
+        }
 
         // 첫 번째 이미지 뷰 레이아웃 설정
-           extraImageView1.snp.makeConstraints { make in
-               make.top.equalTo(contentLabel.snp.bottom).offset(15)
-               make.left.equalToSuperview().offset(10)
-               make.width.equalTo(11.82)
-               make.height.equalTo(10) // 원하는 크기로 조정
-               make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
+        extraImageView1.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(15)
+            make.left.equalToSuperview().offset(10)
+            make.width.equalTo(11.82)
+            make.height.equalTo(10) // 원하는 크기로 조정
+            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
 
-           }
+        }
 
-           // 두 번째 이미지 뷰 레이아웃 설정
-           extraImageView2.snp.makeConstraints { make in
-               make.top.equalTo(contentLabel.snp.bottom).offset(13)
-               make.left.equalTo(likeCount.snp.right).offset(10)
-               make.width.height.equalTo(15) // 원하는 크기로 조정
-           }
+        // 두 번째 이미지 뷰 레이아웃 설정
+        extraImageView2.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(13)
+            make.left.equalTo(likeCount.snp.right).offset(10)
+            make.width.height.equalTo(15) // 원하는 크기로 조정
+        }
 
         // label123 레이아웃 설정
-         likeCount.snp.makeConstraints { make in
-             make.centerY.equalTo(extraImageView1.snp.centerY)
-             make.left.equalTo(extraImageView1.snp.right).offset(4)
-         }
+        likeCount.snp.makeConstraints { make in
+            make.centerY.equalTo(extraImageView1.snp.centerY)
+            make.left.equalTo(extraImageView1.snp.right).offset(4)
+        }
 
-         // label456 레이아웃 설정
-         viewCount.snp.makeConstraints { make in
-             make.centerY.equalTo(extraImageView2.snp.centerY)
-             make.left.equalTo(extraImageView2.snp.right).offset(4)
-         }
+        // label456 레이아웃 설정
+        viewCount.snp.makeConstraints { make in
+            make.centerY.equalTo(extraImageView2.snp.centerY)
+            make.left.equalTo(extraImageView2.snp.right).offset(4)
+        }
     }
 
     // 셀에 리뷰 정보를 설정하는 메서드
@@ -1084,7 +1169,7 @@ class ReviewTableViewCell: UITableViewCell {
         }
     }
 
-    
+
 }
 
 
@@ -1097,7 +1182,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var mapView: MKMapView!
     let database = Firestore.firestore()
     var imageName: String? // 이미지 이름을 저장할 프로퍼티
-    
+
     lazy var backButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
@@ -1148,7 +1233,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
 
     }
-    
+
     @objc func backButtonTapped() {
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
         navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
@@ -1161,7 +1246,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView = MKMapView(frame: self.view.bounds)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView = MKMapView(frame: self.view.bounds)
-                mapView.delegate = self // MapView의 델리게이트를 설정합니다.
+        mapView.delegate = self // MapView의 델리게이트를 설정합니다.
         // 여기에 추가적인 지도 설정을 할 수 있습니다. 예를 들어, 사용자의 현재 위치를 표시하거나 특정 위치로 지도 중심을 이동시킬 수 있습니다.
         mapView.overrideUserInterfaceStyle = .dark
 
@@ -1190,38 +1275,38 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
         }
     }
-    
+
     // 지도에 핀을 추가하는 메서드
-     private func addPinAtLocation(location: CLLocationCoordinate2D) {
-         let annotation = MKPointAnnotation()
-         annotation.coordinate = location
-         mapView.addAnnotation(annotation)
-     }
+    private func addPinAtLocation(location: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = location
+        mapView.addAnnotation(annotation)
+    }
 
-     // MKMapViewDelegate 메서드
-     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-         let identifier = "MyPin"
-         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+    // MKMapViewDelegate 메서드
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "MyPin"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
 
-         if annotationView == nil {
-             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-             annotationView?.canShowCallout = true // 필요한 경우 콜아웃을 표시할 수 있습니다.
-         } else {
-             annotationView?.annotation = annotation
-         }
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true // 필요한 경우 콜아웃을 표시할 수 있습니다.
+        } else {
+            annotationView?.annotation = annotation
+        }
 
-         // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
-         annotationView?.image = UIImage(named: "place 1")
-         return annotationView
-     }
+        // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
+        annotationView?.image = UIImage(named: "place 1")
+        return annotationView
+    }
 
-     private func centerMapOnLocation(location: CLLocationCoordinate2D) {
-         let regionRadius: CLLocationDistance = 200
-         let coordinateRegion = MKCoordinateRegion(center: location,
-                                                   latitudinalMeters: regionRadius,
-                                                   longitudinalMeters: regionRadius)
-         addPinAtLocation(location: location)
+    private func centerMapOnLocation(location: CLLocationCoordinate2D) {
+        let regionRadius: CLLocationDistance = 200
+        let coordinateRegion = MKCoordinateRegion(center: location,
+                                                  latitudinalMeters: regionRadius,
+                                                  longitudinalMeters: regionRadius)
+        addPinAtLocation(location: location)
 
-         mapView.setRegion(coordinateRegion, animated: true)
-     }
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
 }
