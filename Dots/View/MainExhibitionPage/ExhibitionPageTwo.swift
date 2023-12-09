@@ -917,25 +917,66 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     @objc func heartIconTapped() {
-        // 버튼의 현재 선택 상태를 반전시킵니다.
-        heartIcon.isSelected.toggle()
+        guard let posterName = self.posterImageName, let userID = Auth.auth().currentUser?.uid else {
+               print("Poster name or user ID is not available")
+               return
+           }
 
+           let db = Firestore.firestore()
+           let posterDocument = db.collection("posters").document(posterName)
+
+           db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let posterSnapshot: DocumentSnapshot
+            do {
+                try posterSnapshot = transaction.getDocument(posterDocument)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+
+            var newLikes = (posterSnapshot.data()?["likes"] as? Int ?? 0)
+            var userLikes = (posterSnapshot.data()?["userLikes"] as? [String: Bool] ?? [:])
+
+            // 좋아요 상태 변경
+            if let liked = userLikes[userID] {
+                newLikes += liked ? -1 : 1
+                userLikes[userID] = !liked
+            } else {
+                newLikes += 1
+                userLikes[userID] = true
+            }
+
+            transaction.updateData(["likes": newLikes, "userLikes": userLikes], forDocument: posterDocument)
+
+            return nil
+        }) { [weak self] (object, error) in
+             if let error = error {
+                 print("Transaction failed: \(error)")
+             } else {
+                 print("Transaction successfully committed!")
+
+                 DispatchQueue.main.async {
+                     // 좋아요 상태 토글을 트랜잭션이 성공한 경우에만 수행합니다.
+                     self?.heartIcon.isSelected.toggle()
+                     self?.updateHeartIconState()
+                 }
+             }
+         }
+    }
+
+
+    func updateHeartIconState() {
         if heartIcon.isSelected {
-            // 선택된 경우: 토스트 메시지 표시 및 이미지 변경
-            let newImageName = "Vector 2" // 선택된 상태의 이미지
-            heartIcon.setImage(UIImage(named: newImageName), for: .normal)
-
-            var toastStyle = ToastStyle()
-            toastStyle.messageColor = .white
-            toastStyle.messageFont = UIFont(name: "Pretendard-Bold", size: 16) ?? .boldSystemFont(ofSize: 20)
-
-            self.view.makeToast("전시가 맘에 드셨군요!", duration: 1.5, position: .center, style: toastStyle)
+            // 좋아요 상태일 때
+            heartIcon.setImage(UIImage(named: "Vector 2"), for: .normal)
         } else {
-            // 선택 해제된 경우: 원래의 이미지로 변경 (토스트는 표시하지 않음)
-            let originalImageName = "라이크"
-            heartIcon.setImage(UIImage(named: originalImageName), for: .normal)
+            // 좋아요 상태가 아닐 때
+            heartIcon.setImage(UIImage(named: "라이크"), for: .normal)
         }
     }
+
+
+
 
 
     @objc func recordButtonTapped() {
