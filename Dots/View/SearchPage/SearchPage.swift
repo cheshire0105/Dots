@@ -8,7 +8,9 @@
 import UIKit
 import SnapKit
 
-class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+//class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+
+class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
     let searchBar = UISearchBar()
     let popularButton = UIButton()
@@ -103,7 +105,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupSeparatorLine()
         setupHighlightView()
         setupTableView()
-        setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
+//        setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
         setupCoverView() // 커버 뷰 설정 추가
 
     }
@@ -210,8 +212,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     }
 
     func setupButtons() {
-        let buttons = [popularButton, exhibitionButton, artistButton]
-        let titles = ["인기", "전시", "작가"]
+        let buttons = [popularButton] //exhibitionButton, artistButton]
+        let titles = ["인기"]// "전시", "작가"] ["인기", "전시", "작가"]
 
         for (button, title) in zip(buttons, titles) {
             button.setTitle(title, for: .normal)
@@ -227,15 +229,15 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             make.leading.equalTo(view).offset(20)
         }
 
-        exhibitionButton.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
-            make.leading.equalTo(popularButton.snp.trailing).offset(20)
-        }
-
-        artistButton.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
-            make.leading.equalTo(exhibitionButton.snp.trailing).offset(20)
-        }
+//        exhibitionButton.snp.makeConstraints { make in
+//            make.top.equalTo(searchBar.snp.bottom).offset(10)
+//            make.leading.equalTo(popularButton.snp.trailing).offset(20)
+//        }
+//
+//        artistButton.snp.makeConstraints { make in
+//            make.top.equalTo(searchBar.snp.bottom).offset(10)
+//            make.leading.equalTo(exhibitionButton.snp.trailing).offset(20)
+//        }
     }
 
 
@@ -301,19 +303,19 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
 
 
-    func setupCollectionView() {
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.backgroundColor = .black
-        collectionView.register(ArtistCollectionViewCell.self, forCellWithReuseIdentifier: "ArtistCollectionViewCell")
-        collectionView.isHidden = true // 처음에는 숨김 처리
-        view.addSubview(collectionView)
-
-        collectionView.snp.makeConstraints { make in
-            make.top.equalTo(separatorLine.snp.bottom)
-            make.leading.trailing.bottom.equalTo(view)
-        }
-    }
+//    func setupCollectionView() {
+//        collectionView.delegate = self
+//        collectionView.dataSource = self
+//        collectionView.backgroundColor = .black
+//        collectionView.register(ArtistCollectionViewCell.self, forCellWithReuseIdentifier: "ArtistCollectionViewCell")
+//        collectionView.isHidden = true // 처음에는 숨김 처리
+//        view.addSubview(collectionView)
+//
+//        collectionView.snp.makeConstraints { make in
+//            make.top.equalTo(separatorLine.snp.bottom)
+//            make.leading.trailing.bottom.equalTo(view)
+//        }
+//    }
 
 
 
@@ -322,73 +324,73 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         return currentData.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ArtistCollectionViewCell", for: indexPath) as! ArtistCollectionViewCell
-        cell.titleLabel.text = "작가 이름"
-        cell.contentLabel.text = "작가 정보"
-        return cell
-    }
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ArtistCollectionViewCell", for: indexPath) as! ArtistCollectionViewCell
+//        cell.titleLabel.text = "작가 이름"
+//        cell.contentLabel.text = "작가 정보"
+//        return cell
+//    }
 
 
 }
 
 
-class ArtistCollectionViewCell: UICollectionViewCell {
-    let titleLabel = UILabel()
-    let contentLabel = UILabel()
-    let circleView = UIView()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setupViews() {
-        // Set the background color of the cell
-        self.backgroundColor = .black
-
-
-        // 원형 뷰 설정
-        circleView.backgroundColor = .gray
-        circleView.layer.cornerRadius = 50 // 반지름이 50인 원형 뷰
-        contentView.addSubview(circleView)
-
-        // titleLabel 설정
-        titleLabel.font = UIFont.systemFont(ofSize: 14)
-        titleLabel.textColor = .white
-        titleLabel.text = "작가 이름" // 여기에 실제 작가 이름을 나중에 설정해야 합니다.
-        contentView.addSubview(titleLabel)
-
-        // contentLabel 설정
-        contentLabel.font = UIFont.systemFont(ofSize: 12)
-        contentLabel.textColor = .white
-        contentLabel.text = "작가 정보" // 여기에 실제 작가 정보를 나중에 설정해야 합니다.
-        contentView.addSubview(contentLabel)
-
-        // SnapKit을 사용하여 원형 뷰의 제약 조건 설정
-        circleView.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(10)
-            make.centerX.equalTo(contentView)
-            make.width.height.equalTo(100) // 원의 크기를 100x100으로 설정
-        }
-
-        // titleLabel의 제약 조건 설정
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(circleView.snp.bottom).offset(10)
-            make.centerX.equalTo(contentView)
-        }
-
-        // contentLabel의 제약 조건 설정
-        contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5)
-            make.centerX.equalTo(contentView)
-        }
-    }
-
-
-}
-
+//class ArtistCollectionViewCell: UICollectionViewCell {
+//    let titleLabel = UILabel()
+//    let contentLabel = UILabel()
+//    let circleView = UIView()
+//
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        setupViews()
+//    }
+//
+//    required init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//
+//    private func setupViews() {
+//        // Set the background color of the cell
+//        self.backgroundColor = .black
+//
+//
+//        // 원형 뷰 설정
+//        circleView.backgroundColor = .gray
+//        circleView.layer.cornerRadius = 50 // 반지름이 50인 원형 뷰
+//        contentView.addSubview(circleView)
+//
+//        // titleLabel 설정
+//        titleLabel.font = UIFont.systemFont(ofSize: 14)
+//        titleLabel.textColor = .white
+//        titleLabel.text = "작가 이름" // 여기에 실제 작가 이름을 나중에 설정해야 합니다.
+//        contentView.addSubview(titleLabel)
+//
+//        // contentLabel 설정
+//        contentLabel.font = UIFont.systemFont(ofSize: 12)
+//        contentLabel.textColor = .white
+//        contentLabel.text = "작가 정보" // 여기에 실제 작가 정보를 나중에 설정해야 합니다.
+//        contentView.addSubview(contentLabel)
+//
+//        // SnapKit을 사용하여 원형 뷰의 제약 조건 설정
+//        circleView.snp.makeConstraints { make in
+//            make.top.equalTo(contentView).offset(10)
+//            make.centerX.equalTo(contentView)
+//            make.width.height.equalTo(100) // 원의 크기를 100x100으로 설정
+//        }
+//
+//        // titleLabel의 제약 조건 설정
+//        titleLabel.snp.makeConstraints { make in
+//            make.top.equalTo(circleView.snp.bottom).offset(10)
+//            make.centerX.equalTo(contentView)
+//        }
+//
+//        // contentLabel의 제약 조건 설정
+//        contentLabel.snp.makeConstraints { make in
+//            make.top.equalTo(titleLabel.snp.bottom).offset(5)
+//            make.centerX.equalTo(contentView)
+//        }
+//    }
+//
+//
+//}
+//
