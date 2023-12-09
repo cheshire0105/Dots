@@ -301,7 +301,7 @@ class Mypage: UIViewController {
             make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY).offset(10)
         }
         버튼_백.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(10)
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(5)
             make.bottom.equalTo(구분선.snp.bottom).offset(-10)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
@@ -318,7 +318,7 @@ class Mypage: UIViewController {
     func 캘린더_레이아웃() {
         view.addSubview(캘린더)
         캘린더.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(5)
+            make.top.equalTo(구분선.snp.bottom).offset(-10)
             make.leading.equalToSuperview().offset(4)
             make.trailing.equalToSuperview().offset(-4)
             make.bottom.equalToSuperview().offset(-60)
