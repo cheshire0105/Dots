@@ -7,8 +7,8 @@
 
 import UIKit
 import SnapKit
-
-//class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+import Firebase
+import FirebaseStorage
 
 class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
@@ -23,11 +23,11 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     var selectedButton: UIButton?
 
     let tableView = UITableView()
-    var currentData: [String] = []
+    var currentData: [ExhibitionModel] = []
 
     let coverView = UIView() // 검색을 위한 커버 뷰
 
-
+    
     var isCollectionViewSetupDone = false
 
 
@@ -94,7 +94,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
 
 
-
+    
 
 
 
@@ -110,7 +110,23 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     }
 
-
+    // Firestore에서 인기 전시 정보를 가져오는 함수
+     func loadPopularExhibitions() {
+         Firestore.firestore().collection("posters")
+             .order(by: "likes", descending: true)
+             .limit(to: 10)
+             .getDocuments { [weak self] (querySnapshot, error) in
+                 guard let self = self, let documents = querySnapshot?.documents else {
+                     print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
+                     return
+                 }
+                 self.currentData = documents.compactMap { docSnapshot -> ExhibitionModel? in
+                     let data = docSnapshot.data()
+                     return ExhibitionModel(dictionary: data)
+                 }
+                 self.tableView.reloadData()
+             }
+     }
 
 
     func setupCoverView() {
@@ -212,8 +228,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     }
 
     func setupButtons() {
-        let buttons = [popularButton] //exhibitionButton, artistButton]
-        let titles = ["인기"]// "전시", "작가"] ["인기", "전시", "작가"]
+        let buttons = [popularButton]
+        let titles = ["인기"]
 
         for (button, title) in zip(buttons, titles) {
             button.setTitle(title, for: .normal)
@@ -229,15 +245,6 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             make.leading.equalTo(view).offset(20)
         }
 
-//        exhibitionButton.snp.makeConstraints { make in
-//            make.top.equalTo(searchBar.snp.bottom).offset(10)
-//            make.leading.equalTo(popularButton.snp.trailing).offset(20)
-//        }
-//
-//        artistButton.snp.makeConstraints { make in
-//            make.top.equalTo(searchBar.snp.bottom).offset(10)
-//            make.leading.equalTo(exhibitionButton.snp.trailing).offset(20)
-//        }
     }
 
 
@@ -275,122 +282,31 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         return currentData.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
-        cell.titleLabel.text = "올해의 작가전"
-        cell.contentLabel.text = "국립현대미술관 서울"
-        return cell
-    }
+    // UITableViewDataSource 메서드
+      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+          let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
+          let exhibition = currentData[indexPath.row]
+          cell.titleLabel.text = exhibition.title
+          cell.contentLabel.text = exhibition.period
+          return cell
+      }
 
 
+    // '인기' 버튼 클릭 시 호출되는 함수
     func updateData(for button: UIButton) {
         if button == popularButton {
-            currentData = (1...10).map { "인기 \($0)" } // "인기 1"부터 "인기 10"까지의 문자열을 생성합니다.
+            loadPopularExhibitions() // 인기 전시 정보를 로드합니다.
             tableView.isHidden = false
             collectionView.isHidden = true
-        } else if button == exhibitionButton {
-            currentData = (1...10).map { "전시 \($0)" } // "전시 1"부터 "전시 10"까지의 문자열을 생성합니다.
-            tableView.isHidden = false
-            collectionView.isHidden = true
-        } else if button == artistButton {
-            currentData = (1...20).map { "작가 \($0)" } // "작가 1"부터 "작가 10"까지의 문자열을 생성합니다.
-            tableView.isHidden = true
-            collectionView.isHidden = false
+        } else {
+            // 다른 버튼에 대한 처리
         }
-        tableView.reloadData()
-        collectionView.reloadData()
     }
-
-
-
-//    func setupCollectionView() {
-//        collectionView.delegate = self
-//        collectionView.dataSource = self
-//        collectionView.backgroundColor = .black
-//        collectionView.register(ArtistCollectionViewCell.self, forCellWithReuseIdentifier: "ArtistCollectionViewCell")
-//        collectionView.isHidden = true // 처음에는 숨김 처리
-//        view.addSubview(collectionView)
-//
-//        collectionView.snp.makeConstraints { make in
-//            make.top.equalTo(separatorLine.snp.bottom)
-//            make.leading.trailing.bottom.equalTo(view)
-//        }
-//    }
-
-
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return currentData.count
     }
 
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ArtistCollectionViewCell", for: indexPath) as! ArtistCollectionViewCell
-//        cell.titleLabel.text = "작가 이름"
-//        cell.contentLabel.text = "작가 정보"
-//        return cell
-//    }
-
-
 }
 
-
-//class ArtistCollectionViewCell: UICollectionViewCell {
-//    let titleLabel = UILabel()
-//    let contentLabel = UILabel()
-//    let circleView = UIView()
-//
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        setupViews()
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//
-//    private func setupViews() {
-//        // Set the background color of the cell
-//        self.backgroundColor = .black
-//
-//
-//        // 원형 뷰 설정
-//        circleView.backgroundColor = .gray
-//        circleView.layer.cornerRadius = 50 // 반지름이 50인 원형 뷰
-//        contentView.addSubview(circleView)
-//
-//        // titleLabel 설정
-//        titleLabel.font = UIFont.systemFont(ofSize: 14)
-//        titleLabel.textColor = .white
-//        titleLabel.text = "작가 이름" // 여기에 실제 작가 이름을 나중에 설정해야 합니다.
-//        contentView.addSubview(titleLabel)
-//
-//        // contentLabel 설정
-//        contentLabel.font = UIFont.systemFont(ofSize: 12)
-//        contentLabel.textColor = .white
-//        contentLabel.text = "작가 정보" // 여기에 실제 작가 정보를 나중에 설정해야 합니다.
-//        contentView.addSubview(contentLabel)
-//
-//        // SnapKit을 사용하여 원형 뷰의 제약 조건 설정
-//        circleView.snp.makeConstraints { make in
-//            make.top.equalTo(contentView).offset(10)
-//            make.centerX.equalTo(contentView)
-//            make.width.height.equalTo(100) // 원의 크기를 100x100으로 설정
-//        }
-//
-//        // titleLabel의 제약 조건 설정
-//        titleLabel.snp.makeConstraints { make in
-//            make.top.equalTo(circleView.snp.bottom).offset(10)
-//            make.centerX.equalTo(contentView)
-//        }
-//
-//        // contentLabel의 제약 조건 설정
-//        contentLabel.snp.makeConstraints { make in
-//            make.top.equalTo(titleLabel.snp.bottom).offset(5)
-//            make.centerX.equalTo(contentView)
-//        }
-//    }
-//
-//
-//}
-//
