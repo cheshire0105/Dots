@@ -393,6 +393,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 print("트랜잭션 실패: \(error)")
             } else {
                 print("트랜잭션이 성공적으로 완료됨")
+                self.fetchVisitorCountAndUpdateLabel() // 여기에서 호출
             }
         }
     }
@@ -467,8 +468,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
-        //        tabBarController?.tabBar.isHidden = false
         navigationController?.setNavigationBarHidden(true, animated: animated)
 
     }
@@ -788,12 +787,23 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 print("트랜잭션 실패: \(error)")
             } else {
                 print("트랜잭션이 성공적으로 완료됨")
+                self.fetchVisitorCountAndUpdateLabel() // 여기에서 호출
                 self.customAlertView.isHidden = true
                 self.blurEffectView.isHidden = true
-                // 필요한 경우 추가 UI 업데이트
+
+                // 방문자 수 업데이트 및 UI 변경
+                DispatchQueue.main.async { [weak self] in
+                    self?.fetchVisitorCountAndUpdateLabel()
+                    self?.customAlertView.isHidden = true
+                    self?.blurEffectView.isHidden = true
+                    // footprint 이미지를 기본 이미지로 변경
+                    self?.recordButton.setImage(UIImage(named: "footprint"), for: .normal)
+                }
             }
+
         }
     }
+
 
 
 
