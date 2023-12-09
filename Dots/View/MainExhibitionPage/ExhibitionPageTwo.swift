@@ -949,16 +949,18 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     @objc func heartIconTapped() {
         guard let posterName = self.posterImageName, let userID = Auth.auth().currentUser?.uid else {
-               print("Poster name or user ID is not available")
-               return
-           }
+            print("Poster name or user ID is not available")
+            return
+        }
 
-           let db = Firestore.firestore()
-           let posterDocument = db.collection("posters").document(posterName)
+        let db = Firestore.firestore()
+        let posterDocument = db.collection("posters").document(posterName)
 
-           db.runTransaction({ (transaction, errorPointer) -> Any? in
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
             let posterSnapshot: DocumentSnapshot
+
             do {
+                // posters 컬렉션에서 포스터 문서를 가져오려고 시도합니다.
                 try posterSnapshot = transaction.getDocument(posterDocument)
             } catch let fetchError as NSError {
                 errorPointer?.pointee = fetchError
@@ -968,7 +970,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             var newLikes = (posterSnapshot.data()?["likes"] as? Int ?? 0)
             var userLikes = (posterSnapshot.data()?["userLikes"] as? [String: Bool] ?? [:])
 
-            // 좋아요 상태 변경
+            // 좋아요 상태를 변경합니다.
             if let liked = userLikes[userID] {
                 newLikes += liked ? -1 : 1
                 userLikes[userID] = !liked
@@ -977,22 +979,26 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 userLikes[userID] = true
             }
 
-            transaction.updateData(["likes": newLikes, "userLikes": userLikes], forDocument: posterDocument)
+            // 포스터 문서가 존재하면 업데이트하고, 존재하지 않으면 새로 생성합니다.
+            if posterSnapshot.exists {
+                transaction.updateData(["likes": newLikes, "userLikes": userLikes], forDocument: posterDocument)
+            } else {
+                transaction.setData(["likes": newLikes, "userLikes": userLikes], forDocument: posterDocument)
+            }
 
             return nil
         }) { [weak self] (object, error) in
-             if let error = error {
-                 print("Transaction failed: \(error)")
-             } else {
-                 print("Transaction successfully committed!")
-
-                 DispatchQueue.main.async {
-                     // 좋아요 상태 토글을 트랜잭션이 성공한 경우에만 수행합니다.
-                     self?.heartIcon.isSelected.toggle()
-                     self?.updateHeartIconState()
-                 }
-             }
-         }
+            if let error = error {
+                print("Transaction failed: \(error)")
+            } else {
+                print("Transaction successfully committed!")
+                DispatchQueue.main.async {
+                    // 좋아요 상태의 UI를 토글합니다.
+                    self?.heartIcon.isSelected.toggle()
+                    self?.updateHeartIconState()
+                }
+            }
+        }
     }
 
 
