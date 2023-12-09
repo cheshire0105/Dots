@@ -174,7 +174,7 @@ class Mypage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("My Page")
-        view.backgroundColor = UIColor.clear
+        view.backgroundColor = UIColor.black
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
@@ -308,7 +308,7 @@ class Mypage: UIViewController {
         }
         
         구분선.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(120)
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(95)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
@@ -318,10 +318,10 @@ class Mypage: UIViewController {
     func 캘린더_레이아웃() {
         view.addSubview(캘린더)
         캘린더.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(30)
-            make.leading.equalToSuperview().offset(16)
-            make.trailing.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(-90)
+            make.top.equalTo(구분선.snp.bottom).offset(5)
+            make.leading.equalToSuperview().offset(4)
+            make.trailing.equalToSuperview().offset(-4)
+            make.bottom.equalToSuperview().offset(-60)
         }
     }
  
@@ -374,92 +374,7 @@ extension Mypage {
 }
 
 
-extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
-    
-    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-        return 0
-    }
-    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-        
-        if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
-            sheetPresent.prefersGrabberVisible = true
-            
-            sheetPresent.detents = [.medium(), .large()]
-            캘린더_스케쥴_등록_모달.isModalInPresentation = false
-            sheetPresent.largestUndimmedDetentIdentifier = .large
-            sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-            sheetPresent.preferredCornerRadius = 30
-            sheetPresent.prefersGrabberVisible = false
-            
-        }
-        
-        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
-        self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
-        
-    }
- 
-    private func hasEvent(for 날짜: Date) -> Bool {
-        let 이미지_생성될_날짜 = Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 5))
-        
-        if let 이미지_생성될_날짜 = 이미지_생성될_날짜 {
-            return Calendar.current.isDate(날짜, inSameDayAs: 이미지_생성될_날짜)
-        } else {
-            return false
-        }
-    }
 
-    private func isEventScheduled(for date: Date) -> Bool {
-        return true
-    }
-    private func 날짜에_들어갈_이미지_동그란모양(_ 이미지: UIImage, 사이즈: CGSize) -> UIImage {
-        let 날짜에_들어갈_이미지 = UIButton(type: .custom)
-        날짜에_들어갈_이미지.setImage(UIImage(named: "footprint 1"), for: .normal)
-        날짜에_들어갈_이미지.setImage(이미지, for: .selected)
-        날짜에_들어갈_이미지.isSelected = !날짜에_들어갈_이미지.isSelected
-        날짜에_들어갈_이미지.frame = CGRect(origin: .zero, size: CGSize(width: 사이즈.height, height: 사이즈.height))
-        날짜에_들어갈_이미지.contentMode = .scaleAspectFill
-        날짜에_들어갈_이미지.layer.cornerRadius = 사이즈.height / 2
-        날짜에_들어갈_이미지.layer.masksToBounds = true
-        날짜에_들어갈_이미지.clipsToBounds = true
-        날짜에_들어갈_이미지.layer.borderWidth = 1.5
-        날짜에_들어갈_이미지.layer.borderColor = UIColor(named: "neon")?.cgColor
-        날짜에_들어갈_이미지.contentHorizontalAlignment = .center
-
-        UIGraphicsBeginImageContextWithOptions(사이즈, false, 0.0)
-        defer { UIGraphicsEndImageContext() }
-
-        guard let context = UIGraphicsGetCurrentContext() else { return UIImage() }
-        날짜에_들어갈_이미지.layer.render(in: context)
-
-        // 이미지를 오른쪽으로 10만큼 이동
-        if let 이미지_위치 = UIGraphicsGetImageFromCurrentImageContext() {
-            let 이미지_사이즈 = CGSize(width: 이미지_위치.size.width, height: 이미지_위치.size.height)
-            UIGraphicsBeginImageContextWithOptions(이미지_사이즈, false, 0.0)
-            이미지_위치.draw(in: CGRect(x: 0, y: 0, width: 이미지_사이즈.width, height: 이미지_사이즈.height))
-            let 새로운_이미지 = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return 새로운_이미지 ?? UIImage()
-        }
-
-        return UIImage()
-    }
-  
-    func calendar(_ calendar: FSCalendar, imageFor 날짜: Date) -> UIImage? {
-        if hasEvent(for: 날짜) {
-            let 셀_프레임 = calendar.frame(for: 날짜)
-            let 이미지_사이즈 = CGSize(width: 셀_프레임.width, height: 셀_프레임.height)
-            
-            if let 날짜에_등록될_이미지 = UIImage(named: "help") {
-                let 이미지_사이즈_재정의 =  날짜에_들어갈_이미지_동그란모양(날짜에_등록될_이미지, 사이즈: 이미지_사이즈)
-                return 이미지_사이즈_재정의
-            }
-        }
-        
-        return nil
-    }
-   
-}
 extension UIImage {
     func resized(to 사이즈: CGSize) -> UIImage {
         return UIGraphicsImageRenderer(size: 사이즈).image { _ in

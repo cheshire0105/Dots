@@ -12,6 +12,7 @@
 		37051B802B05F87700D33C07 /* SettingPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B7F2B05F87700D33C07 /* SettingPassword.swift */; };
 		37051B822B05F88D00D33C07 /* SettingNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B812B05F88D00D33C07 /* SettingNotification.swift */; };
 		37051B842B05F89900D33C07 /* SettingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B832B05F89900D33C07 /* SettingService.swift */; };
+		370E5CAF2B24502900388020 /* CalendarDelegateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E5CAE2B24502900388020 /* CalendarDelegateExtension.swift */; };
 		370F3F0A2AEEC11000C4A8F5 /* MyPageExhibitionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */; };
 		373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F22B0D500D000A7BCD /* Alert.swift */; };
 		373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */; };
@@ -112,6 +113,7 @@
 		37051B7F2B05F87700D33C07 /* SettingPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingPassword.swift; sourceTree = "<group>"; };
 		37051B812B05F88D00D33C07 /* SettingNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingNotification.swift; sourceTree = "<group>"; };
 		37051B832B05F89900D33C07 /* SettingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingService.swift; sourceTree = "<group>"; };
+		370E5CAE2B24502900388020 /* CalendarDelegateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDelegateExtension.swift; sourceTree = "<group>"; };
 		370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyPageExhibitionCell.swift; path = "../마이페이지_전시폴더/MyPageExhibitionCell.swift"; sourceTree = "<group>"; };
 		373FC7F22B0D500D000A7BCD /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 				37838F3B2B20850000E4AFBA /* CalendarDelete.swift */,
 				37838F332B1EE46A00E4AFBA /* CalendarScheduleCell.swift */,
 				37838F392B20608C00E4AFBA /* CalendarEdit.swift */,
+				370E5CAE2B24502900388020 /* CalendarDelegateExtension.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -759,6 +762,7 @@
 				373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */,
 				FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */,
 				37DE8F9D2B04A6A30086FC58 /* SavedArtgalleryCel.swift in Sources */,
+				370E5CAF2B24502900388020 /* CalendarDelegateExtension.swift in Sources */,
 				FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */,
 				FFAFCB802B01B01E0030C3C9 /* DetailViewController.swift in Sources */,
 				FF3C971D2AE5FEA1006FEF23 /* SceneDelegate.swift in Sources */,
