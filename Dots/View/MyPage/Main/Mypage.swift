@@ -151,8 +151,9 @@ class Mypage: UIViewController {
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
         calendar.appearance.weekdayTextColor = UIColor.darkGray
-        calendar.appearance.todayColor = UIColor(named: "neon")
-        calendar.appearance.todaySelectionColor = UIColor(named: "neon")
+        calendar.appearance.todayColor = UIColor.clear
+        calendar.appearance.todaySelectionColor = UIColor.clear
+        calendar.appearance.titleTodayColor = UIColor(named: "neon")
 
         calendar.appearance.selectionColor = UIColor.clear
         calendar.appearance.titleDefaultColor = UIColor.white
@@ -162,6 +163,7 @@ class Mypage: UIViewController {
         calendar.scrollDirection = .vertical
         calendar.scope = .month
         calendar.allowsMultipleSelection = false
+        
         return calendar
     }()
     
