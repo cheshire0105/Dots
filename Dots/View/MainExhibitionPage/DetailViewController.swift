@@ -96,13 +96,14 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         Firestore.firestore().collection("posters").document(posterName)
             .collection("reviews")
-            .order(by: "createdAt", descending: true) // 날짜 기준 내림차순 정렬
+            .order(by: "createdAt", descending: false) // 날짜 기준 내림차순 정렬
             .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error getting documents: \(error)")
                     return
                 }
                 var newReviews: [Review] = []
+                print(newReviews.count)
                 let group = DispatchGroup()
 
                 querySnapshot?.documents.forEach { document in
@@ -661,15 +662,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true, completion: nil)
     }
-
-
-
-
-
-
-
-    
-
 
 
 }
