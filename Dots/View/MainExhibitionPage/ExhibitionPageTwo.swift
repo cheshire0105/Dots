@@ -419,13 +419,19 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             if let document = documentSnapshot, document.exists {
                 let visitorCount = document.data()?["다녀옴"] as? Int ?? 0
                 DispatchQueue.main.async {
-                    self?.visitorCountLabel.text = "\(visitorCount)명이 다녀왔어요"
+                    if visitorCount > 0 {
+                        self?.visitorCountLabel.text = "\(visitorCount)명이 다녀왔어요"
+                    } else {
+                        // 방문자 수가 0명일 경우의 메시지
+                        self?.visitorCountLabel.text = "아직 방문 등록이 되지 않았네요!"
+                    }
                 }
             } else {
                 print("Document does not exist")
             }
         }
     }
+
 
 
 
