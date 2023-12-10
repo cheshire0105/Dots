@@ -39,16 +39,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        selectButton(popularButton)
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        if !isCollectionViewSetupDone {
-            setupCollectionViewLayout()
-            isCollectionViewSetupDone = true
-        }
+//        selectButton(popularButton)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -109,7 +100,12 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupTableView()
         setupCoverView() // 커버 뷰 설정 추가
 
+        // 테이블 뷰에 대한 초기 데이터 로딩
+           loadInitialDataForTableView()
+    }
 
+    func loadInitialDataForTableView() {
+        loadPopularExhibitions(isRefresh: false)
     }
 
     func loadImage(for cell: searchPageTableViewCell, with documentId: String) {
@@ -161,7 +157,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     func loadPopularExhibitions(isRefresh: Bool) {
         if isRefresh || cachedData == nil {
             Firestore.firestore().collection("posters")
-                .order(by: "likes", descending: true)
+                .order(by: "likes", descending: false)
                 .limit(to: 10)
                 .getDocuments { [weak self] (querySnapshot, error) in
                     guard let self = self else {
@@ -184,7 +180,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                                 let data = detailDocument.data()
                                 let title = data?["전시_타이틀"] as? String ?? "Unknown Title"
                                 let subTitle = data?["미술관_이름"] as? String ?? "Unknown SubTitle"
-                                popularExhibitions.append(PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle))
+                                let likes = data?["likes"] as? Int ?? 0
+                                popularExhibitions.append(PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle, likes: likes))
+
                             } else {
                                 print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
                             }
@@ -192,12 +190,12 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                     }
 
                     group.notify(queue: .main) {
-                        // 결과를 특정 기준으로 정렬
-                        self.currentData = popularExhibitions.sorted(by: { $0.imageDocumentId < $1.imageDocumentId })
-                        self.cachedData = self.currentData
+                        self.currentData = popularExhibitions.sorted(by: { $0.likes > $1.likes })
                         self.tableView.reloadData()
                         self.refreshControl.endRefreshing()
                     }
+
+
                 }
         } else {
               // 캐시된 데이터를 사용하여 테이블 뷰 갱신
@@ -455,4 +453,5 @@ struct PopularCellModel {
     let imageDocumentId: String
     let title: String
     let subTitle: String
+    let likes: Int
 }
