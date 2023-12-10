@@ -23,7 +23,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     var selectedButton: UIButton?
 
     let tableView = UITableView()
-    var currentData: [ExhibitionModel] = []
+    var currentData: [PopularCellModel] = []
 
     let coverView = UIView() // 검색을 위한 커버 뷰
 
@@ -111,22 +111,29 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     }
 
     // Firestore에서 인기 전시 정보를 가져오는 함수
-     func loadPopularExhibitions() {
-         Firestore.firestore().collection("posters")
-             .order(by: "likes", descending: true)
-             .limit(to: 10)
-             .getDocuments { [weak self] (querySnapshot, error) in
-                 guard let self = self, let documents = querySnapshot?.documents else {
-                     print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
-                     return
-                 }
-                 self.currentData = documents.compactMap { docSnapshot -> ExhibitionModel? in
-                     let data = docSnapshot.data()
-                     return ExhibitionModel(dictionary: data)
-                 }
-                 self.tableView.reloadData()
-             }
-     }
+    func loadPopularExhibitions() {
+        Firestore.firestore().collection("posters")
+            .order(by: "likes", descending: true)
+            .limit(to: 10)
+            .getDocuments { [weak self] (querySnapshot, error) in
+                guard let self = self, let documents = querySnapshot?.documents else {
+                    print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
+                self.currentData = documents.compactMap { docSnapshot -> PopularCellModel? in
+                    let data = docSnapshot.data()
+                    let imageDocumentId = docSnapshot.documentID // 문서 ID
+                    let title = data["전시_타이틀"] as? String ?? "Unknown Title"
+                    let subTitle = data["미술관_이름"] as? String ?? "Unknown SubTitle"
+                    return PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle)
+                }
+                self.tableView.reloadData()
+            }
+    }
+
+
+
+
 
 
     func setupCoverView() {
@@ -283,13 +290,15 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     }
 
     // UITableViewDataSource 메서드
-      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-          let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
-          let exhibition = currentData[indexPath.row]
-          cell.titleLabel.text = exhibition.title
-          cell.contentLabel.text = exhibition.period
-          return cell
-      }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
+        let cellModel = currentData[indexPath.row]
+        cell.titleLabel.text = cellModel.title
+        cell.contentLabel.text = cellModel.subTitle
+        cell.loadImage(documentId: cellModel.imageDocumentId) // 이미지 로드
+        return cell
+    }
+
 
 
     // '인기' 버튼 클릭 시 호출되는 함수
@@ -310,3 +319,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
 }
 
+struct PopularCellModel {
+    let imageDocumentId: String
+    let title: String
+    let subTitle: String
+}
