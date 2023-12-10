@@ -27,12 +27,14 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     let coverView = UIView() // 검색을 위한 커버 뷰
 
-    
+
     var isCollectionViewSetupDone = false
 
 
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
+    var refreshControl = UIRefreshControl()
+    var cachedData: [PopularCellModel]?
 
 
     override func viewDidAppear(_ animated: Bool) {
@@ -94,7 +96,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
 
 
-    
+
 
 
 
@@ -106,58 +108,129 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupHighlightView()
         setupTableView()
         setupCoverView() // 커버 뷰 설정 추가
-        loadPopularExhibitions()
 
 
+    }
+
+    func loadImage(for cell: searchPageTableViewCell, with documentId: String) {
+        let imagePath = "images/\(documentId).png"
+        let storageRef = Storage.storage().reference(withPath: imagePath)
+
+        storageRef.downloadURL { url, error in
+            if let error = error {
+                print("Error getting download URL: \(error)")
+                return
+            }
+            guard let downloadURL = url else {
+                print("Download URL not found for document ID: \(documentId)")
+                return
+            }
+
+            cell.popularCellImageView.sd_setImage(with: downloadURL, placeholderImage: nil, options: [], completed: { image, error, cacheType, url in
+                if let error = error {
+                    print("Error downloading image: \(error.localizedDescription)")
+                } else {
+                    // 캐시에서 로드되었는지 확인
+                    switch cacheType {
+                    case .none:
+                        print("Image downloaded from the internet for document ID: \(documentId)")
+                    case .disk:
+                        print("Image loaded from disk cache for document ID: \(documentId)")
+                    case .memory:
+                        print("Image loaded from memory cache for document ID: \(documentId)")
+                    @unknown default:
+                        print("Unknown cache type for document ID: \(documentId)")
+                    }
+                }
+            })
+        }
+    }
+
+    func setupRefreshControl() {
+        refreshControl.attributedTitle = NSAttributedString(string: "데이터 새로고침 중...")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        tableView.addSubview(refreshControl)
+    }
+
+
+    @objc func refreshData() {
+        loadPopularExhibitions(isRefresh: true)
     }
 
     // Firestore에서 인기 전시 정보를 가져오는 함수
-    func loadPopularExhibitions() {
-        Firestore.firestore().collection("posters")
-            .order(by: "likes", descending: true)
-            .limit(to: 10)
-            .getDocuments { [weak self] (querySnapshot, error) in
-                guard let self = self else {
-                    print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
-                    return
-                }
+    func loadPopularExhibitions(isRefresh: Bool) {
+        if isRefresh || cachedData == nil {
+            Firestore.firestore().collection("posters")
+                .order(by: "likes", descending: true)
+                .limit(to: 10)
+                .getDocuments { [weak self] (querySnapshot, error) in
+                    guard let self = self else {
+                        print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
+                        return
+                    }
 
-                var popularExhibitions: [PopularCellModel] = []
+                    var popularExhibitions: [PopularCellModel] = []
 
-                let group = DispatchGroup()
-                for document in querySnapshot?.documents ?? [] {
-                    group.enter()
-                    let imageDocumentId = document.documentID // 문서 ID
+                    let group = DispatchGroup()
+                    for document in querySnapshot?.documents ?? [] {
+                        group.enter()
+                        let imageDocumentId = document.documentID // 문서 ID
 
-                    // "전시_상세" 컬렉션에서 추가 데이터를 조회
-                    Firestore.firestore().collection("전시_상세").document(imageDocumentId).getDocument { (detailDocument, error) in
-                        if let detailDocument = detailDocument, detailDocument.exists {
-                            let data = detailDocument.data()
-                            let title = data?["전시_타이틀"] as? String ?? "Unknown Title"
-                            let subTitle = data?["미술관_이름"] as? String ?? "Unknown SubTitle"
-                            popularExhibitions.append(PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle))
-                        } else {
-                            print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                        // "전시_상세" 컬렉션에서 추가 데이터를 조회
+                        Firestore.firestore().collection("전시_상세").document(imageDocumentId).getDocument { (detailDocument, error) in
+                            defer { group.leave() }
+
+                            if let detailDocument = detailDocument, detailDocument.exists {
+                                let data = detailDocument.data()
+                                let title = data?["전시_타이틀"] as? String ?? "Unknown Title"
+                                let subTitle = data?["미술관_이름"] as? String ?? "Unknown SubTitle"
+                                popularExhibitions.append(PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle))
+                            } else {
+                                print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                            }
                         }
-                        group.leave()
+                    }
+
+                    group.notify(queue: .main) {
+                        // 결과를 특정 기준으로 정렬
+                        self.currentData = popularExhibitions.sorted(by: { $0.imageDocumentId < $1.imageDocumentId })
+                        self.cachedData = self.currentData
+                        self.tableView.reloadData()
+                        self.refreshControl.endRefreshing()
                     }
                 }
-
-                group.notify(queue: .main) {
-                    // 결과를 특정 기준으로 정렬
-                    self.currentData = popularExhibitions.sorted(by: { $0.imageDocumentId < $1.imageDocumentId })
-                    self.tableView.reloadData()
-                }
-            }
+        } else {
+              // 캐시된 데이터를 사용하여 테이블 뷰 갱신
+              self.currentData = cachedData ?? []
+              self.tableView.reloadData()
+          }
     }
 
+    func bindText(for cell: searchPageTableViewCell, with documentId: String) {
+         if let cachedTitle = cell.textCache.object(forKey: "\(documentId)-title" as NSString),
+            let cachedMuseum = cell.textCache.object(forKey: "\(documentId)-museum" as NSString) {
+             cell.ExhibitionTitleLabel.text = cachedTitle as String
+             cell.museumLabel.text = cachedMuseum as String
+             return
+         }
 
+         let exhibitionDetailsRef = Firestore.firestore().collection("전시_상세").document(documentId)
+         exhibitionDetailsRef.getDocument { (document, error) in
+             guard let document = document, document.exists else {
+                 print("Document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                 return
+             }
+             let data = document.data()
+             let exhibitionTitle = data?["전시_타이틀"] as? String ?? "Unknown Title"
+             let museumName = data?["미술관_이름"] as? String ?? "Unknown Museum"
 
+             cell.textCache.setObject(exhibitionTitle as NSString, forKey: "\(documentId)-title" as NSString)
+             cell.textCache.setObject(museumName as NSString, forKey: "\(documentId)-museum" as NSString)
 
-
-
-
-
+             cell.ExhibitionTitleLabel.text = exhibitionTitle
+             cell.museumLabel.text = museumName
+         }
+     }
 
 
     func setupCoverView() {
@@ -293,8 +366,14 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = .black  // 배경색을 검정색으로 설정
-        tableView.register(searchPageTableViewCell.self, forCellReuseIdentifier: "searchPageTableViewCell")  // 새로운 셀 클래스를 등록
+        tableView.backgroundColor = .black
+
+        // 새로고침 인디케이터 설정
+        refreshControl.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        tableView.refreshControl = refreshControl // iOS 10 이상에서는 이렇게 설정
+
+        tableView.register(searchPageTableViewCell.self, forCellReuseIdentifier: "searchPageTableViewCell")
         view.addSubview(tableView)
 
         tableView.snp.makeConstraints { make in
@@ -302,6 +381,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             make.leading.trailing.bottom.equalTo(view)
         }
     }
+
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200  // 원하는 높이로 설정
@@ -318,13 +398,11 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
         let cellModel = currentData[indexPath.row]
 
-        // 기존 코드
-        cell.ExhibitionTitleLabel.text = cellModel.title
-        cell.museumLabel.text = cellModel.subTitle
-        cell.loadImage(documentId: cellModel.imageDocumentId) // 이미지 로드
+        // 텍스트 바인딩
+        bindText(for: cell, with: cellModel.imageDocumentId)
 
-        // Firestore에서 텍스트 데이터 바인딩
-        cell.bindText(documentId: cellModel.imageDocumentId)
+        // 이미지 로드
+        loadImage(for: cell, with: cellModel.imageDocumentId)
 
         return cell
     }
@@ -333,10 +411,13 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
 
 
+
+
     // '인기' 버튼 클릭 시 호출되는 함수
     func updateData(for button: UIButton) {
         if button == popularButton {
-            loadPopularExhibitions() // 인기 전시 정보를 로드합니다.
+            refreshControl.beginRefreshing()
+            loadPopularExhibitions(isRefresh: true) // 인기 전시 정보를 로드합니다.
             tableView.isHidden = false
             collectionView.isHidden = true
         } else {

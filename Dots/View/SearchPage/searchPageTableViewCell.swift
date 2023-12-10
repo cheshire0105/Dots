@@ -20,8 +20,6 @@ class searchPageTableViewCell: UITableViewCell {
     var popularCellImageView = UIImageView()
     let textCache = NSCache<NSString, NSString>()
 
-
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -30,68 +28,6 @@ class searchPageTableViewCell: UITableViewCell {
         selectionStyle = .none  // 셀 선택 시 하이라이트 없음
 
     }
-
-    func loadImage(documentId: String) {
-        let imagePath = "images/\(documentId).png" // Firebase Storage의 경로
-        let storageRef = Storage.storage().reference(withPath: imagePath)
-
-        // Firebase Storage URL을 얻기 위한 메서드
-        storageRef.downloadURL { [weak self] (url, error) in
-            guard let self = self else { return }
-            if let error = error {
-                print("Error getting download URL: \(error)")
-                return
-            }
-            guard let downloadURL = url else {
-                print("Download URL not found for document ID: \(documentId)")
-                return
-            }
-
-            // SDWebImage를 사용하여 이미지 로드
-            self.popularCellImageView.sd_setImage(with: downloadURL, placeholderImage: nil, options: [], completed: { (image, error, cacheType, url) in
-                if let error = error {
-                    print("Error downloading image: \(error.localizedDescription)")
-                } else {
-                    print("Image downloaded successfully for document ID: \(documentId)")
-                }
-            })
-        }
-    }
-
-    func bindText(documentId: String) {
-        if let cachedTitle = textCache.object(forKey: "\(documentId)-title" as NSString),
-           let cachedMuseum = textCache.object(forKey: "\(documentId)-museum" as NSString) {
-            // 캐시에서 데이터를 불러옵니다.
-            DispatchQueue.main.async {
-                self.ExhibitionTitleLabel.text = cachedTitle as String
-                self.museumLabel.text = cachedMuseum as String
-            }
-            return
-        }
-
-        // Firestore에서 데이터를 가져오고 캐시에 저장
-        let exhibitionDetailsRef = Firestore.firestore().collection("전시_상세").document(documentId)
-        exhibitionDetailsRef.getDocument { [weak self] (document, error) in
-            guard let self = self, let document = document, document.exists else {
-                print("Document does not exist: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            let data = document.data()
-            let exhibitionTitle = data?["전시_타이틀"] as? String ?? "Unknown Title"
-            let museumName = data?["미술관_이름"] as? String ?? "Unknown Museum"
-
-            // 캐시에 저장
-            textCache.setObject(exhibitionTitle as NSString, forKey: "\(documentId)-title" as NSString)
-            textCache.setObject(museumName as NSString, forKey: "\(documentId)-museum" as NSString)
-
-            DispatchQueue.main.async {
-                self.ExhibitionTitleLabel.text = exhibitionTitle
-                self.museumLabel.text = museumName
-            }
-        }
-    }
-
-
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
