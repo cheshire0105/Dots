@@ -144,7 +144,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                 }
 
                 group.notify(queue: .main) {
-                    self.currentData = popularExhibitions
+                    // 결과를 특정 기준으로 정렬
+                    self.currentData = popularExhibitions.sorted(by: { $0.imageDocumentId < $1.imageDocumentId })
                     self.tableView.reloadData()
                 }
             }
@@ -263,7 +264,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
         for (button, title) in zip(buttons, titles) {
             button.setTitle(title, for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 18)  // 폰트 크기 설정
+            button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 16)
             button.backgroundColor = .black
             button.setTitleColor(.lightGray, for: .normal)
             button.addTarget(self, action: #selector(buttonClicked(_:)), for: .touchUpInside)
