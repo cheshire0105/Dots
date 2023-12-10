@@ -105,8 +105,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupSeparatorLine()
         setupHighlightView()
         setupTableView()
-//        setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
         setupCoverView() // 커버 뷰 설정 추가
+        loadPopularExhibitions()
+
 
     }
 
@@ -116,20 +117,42 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             .order(by: "likes", descending: true)
             .limit(to: 10)
             .getDocuments { [weak self] (querySnapshot, error) in
-                guard let self = self, let documents = querySnapshot?.documents else {
+                guard let self = self else {
                     print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
                     return
                 }
-                self.currentData = documents.compactMap { docSnapshot -> PopularCellModel? in
-                    let data = docSnapshot.data()
-                    let imageDocumentId = docSnapshot.documentID // 문서 ID
-                    let title = data["전시_타이틀"] as? String ?? "Unknown Title"
-                    let subTitle = data["미술관_이름"] as? String ?? "Unknown SubTitle"
-                    return PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle)
+
+                var popularExhibitions: [PopularCellModel] = []
+
+                let group = DispatchGroup()
+                for document in querySnapshot?.documents ?? [] {
+                    group.enter()
+                    let imageDocumentId = document.documentID // 문서 ID
+
+                    // "전시_상세" 컬렉션에서 추가 데이터를 조회
+                    Firestore.firestore().collection("전시_상세").document(imageDocumentId).getDocument { (detailDocument, error) in
+                        if let detailDocument = detailDocument, detailDocument.exists {
+                            let data = detailDocument.data()
+                            let title = data?["전시_타이틀"] as? String ?? "Unknown Title"
+                            let subTitle = data?["미술관_이름"] as? String ?? "Unknown SubTitle"
+                            popularExhibitions.append(PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle))
+                        } else {
+                            print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                        }
+                        group.leave()
+                    }
                 }
-                self.tableView.reloadData()
+
+                group.notify(queue: .main) {
+                    self.currentData = popularExhibitions
+                    self.tableView.reloadData()
+                }
             }
     }
+
+
+
+
 
 
 
@@ -228,7 +251,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
 
         searchBar.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.equalTo(view).offset(5)
             make.trailing.equalTo(view).offset(-5)
         }
@@ -248,7 +271,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
 
         popularButton.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
+            make.top.equalTo(searchBar.snp.bottom).offset(5)
             make.leading.equalTo(view).offset(20)
         }
 
@@ -324,6 +347,25 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return currentData.count
     }
+
+    // UITableViewDataSource 및 UITableViewDelegate 메서드
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let backgroundImageVC = BackgroundImageViewController()
+        backgroundImageVC.hidesBottomBarWhenPushed = true
+
+        let selectedCellModel = currentData[indexPath.row]
+        backgroundImageVC.posterImageName = selectedCellModel.imageDocumentId
+        backgroundImageVC.titleName = selectedCellModel.title
+
+        // Add print statement to check the title value
+        print("Selected title: \(selectedCellModel.title)")
+
+        self.navigationController?.pushViewController(backgroundImageVC, animated: true)
+    }
+
+
+
 
 }
 

@@ -85,7 +85,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
-    private lazy var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "현대차 시리즈 2023 : 정연두 - 백년여행"
         label.textColor = .white
@@ -587,6 +587,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         if let titleName = titleName {
             titleLabel.text = titleName
         }
+
+
 
         view.addSubview(blurEffectView)
         view.addSubview(customAlertView)
