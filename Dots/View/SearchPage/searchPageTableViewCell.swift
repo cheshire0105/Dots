@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Firebase
 import FirebaseStorage
 import SDWebImage
 
@@ -14,8 +15,8 @@ import SDWebImage
 class searchPageTableViewCell: UITableViewCell {
 
     let grayBox = UIView()
-    let titleLabel = UILabel()
-    let contentLabel = UILabel()
+    let ExhibitionTitleLabel = UILabel()
+    let museumLabel = UILabel()
     var popularCellImageView = UIImageView()
 
 
@@ -52,6 +53,25 @@ class searchPageTableViewCell: UITableViewCell {
         }
     }
 
+    func bindText(documentId: String) {
+        let exhibitionDetailsRef = Firestore.firestore().collection("전시_상세").document(documentId)
+
+        exhibitionDetailsRef.getDocument { [weak self] (document, error) in
+            guard let self = self, let document = document, document.exists else {
+                print("Document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            let data = document.data()
+            let exhibitionTitle = data?["전시_타이틀"] as? String ?? "Unknown Title"
+            let museumName = data?["미술관_이름"] as? String ?? "Unknown Museum"
+
+            DispatchQueue.main.async {
+                self.ExhibitionTitleLabel.text = exhibitionTitle
+                self.museumLabel.text = museumName
+            }
+        }
+    }
+
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -63,11 +83,11 @@ class searchPageTableViewCell: UITableViewCell {
         popularCellImageView.backgroundColor = .gray // 임시 배경색 설정
         contentView.addSubview(popularCellImageView)
 
-        titleLabel.textColor = .white
-        contentView.addSubview(titleLabel)
+        ExhibitionTitleLabel.textColor = .white
+        contentView.addSubview(ExhibitionTitleLabel)
 
-        contentLabel.textColor = .white
-        contentView.addSubview(contentLabel)
+        museumLabel.textColor = .white
+        contentView.addSubview(museumLabel)
 
 
         // SnapKit을 사용하여 레이아웃 설정
@@ -78,14 +98,14 @@ class searchPageTableViewCell: UITableViewCell {
             make.height.equalTo(180)
         }
 
-        titleLabel.snp.makeConstraints { make in
+        ExhibitionTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(popularCellImageView.snp.top).offset(50)
             make.leading.equalTo(popularCellImageView.snp.trailing).offset(10)
         }
 
-        contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5)
-            make.leading.equalTo(titleLabel)
+        museumLabel.snp.makeConstraints { make in
+            make.top.equalTo(ExhibitionTitleLabel.snp.bottom).offset(5)
+            make.leading.equalTo(ExhibitionTitleLabel)
         }
     }
 

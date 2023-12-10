@@ -293,11 +293,19 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
         let cellModel = currentData[indexPath.row]
-        cell.titleLabel.text = cellModel.title
-        cell.contentLabel.text = cellModel.subTitle
+
+        // 기존 코드
+        cell.ExhibitionTitleLabel.text = cellModel.title
+        cell.museumLabel.text = cellModel.subTitle
         cell.loadImage(documentId: cellModel.imageDocumentId) // 이미지 로드
+
+        // Firestore에서 텍스트 데이터 바인딩
+        cell.bindText(documentId: cellModel.imageDocumentId)
+
         return cell
     }
+
+
 
 
 
