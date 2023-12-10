@@ -274,37 +274,40 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         highlightView.backgroundColor = .white
         view.addSubview(highlightView)
 
+        // 'popularButton'을 기준으로 하이라이트 뷰 설정
         highlightView.snp.makeConstraints { make in
             make.top.equalTo(separatorLine.snp.top)
-            make.height.equalTo(1)
+            make.height.equalTo(4)
             make.width.equalTo(popularButton)
             make.centerX.equalTo(popularButton)
         }
+
+
     }
 
-    func selectButton(_ button: UIButton) {
-        selectedButton?.setTitleColor(.lightGray, for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        selectedButton = button
-
-        highlightView.snp.remakeConstraints { make in
-            make.bottom.equalTo(separatorLine.snp.top)
-            make.height.equalTo(2)
-            make.width.equalTo(button)
-            make.centerX.equalTo(button)
-        }
-
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-
-        updateData(for: button)  // 여기에 추가
-    }
+//    func selectButton(_ button: UIButton) {
+//        selectedButton?.setTitleColor(.lightGray, for: .normal)
+//        button.setTitleColor(.white, for: .normal)
+//        selectedButton = button
+//
+//        highlightView.snp.remakeConstraints { make in
+//            make.bottom.equalTo(separatorLine.snp.top)
+//            make.height.equalTo(2)
+//            make.width.equalTo(button)
+//            make.centerX.equalTo(button)
+//        }
+//
+//        UIView.animate(withDuration: 0.3) {
+//            self.view.layoutIfNeeded()
+//        }
+//
+//        updateData(for: button)  // 여기에 추가
+//    }
 
 
     @objc func buttonClicked(_ sender: UIButton) {
-        selectButton(sender)
-        updateData(for: sender)
+//        selectButton(sender)
+//        updateData(for: sender)
     }
 
 
@@ -337,7 +340,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             button.setTitle(title, for: .normal)
             button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 16)
             button.backgroundColor = .black
-            button.setTitleColor(.lightGray, for: .normal)
+            button.setTitleColor(.lightGray, for: .selected)
             button.addTarget(self, action: #selector(buttonClicked(_:)), for: .touchUpInside)
             view.addSubview(button)
         }
@@ -346,6 +349,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             make.top.equalTo(searchBar.snp.bottom).offset(5)
             make.leading.equalTo(view).offset(20)
         }
+        
 
     }
 
@@ -360,6 +364,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             make.height.equalTo(1)  // 선의 높이를 1로 설정하여 얇은 선이 되도록 함
         }
     }
+
+    
 
     func setupTableView() {
         tableView.delegate = self
