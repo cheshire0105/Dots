@@ -1,4 +1,4 @@
-// 최신화 2023 12 4 9:33pm
+// 최신화  유저_다녀옴_날짜 데이터를 해당 유저의 마이페이지 켈린더에 표시하기
 import UIKit
 import SnapKit
 import FSCalendar

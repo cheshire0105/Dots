@@ -3,7 +3,7 @@ import FSCalendar
 import SnapKit
 
 extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
-    var specificDates: [Date] {
+    var 유저_다녀옴_날짜: [Date] {
         [
             Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 8)),
             Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 9)),
@@ -21,7 +21,7 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
        }
 
     func calendar(_ calendar: FSCalendar, imageFor date: Date) -> UIImage? {
-        if specificDates.contains(where: { Calendar.current.isDate(date, inSameDayAs: $0) }) {
+        if 유저_다녀옴_날짜.contains(where: { Calendar.current.isDate(date, inSameDayAs: $0) }) {
             return nil
         }
 
@@ -31,7 +31,7 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, cellFor date: Date, at 특정_날짜셀에_이미지_넣기: FSCalendarMonthPosition) -> FSCalendarCell {
         let cell = calendar.dequeueReusableCell(withIdentifier: "cell", for: date, at: 특정_날짜셀에_이미지_넣기)
 
-        if 특정_날짜셀에_이미지_넣기 == .current, let cell = cell as? FSCalendarCell, specificDates.contains(where: { Calendar.current.isDate(date, inSameDayAs: $0) }) {
+        if 특정_날짜셀에_이미지_넣기 == .current, let cell = cell as? FSCalendarCell, 유저_다녀옴_날짜.contains(where: { Calendar.current.isDate(date, inSameDayAs: $0) }) {
 
 
             if cell.subviews.filter({ $0 is UIButton }).isEmpty {
