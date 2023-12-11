@@ -14,5 +14,5 @@ target 'Dots' do
   pod 'GoogleSignIn'
   pod 'Toast-Swift'
   pod 'SkeletonView'
-
+  
 end

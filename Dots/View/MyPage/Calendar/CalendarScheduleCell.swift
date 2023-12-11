@@ -2,15 +2,16 @@ import Foundation
 import UIKit
 import SnapKit
 
-class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
+class 캘린더_스케쥴_등록_셀 : UITableViewCell {
+    
     
     let 이미지_백 = {
-       let uiView = UIView()
+        let uiView = UIView()
         uiView.layer.cornerRadius = 12
         return uiView
     }()
     let 라벨_백 = {
-       let uiView = UIView()
+        let uiView = UIView()
         uiView.layer.cornerRadius = 12
         return uiView
     }()
@@ -22,6 +23,7 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+    
     var 전시_포스터_이미지 = {
         var imageView = UIImageView()
         imageView.image = UIImage(named: "help")
@@ -30,6 +32,7 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         return imageView
     } ()
+    
     let 전시명_라벨 = {
         let label = UILabel()
         label.text = "전시 제목"
@@ -43,7 +46,7 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         let label = UILabel()
         label.text = "전시 장소"
         label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
-
+        
         label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textAlignment = .left
         return label
@@ -51,30 +54,23 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
     
     let 방문날짜_라벨 = {
         let label = UILabel()
-        label.text = "년월일시"
+        label.text = "2022년 2월 2일"
         label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
-
+        
         label.textAlignment = .left
         return label
     } ()
     let 내후기_버튼 = {
-    let button = UIButton()
+        let button = UIButton()
         button.setImage(UIImage(named: "내후기normal"), for: .normal)
         button.setImage(UIImage(named: "내후기select"), for: .selected)
         button.isSelected = !button.isSelected
         return button
     }()
- 
-    let 내후기_버튼2 = {
-    let button = UIButton()
-        button.setImage(UIImage(named: "내후기normal"), for: .normal)
-        button.setImage(UIImage(named: "내후기select"), for: .selected)
-        button.isSelected = !button.isSelected
-        return button
-    }()
+    
     let 내후기_수정_버튼 = {
-    let button = UIButton()
+        let button = UIButton()
         button.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 0.7)
         button.setImage(UIImage(named: "내후기edit"), for: .normal)
         button.setImage(UIImage(named: "내후기edit"), for: .selected)
@@ -83,9 +79,9 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         button.isEnabled = true
         return button
     }()
- 
+    
     let 내후기_삭제_버튼 = {
-    let button = UIButton()
+        let button = UIButton()
         button.backgroundColor = UIColor(red: 0.145, green: 0.145, blue: 0.145, alpha: 0.7)
         button.setImage(UIImage(named: "내후기delete"), for: .normal)
         button.setImage(UIImage(named: "내후기delete"), for: .selected)
@@ -95,64 +91,68 @@ class 캘린더_스케쥴_등록_셀 : UICollectionViewCell {
         return button
     }()
     
-  
+    
     
     
     override func layoutSubviews() {
         super.layoutSubviews()
     }
     
-    
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = UIColor.clear
-        캘린더_스케쥴_등록_셀_레이아웃()
-        버튼_클릭()
-        
-        
-        
-//        if let 평균색상_추출 = UIColor.이미지_평균색상(from: UIImage(named: "claude")!)
-            if let 평균색상_추출 = 전시_포스터_이미지.image?.이미지_평균색상(){
-            이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
-            라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
-          }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+           super.init(style: style, reuseIdentifier: reuseIdentifier)
+           self.isUserInteractionEnabled = true
+           backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+
+           캘린더_스케쥴_등록_셀_레이아웃()
+           버튼_클릭()
+           
+           if let 평균색상_추출 = 전시_포스터_이미지.image?.이미지_평균색상(){
+               이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
+               라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
+           }
+       }
+       
+       required init?(coder aDecoder: NSCoder) {
+           fatalError("init(coder:) has not been implemented")
+       }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.selectionStyle = .none
     }
-    
-    
-        
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
+   }
 
 
 
 extension 캘린더_스케쥴_등록_셀 {
     
     func 버튼_클릭 () {
+        내후기_버튼.addTarget(self, action: #selector(내후기_버튼_클릭), for: .touchUpInside)
         내후기_수정_버튼.addTarget(self, action: #selector(내후기_수정_버튼_클릭), for: .touchUpInside)
         내후기_삭제_버튼.addTarget(self, action: #selector(내후기_삭제_버튼_클릭), for: .touchUpInside)
-
+        
     }
     
-    
+    @objc func 내후기_버튼_클릭 () {
+        print("내후기_버튼_클릭")
+
+    }
     @objc func 내후기_수정_버튼_클릭 () {
         print("내후기_수정_버튼_클릭")
-        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
-               let 수정_뷰 = 켈린더_수정_뷰컨트롤러()
-               셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
-           }
-      }
-        
+//        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
+//            let 수정_뷰 = 켈린더_수정_뷰컨트롤러()
+//            수정_뷰.modalPresentationStyle = .fullScreen
+//            셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
+//        }
+    }
+    
     
     @objc func 내후기_삭제_버튼_클릭 () {
         print("내후기_삭제_버튼_클릭")
-        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
-            let 수정_뷰 = 켈린더_삭제_뷰컨트롤러()
-            셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
-        }
+//        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
+//            let 수정_뷰 = 켈린더_삭제_뷰컨트롤러()
+//            수정_뷰.modalPresentationStyle = .fullScreen
+//            셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
+//        }
     }
 }
 
@@ -160,37 +160,37 @@ extension 캘린더_스케쥴_등록_셀 {
 
 
 
-
-//셀 애니메이션+영역 재설정관련
-extension 캘린더_스케쥴_등록_셀 {
-    
-    func 셀_클릭_애니메이션_on() {
-           UIView.animate(withDuration: 0.3, animations: {
-               self.transform = CGAffineTransform(translationX: -self.bounds.width * 5/10, y: 0)
-
-           })
-       }
-    func 셀_클릭_애니메이션_off() {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.transform = .identity
-            })
-        }
-
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-           let convertedPoint = 내후기_수정_버튼.convert(point, from: self)
-           if 내후기_수정_버튼.bounds.contains(convertedPoint) {
-               return 내후기_수정_버튼
-           }
-           
-           let convertedPoint2 = 내후기_삭제_버튼.convert(point, from: self)
-           if 내후기_삭제_버튼.bounds.contains(convertedPoint2) {
-               return 내후기_삭제_버튼
-           }
-           
-           return super.hitTest(point, with: event)
-       }
-
-}
+//
+////셀 애니메이션+영역 재설정관련
+//extension 캘린더_스케쥴_등록_셀 {
+//    
+//    func 셀_클릭_애니메이션_on() {
+//        UIView.animate(withDuration: 0.3, animations: {
+//            self.transform = CGAffineTransform(translationX: -self.bounds.width * 5/10, y: 0)
+//            
+//        })
+//    }
+//    func 셀_클릭_애니메이션_off() {
+//        UIView.animate(withDuration: 0.3, animations: {
+//            self.transform = .identity
+//        })
+//    }
+//    
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        let convertedPoint = 내후기_수정_버튼.convert(point, from: self)
+//        if 내후기_수정_버튼.bounds.contains(convertedPoint) {
+//            return 내후기_수정_버튼
+//        }
+//        
+//        let convertedPoint2 = 내후기_삭제_버튼.convert(point, from: self)
+//        if 내후기_삭제_버튼.bounds.contains(convertedPoint2) {
+//            return 내후기_삭제_버튼
+//        }
+//        
+//        return super.hitTest(point, with: event)
+//    }
+//    
+//}
 
 
 extension 캘린더_스케쥴_등록_셀{
@@ -206,8 +206,8 @@ extension 캘린더_스케쥴_등록_셀{
         
         contentView.addSubview(내후기_버튼)
         
-        contentView.addSubview(내후기_수정_버튼)
-        contentView.addSubview(내후기_삭제_버튼)
+//        contentView.addSubview(내후기_수정_버튼)
+//        contentView.addSubview(내후기_삭제_버튼)
         
         이미지_백.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(5)
@@ -254,20 +254,20 @@ extension 캘린더_스케쥴_등록_셀{
             make.bottom.equalTo(전시_포스터_이미지)
         }
         
-        내후기_수정_버튼.snp.makeConstraints { make in
-            make.top.bottom.equalTo(라벨_백)
-            make.leading.equalTo(라벨_백.snp.trailing).offset(15)
-            make.width.equalTo(80)
-        }
-
-        내후기_삭제_버튼.snp.makeConstraints { make in
-            make.top.bottom.equalTo(라벨_백)
-            make.leading.equalTo(내후기_수정_버튼.snp.trailing).offset(10)
-            make.width.equalTo(80)
-        }
+//        내후기_수정_버튼.snp.makeConstraints { make in
+//            make.top.bottom.equalTo(라벨_백)
+//            make.leading.equalTo(라벨_백.snp.trailing).offset(15)
+//            make.width.equalTo(80)
+//        }
+//        
+//        내후기_삭제_버튼.snp.makeConstraints { make in
+//            make.top.bottom.equalTo(라벨_백)
+//            make.leading.equalTo(내후기_수정_버튼.snp.trailing).offset(10)
+//            make.width.equalTo(80)
+//        }
     }
     
-   
+    
 }
 
 
@@ -289,16 +289,16 @@ extension UIImage {
     }
 }
 
-
-extension UIView {
-    func findViewController() -> UIViewController? {
-        var responder: UIResponder? = self
-        while let nextResponder = responder?.next {
-            responder = nextResponder
-            if let viewController = responder as? UIViewController {
-                return viewController
-            }
-        }
-        return nil
-    }
-}
+//
+//extension UIView {
+//    func findViewController() -> UIViewController? {
+//        var responder: UIResponder? = self
+//        while let nextResponder = responder?.next {
+//            responder = nextResponder
+//            if let viewController = responder as? UIViewController {
+//                return viewController
+//            }
+//        }
+//        return nil
+//    }
+//}

@@ -8,7 +8,7 @@ import FirebaseFirestore
 import GoogleSignIn
 
 class Mypage: UIViewController {
-     
+  
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
@@ -144,17 +144,18 @@ class Mypage: UIViewController {
         calendar.layer.cornerRadius = 15
         calendar.layer.borderWidth = 0.3
         //        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
-        calendar.dataSource = self
-        calendar.delegate = self
+   
         
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
         calendar.appearance.headerDateFormat = "MMMM yyyy"
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
         calendar.appearance.weekdayTextColor = UIColor.darkGray
-        calendar.appearance.todayColor = UIColor(named: "neon")?.withAlphaComponent(0.3)
-        //        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
-        calendar.appearance.selectionColor = UIColor.green.withAlphaComponent(0.1)
+        calendar.appearance.todayColor = UIColor.clear
+        calendar.appearance.todaySelectionColor = UIColor.clear
+        calendar.appearance.titleTodayColor = UIColor(named: "neon")
+
+        calendar.appearance.selectionColor = UIColor.clear
         calendar.appearance.titleDefaultColor = UIColor.white
         calendar.appearance.titleSelectionColor = UIColor.white
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
@@ -162,10 +163,11 @@ class Mypage: UIViewController {
         calendar.scrollDirection = .vertical
         calendar.scope = .month
         calendar.allowsMultipleSelection = false
+        
         return calendar
     }()
     
-    
+
     
     override func viewWillAppear(_ animated: Bool) {
         접속_유저_데이터_마이페이지_적용하기()
@@ -185,7 +187,10 @@ class Mypage: UIViewController {
         버튼_백_레이아웃 ()
         
         캘린더_레이아웃()
-        
+        캘린더.dataSource = self
+        캘린더.delegate = self
+        캘린더.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
+
         접속_유저_데이터_마이페이지_적용하기()
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
@@ -298,14 +303,14 @@ class Mypage: UIViewController {
             make.centerY.equalTo(마이페이지_프로필_이미지_버튼.snp.centerY).offset(10)
         }
         버튼_백.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(10)
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(5)
             make.bottom.equalTo(구분선.snp.bottom).offset(-10)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
         
         구분선.snp.makeConstraints { make in
-            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(120)
+            make.top.equalTo(마이페이지_프로필_이미지_버튼.snp.bottom).offset(95)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
@@ -315,10 +320,10 @@ class Mypage: UIViewController {
     func 캘린더_레이아웃() {
         view.addSubview(캘린더)
         캘린더.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(30)
-            make.leading.equalToSuperview().offset(16)
-            make.trailing.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(-90)
+            make.top.equalTo(구분선.snp.bottom).offset(-10)
+            make.leading.equalToSuperview().offset(4)
+            make.trailing.equalToSuperview().offset(-4)
+            make.bottom.equalToSuperview().offset(-60)
         }
     }
  
@@ -371,34 +376,14 @@ extension Mypage {
 }
 
 
-extension Mypage : FSCalendarDelegate, FSCalendarDataSource {
-    
-    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-        return 0
-    }
-    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-        
-            // DetailViewController의 presentationController 설정
-            if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
-                sheetPresent.prefersGrabberVisible = true
 
-                sheetPresent.detents = [.medium(), .large()]
-                캘린더_스케쥴_등록_모달.isModalInPresentation = false
-                sheetPresent.largestUndimmedDetentIdentifier = .large
-                sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-                sheetPresent.preferredCornerRadius = 30
-                sheetPresent.prefersGrabberVisible = false
-
-            }
-       
-        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
-            self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+extension UIImage {
+    func resized(to 사이즈: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size: 사이즈).image { _ in
+            draw(in: CGRect(origin: .zero, size: 사이즈))
         }
-        
     }
-    
-
+}
 
 
 extension Mypage {
