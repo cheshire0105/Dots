@@ -57,7 +57,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
         // 네비게이션 바 숨기기
         navigationController?.setNavigationBarHidden(true, animated: animated)
-
+        // 탭 바 표시하기
+        tabBarController?.tabBar.isHidden = false
 
     }
 
@@ -65,9 +66,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // 다른 화면으로 넘어갈 때 네비게이션 바 다시 표시
-        navigationController?.setNavigationBarHidden(false, animated: animated)
-        // 탭 바 표시하기
-        tabBarController?.tabBar.isHidden = false
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+
     }
 
 
