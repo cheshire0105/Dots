@@ -1,15 +1,14 @@
 import UIKit
 import FSCalendar
 import SnapKit
+import Firebase
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
 
 extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
-    var 유저_다녀옴_날짜: [Date] {
-        [
-            Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 8)),
-            Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 9)),
-            Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 12))
-        ].compactMap { $0 }
-    }
+   
+    
 
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         return 0
@@ -59,43 +58,53 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//켈린더 sheetpresent modal
+// 켈린더 sheet present modal
 extension Mypage {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-            if Calendar.current.isDateInToday(date) {
-                calendar.appearance.titleSelectionColor = UIColor(named: "neon")
-            } else {
-                calendar.appearance.titleSelectionColor = UIColor.white
-            }
-            let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-            
-            if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
-                sheetPresent.prefersGrabberVisible = true
-                sheetPresent.detents = [.medium(), .large()]
-                캘린더_스케쥴_등록_모달.isModalInPresentation = false
-                sheetPresent.largestUndimmedDetentIdentifier = .large
-                sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-                sheetPresent.preferredCornerRadius = 30
-                sheetPresent.prefersGrabberVisible = false
-            }
-            
-            캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
-            self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+        if Calendar.current.isDateInToday(date) {
+            calendar.appearance.titleSelectionColor = UIColor(named: "neon")
+        } else {
+            calendar.appearance.titleSelectionColor = UIColor.white
         }
+
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+
+        let db = Firestore.firestore()
+        let postersCollection = db.collection("posters")
+
+        postersCollection.document(uid).getDocument { (document, error) in
+            if let document = document, document.exists {
+                let documentData = document.data()
+                
+                if let reviewCollection = documentData?["review"] as? [[String: Any]] {
+                    for reviewDocument in reviewCollection {
+                        if let date = reviewDocument["유저_다녀옴_날짜"] as? Timestamp {
+                            let formattedDate = date.dateValue()
+                            self.유저_다녀옴_날짜.append(formattedDate)
+                        }
+                    }
+                }
+            } else {
+            }
+        }
+
+        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
         
+        if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
+            sheetPresent.prefersGrabberVisible = true
+            sheetPresent.detents = [.medium(), .large()]
+            캘린더_스케쥴_등록_모달.isModalInPresentation = false
+            sheetPresent.largestUndimmedDetentIdentifier = .large
+            sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
+            sheetPresent.preferredCornerRadius = 30
+            sheetPresent.prefersGrabberVisible = false
+        }
+
+        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
+        self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
     }
+}
+
 
