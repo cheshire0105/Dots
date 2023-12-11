@@ -3,7 +3,7 @@
 //  Dots
 //
 //  Created by cheshire on 10/23/23.
-//
+// 최신화 
 
 import UIKit
 import SnapKit
