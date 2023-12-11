@@ -10,9 +10,10 @@ import GoogleSignIn
 class Mypage: UIViewController {
 
 //     var 유저_다녀옴_날짜: [Date] = []
+    var 특정날짜 : [String] = ["2023-12-08", "2023-12-09", "2023-12-12"]
     
          var 유저_다녀옴_날짜: [Date] {
-             let dateStrings = ["2023-12-08", "2023-12-09", "2023-12-12"]
+             let dateStrings = 특정날짜
  
              let dateFormatter = DateFormatter()
              dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -549,8 +550,12 @@ extension Mypage {
             for document in documents {
                 if let visitDateText = document["유저_다녀옴_날짜"] as? String {
                     print("User visited on date: \(visitDateText)")
+                    self.특정날짜.append(visitDateText)
+
                 }
             }
+            self.캘린더.reloadData()
+
         }
     }
 }
