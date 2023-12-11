@@ -509,24 +509,27 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             let selectedHit = autocompleteResults[indexPath.row]
             let detailViewController = BackgroundImageViewController()
             detailViewController.posterImageName = selectedHit.objectID
-            detailViewController.titleName = selectedHit.title // 여기서 제목을 설정합니다.
+            detailViewController.titleName = selectedHit.title
+
+            // 탭 바와 네비게이션 바를 숨깁니다.
+            detailViewController.hidesBottomBarWhenPushed = true
+            navigationController?.setNavigationBarHidden(true, animated: true)
 
             navigationController?.pushViewController(detailViewController, animated: true)
         } else {
             // 기본 테이블 뷰에서 선택된 셀 처리
             let backgroundImageVC = BackgroundImageViewController()
+            backgroundImageVC.posterImageName = currentData[indexPath.row].imageDocumentId
+            backgroundImageVC.titleName = currentData[indexPath.row].title
+
+            // 탭 바와 네비게이션 바를 숨깁니다.
             backgroundImageVC.hidesBottomBarWhenPushed = true
-
-            let selectedCellModel = currentData[indexPath.row]
-            backgroundImageVC.posterImageName = selectedCellModel.imageDocumentId
-            backgroundImageVC.titleName = selectedCellModel.title
-
-            // 선택된 제목 확인
-            print("Selected title: \(selectedCellModel.title)")
+            navigationController?.setNavigationBarHidden(true, animated: true)
 
             navigationController?.pushViewController(backgroundImageVC, animated: true)
         }
     }
+
 
 
 

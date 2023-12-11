@@ -415,8 +415,9 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             }
             
             if let selectedExhibition = selectedExhibition {
-                exhibitionPage.posterImageName = selectedExhibition.poster;        exhibitionPage.titleName = selectedExhibition.title // 제목 설정
-                
+                exhibitionPage.posterImageName = selectedExhibition.poster
+                exhibitionPage.titleName = selectedExhibition.title 
+
             }
             
             self.navigationController?.pushViewController(exhibitionPage, animated: true)
