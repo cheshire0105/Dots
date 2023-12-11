@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 import Firebase
 import FirebaseStorage
+import AlgoliaSearchClient
+
 
 class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
@@ -35,6 +37,13 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     var refreshControl = UIRefreshControl()
     var cachedData: [PopularCellModel]?
+
+    var autocompleteResults: [String] = []
+       let autocompleteTableView = UITableView()
+
+    var client: SearchClient!
+       var index: Index!
+
 
 
     override func viewDidAppear(_ animated: Bool) {
@@ -92,6 +101,14 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Algolia 클라이언트 및 인덱스 초기화
+               client = SearchClient(appID: "6XB9VU6UYB", apiKey: "a7d85c26f57385132014253ee6a132ab")
+               index = client.index(withName: "전시_상세")
+
+        autocompleteTableView.register(AutocompleteTableViewCell.self, forCellReuseIdentifier: "AutocompleteTableViewCell")
+
+
         setupSearchBar()
         setupLabels()
         setupSeparatorLine()
@@ -101,6 +118,34 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
         // 테이블 뷰에 대한 초기 데이터 로딩
            loadInitialDataForTableView()
+        setupAutocompleteTableView()
+
+    }
+
+
+
+    private func updateAutocompleteTable() {
+        if autocompleteResults.isEmpty {
+            autocompleteTableView.isHidden = true
+        } else {
+            autocompleteTableView.isHidden = false
+            autocompleteTableView.reloadData()
+        }
+    }
+
+    func setupAutocompleteTableView() {
+        // 자동완성 테이블 뷰 설정
+        autocompleteTableView.delegate = self
+        autocompleteTableView.dataSource = self
+        autocompleteTableView.register(UITableViewCell.self, forCellReuseIdentifier: "autocompleteCell")
+        view.addSubview(autocompleteTableView)
+
+        autocompleteTableView.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom)
+            make.leading.trailing.bottom.equalTo(view)
+        }
+
+        autocompleteTableView.isHidden = true // 초기에는 숨겨둡니다.
     }
 
     func setupLabels() {
@@ -275,11 +320,11 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         coverView.isHidden = true // 검색 취소 시 커버 뷰를 숨김
     }
 
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder() // 키보드 숨기기
-        coverView.isHidden = true // 검색 완료 시 커버 뷰를 숨김
-        // 검색 로직을 여기에 추가하세요.
-    }
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        searchBar.resignFirstResponder() // 키보드 숨기기
+//        coverView.isHidden = true // 검색 완료 시 커버 뷰를 숨김
+//        // 검색 로직을 여기에 추가하세요.
+//    }
 
 
 
@@ -361,28 +406,45 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 200  // 원하는 높이로 설정
+        if tableView == autocompleteTableView {
+              return 44 // 자동완성 셀의 높이를 44pt로 설정
+          } else {
+              return 200 // 기본 테이블 뷰 셀의 높이
+          }
     }
 
 
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tableView == autocompleteTableView {
+            // 자동완성 테이블 뷰에 대한 로우 수 반환
+            return autocompleteResults.count
+        }
+        // 기본 테이블 뷰에 대한 로우 수 반환
         return currentData.count
     }
 
-    // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
-        let cellModel = currentData[indexPath.row]
+        if tableView == autocompleteTableView {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AutocompleteTableViewCell", for: indexPath) as! AutocompleteTableViewCell
+            let result = autocompleteResults[indexPath.row]
+            cell.configure(with: result)
+            return cell
+        } else {
+            // 기본 테이블 뷰 셀 구성
+            let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
+            let cellModel = currentData[indexPath.row]
 
-        // 텍스트 바인딩
-        bindText(for: cell, with: cellModel.imageDocumentId)
+            // 텍스트 바인딩
+            bindText(for: cell, with: cellModel.imageDocumentId)
 
-        // 이미지 로드
-        loadImage(for: cell, with: cellModel.imageDocumentId)
+            // 이미지 로드
+            loadImage(for: cell, with: cellModel.imageDocumentId)
 
-        return cell
+            return cell
+        }
     }
+
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -410,9 +472,96 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
 }
 
+extension SearchPage {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+         if searchText.isEmpty {
+             autocompleteResults = []
+             updateAutocompleteTable()
+         } else if searchText.count >= 3 {
+             performSearch(with: searchText)
+         }
+     }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        if let searchText = searchBar.text, searchText.count >= 3 {
+            performSearch(with: searchText)
+        }
+    }
+
+    private func performSearch(with searchText: String) {
+        var query = Query(searchText)
+        query.attributesToRetrieve = ["전시_타이틀", "미술관_이름"]
+        index.search(query: query) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let hits: [ExhibitionHit] = try response.extractHits()
+                    self.autocompleteResults = hits.map { "\($0.title) - \($0.museumName)" }
+                    print("검색 결과: \(self.autocompleteResults)") // 검색 결과 확인
+                    DispatchQueue.main.async {
+                                      self.updateAutocompleteTable()
+                                  }
+                } catch {
+                    print("Error extracting hits: \(error)")
+                }
+            case .failure(let error):
+                print("Error during Algolia search: \(error)")
+            }
+        }
+    }
+}
+
 struct PopularCellModel {
     let imageDocumentId: String
     let title: String
     let subTitle: String
     let likes: Int
+}
+
+struct ExhibitionHit: Codable {
+    let title: String
+    let museumName: String // 미술관 이름 필드 추가
+
+    enum CodingKeys: String, CodingKey {
+        case title = "전시_타이틀"
+        case museumName = "미술관_이름" // Algolia 인덱스의 필드 이름과 매핑
+    }
+}
+
+
+//아피찻퐁
+
+class AutocompleteTableViewCell: UITableViewCell {
+    // 여기에 UI 요소를 추가하세요. 예: 레이블, 이미지뷰 등
+    let titleLabel = UILabel()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        // UI 요소 설정
+        setupUI()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupUI() {
+        // titleLabel 설정
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(titleLabel)
+
+        // titleLabel 오토레이아웃 설정
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
+    }
+
+    func configure(with text: String) {
+        // 셀 구성
+        titleLabel.text = text
+    }
 }

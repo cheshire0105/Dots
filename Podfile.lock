@@ -1,4 +1,6 @@
 PODS:
+  - AlgoliaSearchClient (8.18.2):
+    - Logging
   - AppAuth (1.6.2):
     - AppAuth/Core (= 1.6.2)
     - AppAuth/ExternalUserAgent (= 1.6.2)
@@ -14,6 +16,7 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 4.0, >= 1.5)
   - GTMSessionFetcher/Core (3.1.1)
+  - Logging (1.4.0)
   - SDWebImage (5.18.5):
     - SDWebImage/Core (= 5.18.5)
   - SDWebImage/Core (5.18.5)
@@ -22,6 +25,7 @@ PODS:
   - Toast-Swift (5.0.1)
 
 DEPENDENCIES:
+  - AlgoliaSearchClient
   - FSCalendar
   - GoogleSignIn
   - SDWebImage
@@ -31,27 +35,31 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AlgoliaSearchClient
     - AppAuth
     - FSCalendar
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
+    - Logging
     - SDWebImage
     - SkeletonView
     - SnapKit
     - Toast-Swift
 
 SPEC CHECKSUMS:
+  AlgoliaSearchClient: dd74cf9fc8c9ccb4145b77b435945068dcd4ce50
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   FSCalendar: 2d1d0d9398f12d439f55c1fe0f01525b151b8260
   GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
   GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
+  Logging: beeb016c9c80cf77042d62e83495816847ef108b
   SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
   SkeletonView: 5a050f6411e697abd4cda0a8d767013399dccd69
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 
-PODFILE CHECKSUM: 8e10ec9d2b2159c3b9b0fd2db4f864625f21630b
+PODFILE CHECKSUM: 7bc84dd8853a05ea4b6ca1606116800d223cbbca
 
 COCOAPODS: 1.14.2
