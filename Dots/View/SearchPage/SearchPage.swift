@@ -109,7 +109,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        indexFirestoreDataToAlgolia()
+//        indexFirestoreDataToAlgolia()
 
 //        // Algolia 클라이언트 및 인덱스 초기화
 //               client = SearchClient(appID: "6XB9VU6UYB", apiKey: "a7d85c26f57385132014253ee6a132ab")
@@ -181,6 +181,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         autocompleteTableView.register(UITableViewCell.self, forCellReuseIdentifier: "autocompleteCell")
         view.addSubview(autocompleteTableView)
 
+        // 배경색을 검은색으로 설정
+        autocompleteTableView.backgroundColor = .black
+
         autocompleteTableView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom)
             make.leading.trailing.bottom.equalTo(view)
@@ -188,6 +191,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
         autocompleteTableView.isHidden = true // 초기에는 숨겨둡니다.
     }
+
 
     func setupLabels() {
         popularLabel.text = "인기 전시"
@@ -379,7 +383,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     func setupSearchBar() {
         searchBar.delegate = self
-        searchBar.placeholder = "전시, 작가를 검색하세요."
+        searchBar.placeholder = "전시, 미술관을 검색하세요."
         searchBar.searchBarStyle = .minimal
         searchBar.backgroundColor = UIColor.black
 
@@ -387,10 +391,10 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         searchBar.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         if let textField = searchBar.value(forKey: "searchField") as? UITextField {
-            textField.font = UIFont.systemFont(ofSize: 15)  // 폰트 크기 설정
+            textField.font = UIFont(name: "Pretendard-Regular", size: 15)
             textField.textColor = .white
             textField.backgroundColor = .black
-            textField.attributedPlaceholder = NSAttributedString(string: "전시, 작가를 검색하세요.", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+            textField.attributedPlaceholder = NSAttributedString(string: "전시, 미술관을 검색하세요.", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         }
 
         view.addSubview(searchBar)
@@ -469,6 +473,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             // 전시 타이틀과 미술관 이름을 결합하여 텍스트 설정
             let displayText = "\(hit.title) - \(hit.museumName)"
             cell.configure(with: displayText)
+
+            cell.selectionStyle = .none
+
 
             return cell
         } else {
@@ -606,12 +613,10 @@ struct ExhibitionRecord: Encodable {
 }
 
 class AutocompleteTableViewCell: UITableViewCell {
-    // 여기에 UI 요소를 추가하세요. 예: 레이블, 이미지뷰 등
     let titleLabel = UILabel()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        // UI 요소 설정
         setupUI()
     }
 
@@ -620,12 +625,15 @@ class AutocompleteTableViewCell: UITableViewCell {
     }
 
     private func setupUI() {
+        // 배경색 설정
+        backgroundColor = .black
+
         // titleLabel 설정
+        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        titleLabel.textColor = .white
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 20)
         contentView.addSubview(titleLabel)
 
-        // titleLabel 오토레이아웃 설정
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -635,7 +643,9 @@ class AutocompleteTableViewCell: UITableViewCell {
     }
 
     func configure(with text: String) {
-        // 셀 구성
         titleLabel.text = text
     }
 }
+
+
+
