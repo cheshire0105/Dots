@@ -13,7 +13,7 @@ import FirebaseStorage
 class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
     let searchBar = UISearchBar()
-    let popularButton = UIButton()
+    let popularLabel = UILabel()
     let exhibitionButton = UIButton()
     let artistButton = UIButton()
 
@@ -39,7 +39,6 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        selectButton(popularButton)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -94,7 +93,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSearchBar()
-        setupButtons()
+        setupLabels()
         setupSeparatorLine()
         setupHighlightView()
         setupTableView()
@@ -103,6 +102,20 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         // 테이블 뷰에 대한 초기 데이터 로딩
            loadInitialDataForTableView()
     }
+
+    func setupLabels() {
+        popularLabel.text = "인기 전시"
+        popularLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        popularLabel.textColor = .white
+        popularLabel.backgroundColor = .black
+        view.addSubview(popularLabel)
+
+        popularLabel.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom).offset(5)
+            make.leading.equalTo(view).offset(20)
+        }
+    }
+
 
     func loadInitialDataForTableView() {
         loadPopularExhibitions(isRefresh: false)
@@ -274,40 +287,14 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         highlightView.backgroundColor = .white
         view.addSubview(highlightView)
 
-        // 'popularButton'을 기준으로 하이라이트 뷰 설정
         highlightView.snp.makeConstraints { make in
-            make.top.equalTo(separatorLine.snp.top)
-            make.height.equalTo(4)
-            make.width.equalTo(popularButton)
-            make.centerX.equalTo(popularButton)
+            make.bottom.equalTo(separatorLine.snp.bottom)
+            make.height.equalTo(2)
+            make.width.equalTo(popularLabel)
+            make.centerX.equalTo(popularLabel)
         }
 
 
-    }
-
-//    func selectButton(_ button: UIButton) {
-//        selectedButton?.setTitleColor(.lightGray, for: .normal)
-//        button.setTitleColor(.white, for: .normal)
-//        selectedButton = button
-//
-//        highlightView.snp.remakeConstraints { make in
-//            make.bottom.equalTo(separatorLine.snp.top)
-//            make.height.equalTo(2)
-//            make.width.equalTo(button)
-//            make.centerX.equalTo(button)
-//        }
-//
-//        UIView.animate(withDuration: 0.3) {
-//            self.view.layoutIfNeeded()
-//        }
-//
-//        updateData(for: button)  // 여기에 추가
-//    }
-
-
-    @objc func buttonClicked(_ sender: UIButton) {
-//        selectButton(sender)
-//        updateData(for: sender)
     }
 
 
@@ -332,26 +319,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
     }
 
-    func setupButtons() {
-        let buttons = [popularButton]
-        let titles = ["인기"]
 
-        for (button, title) in zip(buttons, titles) {
-            button.setTitle(title, for: .normal)
-            button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 16)
-            button.backgroundColor = .black
-            button.setTitleColor(.lightGray, for: .selected)
-            button.addTarget(self, action: #selector(buttonClicked(_:)), for: .touchUpInside)
-            view.addSubview(button)
-        }
-
-        popularButton.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(5)
-            make.leading.equalTo(view).offset(20)
-        }
-        
-
-    }
 
 
     func setupSeparatorLine() {
@@ -359,7 +327,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         view.addSubview(separatorLine)
 
         separatorLine.snp.makeConstraints { make in
-            make.top.equalTo(popularButton.snp.bottom).offset(10)  // 버튼들 아래에 위치
+            make.top.equalTo(popularLabel.snp.bottom).offset(10)  // 버튼들 아래에 위치
             make.leading.trailing.equalTo(view)  // 뷰의 양쪽 가장자리에 맞춤
             make.height.equalTo(1)  // 선의 높이를 1로 설정하여 얇은 선이 되도록 함
         }
@@ -409,24 +377,6 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         loadImage(for: cell, with: cellModel.imageDocumentId)
 
         return cell
-    }
-
-
-
-
-
-
-
-    // '인기' 버튼 클릭 시 호출되는 함수
-    func updateData(for button: UIButton) {
-        if button == popularButton {
-            refreshControl.beginRefreshing()
-            loadPopularExhibitions(isRefresh: true) // 인기 전시 정보를 로드합니다.
-            tableView.isHidden = false
-            collectionView.isHidden = true
-        } else {
-            // 다른 버튼에 대한 처리
-        }
     }
 
 

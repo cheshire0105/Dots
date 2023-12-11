@@ -72,9 +72,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     // 새로고침 컨트롤 설정 메소드
       func configureRefreshControl() {
+          refreshControl.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
           // 새로고침 컨트롤에 대한 타겟-액션 설정
           refreshControl.addTarget(self, action: #selector(refreshReviewsData(_:)), for: .valueChanged)
-
           // 테이블 뷰에 새로고침 컨트롤 추가
           reviewsTableView.refreshControl = refreshControl
       }
