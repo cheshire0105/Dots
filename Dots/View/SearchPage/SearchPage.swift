@@ -361,13 +361,6 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         coverView.isHidden = true // 검색 취소 시 커버 뷰를 숨김
     }
 
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        searchBar.resignFirstResponder() // 키보드 숨기기
-//        coverView.isHidden = true // 검색 완료 시 커버 뷰를 숨김
-//        // 검색 로직을 여기에 추가하세요.
-//    }
-
-
 
     func setupHighlightView() {
         highlightView.backgroundColor = .white
@@ -612,9 +605,6 @@ struct ExhibitionRecord: Encodable {
     // 기타 필드를 여기에 추가할 수 있습니다.
 }
 
-
-//아피찻퐁
-
 class AutocompleteTableViewCell: UITableViewCell {
     // 여기에 UI 요소를 추가하세요. 예: 레이블, 이미지뷰 등
     let titleLabel = UILabel()
@@ -632,6 +622,7 @@ class AutocompleteTableViewCell: UITableViewCell {
     private func setupUI() {
         // titleLabel 설정
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 20)
         contentView.addSubview(titleLabel)
 
         // titleLabel 오토레이아웃 설정
