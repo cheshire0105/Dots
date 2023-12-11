@@ -38,7 +38,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     var refreshControl = UIRefreshControl()
     var cachedData: [PopularCellModel]?
 
-    var autocompleteResults: [String] = []
+    var autocompleteResults: [ExhibitionHit] = []
        let autocompleteTableView = UITableView()
 
     var client: SearchClient!
@@ -48,18 +48,26 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
         // 네비게이션 바 숨기기
         navigationController?.setNavigationBarHidden(true, animated: animated)
+
+
     }
+
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // 다른 화면으로 넘어갈 때 네비게이션 바 다시 표시
         navigationController?.setNavigationBarHidden(false, animated: animated)
+        // 탭 바 표시하기
+        tabBarController?.tabBar.isHidden = false
     }
 
 
@@ -463,8 +471,12 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                 return UITableViewCell() // 또는 적절한 기본값 반환
             }
             let cell = tableView.dequeueReusableCell(withIdentifier: "AutocompleteTableViewCell", for: indexPath) as! AutocompleteTableViewCell
-            let result = autocompleteResults[indexPath.row]
-            cell.configure(with: result)
+            let hit = autocompleteResults[indexPath.row]
+
+            // 전시 타이틀과 미술관 이름을 결합하여 텍스트 설정
+            let displayText = "\(hit.title) - \(hit.museumName)"
+            cell.configure(with: displayText)
+
             return cell
         } else {
             guard indexPath.row < currentData.count else {
@@ -491,18 +503,31 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     // UITableViewDataSource 및 UITableViewDelegate 메서드
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let backgroundImageVC = BackgroundImageViewController()
-        backgroundImageVC.hidesBottomBarWhenPushed = true
+        if tableView == autocompleteTableView {
+            guard indexPath.row < autocompleteResults.count else { return }
 
-        let selectedCellModel = currentData[indexPath.row]
-        backgroundImageVC.posterImageName = selectedCellModel.imageDocumentId
-        backgroundImageVC.titleName = selectedCellModel.title
+            let selectedHit = autocompleteResults[indexPath.row]
+            let detailViewController = BackgroundImageViewController()
+            detailViewController.posterImageName = selectedHit.objectID
+            detailViewController.titleName = selectedHit.title // 여기서 제목을 설정합니다.
 
-        // Add print statement to check the title value
-        print("Selected title: \(selectedCellModel.title)")
+            navigationController?.pushViewController(detailViewController, animated: true)
+        } else {
+            // 기본 테이블 뷰에서 선택된 셀 처리
+            let backgroundImageVC = BackgroundImageViewController()
+            backgroundImageVC.hidesBottomBarWhenPushed = true
 
-        self.navigationController?.pushViewController(backgroundImageVC, animated: true)
+            let selectedCellModel = currentData[indexPath.row]
+            backgroundImageVC.posterImageName = selectedCellModel.imageDocumentId
+            backgroundImageVC.titleName = selectedCellModel.title
+
+            // 선택된 제목 확인
+            print("Selected title: \(selectedCellModel.title)")
+
+            navigationController?.pushViewController(backgroundImageVC, animated: true)
+        }
     }
+
 
 
 
@@ -540,7 +565,7 @@ extension SearchPage {
             case .success(let response):
                 do {
                     let hits: [ExhibitionHit] = try response.extractHits()
-                    self.autocompleteResults = hits.map { "\($0.title) - \($0.museumName)" }
+                    self.autocompleteResults = try response.extractHits()
                     print("검색 결과: \(self.autocompleteResults)") // 검색 결과 확인
                     DispatchQueue.main.async {
                                       self.updateAutocompleteTable()
@@ -573,6 +598,7 @@ struct ExhibitionHit: Codable {
         case museumName = "museumName"
     }
 }
+
 
 
 

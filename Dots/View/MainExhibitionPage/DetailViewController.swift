@@ -35,6 +35,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     let galleryAddressLabel = UILabel()
 
     let additionalInfoLabel = UILabel()
+    
 
 
     var labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
