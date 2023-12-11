@@ -29,14 +29,67 @@ struct 메인페이지_전체_전시_섹션 {
 
 
 
-class MainExhibitionPage: UIViewController {
-    
+class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+
     var collectionViewTopConstraint: Constraint?
     var exhibitions = [ExhibitionModel]()
     var secondSectionExhibitions = [ExhibitionModel]()
     var thirdSectionExhibitions = [ExhibitionModel]()
+    let regions = ["인사동", "북촌", "광화문 종로", "평창동", "홍대 연남", "청담", "신사", "용산", "성북", "대학로", "서초 도곡", "삼성 역삼", "성동", "북서울", "헤이리", "경기", "인천", "부산" , "대구" , "강원", "대전", "충정", "광주", "전라", "경상", "울산", "제주"]
 
-    
+
+    private lazy var customAlertView: UIView = {
+        let view = UIView()
+        // 여기에 얼럿 뷰 디자인 설정
+        view.layer.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1).cgColor
+        view.layer.cornerRadius = 15
+        view.isHidden = true
+        return view
+    }()
+
+    // 얼럿 뷰 내에 배치할 요소들 (예: 레이블, 버튼 등)
+    private lazy var alertTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "다른 지역의 전시도 찾아볼까요?"
+        label.textColor = .black
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
+        label.textAlignment = .center
+        return label
+    }()
+
+    private lazy var alertConfirmButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("찾기", for: .normal)
+        button.backgroundColor = .black // 검은색 배경
+        button.setTitleColor(.white, for: .normal) // 하얀색 텍스트
+        button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        button.layer.cornerRadius = 20 // 모서리를 둥글게
+        button.addTarget(self, action: #selector(alertConfirmButtonTapped), for: .touchUpInside)
+
+        return button
+    }()
+
+
+
+    private lazy var blurEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.isHidden = true
+        return blurEffectView
+    }()
+
+    private lazy var regionPickerView: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.overrideUserInterfaceStyle = .light
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        return pickerView
+    }()
+
+    var selectedRegion: String = "서울"
+
     // 새로운 컬렉션뷰를 정의합니다.
     // MainExhibitionCollectionView 초기화 부분에서 레이아웃 설정 변경
     lazy var MainExhibitionCollectionView: UICollectionView = {
@@ -44,7 +97,7 @@ class MainExhibitionPage: UIViewController {
         collectionView.backgroundColor = .black
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-        
+
         collectionView.register(MainExhibitionFirstSectionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
         collectionView.register(선별_전시_컬렉션_셀.self, forCellWithReuseIdentifier: "선별_전시_컬렉션_셀")
         collectionView.register(선별_전시_컬렉션_셀_헤더.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더")
@@ -52,7 +105,113 @@ class MainExhibitionPage: UIViewController {
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
-    
+
+    // 컴포지셔널 레이아웃을 생성하는 메소드
+    let layout = UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in
+        if sectionIndex == 0 {
+            // Main Exhibition Item
+            let mainExhibitionItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                heightDimension: .absolute(360)) // MainExhibitionCollectionCell의 높이
+            let mainExhibitionItem = NSCollectionLayoutItem(layoutSize: mainExhibitionItemSize)
+
+            // Main Exhibition Group
+            let mainExhibitionGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                 heightDimension: .absolute(360))
+            let mainExhibitionGroup = NSCollectionLayoutGroup.horizontal(layoutSize: mainExhibitionGroupSize, subitems: [mainExhibitionItem])
+
+            // Main Exhibition Section
+            let section = NSCollectionLayoutSection(group: mainExhibitionGroup)
+            section.orthogonalScrollingBehavior = .groupPaging // 여기에서 가로 스크롤을 설정합니다.
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0) // 첫 번째 섹션의 아래 간격을 10으로 설정
+
+            return section // 이 부분이 누락되어 있었습니다.
+
+        }else {
+            // Second section (Gray Square Cells)
+
+            let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
+                                                  heightDimension: .absolute(300))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 40, trailing: 0)
+
+            let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
+                                                   heightDimension: .absolute(250))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
+            let section = NSCollectionLayoutSection(group: group)
+
+            // 섹션을 생성한 후에 헤더를 설정합니다.
+            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44))
+            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+            section.boundarySupplementaryItems = [header]
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
+
+            section.interGroupSpacing = 16
+            section.orthogonalScrollingBehavior = .continuous
+
+            return section
+        }
+    }
+
+    // 얼럿 뷰 설정
+    private func setupCustomAlertView() {
+        blurEffectView.contentView.addSubview(customAlertView)
+        customAlertView.addSubview(alertTitleLabel)
+        customAlertView.addSubview(regionPickerView)
+        customAlertView.addSubview(alertConfirmButton)
+
+
+        customAlertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(300)
+            make.height.equalTo(400)
+        }
+
+        alertTitleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(20)
+            make.height.equalTo(15)
+            make.left.right.equalToSuperview().inset(20)
+        }
+
+
+
+        regionPickerView.snp.makeConstraints { make in
+            make.top.equalTo(alertTitleLabel.snp.bottom).offset(10)
+            make.left.right.equalToSuperview().inset(20)
+            make.height.equalTo(300) // 적당한 높이 설정
+            make.bottom.equalTo(alertConfirmButton.snp.top).offset(10)
+        }
+
+        alertConfirmButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(20)
+            make.left.right.equalToSuperview().inset(20)
+            make.height.equalTo(40)
+        }
+    }
+
+
+
+    @objc private func alertConfirmButtonTapped() {
+        customAlertView.isHidden = true
+        blurEffectView.isHidden = true
+
+        // 선택된 지역을 사용하는 로직 여기에 추가
+        print("선택된 지역: \(selectedRegion)")
+
+        // 예: 선택된 지역에 따라 데이터를 로드하는 함수 호출
+        loadExhibitions(forRegion: selectedRegion)
+
+        MainExhibitionCollectionView.reloadData() // 컬렉션 뷰 데이터를 다시 로드하여 섹션 헤더를 업데이트합니다.
+
+    }
+
+    // 선택된 지역에 따라 데이터를 로드하는 가상의 함수
+    func loadExhibitions(forRegion region: String) {
+        // 여기에서 지역에 따른 데이터 로드 로직 구현
+        print("데이터 로딩: \(region) 지역의 전시회")
+    }
+
+
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -75,8 +234,22 @@ class MainExhibitionPage: UIViewController {
         setupNewCollectionView()
         fetchExhibitionData()
         fetchAdditionalExhibitionData()
+        view.addSubview(blurEffectView) // 블러 뷰 추가
+        if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
+            window.addSubview(blurEffectView)
+            blurEffectView.snp.makeConstraints { make in
+                make.edges.equalTo(window)
+            }
+        }
+
+          setupCustomAlertView() // 얼럿 뷰 설정
+
         self.view.backgroundColor = .black
-        
+
+        // 탭 제스처 인식기 추가
+           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissAlertView))
+           blurEffectView.addGestureRecognizer(tapGesture)
+
         if let 현제접속중인_유저 = Auth.auth().currentUser {
             print("로그인한 사용자 정보:")
             print("UID: \(현제접속중인_유저.uid)")
@@ -165,52 +338,7 @@ class MainExhibitionPage: UIViewController {
 
     }
     
-    // 컴포지셔널 레이아웃을 생성하는 메소드
-    let layout = UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in
-        if sectionIndex == 0 {
-            // Main Exhibition Item
-            let mainExhibitionItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                                heightDimension: .absolute(360)) // MainExhibitionCollectionCell의 높이
-            let mainExhibitionItem = NSCollectionLayoutItem(layoutSize: mainExhibitionItemSize)
-            
-            // Main Exhibition Group
-            let mainExhibitionGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                                 heightDimension: .absolute(360))
-            let mainExhibitionGroup = NSCollectionLayoutGroup.horizontal(layoutSize: mainExhibitionGroupSize, subitems: [mainExhibitionItem])
-            
-            // Main Exhibition Section
-            let section = NSCollectionLayoutSection(group: mainExhibitionGroup)
-            section.orthogonalScrollingBehavior = .groupPaging // 여기에서 가로 스크롤을 설정합니다.
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0) // 첫 번째 섹션의 아래 간격을 10으로 설정
-            
-            return section // 이 부분이 누락되어 있었습니다.
-            
-        }else {
-            // Second section (Gray Square Cells)
-            
-            let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
-                                                  heightDimension: .absolute(300))
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 40, trailing: 0)
-            
-            let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(130),
-                                                   heightDimension: .absolute(250))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-            
-            let section = NSCollectionLayoutSection(group: group)
-            
-            // 섹션을 생성한 후에 헤더를 설정합니다.
-            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44))
-            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-            section.boundarySupplementaryItems = [header]
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
-            
-            section.interGroupSpacing = 16
-            section.orthogonalScrollingBehavior = .continuous
-            
-            return section
-        }
-    }
+
     
     
     private func setupNewCollectionView() {
@@ -377,18 +505,29 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
-            // 섹션에 따른 헤더 텍스트 설정
-            if indexPath.section == 1 {
-                header.label.text = "서울의 전시"
-            } else if indexPath.section == 2 {
-                header.label.text = "가장 많이 찾는 전시"
-            }
-            return header
-        }
-        return UICollectionReusableView()
+              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
+              if indexPath.section == 1 {
+                  header.label.text = "\(selectedRegion)의 전시"
+                  let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
+                  header.addGestureRecognizer(tapGesture)
+              }
+              return header
+          }
+          return UICollectionReusableView()
     }
-    
+
+    @objc func headerTapped() {
+        customAlertView.isHidden = false
+        blurEffectView.isHidden = false
+    }
+
+    @objc private func dismissAlertView() {
+        customAlertView.isHidden = true
+        blurEffectView.isHidden = true
+    }
+
+
+
     
     // 이 메서드는 각 컬렉션 뷰에 대한 섹션의 수를 정의합니다.
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -424,10 +563,24 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
-    
-    
-    
-    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+         return 1
+     }
+
+     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+         return regions.count
+     }
+
+     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+         return regions[row]
+     }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedRegion = regions[row]
+    }
+
+
+
 }
 
 
