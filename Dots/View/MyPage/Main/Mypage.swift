@@ -432,7 +432,6 @@ extension Mypage {
     private func 캐시된_유저_데이터_마이페이지_적용하기() {
         var 닉네임_캐싱: String?
         var 이메일_캐싱: String?
-        // 만약 캐시된 데이터가 있다면 네트워크 요청 없이 적용
         if let 캐시된닉네임 = 닉네임_캐싱, let 캐시된이메일 = 이메일_캐싱 {
             캐시된_유저_닉네임_이메일_마이페이지_적용하기( 닉네임: 캐시된닉네임, 이메일: 캐시된이메일)
             return
@@ -477,7 +476,6 @@ extension Mypage {
     }
     
     private func 캐시된_유저_닉네임_이메일_마이페이지_적용하기( 닉네임: String?, 이메일: String?) {
-        
         
         if let 닉네임 = 닉네임 {
             self.마이페이지_프로필_닉네임.text = 닉네임

@@ -112,7 +112,7 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
                 }
             }
         }
-        현재_유저_프로필이미지_적용하기()
+        캐시된_유저_데이터_마이페이지_적용하기()
   
         
         UI레이아웃()
@@ -433,4 +433,57 @@ extension 프로필변경_화면 {
                 }
             }
         }
+    private func 캐시된_유저_데이터_마이페이지_적용하기() {
+        var 닉네임_캐싱: String?
+        var 이메일_캐싱: String?
+        if let 캐시된닉네임 = 닉네임_캐싱, let 캐시된이메일 = 이메일_캐싱 {
+            캐시된_유저_닉네임_변경하기_적용하기( 닉네임: 캐시된닉네임)
+            return
+        }
+        
+        guard let 현재접속중인유저 = Auth.auth().currentUser else {
+            return
+        }
+        
+        let 파이어스토어 = Firestore.firestore()
+        let 이메일 = 현재접속중인유저.email ?? ""
+        let 유저컬렉션: CollectionReference
+        
+        if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
+            유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
+        } else {
+            유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
+        }
+        
+        유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+                print("컬렉션 조회 실패")
+                return
+            }
+            
+            if let userDocument = documents.first {
+                let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
+                let 닉네임 = userDocument["닉네임"] as? String ?? ""
+                let 이메일 = userDocument["이메일"] as? String ?? ""
+                            
+                닉네임_캐싱 = 닉네임
+                이메일_캐싱 = 이메일
+                
+                DispatchQueue.main.async {
+                    self.캐시된_유저_닉네임_변경하기_적용하기(닉네임: 닉네임_캐싱)
+                    if let url = URL(string: 프로필이미지URL) {
+                        self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
+                        self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .selected, completed: nil)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func 캐시된_유저_닉네임_변경하기_적용하기( 닉네임: String?) {
+        
+        if let 닉네임 = 닉네임 {
+            self.새_닉네임_텍스트필드.text = 닉네임
+        }
+    }
 }
