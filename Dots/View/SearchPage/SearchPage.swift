@@ -101,10 +101,11 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        indexFirestoreDataToAlgolia()
 
-        // Algolia 클라이언트 및 인덱스 초기화
-               client = SearchClient(appID: "6XB9VU6UYB", apiKey: "a7d85c26f57385132014253ee6a132ab")
-               index = client.index(withName: "전시_상세")
+//        // Algolia 클라이언트 및 인덱스 초기화
+//               client = SearchClient(appID: "6XB9VU6UYB", apiKey: "a7d85c26f57385132014253ee6a132ab")
+//               index = client.index(withName: "전시_상세")
 
         autocompleteTableView.register(AutocompleteTableViewCell.self, forCellReuseIdentifier: "AutocompleteTableViewCell")
 
@@ -121,6 +122,38 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupAutocompleteTableView()
 
     }
+
+
+    func indexFirestoreDataToAlgolia() {
+        let firestore = Firestore.firestore()
+        let algoliaClient = SearchClient(appID: "6XB9VU6UYB", apiKey: "a7d85c26f57385132014253ee6a132ab")
+        let index = algoliaClient.index(withName: "전시_상세")
+
+        firestore.collection("전시_상세").getDocuments(source: .default) { (snapshot, error) in
+            guard let documents = snapshot?.documents else {
+                print("Error fetching documents: \(error!)")
+                return
+            }
+
+            let records = documents.compactMap { document -> ExhibitionRecord? in
+                guard let title = document.data()["전시_타이틀"] as? String,
+                      let museumName = document.data()["미술관_이름"] as? String else {
+                    return nil
+                }
+                return ExhibitionRecord(objectID: document.documentID, title: title, museumName: museumName)
+            }
+
+            index.saveObjects(records) { result in
+                switch result {
+                case .success(let response):
+                    print("Documents indexed successfully: \(response)")
+                case .failure(let error):
+                    print("Error indexing documents: \(error)")
+                }
+            }
+        }
+    }
+
 
 
 
@@ -426,24 +459,28 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == autocompleteTableView {
+            guard indexPath.row < autocompleteResults.count else {
+                return UITableViewCell() // 또는 적절한 기본값 반환
+            }
             let cell = tableView.dequeueReusableCell(withIdentifier: "AutocompleteTableViewCell", for: indexPath) as! AutocompleteTableViewCell
             let result = autocompleteResults[indexPath.row]
             cell.configure(with: result)
             return cell
         } else {
-            // 기본 테이블 뷰 셀 구성
+            guard indexPath.row < currentData.count else {
+                return UITableViewCell() // 또는 적절한 기본값 반환
+            }
             let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
             let cellModel = currentData[indexPath.row]
 
-            // 텍스트 바인딩
+            // 텍스트 바인딩 및 이미지 로드
             bindText(for: cell, with: cellModel.imageDocumentId)
-
-            // 이미지 로드
             loadImage(for: cell, with: cellModel.imageDocumentId)
 
             return cell
         }
     }
+
 
 
 
@@ -490,8 +527,14 @@ extension SearchPage {
     }
 
     private func performSearch(with searchText: String) {
+        // Algolia 클라이언트 및 인덱스 초기화
+        client = SearchClient(appID: "6XB9VU6UYB", apiKey: "a7d85c26f57385132014253ee6a132ab")
+        index = client.index(withName: "전시_상세")
+
         var query = Query(searchText)
-        query.attributesToRetrieve = ["전시_타이틀", "미술관_이름"]
+        query.attributesToRetrieve = ["title", "museumName"]
+
+        // 이제 index는 nil이 아님을 보장
         index.search(query: query) { result in
             switch result {
             case .success(let response):
@@ -520,13 +563,24 @@ struct PopularCellModel {
 }
 
 struct ExhibitionHit: Codable {
+    let objectID: String
     let title: String
-    let museumName: String // 미술관 이름 필드 추가
+    let museumName: String
 
     enum CodingKeys: String, CodingKey {
-        case title = "전시_타이틀"
-        case museumName = "미술관_이름" // Algolia 인덱스의 필드 이름과 매핑
+        case objectID
+        case title = "title"
+        case museumName = "museumName"
     }
+}
+
+
+
+struct ExhibitionRecord: Encodable {
+    let objectID: String
+    let title: String
+    let museumName: String
+    // 기타 필드를 여기에 추가할 수 있습니다.
 }
 
 
