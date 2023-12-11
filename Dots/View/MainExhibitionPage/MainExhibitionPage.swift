@@ -32,27 +32,10 @@ struct 메인페이지_전체_전시_섹션 {
 class MainExhibitionPage: UIViewController {
     
     var collectionViewTopConstraint: Constraint?
-//    let items = ["전시회", "미술관", "갤러리", "박물관", "비엔날레"]
     var exhibitions = [ExhibitionModel]()
     var secondSectionExhibitions = [ExhibitionModel]()
     var thirdSectionExhibitions = [ExhibitionModel]()
-    
-    
-    
-//    lazy var CategoryCollectionView: UICollectionView = {
-//        let flowLayout = UICollectionViewFlowLayout()
-//        flowLayout.scrollDirection = .horizontal
-//        flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-//        flowLayout.minimumInteritemSpacing = 8
-//        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-//        collectionView.backgroundColor = .black
-//        collectionView.showsHorizontalScrollIndicator = false
-//        collectionView.register(CategotyCell.self, forCellWithReuseIdentifier: "CategoryCollectionCell")
-//        collectionView.isScrollEnabled = true
-//        collectionView.showsVerticalScrollIndicator = false
-//        
-//        return collectionView
-//    }()
+
     
     // 새로운 컬렉션뷰를 정의합니다.
     // MainExhibitionCollectionView 초기화 부분에서 레이아웃 설정 변경
@@ -75,12 +58,10 @@ class MainExhibitionPage: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
-//        tabBarController?.tabBar.isHidden = false
 
     }
 
     override func viewDidAppear(_ animated: Bool) {
-//        tabBarController?.tabBar.isHidden = false
 
     }
 
@@ -88,11 +69,8 @@ class MainExhibitionPage: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // 네비게이션 바의 아이템들을 숨깁니다.
-//        navigationController?.setNavigationBarHidden(true, animated: false)
-        setupNavigationBar()
 
+        setupNavigationBar()
         setupCollectionView()
         setupNewCollectionView()
         fetchExhibitionData()
@@ -184,15 +162,7 @@ class MainExhibitionPage: UIViewController {
     
     
     private func setupCollectionView() {
-        
-//        view.addSubview(CategoryCollectionView)
-//        CategoryCollectionView.dataSource = self
-//        CategoryCollectionView.delegate = self
-//        CategoryCollectionView.snp.makeConstraints { make in
-//            collectionViewTopConstraint = make.top.equalTo(view.safeAreaLayoutGuide.snp.top).constraint.update(offset: 16)
-//            make.left.right.equalToSuperview().offset(6)
-//            make.height.equalTo(40)
-//        }
+
     }
     
     // 컴포지셔널 레이아웃을 생성하는 메소드
@@ -256,9 +226,6 @@ class MainExhibitionPage: UIViewController {
     
     // 기존의 sizeForItemAt 메소드를 수정하여, 새로운 컬렉션뷰의 사이즈도 설정해줍니다.
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        if collectionView == CategoryCollectionView {
-//            return CGSize(width: 73, height: 34)
-//        } else 
         if collectionView == MainExhibitionCollectionView {
             if indexPath.section == 0 {
                 return CGSize(width: UIScreen.main.bounds.width, height: 360) // 첫 번째 섹션의 셀 크기
@@ -301,9 +268,7 @@ extension MainExhibitionPage: UIScrollViewDelegate {
 // CategoryCollectionView에 대한 데이터 소스 및 델리게이트 메서드
 extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        if collectionView == CategoryCollectionView {
-//            return items.count
-//        } else 
+
         if collectionView == MainExhibitionCollectionView {
             if section == 0 {
                 return exhibitions.count
@@ -319,13 +284,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        if collectionView == CategoryCollectionView {
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionCell", for: indexPath) as! CategotyCell
-//            cell.label.text = items[indexPath.item]
-//            return cell
-//        }
-//        
-//        else 
+
         if collectionView == MainExhibitionCollectionView {
             if indexPath.section == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
@@ -333,18 +292,24 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                 cell.label.text = exhibition?.title ?? "Default Title"
                 
                 if let imageName = exhibition?.poster {
-                    let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
-                    storageRef.downloadURL { (url, error) in
-                        if let error = error {
-                            print("Error getting download URL: \(error)")
-                        } else if let url = url {
-                            DispatchQueue.main.async {
-                                cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                            let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+                            storageRef.downloadURL { (url, error) in
+                                if let error = error {
+                                    print("Error getting download URL: \(error)")
+                                } else if let url = url {
+                                    DispatchQueue.main.async {
+                                        cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), completed: { (image, error, cacheType, url) in
+                                            if cacheType == .none {
+                                                print("Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                                            } else {
+                                                print("Image was retrieved from cache")
+                                            }
+                                        })
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-                
+
                 cell.configureCellLayout(isEven: indexPath.row % 2 == 0)
                 return cell
             }
@@ -354,8 +319,7 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                 let exhibition = secondSectionExhibitions[indexPath.item]
                 cell.titleLabel.text = exhibition.title
                 cell.dateLabel.text = exhibition.period
-                
-                // 'if let' 구문 제거
+
                 let imageName = exhibition.poster
                 let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
                 storageRef.downloadURL { (url, error) in
@@ -363,23 +327,28 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                         print("Error getting download URL: \(error)")
                     } else if let url = url {
                         DispatchQueue.main.async {
-                            cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                            cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), completed: { (image, error, cacheType, url) in
+                                if cacheType == .none {
+                                    print("Section 1 Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                                } else {
+                                    print("Section 1 Image was retrieved from cache")
+                                }
+                            })
                         }
                     }
                 }
-                
+
                 return cell
             }
+
             
             else if indexPath.section == 2 {
                 if indexPath.item < thirdSectionExhibitions.count {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
                     let exhibition = thirdSectionExhibitions[indexPath.item]
                     cell.titleLabel.text = exhibition.title
-                    
                     cell.dateLabel.text = exhibition.period
-                    
-                    // 'if let' 구문 제거
+
                     let imageName = exhibition.poster
                     let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
                     storageRef.downloadURL { (url, error) in
@@ -387,14 +356,20 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                             print("Error getting download URL: \(error)")
                         } else if let url = url {
                             DispatchQueue.main.async {
-                                cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                                cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), completed: { (image, error, cacheType, url) in
+                                    if cacheType == .none {
+                                        print("Section 2 Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                                    } else {
+                                        print("Section 2 Image was retrieved from cache")
+                                    }
+                                })
                             }
                         }
                     }
                     return cell
-                    
                 }
             }
+
             
         }
         return UICollectionViewCell()
@@ -417,10 +392,6 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     
     // 이 메서드는 각 컬렉션 뷰에 대한 섹션의 수를 정의합니다.
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        if collectionView == CategoryCollectionView {
-//            // CategoryCollectionView의 경우 1개의 섹션
-//            return 1
-//        } else 
         if collectionView == MainExhibitionCollectionView {
             // MainExhibitionCollectionView의 경우 3개의 섹션
             return 3
@@ -450,7 +421,6 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             
             self.navigationController?.pushViewController(exhibitionPage, animated: true)
         }
-        // CategoryCollectionView에 대한 선택 처리 (필요한 경우)
     }
     
     

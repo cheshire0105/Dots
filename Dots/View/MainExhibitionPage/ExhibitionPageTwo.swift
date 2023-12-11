@@ -47,13 +47,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     lazy var heartIcon: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-//        button.backgroundColor = .white
-//        button.layer.cornerRadius = 20
-//
-//        button.layer.shadowOpacity = 0.9
-//        button.layer.shadowRadius = 2
-//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        button.layer.shadowColor = UIColor.black.cgColor
+
 
 
         button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
@@ -63,14 +57,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     lazy var recordButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "footprint"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-//        button.backgroundColor = .white
-//        button.layer.cornerRadius = 20
-//
-//
-//        button.layer.shadowOpacity = 0.9
-//        button.layer.shadowRadius = 2
-//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        button.layer.shadowColor = UIColor.black.cgColor
+
 
         button.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
@@ -80,13 +67,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let button = UIButton()
 
         button.setImage(UIImage(named: "쉐어"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
-//        button.backgroundColor = .white
-//        button.layer.cornerRadius = 20
-//
-//        button.layer.shadowOpacity = 0.9
-//        button.layer.shadowRadius = 2
-//        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        button.layer.shadowColor = UIColor.black.cgColor
+
 
         button.addTarget(self, action: #selector(mapPageLoad), for: .touchUpInside) // 버튼 액션 추가
         return button
@@ -104,7 +85,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
-    private lazy var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "현대차 시리즈 2023 : 정연두 - 백년여행"
         label.textColor = .white
@@ -139,16 +120,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return view
     }()
 
-    private func setupTitleLabel() {
-        view.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
-            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(50)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-80) // 하단 가장자리에서 10포인트 떨어진 위치
-
-        }
-    }
-
     private lazy var alertTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "언제 다녀오셨나요?"
@@ -181,19 +152,39 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return picker
     }()
 
+    private lazy var visitorIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "footprint_sleected 1") // 방문자 아이콘 이미지 설정
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
 
-    @objc func datePickerChanged(_ sender: UIDatePicker) {
-        // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
-        // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
-    }
+    private lazy var visitorCountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "아직 방문 등록이 되지 않았네요!" // 초기 텍스트 설정
+        label.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        return label
+    }()
 
+    private lazy var visitorStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [visitorIconImageView, visitorCountLabel])
+        stackView.axis = .horizontal
+        stackView.spacing = 5 // 이미지와 레이블 사이 간격
+        stackView.alignment = .center
+        return stackView
+    }()
 
     private lazy var confirmButton: UIButton = {
         let button = UIButton()
-        button.setTitle("등록하기", for: .normal)
+        button.setTitle("수정", for: .normal)
         button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 25 // 모서리 둥글게
+        button.layer.cornerRadius = 20 // 모서리 둥글게
+
+        // 폰트 설정
+        button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+
         button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -206,6 +197,149 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         view.isHidden = true // 처음에는 숨겨둡니다.
         return view
     }()
+
+    var posterImageName: String?
+    var titleName : String?
+
+    private lazy var backgroundImageView: UIImageView = {
+        let imageView = UIImageView(frame: self.view.bounds)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    private lazy var deleteButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("기록 삭제", for: .normal)
+        button.backgroundColor = .red
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 20
+        button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        button.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
+
+    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool, String?) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion(false, nil)
+            return
+        }
+
+        let userVisitDocument = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+
+        userVisitDocument.getDocument { (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                completion(false, nil)
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                let visited = document.data()?["visited"] as? Bool ?? false
+                let visitDate = document.data()?["유저_다녀옴_날짜"] as? String
+                completion(visited, visitDate)
+            } else {
+                completion(false, nil)
+            }
+        }
+    }
+
+
+    // 사용자가 이미 방문을 등록했는지 확인하는 함수
+    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion(false)
+            return
+        }
+
+        let userVisitDocument = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+
+        userVisitDocument.getDocument { (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                completion(false)
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                // 'visited' 필드를 확인하여 이미 방문했는지 검사
+                let visited = document.data()?["visited"] as? Bool ?? false
+                completion(visited)
+            } else {
+                // 문서가 없으면 아직 방문을 등록하지 않은 것으로 간주
+                completion(false)
+            }
+        }
+    }
+
+
+    func showAlreadyRegisteredAlert() {
+        let alert = UIAlertController(title: "알림", message: "이미 이 전시를 방문하셨습니다.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+
+    func showVisitRegistrationAlert(withEditing: Bool, existingDate: String?) {
+        if withEditing {
+            alertSubtitleLabel.text = "방문 날짜를 수정하실 수 있습니다."
+
+            // 날짜 형식 설정
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+            if let existingDate = existingDate, let date = dateFormatter.date(from: existingDate) {
+                datePicker.date = date // UIDatePicker에 날짜 설정
+            }
+
+            // 수정하는 경우에만 삭제 버튼을 보여줍니다.
+            deleteButton.isHidden = false
+
+            // 버튼 제목을 "수정"으로 설정
+            confirmButton.setTitle("수정 하기", for: .normal)
+        } else {
+            alertSubtitleLabel.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
+
+            // 새로 등록하는 경우 삭제 버튼을 숨깁니다.
+            deleteButton.isHidden = true
+
+            // 버튼 제목을 "등록하기"로 설정
+            confirmButton.setTitle("등록하기", for: .normal)
+        }
+
+        self.blurEffectView.isHidden = false
+        self.customAlertView.isHidden = false
+    }
+
+
+
+
+
+    private func setupTitleLabel() {
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16) // 왼쪽 가장자리에서 10포인트 떨어진 위치
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(50)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-110) // 하단 가장자리에서 10포인트 떨어진 위치
+
+        }
+
+        // titleLabel 아래에 스택 뷰 추가
+        view.addSubview(visitorStackView)
+        visitorStackView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.leading.equalTo(titleLabel.snp.leading)
+        }
+    }
+
+
+
+
+    @objc func datePickerChanged(_ sender: UIDatePicker) {
+        // 날짜가 변경될 때 수행할 동작을 여기에 추가합니다.
+        // 예: 선택된 날짜를 어딘가에 저장하거나 표시합니다.
+    }
+
 
 
     @objc func confirmButtonTapped() {
@@ -223,27 +357,96 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let dateString = dateFormatter.string(from: selectedDate)
 
         // Firebase Firestore에 데이터 저장
-        addVisitDateToFirestore(visitDate: dateString)
+        // 'posterImageName' 속성을 사용하여 'posterName'을 전달합니다.
+        if let posterName = self.posterImageName {
+              addVisitDateToFirestore(visitDate: dateString, posterName: posterName) {
+                  self.fetchVisitorCountAndUpdateLabel() // 방문자 수 업데이트
+              }
+          } else {
+              print("Poster name is not available")
+          }
     }
 
 
 
-    func addVisitDateToFirestore(visitDate: String) {
-        guard let userID = Auth.auth().currentUser?.uid, let posterName = posterImageName else {
-            print("유저 ID 또는 포스터 이름을 가져올 수 없습니다.")
-            return
-        }
 
-        let documentPath = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+    func addVisitDateToFirestore(visitDate: String, posterName: String, completion: @escaping () -> Void) {
+        let db = Firestore.firestore()
+        let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(Auth.auth().currentUser?.uid ?? "")
+        let posterDocument = db.collection("posters").document(posterName)
 
-        documentPath.setData(["유저_다녀옴_날짜": visitDate], merge: true) { error in
-            if let error = error {
-                print("Firestore에 데이터 저장 중 오류 발생: \(error.localizedDescription)")
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let posterDocumentSnapshot: DocumentSnapshot
+            do {
+                try posterDocumentSnapshot = transaction.getDocument(posterDocument)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+
+            let newVisitorCount = (posterDocumentSnapshot.data()?["다녀옴"] as? Int ?? 0) + 1
+
+            if !posterDocumentSnapshot.exists {
+                // 문서가 없는 경우, 초기 데이터로 문서 생성
+                transaction.setData(["다녀옴": newVisitorCount], forDocument: posterDocument)
             } else {
-                print("Firestore에 날짜 저장 성공")
+                // 문서가 있는 경우, 기존 데이터 업데이트
+                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+            }
+
+            // 사용자 방문 날짜 등록
+            transaction.setData(["유저_다녀옴_날짜": visitDate], forDocument: userVisitDocument)
+            transaction.setData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument)
+
+
+            return nil
+        }) { (object, error) in
+            if let error = error {
+                print("트랜잭션 실패: \(error)")
+            } else {
+                print("트랜잭션이 성공적으로 완료됨")
+                self.fetchVisitorCountAndUpdateLabel() // 여기에서 호출
             }
         }
     }
+
+
+
+    // 서버에서 방문자 수를 가져오고 레이블 업데이트하는 메서드
+    func fetchVisitorCountAndUpdateLabel() {
+        guard let posterName = self.posterImageName else {
+            print("Poster name is not available")
+            return
+        }
+
+        let db = Firestore.firestore()
+        let posterDocument = db.collection("posters").document(posterName)
+
+        posterDocument.getDocument { [weak self] (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                let visitorCount = document.data()?["다녀옴"] as? Int ?? 0
+                DispatchQueue.main.async {
+                    if visitorCount > 0 {
+                        self?.visitorCountLabel.text = "\(visitorCount)명이 다녀왔어요"
+                    } else {
+                        // 방문자 수가 0명일 경우의 메시지
+                        self?.visitorCountLabel.text = "아직 방문 등록이 되지 않았네요!"
+                    }
+                }
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+
+
+
+
 
 
 
@@ -269,39 +472,52 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-    var posterImageName: String?
-    var titleName : String?
-
-    private lazy var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(frame: self.view.bounds)
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
-    }()
 
 
 
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        print(self.navigationController?.interactivePopGestureRecognizer?.isEnabled)
-//        print(self.navigationController?.interactivePopGestureRecognizer?.delegate)
-//
-//    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
         tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        updateHeartIconStateFromFirestore()
+
 
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // 다른 화면으로 이동하기 전에 탭바를 다시 표시합니다.
-//        tabBarController?.tabBar.isHidden = false
         navigationController?.setNavigationBarHidden(true, animated: animated)
 
+
+
+    }
+
+    func updateHeartIconStateFromFirestore() {
+        guard let posterName = self.posterImageName, let userID = Auth.auth().currentUser?.uid else {
+            return
+        }
+
+        let db = Firestore.firestore()
+        let posterDocument = db.collection("posters").document(posterName)
+
+        posterDocument.getDocument { [weak self] (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching document: \(error)")
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                let userLikes = document.data()?["userLikes"] as? [String: Bool] ?? [:]
+                let isLiked = userLikes[userID] ?? false
+
+                DispatchQueue.main.async {
+                    self?.heartIcon.isSelected = isLiked
+                    self?.updateHeartIconState()
+                }
+            }
+        }
     }
 
 
@@ -315,7 +531,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         // 네비게이션 바 대형 타이틀 비활성화
 
         // 네비게이션 백 버튼 설정
-            setupNavigationBackButton()
+        setupNavigationBackButton()
         // 기존의 backgroundImageView 설정 코드를 제거하고 새로운 코드로 대체합니다.
         view.addSubview(backgroundImageView)
         view.sendSubviewToBack(backgroundImageView)
@@ -351,6 +567,20 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             setupBackgroundImage(with: posterName)
         }
 
+        if let posterName = self.posterImageName {
+            checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] visited in
+                DispatchQueue.main.async {
+                    if visited {
+                        // 이미 방문을 등록했다면 변경된 이미지로 설정
+                        self?.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
+                    } else {
+                        // 아직 방문을 등록하지 않았다면 기본 이미지로 설정
+                        self?.recordButton.setImage(UIImage(named: "footprint"), for: .normal)
+                    }
+                }
+            }
+        }
+
 
         setupTitleLabel() // 타이틀 레이블 설정 호출
 
@@ -358,35 +588,28 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             titleLabel.text = titleName
         }
 
+
+
         view.addSubview(blurEffectView)
         view.addSubview(customAlertView)
         setupCustomAlertView()
 
-
-//        // 스와이프 제스처 인식기 추가
-//        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeBack(_:)))
-//        swipeGesture.direction = .right // 오른쪽 스와이프를 인식
-//        view.addGestureRecognizer(swipeGesture)
-
         // blurEffectView에 탭 제스처 인식기 추가
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
-            blurEffectView.addGestureRecognizer(tapGesture)
-            blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
-
-        // 그라데이션 뷰 추가
-//           view.addSubview(gradientView)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blurViewTapped))
+        blurEffectView.addGestureRecognizer(tapGesture)
+        blurEffectView.isUserInteractionEnabled = true // 사용자 상호작용 활성화
 
 
         view.addSubview(mapAlertView)
-            setupMapAlertView()
+        setupAlertView()
+
+        fetchVisitorCountAndUpdateLabel()
+
 
     }
 
     private func setupNavigationBackButton() {
-//        let backButton = createCustomBackButton()
-//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-//        let headsetButton = createCustomHeadsetIcon()
-//            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: headsetButton)
+
     }
 
 
@@ -395,7 +618,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         navigationController?.popViewController(animated: true)
     }
 
-    private func setupMapAlertView() {
+    private func setupAlertView() {
         mapAlertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(310)
@@ -417,6 +640,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             make.left.right.equalTo(mapAlertView).inset(10)
         }
 
+
+
         // 새로운 뷰 생성 및 설정
         let newView = UIView()
         newView.layer.backgroundColor = UIColor(red: 0.736, green: 0.832, blue: 0.018, alpha: 1).cgColor
@@ -433,41 +658,44 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         // 새로운 뷰에 이미지 뷰 추가
-         let imageView = UIImageView()
-         imageView.contentMode = .scaleAspectFit // 콘텐츠 모드 설정
-         imageView.image = UIImage(named: "tabler_link") // 이미지 설정
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit // 콘텐츠 모드 설정
+        imageView.image = UIImage(named: "tabler_link") // 이미지 설정
 
-         newView.addSubview(imageView)
+        newView.addSubview(imageView)
 
-         // 이미지 뷰의 제약 조건 설정
-         imageView.snp.makeConstraints { make in
-             make.left.equalTo(newView.snp.left).offset(17) // 왼쪽 여백 설정
-             make.centerY.equalTo(newView.snp.centerY) // 세로 중앙 정렬
-             make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
-         }
+        // 이미지 뷰의 제약 조건 설정
+        imageView.snp.makeConstraints { make in
+            make.left.equalTo(newView.snp.left).offset(17) // 왼쪽 여백 설정
+            make.centerY.equalTo(newView.snp.centerY) // 세로 중앙 정렬
+            make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
+        }
 
 
         // 딥 링크 URL 생성
-           let deepLink = createDeepLink()
+        let deepLink = createDeepLink()
 
-           // 딥 링크를 표시하는 레이블 생성
-           let deepLinkLabel = UILabel()
-           deepLinkLabel.text = deepLink
-           deepLinkLabel.textColor = .black
-           deepLinkLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-           deepLinkLabel.textAlignment = .center
-           deepLinkLabel.numberOfLines = 0
-           deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
+        // 딥 링크를 표시하는 레이블 생성
+        let deepLinkLabel = UILabel()
+        deepLinkLabel.text = deepLink
+        deepLinkLabel.textColor = .black
+        deepLinkLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        deepLinkLabel.textAlignment = .center
+        deepLinkLabel.numberOfLines = 0
+        deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
 
-           mapAlertView.addSubview(deepLinkLabel)
+        mapAlertView.addSubview(deepLinkLabel)
 
 
-         let confirmButton = UIButton()
+        let confirmButton = UIButton()
         confirmButton.setTitle("공유 하기", for: .normal)
+        confirmButton.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
         confirmButton.backgroundColor = .black
         confirmButton.setTitleColor(.white, for: .normal)
         confirmButton.layer.cornerRadius = 20 // 모서리 둥글게
         confirmButton.addTarget(self, action: #selector(shareDeepLink), for: .touchUpInside)
+
+
 
 
         mapAlertView.addSubview(confirmButton)
@@ -479,15 +707,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
 
-//        // 레이블에 탭 제스처 인식기 추가
-//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shareDeepLink))
-//            deepLinkLabel.addGestureRecognizer(tapGesture)
-
-          deepLinkLabel.snp.makeConstraints { make in
-              make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
-              make.centerY.equalTo(newView.snp.centerY)
-              make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-          }
+        deepLinkLabel.snp.makeConstraints { make in
+            make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
+            make.centerY.equalTo(newView.snp.centerY)
+            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
+        }
     }
 
     @objc private func shareDeepLink() {
@@ -501,12 +725,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-//    @objc func handleSwipeBack(_ gesture: UISwipeGestureRecognizer) {
-//        if gesture.direction == .right {
-//            // 네비게이션 컨트롤러를 사용하여 이전 화면으로 돌아갑니다.
-//            navigationController?.popViewController(animated: true)
-//        }
-//    }
     @objc func blurViewTapped() {
         customAlertView.isHidden = true
         mapAlertView.isHidden = true // mapAlertView도 숨깁니다.
@@ -559,7 +777,87 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             make.height.equalTo(56) // 버튼의 높이
             make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
         }
+
+        let buttonStackView = UIStackView(arrangedSubviews: [confirmButton, deleteButton])
+        buttonStackView.axis = .horizontal
+        buttonStackView.distribution = .fillEqually
+        buttonStackView.spacing = 20
+        buttonStackView.spacing = 10
+
+        customAlertView.addSubview(buttonStackView)
+        buttonStackView.snp.makeConstraints { make in
+            make.top.equalTo(datePicker.snp.bottom).offset(13)
+            make.centerX.equalTo(customAlertView.snp.centerX)
+            make.width.equalTo(273) // 스택 뷰의 너비
+            make.height.equalTo(40) // 스택 뷰의 높이
+        }
     }
+
+    @objc func deleteButtonTapped() {
+        guard let posterName = self.posterImageName else {
+            print("Poster name is not available")
+            return
+        }
+
+        deleteVisitDateInFirestore(posterName: posterName) {
+            self.fetchVisitorCountAndUpdateLabel() // 방문자 수 업데이트
+        }
+    }
+
+
+    func deleteVisitDateInFirestore(posterName: String, completion: @escaping () -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("User ID is not available")
+            return
+        }
+
+        let db = Firestore.firestore()
+        let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(userID)
+        let posterDocument = db.collection("posters").document(posterName)
+
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let posterDocumentSnapshot: DocumentSnapshot
+            do {
+                try posterDocumentSnapshot = transaction.getDocument(posterDocument)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+
+            if let visitorCount = posterDocumentSnapshot.data()?["다녀옴"] as? Int, visitorCount > 0 {
+                // 방문자 수를 1 감소시키는 로직
+                let newVisitorCount = visitorCount - 1
+                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+            }
+
+            // 사용자 방문 날짜 삭제
+            transaction.updateData(["유저_다녀옴_날짜": FieldValue.delete(), "visited": false], forDocument: userVisitDocument)
+
+            return nil
+        }) { (object, error) in
+            if let error = error {
+                print("트랜잭션 실패: \(error)")
+            } else {
+                print("트랜잭션이 성공적으로 완료됨")
+                self.fetchVisitorCountAndUpdateLabel() // 여기에서 호출
+                self.customAlertView.isHidden = true
+                self.blurEffectView.isHidden = true
+
+                // 방문자 수 업데이트 및 UI 변경
+                DispatchQueue.main.async { [weak self] in
+                    self?.fetchVisitorCountAndUpdateLabel()
+                    self?.customAlertView.isHidden = true
+                    self?.blurEffectView.isHidden = true
+                    // footprint 이미지를 기본 이미지로 변경
+                    self?.recordButton.setImage(UIImage(named: "footprint"), for: .normal)
+                }
+            }
+
+        }
+    }
+
+
+
 
 
     func createDeepLink() -> String {
@@ -577,13 +875,21 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             if let error = error {
                 print("Error getting download URL: \(error)")
             } else if let url = url {
-                // 이미지 로드
-                URLSession.shared.dataTask(with: url) { (data, _, error) in
-                    guard let data = data, error == nil else { return }
-                    DispatchQueue.main.async {
-                        self?.backgroundImageView.image = UIImage(data: data)
-                    }
-                }.resume()
+                // 이미지를 SDWebImage를 사용하여 다운로드 및 캐시합니다.
+                DispatchQueue.main.async {
+                    self?.backgroundImageView.sd_setImage(with: url, completed: { (image, error, cacheType, url) in
+                        if let error = error {
+                            print("Error downloading image: \(error)")
+                        } else {
+                            switch cacheType {
+                            case .none:
+                                print("Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                            default:
+                                print("Image was retrieved from cache")
+                            }
+                        }
+                    })
+                }
             }
         }
     }
@@ -591,9 +897,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
+
     private func setupBackButton() {
-//        view.addSubview(backButton) // 백 버튼을 뷰에 추가합니다.
-//        view.addSubview(headsetIcon) // 백 버튼을 뷰에 추가합니다.
+
         view.addSubview(createCustomBackButton)
         view.addSubview(createCustomHeadsetIcon)
 
@@ -644,49 +950,98 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     @objc func heartIconTapped() {
-        // 버튼의 현재 선택 상태를 반전시킵니다.
-        heartIcon.isSelected.toggle()
+        guard let posterName = self.posterImageName, let userID = Auth.auth().currentUser?.uid else {
+            print("Poster name or user ID is not available")
+            return
+        }
 
-        if heartIcon.isSelected {
-            // 선택된 경우: 토스트 메시지 표시 및 이미지 변경
-            let newImageName = "Vector 2" // 선택된 상태의 이미지
-            heartIcon.setImage(UIImage(named: newImageName), for: .normal)
+        let db = Firestore.firestore()
+        let posterDocument = db.collection("posters").document(posterName)
 
-            var toastStyle = ToastStyle()
-            toastStyle.messageColor = .white
-            toastStyle.messageFont = UIFont(name: "Pretendard-Bold", size: 16) ?? .boldSystemFont(ofSize: 20)
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let posterSnapshot: DocumentSnapshot
 
-            self.view.makeToast("전시가 맘에 드셨군요!", duration: 1.5, position: .center, style: toastStyle)
-        } else {
-            // 선택 해제된 경우: 원래의 이미지로 변경 (토스트는 표시하지 않음)
-            let originalImageName = "라이크"
-            heartIcon.setImage(UIImage(named: originalImageName), for: .normal)
+            do {
+                // posters 컬렉션에서 포스터 문서를 가져오려고 시도합니다.
+                try posterSnapshot = transaction.getDocument(posterDocument)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+
+            var newLikes = (posterSnapshot.data()?["likes"] as? Int ?? 0)
+            var userLikes = (posterSnapshot.data()?["userLikes"] as? [String: Bool] ?? [:])
+
+            // 좋아요 상태를 변경합니다.
+            if let liked = userLikes[userID] {
+                newLikes += liked ? -1 : 1
+                userLikes[userID] = !liked
+            } else {
+                newLikes += 1
+                userLikes[userID] = true
+            }
+
+            // 포스터 문서가 존재하면 업데이트하고, 존재하지 않으면 새로 생성합니다.
+            if posterSnapshot.exists {
+                transaction.updateData(["likes": newLikes, "userLikes": userLikes], forDocument: posterDocument)
+            } else {
+                transaction.setData(["likes": newLikes, "userLikes": userLikes], forDocument: posterDocument)
+            }
+
+            return nil
+        }) { [weak self] (object, error) in
+            if let error = error {
+                print("Transaction failed: \(error)")
+            } else {
+                print("Transaction successfully committed!")
+                DispatchQueue.main.async {
+                    // 좋아요 상태의 UI를 토글합니다.
+                    self?.heartIcon.isSelected.toggle()
+                    self?.updateHeartIconState()
+                }
+            }
         }
     }
+
+
+    func updateHeartIconState() {
+        if heartIcon.isSelected {
+            // 좋아요 상태일 때
+            heartIcon.setImage(UIImage(named: "Vector 2"), for: .normal)
+        } else {
+            // 좋아요 상태가 아닐 때
+            heartIcon.setImage(UIImage(named: "라이크"), for: .normal)
+        }
+    }
+
+
+
 
 
     @objc func recordButtonTapped() {
-
-        // 현재 표시된 모든 모달 뷰 컨트롤러를 닫습니다.
-        self.dismiss(animated: true) {
-            // 모달 뷰가 닫힌 후에 얼럿 뷰를 표시합니다.
-            self.blurEffectView.isHidden = false
-            self.customAlertView.isHidden = false
+        guard let posterName = self.posterImageName else {
+            print("Poster name is not available")
+            return
         }
 
-        
+        checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] (alreadyRegistered, visitDate) in
+            DispatchQueue.main.async {
+                if alreadyRegistered {
+                    // 이미 방문을 등록한 경우, 날짜 선택 뷰를 표시
+                    self?.showVisitRegistrationAlert(withEditing: true, existingDate: visitDate)
+                } else {
+                    // 방문을 아직 등록하지 않은 경우, 날짜 선택 뷰를 표시
+                    self?.showVisitRegistrationAlert(withEditing: false, existingDate: nil)
+                }
+            }
+        }
     }
 
 
 
-//
-//    @objc func backButtonTapped() {
-//        // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
-//        navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
-//    }
 
-    // 오디오 가이드 페이지로 이동하는 메서드
-    // AudioGuideViewController를 표시하는 버튼 액션 또는 메서드 내부
+
+
     @objc func presentAudioGuideViewController() {
         // 현재 모달을 닫고, 완료 콜백에서 AudioGuideViewController를 푸시합니다.
         self.dismiss(animated: true) {
@@ -712,7 +1067,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-class 새로운_ReviewTableViewCell: UITableViewCell {
+class ReviewTableViewCell: UITableViewCell {
 
     // UI 컴포넌트 선언
     private lazy var nickNameLabel: UILabel = {
@@ -730,7 +1085,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         return label
     }()
 
-    private lazy var profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 15
@@ -748,11 +1103,11 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
     private let container = UIView()
 
     private lazy var newTitleLabel: UILabel = {
-         let label = UILabel()
-         label.font = UIFont(name: "Pretendard-Regular", size: 18)
-         label.textColor = .white
-         return label
-     }()
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 18)
+        label.textColor = .white
+        return label
+    }()
 
     private lazy var extraImageView1: UIImageView = {
         let imageView = UIImageView()
@@ -769,18 +1124,18 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
     }()
 
     private lazy var likeCount: UILabel = {
-            let label = UILabel()
-            label.font = UIFont(name: "Pretendard-Regular", size: 10)
-            label.textColor = .white
-            return label
-        }()
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 10)
+        label.textColor = .white
+        return label
+    }()
 
-        private lazy var viewCount: UILabel = {
-            let label = UILabel()
-            label.font = UIFont(name: "Pretendard-Regular", size: 10)
-            label.textColor = .white
-            return label
-        }()
+    private lazy var viewCount: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 10)
+        label.textColor = .white
+        return label
+    }()
 
 
 
@@ -806,13 +1161,13 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         container.addSubview(profileImageView)
         container.addSubview(timeLabel)
         // 컨테이너 뷰에 새로운 서브뷰를 추가합니다.
-               container.addSubview(newTitleLabel)
+        container.addSubview(newTitleLabel)
         // 컨테이너 뷰에 새로운 서브뷰들을 추가합니다.
-                container.addSubview(extraImageView1)
-                container.addSubview(extraImageView2)
+        container.addSubview(extraImageView1)
+        container.addSubview(extraImageView2)
         // 새로운 서브뷰들을 컨테이너 뷰에 추가합니다.
-               container.addSubview(likeCount)
-               container.addSubview(viewCount)
+        container.addSubview(likeCount)
+        container.addSubview(viewCount)
 
         // 컨테이너 뷰에 대한 제약조건을 설정합니다.
         container.snp.makeConstraints { make in
@@ -821,7 +1176,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
             make.left.equalTo(contentView.snp.left).offset(10) // 좌측에 10포인트의 여백을 추가합니다.
             make.right.equalTo(contentView.snp.right).offset(-10) // 우측에 10포인트의 여백을 추가합니다.
 
-            
+
         }
 
         // 다른 UI 컴포넌트들의 레이아웃 설정을 업데이트합니다. (titleLabel, contentLabel, profileImageView, nicknameLabel 제약조건은 container 기준으로 업데이트합니다)
@@ -838,7 +1193,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
 
         // 제목 레이블의 레이아웃 설정
         nickNameLabel.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(15) // 상단 여백 설정
+            //            make.top.equalToSuperview().offset(15) // 상단 여백 설정
             make.centerY.equalTo(profileImageView)
             make.left.equalTo(profileImageView.snp.right).offset(10)
         }
@@ -864,39 +1219,39 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         }
 
         // 새로운 제목 레이블 레이아웃 설정
-           newTitleLabel.snp.makeConstraints { make in
-               make.top.equalTo(profileImageView.snp.bottom).offset(10)
-               make.left.right.equalToSuperview().inset(10)
-           }
+        newTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(10)
+            make.left.right.equalToSuperview().inset(10)
+        }
 
         // 첫 번째 이미지 뷰 레이아웃 설정
-           extraImageView1.snp.makeConstraints { make in
-               make.top.equalTo(contentLabel.snp.bottom).offset(15)
-               make.left.equalToSuperview().offset(10)
-               make.width.equalTo(11.82)
-               make.height.equalTo(10) // 원하는 크기로 조정
-               make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
+        extraImageView1.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(15)
+            make.left.equalToSuperview().offset(10)
+            make.width.equalTo(11.82)
+            make.height.equalTo(10) // 원하는 크기로 조정
+            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
 
-           }
+        }
 
-           // 두 번째 이미지 뷰 레이아웃 설정
-           extraImageView2.snp.makeConstraints { make in
-               make.top.equalTo(contentLabel.snp.bottom).offset(13)
-               make.left.equalTo(likeCount.snp.right).offset(10)
-               make.width.height.equalTo(15) // 원하는 크기로 조정
-           }
+        // 두 번째 이미지 뷰 레이아웃 설정
+        extraImageView2.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(13)
+            make.left.equalTo(likeCount.snp.right).offset(10)
+            make.width.height.equalTo(15) // 원하는 크기로 조정
+        }
 
         // label123 레이아웃 설정
-         likeCount.snp.makeConstraints { make in
-             make.centerY.equalTo(extraImageView1.snp.centerY)
-             make.left.equalTo(extraImageView1.snp.right).offset(4)
-         }
+        likeCount.snp.makeConstraints { make in
+            make.centerY.equalTo(extraImageView1.snp.centerY)
+            make.left.equalTo(extraImageView1.snp.right).offset(4)
+        }
 
-         // label456 레이아웃 설정
-         viewCount.snp.makeConstraints { make in
-             make.centerY.equalTo(extraImageView2.snp.centerY)
-             make.left.equalTo(extraImageView2.snp.right).offset(4)
-         }
+        // label456 레이아웃 설정
+        viewCount.snp.makeConstraints { make in
+            make.centerY.equalTo(extraImageView2.snp.centerY)
+            make.left.equalTo(extraImageView2.snp.right).offset(4)
+        }
     }
 
     // 셀에 리뷰 정보를 설정하는 메서드
@@ -923,7 +1278,7 @@ class 새로운_ReviewTableViewCell: UITableViewCell {
         }
     }
 
-    
+
 }
 
 
@@ -936,7 +1291,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var mapView: MKMapView!
     let database = Firestore.firestore()
     var imageName: String? // 이미지 이름을 저장할 프로퍼티
-    
+
     lazy var backButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
@@ -987,7 +1342,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
 
     }
-    
+
     @objc func backButtonTapped() {
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
         navigationController?.popViewController(animated: true) // 네비게이션 컨트롤러를 사용하는 경우
@@ -1000,7 +1355,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView = MKMapView(frame: self.view.bounds)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView = MKMapView(frame: self.view.bounds)
-                mapView.delegate = self // MapView의 델리게이트를 설정합니다.
+        mapView.delegate = self // MapView의 델리게이트를 설정합니다.
         // 여기에 추가적인 지도 설정을 할 수 있습니다. 예를 들어, 사용자의 현재 위치를 표시하거나 특정 위치로 지도 중심을 이동시킬 수 있습니다.
         mapView.overrideUserInterfaceStyle = .dark
 
@@ -1029,38 +1384,38 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
         }
     }
-    
+
     // 지도에 핀을 추가하는 메서드
-     private func addPinAtLocation(location: CLLocationCoordinate2D) {
-         let annotation = MKPointAnnotation()
-         annotation.coordinate = location
-         mapView.addAnnotation(annotation)
-     }
+    private func addPinAtLocation(location: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = location
+        mapView.addAnnotation(annotation)
+    }
 
-     // MKMapViewDelegate 메서드
-     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-         let identifier = "MyPin"
-         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+    // MKMapViewDelegate 메서드
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "MyPin"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
 
-         if annotationView == nil {
-             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-             annotationView?.canShowCallout = true // 필요한 경우 콜아웃을 표시할 수 있습니다.
-         } else {
-             annotationView?.annotation = annotation
-         }
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true // 필요한 경우 콜아웃을 표시할 수 있습니다.
+        } else {
+            annotationView?.annotation = annotation
+        }
 
-         // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
-         annotationView?.image = UIImage(named: "place 1")
-         return annotationView
-     }
+        // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
+        annotationView?.image = UIImage(named: "place 1")
+        return annotationView
+    }
 
-     private func centerMapOnLocation(location: CLLocationCoordinate2D) {
-         let regionRadius: CLLocationDistance = 200
-         let coordinateRegion = MKCoordinateRegion(center: location,
-                                                   latitudinalMeters: regionRadius,
-                                                   longitudinalMeters: regionRadius)
-         addPinAtLocation(location: location)
+    private func centerMapOnLocation(location: CLLocationCoordinate2D) {
+        let regionRadius: CLLocationDistance = 200
+        let coordinateRegion = MKCoordinateRegion(center: location,
+                                                  latitudinalMeters: regionRadius,
+                                                  longitudinalMeters: regionRadius)
+        addPinAtLocation(location: location)
 
-         mapView.setRegion(coordinateRegion, animated: true)
-     }
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
 }

@@ -7,8 +7,10 @@
 
 import UIKit
 import SnapKit
+import Firebase
+import FirebaseStorage
 
-class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
     let searchBar = UISearchBar()
     let popularButton = UIButton()
@@ -21,7 +23,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     var selectedButton: UIButton?
 
     let tableView = UITableView()
-    var currentData: [String] = []
+    var currentData: [PopularCellModel] = []
 
     let coverView = UIView() // 검색을 위한 커버 뷰
 
@@ -31,20 +33,13 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
+    var refreshControl = UIRefreshControl()
+    var cachedData: [PopularCellModel]?
 
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        selectButton(popularButton)
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        if !isCollectionViewSetupDone {
-            setupCollectionViewLayout()
-            isCollectionViewSetupDone = true
-        }
+//        selectButton(popularButton)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -103,12 +98,137 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         setupSeparatorLine()
         setupHighlightView()
         setupTableView()
-        setupCollectionView() // 이 메소드는 여전히 레이아웃 설정 코드 없이 호출됩니다.
         setupCoverView() // 커버 뷰 설정 추가
 
+        // 테이블 뷰에 대한 초기 데이터 로딩
+           loadInitialDataForTableView()
+    }
+
+    func loadInitialDataForTableView() {
+        loadPopularExhibitions(isRefresh: false)
+    }
+
+    func loadImage(for cell: searchPageTableViewCell, with documentId: String) {
+        let imagePath = "images/\(documentId).png"
+        let storageRef = Storage.storage().reference(withPath: imagePath)
+
+        storageRef.downloadURL { url, error in
+            if let error = error {
+                print("Error getting download URL: \(error)")
+                return
+            }
+            guard let downloadURL = url else {
+                print("Download URL not found for document ID: \(documentId)")
+                return
+            }
+
+            cell.popularCellImageView.sd_setImage(with: downloadURL, placeholderImage: nil, options: [], completed: { image, error, cacheType, url in
+                if let error = error {
+                    print("Error downloading image: \(error.localizedDescription)")
+                } else {
+                    // 캐시에서 로드되었는지 확인
+                    switch cacheType {
+                    case .none:
+                        print("Image downloaded from the internet for document ID: \(documentId)")
+                    case .disk:
+                        print("Image loaded from disk cache for document ID: \(documentId)")
+                    case .memory:
+                        print("Image loaded from memory cache for document ID: \(documentId)")
+                    @unknown default:
+                        print("Unknown cache type for document ID: \(documentId)")
+                    }
+                }
+            })
+        }
+    }
+
+    func setupRefreshControl() {
+        refreshControl.attributedTitle = NSAttributedString(string: "데이터 새로고침 중...")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        tableView.addSubview(refreshControl)
     }
 
 
+    @objc func refreshData() {
+        loadPopularExhibitions(isRefresh: true)
+    }
+
+    // Firestore에서 인기 전시 정보를 가져오는 함수
+    func loadPopularExhibitions(isRefresh: Bool) {
+        if isRefresh || cachedData == nil {
+            Firestore.firestore().collection("posters")
+                .order(by: "likes", descending: false)
+                .limit(to: 10)
+                .getDocuments { [weak self] (querySnapshot, error) in
+                    guard let self = self else {
+                        print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
+                        return
+                    }
+
+                    var popularExhibitions: [PopularCellModel] = []
+
+                    let group = DispatchGroup()
+                    for document in querySnapshot?.documents ?? [] {
+                        group.enter()
+                        let imageDocumentId = document.documentID // 문서 ID
+
+                        // "전시_상세" 컬렉션에서 추가 데이터를 조회
+                        Firestore.firestore().collection("전시_상세").document(imageDocumentId).getDocument { (detailDocument, error) in
+                            defer { group.leave() }
+
+                            if let detailDocument = detailDocument, detailDocument.exists {
+                                let data = detailDocument.data()
+                                let title = data?["전시_타이틀"] as? String ?? "Unknown Title"
+                                let subTitle = data?["미술관_이름"] as? String ?? "Unknown SubTitle"
+                                let likes = data?["likes"] as? Int ?? 0
+                                popularExhibitions.append(PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle, likes: likes))
+
+                            } else {
+                                print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                            }
+                        }
+                    }
+
+                    group.notify(queue: .main) {
+                        self.currentData = popularExhibitions.sorted(by: { $0.likes > $1.likes })
+                        self.tableView.reloadData()
+                        self.refreshControl.endRefreshing()
+                    }
+
+
+                }
+        } else {
+              // 캐시된 데이터를 사용하여 테이블 뷰 갱신
+              self.currentData = cachedData ?? []
+              self.tableView.reloadData()
+          }
+    }
+
+    func bindText(for cell: searchPageTableViewCell, with documentId: String) {
+         if let cachedTitle = cell.textCache.object(forKey: "\(documentId)-title" as NSString),
+            let cachedMuseum = cell.textCache.object(forKey: "\(documentId)-museum" as NSString) {
+             cell.ExhibitionTitleLabel.text = cachedTitle as String
+             cell.museumLabel.text = cachedMuseum as String
+             return
+         }
+
+         let exhibitionDetailsRef = Firestore.firestore().collection("전시_상세").document(documentId)
+         exhibitionDetailsRef.getDocument { (document, error) in
+             guard let document = document, document.exists else {
+                 print("Document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                 return
+             }
+             let data = document.data()
+             let exhibitionTitle = data?["전시_타이틀"] as? String ?? "Unknown Title"
+             let museumName = data?["미술관_이름"] as? String ?? "Unknown Museum"
+
+             cell.textCache.setObject(exhibitionTitle as NSString, forKey: "\(documentId)-title" as NSString)
+             cell.textCache.setObject(museumName as NSString, forKey: "\(documentId)-museum" as NSString)
+
+             cell.ExhibitionTitleLabel.text = exhibitionTitle
+             cell.museumLabel.text = museumName
+         }
+     }
 
 
     func setupCoverView() {
@@ -154,37 +274,40 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         highlightView.backgroundColor = .white
         view.addSubview(highlightView)
 
+        // 'popularButton'을 기준으로 하이라이트 뷰 설정
         highlightView.snp.makeConstraints { make in
             make.top.equalTo(separatorLine.snp.top)
-            make.height.equalTo(1)
+            make.height.equalTo(4)
             make.width.equalTo(popularButton)
             make.centerX.equalTo(popularButton)
         }
+
+
     }
 
-    func selectButton(_ button: UIButton) {
-        selectedButton?.setTitleColor(.lightGray, for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        selectedButton = button
-
-        highlightView.snp.remakeConstraints { make in
-            make.bottom.equalTo(separatorLine.snp.top)
-            make.height.equalTo(2)
-            make.width.equalTo(button)
-            make.centerX.equalTo(button)
-        }
-
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-
-        updateData(for: button)  // 여기에 추가
-    }
+//    func selectButton(_ button: UIButton) {
+//        selectedButton?.setTitleColor(.lightGray, for: .normal)
+//        button.setTitleColor(.white, for: .normal)
+//        selectedButton = button
+//
+//        highlightView.snp.remakeConstraints { make in
+//            make.bottom.equalTo(separatorLine.snp.top)
+//            make.height.equalTo(2)
+//            make.width.equalTo(button)
+//            make.centerX.equalTo(button)
+//        }
+//
+//        UIView.animate(withDuration: 0.3) {
+//            self.view.layoutIfNeeded()
+//        }
+//
+//        updateData(for: button)  // 여기에 추가
+//    }
 
 
     @objc func buttonClicked(_ sender: UIButton) {
-        selectButton(sender)
-        updateData(for: sender)
+//        selectButton(sender)
+//        updateData(for: sender)
     }
 
 
@@ -203,39 +326,31 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
 
         searchBar.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.equalTo(view).offset(5)
             make.trailing.equalTo(view).offset(-5)
         }
     }
 
     func setupButtons() {
-        let buttons = [popularButton, exhibitionButton, artistButton]
-        let titles = ["인기", "전시", "작가"]
+        let buttons = [popularButton]
+        let titles = ["인기"]
 
         for (button, title) in zip(buttons, titles) {
             button.setTitle(title, for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 18)  // 폰트 크기 설정
+            button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 16)
             button.backgroundColor = .black
-            button.setTitleColor(.lightGray, for: .normal)
+            button.setTitleColor(.lightGray, for: .selected)
             button.addTarget(self, action: #selector(buttonClicked(_:)), for: .touchUpInside)
             view.addSubview(button)
         }
 
         popularButton.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
+            make.top.equalTo(searchBar.snp.bottom).offset(5)
             make.leading.equalTo(view).offset(20)
         }
+        
 
-        exhibitionButton.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
-            make.leading.equalTo(popularButton.snp.trailing).offset(20)
-        }
-
-        artistButton.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
-            make.leading.equalTo(exhibitionButton.snp.trailing).offset(20)
-        }
     }
 
 
@@ -250,11 +365,19 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
     }
 
+    
+
     func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = .black  // 배경색을 검정색으로 설정
-        tableView.register(searchPageTableViewCell.self, forCellReuseIdentifier: "searchPageTableViewCell")  // 새로운 셀 클래스를 등록
+        tableView.backgroundColor = .black
+
+        // 새로고침 인디케이터 설정
+        refreshControl.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        tableView.refreshControl = refreshControl // iOS 10 이상에서는 이렇게 설정
+
+        tableView.register(searchPageTableViewCell.self, forCellReuseIdentifier: "searchPageTableViewCell")
         view.addSubview(tableView)
 
         tableView.snp.makeConstraints { make in
@@ -262,6 +385,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             make.leading.trailing.bottom.equalTo(view)
         }
     }
+
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200  // 원하는 높이로 설정
@@ -273,122 +397,67 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         return currentData.count
     }
 
+    // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
-        cell.titleLabel.text = "올해의 작가전"
-        cell.contentLabel.text = "국립현대미술관 서울"
+        let cellModel = currentData[indexPath.row]
+
+        // 텍스트 바인딩
+        bindText(for: cell, with: cellModel.imageDocumentId)
+
+        // 이미지 로드
+        loadImage(for: cell, with: cellModel.imageDocumentId)
+
         return cell
     }
 
 
+
+
+
+
+
+    // '인기' 버튼 클릭 시 호출되는 함수
     func updateData(for button: UIButton) {
         if button == popularButton {
-            currentData = (1...10).map { "인기 \($0)" } // "인기 1"부터 "인기 10"까지의 문자열을 생성합니다.
+            refreshControl.beginRefreshing()
+            loadPopularExhibitions(isRefresh: true) // 인기 전시 정보를 로드합니다.
             tableView.isHidden = false
             collectionView.isHidden = true
-        } else if button == exhibitionButton {
-            currentData = (1...10).map { "전시 \($0)" } // "전시 1"부터 "전시 10"까지의 문자열을 생성합니다.
-            tableView.isHidden = false
-            collectionView.isHidden = true
-        } else if button == artistButton {
-            currentData = (1...20).map { "작가 \($0)" } // "작가 1"부터 "작가 10"까지의 문자열을 생성합니다.
-            tableView.isHidden = true
-            collectionView.isHidden = false
-        }
-        tableView.reloadData()
-        collectionView.reloadData()
-    }
-
-
-
-    func setupCollectionView() {
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.backgroundColor = .black
-        collectionView.register(ArtistCollectionViewCell.self, forCellWithReuseIdentifier: "ArtistCollectionViewCell")
-        collectionView.isHidden = true // 처음에는 숨김 처리
-        view.addSubview(collectionView)
-
-        collectionView.snp.makeConstraints { make in
-            make.top.equalTo(separatorLine.snp.bottom)
-            make.leading.trailing.bottom.equalTo(view)
+        } else {
+            // 다른 버튼에 대한 처리
         }
     }
-
-
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return currentData.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ArtistCollectionViewCell", for: indexPath) as! ArtistCollectionViewCell
-        cell.titleLabel.text = "작가 이름"
-        cell.contentLabel.text = "작가 정보"
-        return cell
+    // UITableViewDataSource 및 UITableViewDelegate 메서드
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let backgroundImageVC = BackgroundImageViewController()
+        backgroundImageVC.hidesBottomBarWhenPushed = true
+
+        let selectedCellModel = currentData[indexPath.row]
+        backgroundImageVC.posterImageName = selectedCellModel.imageDocumentId
+        backgroundImageVC.titleName = selectedCellModel.title
+
+        // Add print statement to check the title value
+        print("Selected title: \(selectedCellModel.title)")
+
+        self.navigationController?.pushViewController(backgroundImageVC, animated: true)
     }
+
+
 
 
 }
 
-
-class ArtistCollectionViewCell: UICollectionViewCell {
-    let titleLabel = UILabel()
-    let contentLabel = UILabel()
-    let circleView = UIView()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setupViews() {
-        // Set the background color of the cell
-        self.backgroundColor = .black
-
-
-        // 원형 뷰 설정
-        circleView.backgroundColor = .gray
-        circleView.layer.cornerRadius = 50 // 반지름이 50인 원형 뷰
-        contentView.addSubview(circleView)
-
-        // titleLabel 설정
-        titleLabel.font = UIFont.systemFont(ofSize: 14)
-        titleLabel.textColor = .white
-        titleLabel.text = "작가 이름" // 여기에 실제 작가 이름을 나중에 설정해야 합니다.
-        contentView.addSubview(titleLabel)
-
-        // contentLabel 설정
-        contentLabel.font = UIFont.systemFont(ofSize: 12)
-        contentLabel.textColor = .white
-        contentLabel.text = "작가 정보" // 여기에 실제 작가 정보를 나중에 설정해야 합니다.
-        contentView.addSubview(contentLabel)
-
-        // SnapKit을 사용하여 원형 뷰의 제약 조건 설정
-        circleView.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(10)
-            make.centerX.equalTo(contentView)
-            make.width.height.equalTo(100) // 원의 크기를 100x100으로 설정
-        }
-
-        // titleLabel의 제약 조건 설정
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(circleView.snp.bottom).offset(10)
-            make.centerX.equalTo(contentView)
-        }
-
-        // contentLabel의 제약 조건 설정
-        contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5)
-            make.centerX.equalTo(contentView)
-        }
-    }
-
-
+struct PopularCellModel {
+    let imageDocumentId: String
+    let title: String
+    let subTitle: String
+    let likes: Int
 }
-

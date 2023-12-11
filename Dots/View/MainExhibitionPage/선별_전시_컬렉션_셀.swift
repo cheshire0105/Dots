@@ -25,6 +25,8 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
 
         // SnapKit을 사용해 이미지 뷰를 추가합니다.
         imageView.backgroundColor = .gray
+        imageView.layer.cornerRadius = 15 // 모서리 둥글게
+        imageView.clipsToBounds = true    // 이미지가 뷰의 경계를 넘어가지 않도록
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview()

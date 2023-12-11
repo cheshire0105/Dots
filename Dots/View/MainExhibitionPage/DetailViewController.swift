@@ -46,10 +46,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
-    override func viewWillAppear(_ animated: Bool) {
-           super.viewWillAppear(animated)
-           loadReviews() // 화면이 나타날 때마다 후기 목록을 새로고침합니다.
-       }
+//    override func viewWillAppear(_ animated: Bool) {
+//           super.viewWillAppear(animated)
+////           loadReviews() // 화면이 나타날 때마다 후기 목록을 새로고침합니다.
+//       }
+    let refreshControl = UIRefreshControl() // 새로고침 컨트롤 생성
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,8 +66,27 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         fetchExhibitionDetails() // Firestore에서 전시 상세 정보를 가져오는 함수 호출
         
         mapView.delegate = self
+        configureRefreshControl() // 새로고침 컨트롤 설정 메소드 호출
 
     }
+
+    // 새로고침 컨트롤 설정 메소드
+      func configureRefreshControl() {
+          // 새로고침 컨트롤에 대한 타겟-액션 설정
+          refreshControl.addTarget(self, action: #selector(refreshReviewsData(_:)), for: .valueChanged)
+
+          // 테이블 뷰에 새로고침 컨트롤 추가
+          reviewsTableView.refreshControl = refreshControl
+      }
+
+      // 새로고침 시 호출될 메소드
+      @objc private func refreshReviewsData(_ sender: UIRefreshControl) {
+          // 최신 리뷰 데이터 로드
+          loadReviews()
+
+          // 로드 완료 후 새로고침 컨트롤 종료
+          refreshControl.endRefreshing()
+      }
 
     func loadReviews() {
         guard let posterName = posterImageName else {
@@ -74,12 +95,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").getDocuments { (querySnapshot, error) in
+            .collection("reviews")
+            .order(by: "createdAt", descending: false) // 날짜 기준 내림차순 정렬
+            .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error getting documents: \(error)")
                     return
                 }
                 var newReviews: [Review] = []
+                print(newReviews.count)
                 let group = DispatchGroup()
 
                 querySnapshot?.documents.forEach { document in
@@ -93,17 +117,14 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
                                 let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
-//                                let photoUrls = data["photoUrls"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
-
 
                                 let review = Review(
                                     title: data["title"] as? String ?? "",
                                     content: data["content"] as? String ?? "",
                                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                                     nickname: nickname,
-                                    profileImageUrl: profileImageUrl, 
-                                    photoUrls: data["images"] as? [String] ?? [] // 사진 URL 배열을 읽습니다.
-
+                                    profileImageUrl: profileImageUrl,
+                                    photoUrls: data["images"] as? [String] ?? []
                                 )
                                 newReviews.append(review)
                             }
@@ -185,8 +206,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
 
-    // Firestore에서 전시 상세 정보를 가져오는 함수
-    // Firestore에서 전시 상세 정보를 가져오는 함수
+
     // Firestore에서 전시 상세 정보를 가져오는 함수
     private func fetchExhibitionDetails() {
         guard let posterName = posterImageName else {
@@ -218,21 +238,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
 
-
-
-//    // UI를 전시 상세 정보로 업데이트하는 함수
-//    private func updateUIWithExhibitionDetails(_ exhibitionDetail: ExhibitionDetailModel) {
-//        DispatchQueue.main.async {
-//            // titleLabel에 전시 타이틀을 설정
-//            self.titleLabel.text = exhibitionDetail.exhibitionTitle
-//
-//            // exhibitionTitleLabel에 미술관 이름을 설정
-//            self.exhibitionTitleLabel.text = exhibitionDetail.museumName
-//            self.galleryAddressLabel.text = exhibitionDetail.museumAddress
-//
-//        }
-//    }
-
     // 지도 위치 업데이트 함수
     private func updateMapViewWithLocation(location: CLLocationCoordinate2D) {
         DispatchQueue.main.async {
@@ -253,8 +258,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         floatingActionButton.setTitleColor(.black, for: .normal)
         floatingActionButton.layer.cornerRadius = 23
         floatingActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 13) // 타이틀 폰트 크기 설정
-        // Initially hide the floating action button until the first segment is selected
-//               floatingActionButton.isHidden = segmentControl.selectedSegmentIndex != 0
 
 
         // 이미지 설정
@@ -301,14 +304,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     func configureSegmentControl() {
 
-//        // 타이틀 레이블을 설정합니다.
-//        titleLabel.text = "현대차 시리즈 2023: 정연두 - 백년여행"
-//        titleLabel.textAlignment = .center
-//        titleLabel.textColor = .white
-//        titleLabel.numberOfLines = 2
-//        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 20)
-//        view.addSubview(titleLabel)
-
         // 세그먼트 컨트롤을 설정합니다.
         segmentControl.selectedSegmentIndex = 0 // 기본 선택 인덱스를 설정합니다.
         segmentControl.backgroundColor = UIColor.black // 배경색 설정
@@ -324,12 +319,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         segmentControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         view.addSubview(segmentControl)
 
-//        titleLabel.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-//            make.centerX.equalTo(view.snp.centerX)
-//            make.left.right.equalToSuperview().inset(20)
-//        }
-
         segmentControl.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.centerX.equalTo(view.snp.centerX)
@@ -339,7 +328,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func configureTableView() {
-        reviewsTableView.register(새로운_ReviewTableViewCell.self, forCellReuseIdentifier: "새로운_ReviewTableViewCell")
+        reviewsTableView.register(ReviewTableViewCell.self, forCellReuseIdentifier: "ReviewTableViewCell")
         reviewsTableView.dataSource = self
         reviewsTableView.delegate = self
         view.addSubview(reviewsTableView)
@@ -603,7 +592,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "새로운_ReviewTableViewCell", for: indexPath) as? 새로운_ReviewTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReviewTableViewCell", for: indexPath) as? ReviewTableViewCell else {
             return UITableViewCell()
         }
 
@@ -612,6 +601,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         // 셀에 리뷰 정보를 설정합니다.
         cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "Vector 4"), extraImageView2: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1"), text123: "123", text456: "456")
+
+        // SDWebImage를 사용하여 프로필 이미지 캐시 및 로드
+         if let profileImageUrl = URL(string: review.profileImageUrl) {
+             cell.profileImageView.sd_setImage(with: profileImageUrl, placeholderImage: UIImage(named: "defaultProfileImage"), completed: { (image, error, cacheType, url) in
+                 if cacheType == .none {
+                     print("Profile Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
+                 } else {
+                     print("Profile Image was retrieved from cache")
+                 }
+             })
+         }
 
         return cell
     }
@@ -662,15 +662,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true, completion: nil)
     }
-
-
-
-
-
-
-
-    
-
 
 
 }
