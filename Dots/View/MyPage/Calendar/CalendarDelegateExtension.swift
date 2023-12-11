@@ -7,8 +7,6 @@ import FirebaseFirestore
 import FirebaseStorage
 
 extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
-   
-    
 
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         return 0
@@ -67,28 +65,6 @@ extension Mypage {
             calendar.appearance.titleSelectionColor = UIColor.white
         }
 
-        guard let uid = Auth.auth().currentUser?.uid else {
-            return
-        }
-
-        let db = Firestore.firestore()
-        let postersCollection = db.collection("posters")
-
-        postersCollection.document(uid).getDocument { (document, error) in
-            if let document = document, document.exists {
-                let documentData = document.data()
-                
-                if let reviewCollection = documentData?["review"] as? [[String: Any]] {
-                    for reviewDocument in reviewCollection {
-                        if let date = reviewDocument["유저_다녀옴_날짜"] as? Timestamp {
-                            let formattedDate = date.dateValue()
-                            self.유저_다녀옴_날짜.append(formattedDate)
-                        }
-                    }
-                }
-            } else {
-            }
-        }
 
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
         
@@ -106,5 +82,3 @@ extension Mypage {
         self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
     }
 }
-
-

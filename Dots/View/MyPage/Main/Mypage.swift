@@ -8,8 +8,19 @@ import FirebaseFirestore
 import GoogleSignIn
 
 class Mypage: UIViewController {
-    var 유저_다녀옴_날짜: [Date] = [].compactMap { $0 }
+
+//     var 유저_다녀옴_날짜: [Date] = []
     
+         var 유저_다녀옴_날짜: [Date] {
+             let dateStrings = ["2023-12-08", "2023-12-09", "2023-12-12"]
+ 
+             let dateFormatter = DateFormatter()
+             dateFormatter.dateFormat = "yyyy-MM-dd"
+             dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+ 
+             return dateStrings.compactMap { dateFormatter.date(from: $0) }
+         }
+     
     
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
@@ -187,14 +198,14 @@ class Mypage: UIViewController {
         버튼_클릭()
         UI레이아웃()
         버튼_백_레이아웃 ()
-        
+        print(유저_다녀옴_날짜.map { DateFormatter.localizedString(from: $0, dateStyle: .medium, timeStyle: .medium) })
         캘린더_레이아웃()
         캘린더.dataSource = self
         캘린더.delegate = self
         캘린더.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
         
         캐시된_유저_데이터_마이페이지_적용하기()
-        
+        fetchUserVisitedDates()
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
         tapGestureRecognizer.delegate = self
         view.addGestureRecognizer(tapGestureRecognizer)
@@ -494,5 +505,52 @@ extension Mypage: UIGestureRecognizerDelegate {
             return true
         }
         return false
+    }
+}
+
+extension Mypage {
+    private func getCurrentUserUID() -> String? {
+        guard let currentUser = Auth.auth().currentUser else {
+            return nil
+        }
+        return currentUser.uid
+    }
+
+    private func fetchUserVisitedDates() {
+        guard let uid = getCurrentUserUID() else {
+            print("User not authenticated")
+            return
+        }
+
+        let firestore = Firestore.firestore()
+        let postersCollection = firestore.collection("posters")
+
+        postersCollection.getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+                print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            for document in documents {
+                self.fetchUserVisitDateFromReviews(uid: uid, document: document)
+            }
+        }
+    }
+
+    private func fetchUserVisitDateFromReviews(uid: String, document: QueryDocumentSnapshot) {
+        let reviewsCollection = document.reference.collection("reviews")
+
+        reviewsCollection.getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+                print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            for document in documents {
+                if let visitDateText = document["유저_다녀옴_날짜"] as? String {
+                    print("User visited on date: \(visitDateText)")
+                }
+            }
+        }
     }
 }
