@@ -82,3 +82,72 @@ extension Mypage {
         self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
     }
 }
+
+
+extension Mypage {
+    
+         var 유저_다녀옴_날짜: [Date] {
+             let dateStrings = 특정날짜
+ 
+             let dateFormatter = DateFormatter()
+             dateFormatter.dateFormat = "yyyy-MM-dd"
+             dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+ 
+             return dateStrings.compactMap { dateFormatter.date(from: $0) }
+         }
+     func getCurrentUserUID() -> String? {
+        guard let 현제유저 = Auth.auth().currentUser else {
+            return nil
+        }
+        return 현제유저.uid
+    }
+
+     func fetchUserVisitedDates() {
+        guard let uid = getCurrentUserUID() else {
+            print("User not authenticated")
+            return
+        }
+
+        let 파이어스토어 = Firestore.firestore()
+        let posters_메인컬렉션 = 파이어스토어.collection("posters")
+
+        posters_메인컬렉션.getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self, let 메인_문서들 = querySnapshot?.documents, error == nil else {
+                print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            for 메인_문서 in 메인_문서들 {
+                self.fetchUserVisitDateFromReviews(uid: uid, document: 메인_문서)
+            }
+        }
+    }
+
+     func fetchUserVisitDateFromReviews(uid: String, document: QueryDocumentSnapshot) {
+        let reviews_서브컬렉션 = document.reference.collection("reviews")
+
+        reviews_서브컬렉션.getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self, let 서브_문서들 = querySnapshot?.documents, error == nil else {
+                print("문서 불러오기 오류: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            for 서브_문서 in 서브_문서들 {
+//                print("리뷰 UID: \(서브_문서.documentID)")
+
+                if let 다녀온_날짜 = 서브_문서["유저_다녀옴_날짜"] as? String {
+//                    print("리뷰 UID: \(서브_문서.documentID), 유저 UID: \(uid), 다녀온 날짜: \(다녀온_날짜)")
+
+                    if uid == 서브_문서.documentID {
+                        self.특정날짜.append(다녀온_날짜)
+                    } else {
+//                        print("리뷰 UID and 유저 UID 일치하지않음 데이터 처리 않함.")
+                    }
+                }
+            }
+            self.캘린더.reloadData()
+            
+        }
+    }
+
+}
