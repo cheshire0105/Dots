@@ -303,7 +303,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         searchBar.placeholder = "전시, 작가를 검색하세요."
         searchBar.searchBarStyle = .minimal
         searchBar.backgroundColor = UIColor.black
-        view.addSubview(searchBar)
+
+        // 커서 색상 변경
+        searchBar.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         if let textField = searchBar.value(forKey: "searchField") as? UITextField {
             textField.font = UIFont.systemFont(ofSize: 15)  // 폰트 크기 설정
@@ -312,12 +314,15 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
             textField.attributedPlaceholder = NSAttributedString(string: "전시, 작가를 검색하세요.", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         }
 
+        view.addSubview(searchBar)
+
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.equalTo(view).offset(5)
             make.trailing.equalTo(view).offset(-5)
         }
     }
+
 
 
 
