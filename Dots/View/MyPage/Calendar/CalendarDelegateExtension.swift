@@ -178,7 +178,6 @@ import SDWebImage
 //            if let 다운로드된URL = url {
 //                let 특정날짜 = (date: imageURL, imageURL: 다운로드된URL.absoluteString)
 //                self?.특정날짜.append(특정날짜)
-//                print("다운로드된 URL: \(다운로드된URL.absoluteString)")
 //
 //                self?.캘린더.reloadData()
 //            }
@@ -355,29 +354,53 @@ extension Mypage {
         return 현제유저.uid
     }
 
+//    func fetchUserVisitedDates() {
+//           guard let uid = getCurrentUserUID() else {
+//               print("User not authenticated")
+//               return
+//           }
+//
+//           let 파이어스토어 = Firestore.firestore()
+//           let posters_메인컬렉션 = 파이어스토어.collection("posters")
+//
+//           // addSnapshotListener를 사용하여 실시간으로 변경을 감지
+//           posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
+//               guard let self = self, let 메인_문서들 = querySnapshot?.documents, error == nil else {
+//                   print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
+//                   return
+//               }
+//
+//               for 메인_문서 in 메인_문서들 {
+//                   self.fetchUserVisitDateFromReviews(uid: uid, document: 메인_문서)
+//                   self.캘린더.reloadData()
+//
+//               }
+//           }
+//       }
     func fetchUserVisitedDates() {
-           guard let uid = getCurrentUserUID() else {
-               print("User not authenticated")
-               return
-           }
+        guard let uid = getCurrentUserUID() else {
+            print("User not authenticated")
+            return
+        }
 
-           let 파이어스토어 = Firestore.firestore()
-           let posters_메인컬렉션 = 파이어스토어.collection("posters")
+        let 파이어스토어 = Firestore.firestore()
+        let posters_메인컬렉션 = 파이어스토어.collection("posters")
 
-           // addSnapshotListener를 사용하여 실시간으로 변경을 감지
-           posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
-               guard let self = self, let 메인_문서들 = querySnapshot?.documents, error == nil else {
-                   print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
-                   return
-               }
+        posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
+            guard let self = self, let 메인_문서들 = querySnapshot?.documents, error == nil else {
+                print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
 
-               for 메인_문서 in 메인_문서들 {
-                   self.fetchUserVisitDateFromReviews(uid: uid, document: 메인_문서)
-                   self.캘린더.reloadData()
+            self.특정날짜 = []
 
-               }
-           }
-       }
+            for 메인_문서 in 메인_문서들 {
+                self.fetchUserVisitDateFromReviews(uid: uid, document: 메인_문서)
+            }
+
+            self.캘린더.reloadData()
+        }
+    }
 
        func fetchUserVisitDateFromReviews(uid: String, document: QueryDocumentSnapshot) {
            let reviews_서브컬렉션 = document.reference.collection("reviews")
@@ -418,7 +441,6 @@ extension Mypage {
             if let 다운로드된URL = url {
                 let 특정날짜 = (date: imageURL, imageURL: 다운로드된URL.absoluteString)
                 self?.특정날짜.append(특정날짜)
-                print("다운로드된 URL: \(다운로드된URL.absoluteString)")
 
                 self?.캘린더.reloadData()
             }

@@ -6,15 +6,16 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 import GoogleSignIn
+import SDWebImage
 
 class Mypage: UIViewController {
     
-        var 특정날짜: [(date: String, imageURL: String?)] = []
+    var 특정날짜: [(date: String, imageURL: String?)] = []
     func printUserVisitedDates() {
-           print("유저_다녀옴_날짜: \(유저_다녀옴_날짜)")
-       }
-
-       // 추가 디버깅
+        print("유저_다녀옴_날짜: \(유저_다녀옴_날짜)")
+    }
+    
+    // 추가 디버깅
     func print특정날짜() {
         print("특정날짜: \(특정날짜)")
     }
@@ -173,7 +174,7 @@ class Mypage: UIViewController {
         calendar.scope = .month
         calendar.allowsMultipleSelection = false
         
-
+        
         return calendar
     }()
     
@@ -181,8 +182,8 @@ class Mypage: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
-        fetchUserVisitedDates()
-
+//        fetchUserVisitedDates()
+        캘린더.reloadData()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -205,9 +206,13 @@ class Mypage: UIViewController {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
         tapGestureRecognizer.delegate = self
         view.addGestureRecognizer(tapGestureRecognizer)
-   
+        
+        fetchUserVisitedDates()
+//        SDImageCache.shared.clearMemory()
+//        SDImageCache.shared.clearDisk()
+        
     }
- 
+    
     @objc private func handleOutsideTap() {
         // 모달이 표시 중이면 dismiss
         if presentedViewController != nil {
@@ -286,7 +291,7 @@ class Mypage: UIViewController {
             view.addSubview(UI뷰)
         }
         마이페이지_프로필_이미지_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(80)
+            make.top.equalToSuperview().offset(65)
             make.leading.equalToSuperview().offset(28)
             make.size.equalTo(76)
         }
@@ -438,6 +443,8 @@ extension Mypage {
     //              }
     //          }
     //      }
+    
+    
     private func 캐시된_유저_데이터_마이페이지_적용하기() {
         var 닉네임_캐싱: String?
         var 이메일_캐싱: String?
@@ -470,7 +477,7 @@ extension Mypage {
                 let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
                 let 닉네임 = userDocument["닉네임"] as? String ?? ""
                 let 이메일 = userDocument["이메일"] as? String ?? ""
-                            
+                
                 닉네임_캐싱 = 닉네임
                 이메일_캐싱 = 이메일
                 
@@ -498,7 +505,7 @@ extension Mypage {
 
 extension Mypage: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-
+        
         if presentedViewController != nil && touch.view == view {
             return true
         }
