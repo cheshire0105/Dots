@@ -9,9 +9,15 @@ import GoogleSignIn
 
 class Mypage: UIViewController {
     
-    var 특정날짜 : [String] = []
-//        var 특정날짜: [(date: String, imageURL: String?)] = []
+        var 특정날짜: [(date: String, imageURL: String?)] = []
+    func printUserVisitedDates() {
+           print("유저_다녀옴_날짜: \(유저_다녀옴_날짜)")
+       }
 
+       // 추가 디버깅
+    func print특정날짜() {
+        print("특정날짜: \(특정날짜)")
+    }
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
@@ -175,7 +181,8 @@ class Mypage: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
-        
+        fetchUserVisitedDates()
+
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -194,13 +201,13 @@ class Mypage: UIViewController {
         캘린더.delegate = self
         캘린더.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
         포스터이미지URL업데이트_파이어스토어()
-        fetchUserVisitedDates()
         캐시된_유저_데이터_마이페이지_적용하기()
-
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
         tapGestureRecognizer.delegate = self
         view.addGestureRecognizer(tapGestureRecognizer)
+   
     }
+ 
     @objc private func handleOutsideTap() {
         // 모달이 표시 중이면 dismiss
         if presentedViewController != nil {
