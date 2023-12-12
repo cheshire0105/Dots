@@ -84,6 +84,7 @@ extension Mypage {
 }
 
 
+
 extension Mypage {
     
          var 유저_다녀옴_날짜: [Date] {
@@ -95,6 +96,7 @@ extension Mypage {
  
              return dateStrings.compactMap { dateFormatter.date(from: $0) }
          }
+    
      func getCurrentUserUID() -> String? {
         guard let 현제유저 = Auth.auth().currentUser else {
             return nil
@@ -150,4 +152,56 @@ extension Mypage {
         }
     }
 
+}
+
+
+extension Mypage {
+    func 포스터이미지URL업데이트_파이어스토어() {
+        let 스토리지 = Storage.storage()
+        let 스토리지참조 = 스토리지.reference().child("images")
+        
+        let 파이어스토어 = Firestore.firestore()
+        let 포스터컬렉션 = 파이어스토어.collection("posters")
+        
+        포스터컬렉션.getDocuments { (쿼리스냅샷, 에러) in
+            guard let 문서들 = 쿼리스냅샷?.documents, 에러 == nil else {
+                print("문서 가져오기 오류: \(에러?.localizedDescription ?? "알 수 없는 오류")")
+                return
+            }
+            
+            for 문서 in 문서들 {
+                let 포스터ID = 문서.documentID
+                
+                let 리뷰컬렉션 = 포스터컬렉션.document(포스터ID).collection("reviews")
+                
+                let 이미지파일명 = "\(포스터ID).png"
+                let 이미지파일참조 = 스토리지참조.child(이미지파일명)
+                
+                이미지파일참조.downloadURL { (url, 에러) in
+                    if let 에러 = 에러 {
+                        print("다운로드 URL 가져오기 오류: \(에러.localizedDescription)")
+                        return
+                    }
+                    
+                    if let 다운로드된URL = url {
+                        self.리뷰서브컬렉션내포스터이미지URL업데이트(리뷰컬렉션: 리뷰컬렉션, 이미지URL: 다운로드된URL.absoluteString)
+                    }
+                }
+            }
+        }
+    }
+
+    func 리뷰서브컬렉션내포스터이미지URL업데이트(리뷰컬렉션: CollectionReference, 이미지URL: String) {
+        리뷰컬렉션.getDocuments { (쿼리스냅샷, 에러) in
+            guard let 문서들 = 쿼리스냅샷?.documents, 에러 == nil else {
+                print("리뷰 서브컬렉션 문서 가져오기 오류: \(에러?.localizedDescription ?? "알 수 없는 오류")")
+                return
+            }
+            
+            for 문서 in 문서들 {
+                let 업데이트데이터 = ["포스터이미지": 이미지URL]
+                리뷰컬렉션.document(문서.documentID).setData(업데이트데이터, merge: true)
+            }
+        }
+    }
 }

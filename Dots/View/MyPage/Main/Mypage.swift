@@ -10,6 +10,7 @@ import GoogleSignIn
 class Mypage: UIViewController {
     
     var 특정날짜 : [String] = []
+//        var 특정날짜: [(date: String, imageURL: String?)] = []
 
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
@@ -166,6 +167,7 @@ class Mypage: UIViewController {
         calendar.scope = .month
         calendar.allowsMultipleSelection = false
         
+
         return calendar
     }()
     
@@ -191,9 +193,9 @@ class Mypage: UIViewController {
         캘린더.dataSource = self
         캘린더.delegate = self
         캘린더.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
-        
-        캐시된_유저_데이터_마이페이지_적용하기()
+        포스터이미지URL업데이트_파이어스토어()
         fetchUserVisitedDates()
+        캐시된_유저_데이터_마이페이지_적용하기()
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
         tapGestureRecognizer.delegate = self
