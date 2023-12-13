@@ -161,9 +161,12 @@ class Mypage: UIViewController {
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
         calendar.appearance.weekdayTextColor = UIColor.darkGray
-        calendar.appearance.todayColor = UIColor.clear
+        calendar.appearance.todayColor = UIColor.white
+        
         calendar.appearance.todaySelectionColor = UIColor.clear
-        calendar.appearance.titleTodayColor = UIColor(named: "neon")
+//        calendar.appearance.titleTodayColor = UIColor(named: "neon")
+        calendar.appearance.titleTodayColor = UIColor.black
+        
         
         calendar.appearance.selectionColor = UIColor.clear
         calendar.appearance.titleDefaultColor = UIColor.white
