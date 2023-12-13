@@ -697,18 +697,18 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         mapAlertView.addSubview(confirmButton)
 
-        confirmButton.snp.makeConstraints { make in
-            make.top.equalTo(newView.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview().inset(50)
-            make.height.equalTo(40)
-        }
-
-
-        deepLinkLabel.snp.makeConstraints { make in
-            make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
-            make.centerY.equalTo(newView.snp.centerY)
-            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-        }
+//        confirmButton.snp.makeConstraints { make in
+//            make.top.equalTo(newView.snp.bottom).offset(20)
+//            make.leading.trailing.equalToSuperview().inset(50)
+//            make.height.equalTo(40)
+//        }
+//
+//
+//        deepLinkLabel.snp.makeConstraints { make in
+//            make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
+//            make.centerY.equalTo(newView.snp.centerY)
+//            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
+//        }
     }
 
     @objc private func shareDeepLink() {
@@ -770,8 +770,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(datePicker.snp.bottom).offset(10)
             make.centerX.equalTo(customAlertView.snp.centerX)
-            make.width.equalTo(273) // 버튼의 너비
-            make.height.equalTo(56) // 버튼의 높이
+//            make.width.equalTo(273) // 버튼의 너비
+//            make.height.equalTo(56) // 버튼의 높이
             make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
         }
 
