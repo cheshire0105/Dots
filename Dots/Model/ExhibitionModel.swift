@@ -10,14 +10,17 @@ import Foundation
 struct ExhibitionModel {
     var title: String
     var poster: String
-    var period: String // 전시 기간 추가
+    var period: String  // 전시 기간
+    var likes: Int  // 좋아요 수
 
     init(dictionary: [String: Any]) {
         self.title = dictionary["전시_타이틀"] as? String ?? "Unknown Title"
         self.poster = dictionary["전시_포스터"] as? String ?? "Unknown Poster"
         self.period = dictionary["전시_날짜"] as? String ?? "Unknown Period"
+        self.likes = dictionary["다녀옴"] as? Int ?? 0  // 'likes' 필드도 초기화
     }
 }
+
 
 
 struct ExhibitionDetailModel {

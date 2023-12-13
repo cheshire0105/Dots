@@ -193,21 +193,19 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
 
 
+    // '찾기' 버튼을 눌렀을 때의 액션
     @objc private func alertConfirmButtonTapped() {
         customAlertView.isHidden = true
         blurEffectView.isHidden = true
 
-        // 선택된 지역을 사용하는 로직 여기에 추가
-        print("선택된 지역: \(selectedRegion)")
-
-        // 예: 선택된 지역에 따라 데이터를 로드하는 함수 호출
+        // 선택된 지역에 따라 데이터를 로드합니다.
         loadExhibitions(forRegion: selectedRegion)
 
         MainExhibitionCollectionView.reloadData() // 컬렉션 뷰 데이터를 다시 로드하여 섹션 헤더를 업데이트합니다.
-
     }
 
-    // 선택된 지역에 따라 데이터를 로드하는 가상의 함수
+
+    // 지역에 따라 전시 데이터를 로드하는 함수
     func loadExhibitions(forRegion region: String) {
         guard let regionCode = regionCodeForKoreanName(region) else { return }
 
@@ -222,13 +220,10 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                 if let error = error {
                     print("Error fetching documents: \(error)")
                 } else if let snapshot = snapshot {
-                    print("Documents for region \(regionCode):")
-                    for document in snapshot.documents {
-                        print("\(document.documentID) => \(document.data())")
-                    }
-
                     self?.secondSectionExhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
-                        return ExhibitionModel(dictionary: doc.data())
+                        var data = doc.data()
+                        data["셀_구성"] = doc.documentID
+                        return ExhibitionModel(dictionary: data)
                     }
                     self?.MainExhibitionCollectionView.reloadData()
                 }
@@ -289,9 +284,10 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         setupNavigationBar()
         setupCollectionView()
         setupNewCollectionView()
-        fetchExhibitionData()
-        fetchAdditionalExhibitionData()
-        view.addSubview(blurEffectView) // 블러 뷰 추가
+        fetchExhibitionData()  // 첫 번째 섹션 데이터 로드
+        loadPopularExhibitions()
+
+        view.addSubview(blurEffectView)  // 블러 뷰 추가
         if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
             window.addSubview(blurEffectView)
             blurEffectView.snp.makeConstraints { make in
@@ -299,13 +295,17 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             }
         }
 
-          setupCustomAlertView() // 얼럿 뷰 설정
+        setupCustomAlertView()  // 얼럿 뷰 설정
 
         self.view.backgroundColor = .black
 
         // 탭 제스처 인식기 추가
-           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissAlertView))
-           blurEffectView.addGestureRecognizer(tapGesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissAlertView))
+        blurEffectView.addGestureRecognizer(tapGesture)
+
+        // 초기 선택된 지역 설정
+        selectedRegion = "인사동"
+        loadExhibitions(forRegion: selectedRegion)  // 두 번째 섹션 데이터 로드
 
         if let 현제접속중인_유저 = Auth.auth().currentUser {
             print("로그인한 사용자 정보:")
@@ -313,8 +313,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             print("이메일: \(현제접속중인_유저.email ?? "없음")")
             print("계정이 로그인되었습니다.")
         }
-        
     }
+
 
     func setupNavigationBar() {
         // 네비게이션 타이틀 설정
@@ -353,41 +353,55 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         }
     }
 
-    
-    private func fetchAdditionalExhibitionData() {
-        Firestore.firestore().collection("메인페이지_두번째_섹션").getDocuments { [weak self] (snapshot, error) in
-            DispatchQueue.main.async {
+    func loadPopularExhibitions() {
+        Firestore.firestore().collection("posters")
+            .order(by: "다녀옴", descending: true)
+            .limit(to: 10)
+            .getDocuments { [weak self] (snapshot, error) in
+                guard let self = self else { return }
+
                 if let error = error {
-                    print("An error occurred: \(error)")
-                } else if let snapshot = snapshot {
-                    self?.secondSectionExhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
-                                 var data = doc.data()
-                                 data["셀_구성"] = doc.documentID // 문서 ID를 '셀_구성' 필드에 저장
-                                 return ExhibitionModel(dictionary: data)
-                             }
-                             self?.MainExhibitionCollectionView.reloadData()
-                         }
-            }
-        }
-        
-        // 세 번째 섹션 데이터 로드 로직
-        Firestore.firestore().collection("메인페이지_세번째_섹션").getDocuments { [weak self] (snapshot, error) in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("Error loading third section data: \(error)")
-                } else if let snapshot = snapshot {
-                    self?.thirdSectionExhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
-                        var data = doc.data()
-                        data["셀_구성"] = doc.documentID
-                        return ExhibitionModel(dictionary: data)
+                    print("Error fetching documents: \(error)")
+                    return
+                }
+
+                guard let snapshot = snapshot else { return }
+
+                var loadedExhibitions: [ExhibitionModel] = []
+                let group = DispatchGroup()
+
+                for document in snapshot.documents {
+                    group.enter()
+                    let posterDocumentId = document.documentID
+
+                    // "전시_상세" 컬렉션에서 추가 데이터 조회
+                    Firestore.firestore().collection("전시_상세").document(posterDocumentId).getDocument { (detailDocument, error) in
+                        defer { group.leave() }
+
+                        if let detailDocument = detailDocument, let data = detailDocument.data() {
+                            let 다녀옴 = data["다녀옴"] as? Int ?? 0
+                            var exhibitionData = data
+                            exhibitionData["셀_구성"] = posterDocumentId
+                            exhibitionData["다녀옴"] = 다녀옴
+
+                            let exhibition = ExhibitionModel(dictionary: exhibitionData)
+                            loadedExhibitions.append(exhibition)
+                        } else {
+                            print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
+                        }
+
+
                     }
-                    self?.MainExhibitionCollectionView.reloadData()
+                }
+
+                group.notify(queue: .main) {
+                    self.thirdSectionExhibitions = loadedExhibitions.sorted(by: { $0.likes > $1.likes })
+                    self.MainExhibitionCollectionView.reloadData()
                 }
             }
-        }
     }
-    
-    
+
+
     
     
     
@@ -529,30 +543,31 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
             
             else if indexPath.section == 2 {
-                if indexPath.item < thirdSectionExhibitions.count {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
-                    let exhibition = thirdSectionExhibitions[indexPath.item]
-                    cell.titleLabel.text = exhibition.title
-                    cell.dateLabel.text = exhibition.period
+          
+                if collectionView == MainExhibitionCollectionView {
+                    if indexPath.section == 2 {
+                        if indexPath.item < thirdSectionExhibitions.count {
+                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
+                            let exhibition = thirdSectionExhibitions[indexPath.item]
+                            cell.titleLabel.text = exhibition.title
+                            cell.dateLabel.text = exhibition.period
 
-                    let imageName = exhibition.poster
-                    let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
-                    storageRef.downloadURL { (url, error) in
-                        if let error = error {
-                            print("Error getting download URL: \(error)")
-                        } else if let url = url {
-                            DispatchQueue.main.async {
-                                cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), completed: { (image, error, cacheType, url) in
-                                    if cacheType == .none {
-                                        print("Section 2 Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
-                                    } else {
-                                        print("Section 2 Image was retrieved from cache")
+                            // 포스터 이미지 로드
+                            let imageName = exhibition.poster
+                            let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+                            storageRef.downloadURL { (url, error) in
+                                if let error = error {
+                                    print("Error getting download URL: \(error)")
+                                } else if let url = url {
+                                    DispatchQueue.main.async {
+                                        cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
                                     }
-                                })
+                                }
                             }
+
+                            return cell
                         }
                     }
-                    return cell
                 }
             }
 
@@ -563,16 +578,19 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
-              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
-              if indexPath.section == 1 {
-                  header.label.text = "\(selectedRegion)의 전시"
-                  let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
-                  header.addGestureRecognizer(tapGesture)
-              }
-              return header
-          }
-          return UICollectionReusableView()
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
+            if indexPath.section == 1 {
+                header.label.text = "\(selectedRegion)의 전시"
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
+                header.addGestureRecognizer(tapGesture)
+            } else if indexPath.section == 2 {
+                header.label.text = "가장 많이 다녀온 전시"
+            }
+            return header
+        }
+        return UICollectionReusableView()
     }
+
 
     @objc func headerTapped() {
         customAlertView.isHidden = false
@@ -635,9 +653,10 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
          return regions[row]
      }
 
+    // 피커 뷰의 didSelectRow 메서드
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        // 선택된 지역을 저장하지만, 여기에서 데이터 로딩을 하지 않습니다.
         selectedRegion = regions[row]
-        loadExhibitions(forRegion: selectedRegion)
     }
 
 
