@@ -15,7 +15,7 @@ struct ExhibitionModel {
     init(dictionary: [String: Any]) {
         self.title = dictionary["전시_타이틀"] as? String ?? "Unknown Title"
         self.poster = dictionary["전시_포스터"] as? String ?? "Unknown Poster"
-        self.period = dictionary["전시_기간"] as? String ?? "Unknown Period"
+        self.period = dictionary["전시_날짜"] as? String ?? "Unknown Period"
     }
 }
 

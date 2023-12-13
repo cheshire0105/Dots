@@ -209,8 +209,63 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     // 선택된 지역에 따라 데이터를 로드하는 가상의 함수
     func loadExhibitions(forRegion region: String) {
-        // 여기에서 지역에 따른 데이터 로드 로직 구현
-        print("데이터 로딩: \(region) 지역의 전시회")
+        guard let regionCode = regionCodeForKoreanName(region) else { return }
+
+        let collectionRef = Firestore.firestore().collection("전시_상세")
+        let startAt = "\(regionCode)_E_"
+        let endAt = "\(regionCode)_E_\u{f8ff}"
+
+        collectionRef.whereField("__name__", isGreaterThanOrEqualTo: startAt)
+                     .whereField("__name__", isLessThanOrEqualTo: endAt)
+                     .getDocuments { [weak self] (snapshot, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Error fetching documents: \(error)")
+                } else if let snapshot = snapshot {
+                    print("Documents for region \(regionCode):")
+                    for document in snapshot.documents {
+                        print("\(document.documentID) => \(document.data())")
+                    }
+
+                    self?.secondSectionExhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
+                        return ExhibitionModel(dictionary: doc.data())
+                    }
+                    self?.MainExhibitionCollectionView.reloadData()
+                }
+            }
+        }
+    }
+
+
+
+
+    func regionCodeForKoreanName(_ koreanName: String) -> String? {
+        switch koreanName {
+        case "인사동": return "INS"
+        case "북촌": return "BUK"
+        case "광화문 종로": return "GWA"
+        case "평창동": return "PYE"
+        case "홍대 연남": return "HON"
+        case "청담": return "CHE"
+        case "신사": return "SIN"
+        case "용산": return "YON"
+        case "성북": return "SEB"
+        case "대학로": return "DAE"
+        case "서초 도곡": return "SDO"
+        case "삼성 역삼": return "SYE"
+        case "성동": return "SED"
+        case "북서울": return "BSO"
+        case "헤이리": return "HEY"
+        case "경기 인천": return "GYE"
+        case "부산": return "BUS"
+        case "대구": return "DAE"
+        case "강원": return "GAN"
+        case "대전 충정": return "DCJ"
+        case "광주 전라": return "GJJ"
+        case "경상 울산": return "GSU"
+        case "제주": return "JEJ"
+        default: return nil
+        }
     }
 
 
@@ -281,7 +336,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     private func fetchExhibitionData() {
         let collectionRef = Firestore.firestore().collection("메인페이지_첫번째_섹션")
-        
+
         collectionRef.getDocuments { [weak self] (snapshot, error) in
             DispatchQueue.main.async {
                 if let error = error {
@@ -289,7 +344,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                 } else if let snapshot = snapshot {
                     self?.exhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
                         var data = doc.data()
-                        data["셀_구성"] = doc.documentID
+                        data["셀_구성"] = doc.documentID // 문서 ID를 '셀_구성' 필드에 저장
                         return ExhibitionModel(dictionary: data)
                     }
                     self?.MainExhibitionCollectionView.reloadData()
@@ -297,6 +352,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             }
         }
     }
+
     
     private func fetchAdditionalExhibitionData() {
         Firestore.firestore().collection("메인페이지_두번째_섹션").getDocuments { [weak self] (snapshot, error) in
@@ -305,12 +361,12 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                     print("An error occurred: \(error)")
                 } else if let snapshot = snapshot {
                     self?.secondSectionExhibitions = snapshot.documents.compactMap { doc -> ExhibitionModel? in
-                        var data = doc.data()
-                        data["셀_구성"] = doc.documentID
-                        return ExhibitionModel(dictionary: data)
-                    }
-                    self?.MainExhibitionCollectionView.reloadData()
-                }
+                                 var data = doc.data()
+                                 data["셀_구성"] = doc.documentID // 문서 ID를 '셀_구성' 필드에 저장
+                                 return ExhibitionModel(dictionary: data)
+                             }
+                             self?.MainExhibitionCollectionView.reloadData()
+                         }
             }
         }
         
@@ -556,6 +612,8 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             }
             
             if let selectedExhibition = selectedExhibition {
+                print("Selected Poster Name: \(selectedExhibition.poster)")
+
                 exhibitionPage.posterImageName = selectedExhibition.poster
                 exhibitionPage.titleName = selectedExhibition.title 
 
@@ -579,7 +637,9 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectedRegion = regions[row]
+        loadExhibitions(forRegion: selectedRegion)
     }
+
 
 
 
