@@ -35,7 +35,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     var exhibitions = [ExhibitionModel]()
     var secondSectionExhibitions = [ExhibitionModel]()
     var thirdSectionExhibitions = [ExhibitionModel]()
-    let regions = ["인사동", "북촌", "광화문 종로", "평창동", "홍대 연남", "청담", "신사", "용산", "성북", "대학로", "서초 도곡", "삼성 역삼", "성동", "북서울", "헤이리", "경기", "인천", "부산" , "대구" , "강원", "대전", "충정", "광주", "전라", "경상", "울산", "제주"]
+    let regions = ["인사동", "북촌", "광화문 종로", "평창동", "홍대 연남", "청담", "신사", "용산", "성북", "대학로", "서초 도곡", "삼성 역삼", "성동", "북서울", "헤이리", "경기 인천", "부산" , "대구" , "강원", "대전 충정", "광주 전라", "경상 울산", "제주"]
 
 
     private lazy var customAlertView: UIView = {
@@ -172,18 +172,19 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             make.top.equalToSuperview().inset(20)
             make.height.equalTo(30)
             make.left.right.equalToSuperview().inset(20)
+            make.bottom.equalTo(regionPickerView.snp.top)
         }
-
 
 
         regionPickerView.snp.makeConstraints { make in
-            make.top.equalTo(alertTitleLabel.snp.bottom).offset(10)
+            make.top.equalTo(alertTitleLabel.snp.bottom)
             make.left.right.equalToSuperview().inset(20)
-            make.height.equalTo(300) // 적당한 높이 설정
-            make.bottom.equalTo(alertConfirmButton.snp.top).offset(10)
+//            make.height.equalTo(300) // 적당한 높이 설정
+            make.bottom.equalTo(alertConfirmButton.snp.top)
         }
 
         alertConfirmButton.snp.makeConstraints { make in
+            make.top.equalTo(regionPickerView.snp.bottom)
             make.bottom.equalToSuperview().inset(20)
             make.left.right.equalToSuperview().inset(20)
             make.height.equalTo(40)
