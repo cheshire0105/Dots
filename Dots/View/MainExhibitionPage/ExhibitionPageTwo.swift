@@ -389,9 +389,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             }
 
             if isNewVisit {
-                let currentVisitorCount = (posterDocumentSnapshot.data()?["다녀옴"] as? Int ?? 0)
+                let currentVisitorCount = (posterDocumentSnapshot.data()?["visits"] as? Int ?? 0)
                 let newVisitorCount = currentVisitorCount + 1
-                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+                transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
             }
 
             transaction.setData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument)
@@ -426,7 +426,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             }
 
             if let document = documentSnapshot, document.exists {
-                let visitorCount = document.data()?["다녀옴"] as? Int ?? 0
+                let visitorCount = document.data()?["visits"] as? Int ?? 0
                 DispatchQueue.main.async {
                     if visitorCount > 0 {
                         self?.visitorCountLabel.text = "\(visitorCount)명이 다녀왔어요"
@@ -823,10 +823,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 return nil
             }
 
-            if let visitorCount = posterDocumentSnapshot.data()?["다녀옴"] as? Int, visitorCount > 0 {
+            if let visitorCount = posterDocumentSnapshot.data()?["visits"] as? Int, visitorCount > 0 {
                 // 방문자 수를 1 감소시키는 로직
                 let newVisitorCount = visitorCount - 1
-                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+                transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
             }
 
             // 사용자 방문 날짜 삭제

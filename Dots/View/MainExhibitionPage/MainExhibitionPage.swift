@@ -89,10 +89,12 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     }()
 
     private lazy var refreshControl: UIRefreshControl = {
-           let refreshControl = UIRefreshControl()
-           refreshControl.addTarget(self, action: #selector(refreshExhibitionData(_:)), for: .valueChanged)
-           return refreshControl
-       }()
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        refreshControl.addTarget(self, action: #selector(refreshExhibitionData(_:)), for: .valueChanged)
+        return refreshControl
+    }()
+
 
     @objc private func refreshExhibitionData(_ sender: UIRefreshControl) {
          // 여기서 데이터 로딩 함수 호출
@@ -112,7 +114,6 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         collectionView.refreshControl = refreshControl
-        collectionView.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         collectionView.register(MainExhibitionFirstSectionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
         collectionView.register(선별_전시_컬렉션_셀.self, forCellWithReuseIdentifier: "선별_전시_컬렉션_셀")
@@ -371,7 +372,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     func loadPopularExhibitions() {
         Firestore.firestore().collection("posters")
-            .order(by: "다녀옴", descending: false)
+            .order(by: "visits", descending: false) // Firestore 내에서 '다녀옴' 필드에 따라 내림차순 정렬
             .limit(to: 10)
             .getDocuments { [weak self] (snapshot, error) in
                 guard let self = self else { return }
@@ -394,12 +395,10 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                         defer { group.leave() }
 
                         if let detailDocument = detailDocument, let data = detailDocument.data() {
-                            let visits = data["다녀옴"] as? Int ?? 0
-                            var exhibitionData = data
-                            exhibitionData["셀_구성"] = posterDocumentId
-                            exhibitionData["visits"] = visits // '다녀옴' 값을 'visits' 필드에 저장
+                            let exhibition = ExhibitionModel(dictionary: data)
+                            print("visits 값: \(exhibition.visits)") // 로그 추가
+                            print("세번째 타이틀 이름: \(exhibition.title)") // 여기에서 '다녀옴' 값을 로그로 출력
 
-                            let exhibition = ExhibitionModel(dictionary: exhibitionData)
                             loadedExhibitions.append(exhibition)
                         } else {
                             print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
@@ -408,7 +407,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                 }
 
                 group.notify(queue: .main) {
-                    self.thirdSectionExhibitions = loadedExhibitions
+                    // 여기에서 Swift 내부에서 '다녀옴' 필드에 따라 다시 정렬
+                    self.thirdSectionExhibitions = loadedExhibitions.sorted { $0.visits > $1.visits }
                     self.MainExhibitionCollectionView.reloadData()
                 }
             }

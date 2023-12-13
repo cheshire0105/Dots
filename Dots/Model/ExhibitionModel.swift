@@ -19,8 +19,8 @@ struct ExhibitionModel {
         self.title = dictionary["전시_타이틀"] as? String ?? "Unknown Title"
         self.poster = dictionary["전시_포스터"] as? String ?? "Unknown Poster"
         self.period = dictionary["전시_날짜"] as? String ?? "Unknown Period"
-        self.likes = dictionary["다녀옴"] as? Int ?? 0  // 'likes' 필드도 초기화
-        self.visits = dictionary["다녀옴"] as? Int ?? 0  // 'visits' 필드로 초기화
+        self.likes = dictionary["visits"] as? Int ?? 0  // 'likes' 필드도 초기화
+        self.visits = dictionary["visits"] as? Int ?? 0  // 'visits' 필드로 초기화
 
     }
 }

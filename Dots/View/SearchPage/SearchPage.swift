@@ -542,7 +542,7 @@ extension SearchPage {
          if searchText.isEmpty {
              autocompleteResults = []
              updateAutocompleteTable()
-         } else if searchText.count >= 3 {
+         } else if searchText.count >= 2 {
              performSearch(with: searchText)
          }
      }
