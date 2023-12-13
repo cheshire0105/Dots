@@ -222,44 +222,22 @@ extension 이메일변경_화면 {
 }
 
 extension 이메일변경_화면 {
+
     @objc func 변경_버튼_클릭() {
-        guard let newEmail = 새_이메일_텍스트필드.text, !newEmail.isEmpty else {
-            showAlert(message: "새 이메일 주소를 입력해주세요.")
-            return
-        }
-
-        if let user = Auth.auth().currentUser {
-            // 현재 사용자가 이메일/비밀번호 제공업체로 가입된 경우에만 처리
-            if user.providerID == "password" {
-                // 새 이메일로 업데이트
-                user.updateEmail(to: newEmail) { [weak self] error in
-                    if let error = error {
-                        // 이메일 변경 실패
-                        self?.showAlert(message: "이메일 변경 실패: \(error.localizedDescription)")
-                    } else {
-                        // 이메일 변경 성공
-                        self?.showAlert(message: "이메일이 성공적으로 변경되었습니다.")
-                        
-                        // 확인 이메일 전송
-                        user.sendEmailVerification { error in
-                            if let error = error {
-                                // 확인 이메일 전송 실패
-                                print("확인 이메일 전송 실패: \(error.localizedDescription)")
-                            } else {
-                                // 확인 이메일 전송 성공
-                                print("확인 이메일이 전송되었습니다.")
-                            }
-                        }
-                    }
-                }
-            } else {
-                // 이메일/비밀번호 제공업체가 아닌 경우에 대한 처리
-                showAlert(message: "현재는 이메일/비밀번호 제공업체에서만 이메일 주소를 변경할 수 있습니다.")
-            }
-        }
-    }
-
-    }
+           guard let 새이메일 = 새_이메일_텍스트필드.text, !새이메일.isEmpty else {
+            print("새 이메일 택스트필드 빈값")
+               return
+           }
+           
+           updateEmail(새이메일: 새이메일) { 에러 in
+               if let 에러 = 에러 {
+                   print("이메일 업데이트 오류: \(에러.localizedDescription)")
+               } else {
+                   print("이메일이 성공적으로 업데이트되었습니다.")
+               }
+           }
+       }
+}
 extension 이메일변경_화면 {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -340,8 +318,6 @@ extension 이메일변경_화면 {
         }
     }
 
-
-
 extension 이메일변경_화면 {
     
     func 화면_제스쳐_실행 () {
@@ -354,4 +330,96 @@ extension 이메일변경_화면 {
     }
     
 }
+extension 이메일변경_화면 {
+    
+    func updateEmail(새이메일: String, completion: @escaping (Error?) -> Void) {
+        if let 접속_유저 = Auth.auth().currentUser {
+            접속_유저.updateEmail(to: 새이메일) { (애러) in
+                if let 애러 = 애러 {
+                    completion(애러)
+                } else {
+                    self.updateFirestoreUserEmail(uid: 접속_유저.uid, newEmail: 새이메일, completion: completion)
+                }
+            }
+        } else {
+            let error = NSError(domain: "Authentication", code: 0, userInfo: [NSLocalizedDescriptionKey: "사용자가 로그인되어 있지 않습니다."])
+            completion(error)
+        }
+    }
+    
+    
+    private func updateFirestoreUserEmail(uid: String, newEmail: String, completion: @escaping (Error?) -> Void) {
+        let 파이어스토어 = Firestore.firestore()
+        let 문서참조 = 파이어스토어.collection("유저_데이터_관리")
+        
+        문서참조.whereField("uid", isEqualTo: uid).getDocuments { (querySnapshot, 애러) in
+            if let 애러 = 애러 {
+                completion(애러)
+                return
+            }
+            
+            guard let 문서 = querySnapshot?.documents.first else {
+                let error = NSError(domain: "Firestore", code: 0, userInfo: [NSLocalizedDescriptionKey: "해당 UID와 일치하는 문서를 찾을 수 없습니다."])
+                completion(error)
+                return
+            }
+            
+            let documentID = 문서.documentID
+            문서참조.document(documentID).updateData(["이메일": newEmail]) { (error) in
+                completion(error)
+            }
+        }
+    }
+}
 
+
+
+
+//    func updateEmail(newEmail: String, completion: @escaping (Error?) -> Void) {
+//        // 현재 로그인된 사용자 가져오기
+//        if let user = Auth.auth().currentUser {
+//            // 새 이메일로 업데이트 요청
+//            user.updateEmail(to: newEmail) { (error) in
+//                if let error = error {
+//                    // 이메일 업데이트 오류
+//                    completion(error)
+//                } else {
+//                    // 이메일 업데이트가 성공적으로 진행됐을 때,
+//                    // 새 이메일 확인 메일을 보낼 것인지를 설정
+//                    let shouldSendVerificationEmail = true
+//
+//                    if shouldSendVerificationEmail {
+//                        // 새 이메일 확인 메일을 보내는 함수 호출
+//                        self.sendVerificationEmail(newEmail: newEmail, completion: completion)
+//                    } else {
+//                        // 별도의 확인 메일을 보내지 않는 경우
+//                        // Firestore에서 사용자 정보 업데이트
+//                        self.updateFirestoreUserEmail(uid: user.uid, newEmail: newEmail, completion: completion)
+//                    }
+//                }
+//            }
+//        } else {
+//            let error = NSError(domain: "Authentication", code: 0, userInfo: [NSLocalizedDescriptionKey: "사용자가 로그인되어 있지 않습니다."])
+//            completion(error)
+//        }
+//    }
+//
+//    private func sendVerificationEmail(newEmail: String, completion: @escaping (Error?) -> Void) {
+//        if let user = Auth.auth().currentUser {
+//            // 새 이메일에 대한 확인 메일을 보내는 함수 호출
+//            user.sendEmailVerification { (error) in
+//                if let error = error {
+//                    // 확인 메일 보내기 오류
+//                    completion(error)
+//                } else {
+//                    // 확인 메일이 성공적으로 보내졌을 때,
+//                    // Firestore에서 사용자 정보 업데이트
+//                    self.updateFirestoreUserEmail(uid: user.uid, newEmail: newEmail, completion: completion)
+//                }
+//            }
+//        } else {
+//            let error = NSError(domain: "Authentication", code: 0, userInfo: [NSLocalizedDescriptionKey: "사용자가 로그인되어 있지 않습니다."])
+//            completion(error)
+//        }
+//    }
+//
