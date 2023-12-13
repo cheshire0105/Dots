@@ -88,6 +88,20 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         return pickerView
     }()
 
+    private lazy var refreshControl: UIRefreshControl = {
+           let refreshControl = UIRefreshControl()
+           refreshControl.addTarget(self, action: #selector(refreshExhibitionData(_:)), for: .valueChanged)
+           return refreshControl
+       }()
+
+    @objc private func refreshExhibitionData(_ sender: UIRefreshControl) {
+         // 여기서 데이터 로딩 함수 호출
+         fetchExhibitionData()
+         loadPopularExhibitions()
+
+         // 데이터 로딩 완료 후 새로고침 인디케이터 종료
+         sender.endRefreshing()
+     }
     var selectedRegion: String = "서울"
 
     // 새로운 컬렉션뷰를 정의합니다.
@@ -97,6 +111,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         collectionView.backgroundColor = .black
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+        collectionView.refreshControl = refreshControl
+        collectionView.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         collectionView.register(MainExhibitionFirstSectionCollectionCell.self, forCellWithReuseIdentifier: "MainExhibitionCollectionCell")
         collectionView.register(선별_전시_컬렉션_셀.self, forCellWithReuseIdentifier: "선별_전시_컬렉션_셀")
@@ -355,7 +371,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     func loadPopularExhibitions() {
         Firestore.firestore().collection("posters")
-            .order(by: "다녀옴", descending: true)
+            .order(by: "다녀옴", descending: false)
             .limit(to: 10)
             .getDocuments { [weak self] (snapshot, error) in
                 guard let self = self else { return }
@@ -374,28 +390,25 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                     group.enter()
                     let posterDocumentId = document.documentID
 
-                    // "전시_상세" 컬렉션에서 추가 데이터 조회
                     Firestore.firestore().collection("전시_상세").document(posterDocumentId).getDocument { (detailDocument, error) in
                         defer { group.leave() }
 
                         if let detailDocument = detailDocument, let data = detailDocument.data() {
-                            let 다녀옴 = data["다녀옴"] as? Int ?? 0
+                            let visits = data["다녀옴"] as? Int ?? 0
                             var exhibitionData = data
                             exhibitionData["셀_구성"] = posterDocumentId
-                            exhibitionData["다녀옴"] = 다녀옴
+                            exhibitionData["visits"] = visits // '다녀옴' 값을 'visits' 필드에 저장
 
                             let exhibition = ExhibitionModel(dictionary: exhibitionData)
                             loadedExhibitions.append(exhibition)
                         } else {
                             print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
                         }
-
-
                     }
                 }
 
                 group.notify(queue: .main) {
-                    self.thirdSectionExhibitions = loadedExhibitions.sorted(by: { $0.likes > $1.likes })
+                    self.thirdSectionExhibitions = loadedExhibitions
                     self.MainExhibitionCollectionView.reloadData()
                 }
             }
@@ -552,12 +565,15 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                             cell.titleLabel.text = exhibition.title
                             cell.dateLabel.text = exhibition.period
 
+                            print("Section 2 - Item \(indexPath.item): Title: \(exhibition.title), Period: \(exhibition.period), Poster: \(exhibition.poster), Visits: \(exhibition.likes)")
+
+
                             // 포스터 이미지 로드
                             let imageName = exhibition.poster
                             let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
                             storageRef.downloadURL { (url, error) in
                                 if let error = error {
-                                    print("Error getting download URL: \(error)")
+//                                    print("Error getting download URL: \(error)")
                                 } else if let url = url {
                                     DispatchQueue.main.async {
                                         cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
