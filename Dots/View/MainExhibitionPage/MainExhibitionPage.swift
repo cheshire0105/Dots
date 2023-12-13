@@ -499,101 +499,64 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         if collectionView == MainExhibitionCollectionView {
-            if indexPath.section == 0 {
+            switch indexPath.section {
+            case 0:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainExhibitionCollectionCell", for: indexPath) as! MainExhibitionFirstSectionCollectionCell
-                let exhibition = exhibitionData(forIndexPath: indexPath)
-                cell.label.text = exhibition?.title ?? "Default Title"
-                
-                if let imageName = exhibition?.poster {
-                            let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
-                            storageRef.downloadURL { (url, error) in
-                                if let error = error {
-                                    print("Error getting download URL: \(error)")
-                                } else if let url = url {
-                                    DispatchQueue.main.async {
-                                        cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), completed: { (image, error, cacheType, url) in
-                                            if cacheType == .none {
-                                                print("Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
-                                            } else {
-                                                print("Image was retrieved from cache")
-                                            }
-                                        })
-                                    }
-                                }
-                            }
-                        }
-
-                cell.configureCellLayout(isEven: indexPath.row % 2 == 0)
+                configureFirstSectionCell(cell, at: indexPath)
                 return cell
-            }
-            
-            else if indexPath.section == 1 {
+
+            case 1:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
-                let exhibition = secondSectionExhibitions[indexPath.item]
-                cell.titleLabel.text = exhibition.title
-                cell.dateLabel.text = exhibition.period
-
-                let imageName = exhibition.poster
-                let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
-                storageRef.downloadURL { (url, error) in
-                    if let error = error {
-                        print("Error getting download URL: \(error)")
-                    } else if let url = url {
-                        DispatchQueue.main.async {
-                            cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), completed: { (image, error, cacheType, url) in
-                                if cacheType == .none {
-                                    print("Section 1 Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
-                                } else {
-                                    print("Section 1 Image was retrieved from cache")
-                                }
-                            })
-                        }
-                    }
-                }
-
+                configureSecondSectionCell(cell, at: indexPath)
                 return cell
+
+            case 2:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
+                configureThirdSectionCell(cell, at: indexPath)
+                return cell
+
+            default:
+                return UICollectionViewCell()
             }
-
-            
-            else if indexPath.section == 2 {
-          
-                if collectionView == MainExhibitionCollectionView {
-                    if indexPath.section == 2 {
-                        if indexPath.item < thirdSectionExhibitions.count {
-                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
-                            let exhibition = thirdSectionExhibitions[indexPath.item]
-                            cell.titleLabel.text = exhibition.title
-                            cell.dateLabel.text = exhibition.period
-
-                            print("Section 2 - Item \(indexPath.item): Title: \(exhibition.title), Period: \(exhibition.period), Poster: \(exhibition.poster), Visits: \(exhibition.likes)")
-
-
-                            // 포스터 이미지 로드
-                            let imageName = exhibition.poster
-                            let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
-                            storageRef.downloadURL { (url, error) in
-                                if let error = error {
-//                                    print("Error getting download URL: \(error)")
-                                } else if let url = url {
-                                    DispatchQueue.main.async {
-                                        cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-                                    }
-                                }
-                            }
-
-                            return cell
-                        }
-                    }
-                }
-            }
-
-            
         }
         return UICollectionViewCell()
     }
-    
+
+    private func configureFirstSectionCell(_ cell: MainExhibitionFirstSectionCollectionCell, at indexPath: IndexPath) {
+        guard indexPath.item < exhibitions.count else { return }
+        let exhibition = exhibitions[indexPath.item]
+        cell.label.text = exhibition.title
+        loadImage(for: cell.imageView, with: exhibition.poster)
+    }
+
+    private func configureSecondSectionCell(_ cell: 선별_전시_컬렉션_셀, at indexPath: IndexPath) {
+        guard indexPath.item < secondSectionExhibitions.count else { return }
+        let exhibition = secondSectionExhibitions[indexPath.item]
+        cell.titleLabel.text = exhibition.title
+        loadImage(for: cell.imageView, with: exhibition.poster)
+    }
+
+    private func configureThirdSectionCell(_ cell: 선별_전시_컬렉션_셀, at indexPath: IndexPath) {
+        guard indexPath.item < thirdSectionExhibitions.count else { return }
+        let exhibition = thirdSectionExhibitions[indexPath.item]
+        cell.titleLabel.text = exhibition.title
+        loadImage(for: cell.imageView, with: exhibition.poster)
+    }
+
+    private func loadImage(for imageView: UIImageView, with imageName: String) {
+        let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+        storageRef.downloadURL { (url, error) in
+            guard let url = url, error == nil else {
+                print("Error getting download URL: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            DispatchQueue.main.async {
+                imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+            }
+        }
+    }
+
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
