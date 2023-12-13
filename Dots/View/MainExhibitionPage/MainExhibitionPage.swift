@@ -548,14 +548,30 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
         let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
         storageRef.downloadURL { (url, error) in
             guard let url = url, error == nil else {
-                print("Error getting download URL: \(error?.localizedDescription ?? "Unknown error")")
+                print("이미지 다운로드 URL 가져오기 실패: \(error?.localizedDescription ?? "알 수 없는 오류")")
                 return
             }
             DispatchQueue.main.async {
-                imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"), completed: { (image, error, cacheType, url) in
+                    if let error = error {
+                        print("이미지 다운로드 오류: \(error.localizedDescription)")
+                    } else {
+                        switch cacheType {
+                        case .none:
+                            print("이미지가 인터넷에서 다운로드되어 캐시에 저장됨: \(url?.absoluteString ?? "알 수 없는 URL")")
+                        case .disk:
+                            print("이미지가 디스크 캐시에서 로드됨")
+                        case .memory:
+                            print("이미지가 메모리 캐시에서 로드됨")
+                        @unknown default:
+                            print("알 수 없는 캐시 타입")
+                        }
+                    }
+                })
             }
         }
     }
+
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
