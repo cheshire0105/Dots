@@ -95,15 +95,6 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         return refreshControl
     }()
 
-
-    @objc private func refreshExhibitionData(_ sender: UIRefreshControl) {
-         // 여기서 데이터 로딩 함수 호출
-         fetchExhibitionData()
-         loadPopularExhibitions()
-
-         // 데이터 로딩 완료 후 새로고침 인디케이터 종료
-         sender.endRefreshing()
-     }
     var selectedRegion: String = "서울"
 
     // 새로운 컬렉션뷰를 정의합니다.
@@ -169,6 +160,17 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             return section
         }
     }
+
+
+
+    @objc private func refreshExhibitionData(_ sender: UIRefreshControl) {
+         // 여기서 데이터 로딩 함수 호출
+         fetchExhibitionData()
+         loadPopularExhibitions()
+
+         // 데이터 로딩 완료 후 새로고침 인디케이터 종료
+         sender.endRefreshing()
+     }
 
     // 얼럿 뷰 설정
     private func setupCustomAlertView() {

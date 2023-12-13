@@ -44,10 +44,12 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     var client: SearchClient!
        var index: Index!
 
+    var autocompleteTableViewBottomConstraint: NSLayoutConstraint!
 
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
         
 
     }
@@ -129,7 +131,36 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
            loadInitialDataForTableView()
         setupAutocompleteTableView()
 
+        // Autocomplete 테이블 뷰의 bottom constraint 설정
+           autocompleteTableViewBottomConstraint = autocompleteTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+           autocompleteTableViewBottomConstraint.isActive = true
+
+        // 키보드 알림 등록
+           NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+           NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+       } 
+
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+
+            UIView.animate(withDuration: 0.3) {
+                // 키보드 높이만큼 테이블뷰의 바닥 제약 조건을 업데이트
+                self.autocompleteTableViewBottomConstraint.constant = -keyboardHeight
+                self.view.layoutIfNeeded()
+            }
+        }
     }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        UIView.animate(withDuration: 0.3) {
+            // 키보드가 사라질 때 원래대로 복원
+            self.autocompleteTableViewBottomConstraint.constant = 0
+            self.view.layoutIfNeeded()
+        }
+    }
+
 
 
     func indexFirestoreDataToAlgolia() {
