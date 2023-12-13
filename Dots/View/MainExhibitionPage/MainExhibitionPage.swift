@@ -167,9 +167,10 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             make.height.equalTo(400)
         }
 
+
         alertTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(20)
-            make.height.equalTo(15)
+            make.height.equalTo(30)
             make.left.right.equalToSuperview().inset(20)
         }
 
