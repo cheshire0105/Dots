@@ -1,4 +1,4 @@
-// 최신화 2023 12 4 9:33pm
+// 최신화  유저_다녀옴_날짜 데이터를 해당 유저의 마이페이지 켈린더에 표시하기
 import UIKit
 import SnapKit
 import FSCalendar
@@ -6,9 +6,19 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 import GoogleSignIn
+import SDWebImage
 
 class Mypage: UIViewController {
-  
+    
+    var 특정날짜: [(date: String, imageURL: String?)] = []
+    func printUserVisitedDates() {
+        print("유저_다녀옴_날짜: \(유저_다녀옴_날짜)")
+    }
+    
+    // 추가 디버깅
+    func print특정날짜() {
+        print("특정날짜: \(특정날짜)")
+    }
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
@@ -144,17 +154,20 @@ class Mypage: UIViewController {
         calendar.layer.cornerRadius = 15
         calendar.layer.borderWidth = 0.3
         //        calendar.layer.borderColor = UIColor(named: "neon")?.cgColor
-   
+        
         
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
         calendar.appearance.headerDateFormat = "MMMM yyyy"
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
         calendar.appearance.weekdayTextColor = UIColor.darkGray
-        calendar.appearance.todayColor = UIColor.clear
+        calendar.appearance.todayColor = UIColor.white
+        
         calendar.appearance.todaySelectionColor = UIColor.clear
-        calendar.appearance.titleTodayColor = UIColor(named: "neon")
-
+//        calendar.appearance.titleTodayColor = UIColor(named: "neon")
+        calendar.appearance.titleTodayColor = UIColor.black
+        
+        
         calendar.appearance.selectionColor = UIColor.clear
         calendar.appearance.titleDefaultColor = UIColor.white
         calendar.appearance.titleSelectionColor = UIColor.white
@@ -164,14 +177,15 @@ class Mypage: UIViewController {
         calendar.scope = .month
         calendar.allowsMultipleSelection = false
         
+        
         return calendar
     }()
     
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
-        접속_유저_데이터_마이페이지_적용하기()
-        
+        캐시된_유저_데이터_마이페이지_적용하기()
+        캘린더.reloadData()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -185,23 +199,25 @@ class Mypage: UIViewController {
         버튼_클릭()
         UI레이아웃()
         버튼_백_레이아웃 ()
-        
         캘린더_레이아웃()
         캘린더.dataSource = self
         캘린더.delegate = self
         캘린더.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
-
-        접속_유저_데이터_마이페이지_적용하기()
-        
+        포스터이미지URL업데이트_파이어스토어()
+        캐시된_유저_데이터_마이페이지_적용하기()
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
-          tapGestureRecognizer.delegate = self
+        tapGestureRecognizer.delegate = self
         view.addGestureRecognizer(tapGestureRecognizer)
+        
+        특정날짜방문_캘린더_적용()
+
+        
     }
+    
     @objc private func handleOutsideTap() {
-        // 모달이 표시 중이면 dismiss
         if presentedViewController != nil {
-               dismiss(animated: true, completion: nil)
-           }
+            dismiss(animated: true, completion: nil)
+        }
     }
     private func 버튼_백_레이아웃 () {
         for 버튼배치 in [마이페이지_전시_버튼,마이페이지_후기_버튼,마이페이지_보관함_버튼,마이페이지_전시_아이콘,마이페이지_후기_아이콘,마이페이지_보관함_아이콘,마이페이지_전시_라벨,마이페이지_후기_라벨,마이페이지_보관함_라벨] {
@@ -266,7 +282,7 @@ class Mypage: UIViewController {
             make.top.equalTo(마이페이지_보관함_버튼.snp.centerY).offset(6)
         }
         
-    
+        
         
     }
     private func UI레이아웃 () {
@@ -275,7 +291,7 @@ class Mypage: UIViewController {
             view.addSubview(UI뷰)
         }
         마이페이지_프로필_이미지_버튼.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(80)
+            make.top.equalToSuperview().offset(65)
             make.leading.equalToSuperview().offset(28)
             make.size.equalTo(76)
         }
@@ -314,7 +330,7 @@ class Mypage: UIViewController {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
-     
+        
     }
     
     func 캘린더_레이아웃() {
@@ -326,7 +342,7 @@ class Mypage: UIViewController {
             make.bottom.equalToSuperview().offset(-60)
         }
     }
- 
+    
 }
 
 extension Mypage {
@@ -341,7 +357,7 @@ extension Mypage {
         self.navigationController?.pushViewController(설정_이동, animated: false)
         self.navigationItem.hidesBackButton = true
         self.dismiss(animated: true, completion: nil)
-
+        
     }
     
     @objc func 마이페이지_알림_버튼_클릭() {
@@ -349,28 +365,28 @@ extension Mypage {
         self.navigationController?.pushViewController(알림_이동, animated: true)
         self.navigationItem.hidesBackButton = true
         self.dismiss(animated: true, completion: nil)
-
+        
     }
     @objc func 마이페이지_전시_버튼_클릭 () {
         let 전시_이동 = 마이페이지_전시()
         self.navigationController?.pushViewController(전시_이동, animated: true)
         self.navigationItem.hidesBackButton = true
         self.dismiss(animated: true, completion: nil)
-
+        
     }
     @objc func 마이페이지_후기_버튼_클릭 () {
         let 후기_이동 = 마이페이지_리뷰()
         self.navigationController?.pushViewController(후기_이동, animated: true)
         self.navigationItem.hidesBackButton = true
         self.dismiss(animated: true, completion: nil)
-
+        
     }
     @objc func 마이페이지_보관함_버튼_클릭 () {
         let 보관함_이동 = 마이페이지_보관함()
         self.navigationController?.pushViewController(보관함_이동, animated: true)
         self.navigationItem.hidesBackButton = true
         self.dismiss(animated: true, completion: nil)
-
+        
     }
     
 }
@@ -389,48 +405,107 @@ extension UIImage {
 extension Mypage {
     
     
-    private func 접속_유저_데이터_마이페이지_적용하기() {
-            guard let 현재접속중인유저 = Auth.auth().currentUser else {
-                return
-            }
-
+    //    private func 접속_유저_데이터_마이페이지_적용하기() {
+    //          guard let 현재접속중인유저 = Auth.auth().currentUser else {
+    //              return
+    //          }
+    //
+    //          let 파이어스토어 = Firestore.firestore()
+    //          let 이메일 = 현재접속중인유저.email ?? ""
+    //          let 유저컬렉션: CollectionReference
+    //
+    //          if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
+    //              유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
+    //          } else {
+    //              유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
+    //          }
+    //
+    //          유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, error) in
+    //              guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+    //                  print("컬렉션 조회 실패")
+    //                  return
+    //              }
+    //
+    //              if let userDocument = documents.first {
+    //                  let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
+    //                  let 닉네임 = userDocument["닉네임"] as? String ?? ""
+    //                  let 이메일 = userDocument["이메일"] as? String ?? ""
+    //
+    //                  DispatchQueue.main.async {
+    //                      if let url = URL(string: 프로필이미지URL) {
+    //
+    //                          self.마이페이지_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
+    //                      }
+    //
+    //                      self.마이페이지_프로필_닉네임.text = 닉네임
+    //                      self.마이페이지_프로필_이메일.text = 이메일
+    //                  }
+    //              }
+    //          }
+    //      }
+    
+    
+    private func 캐시된_유저_데이터_마이페이지_적용하기() {
+        var 닉네임_캐싱: String?
+        var 이메일_캐싱: String?
+        if let 캐시된닉네임 = 닉네임_캐싱, let 캐시된이메일 = 이메일_캐싱 {
+            캐시된_유저_닉네임_이메일_마이페이지_적용하기( 닉네임: 캐시된닉네임, 이메일: 캐시된이메일)
+            return
+        }
+        
+        guard let 현재접속중인유저 = Auth.auth().currentUser else {
+            return
+        }
+        
         let 파이어스토어 = Firestore.firestore()
         let 이메일 = 현재접속중인유저.email ?? ""
         let 유저컬렉션: CollectionReference
-
+        
         if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
             유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         } else {
             유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         }
-
-            유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in
-                guard let self = self, let documents = querySnapshot?.documents, error == nil else {
-                    print("컬렉션 조회 실패")
-                    return
-                }
-
-                if let userDocument = documents.first {
-                    let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
-                    let 닉네임 = userDocument["닉네임"] as? String ?? ""
-                    let 이메일 = userDocument["이메일"] as? String ?? ""
-
-                    DispatchQueue.main.async {
-                        if let url = URL(string: 프로필이미지URL) {
-                            self.마이페이지_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
-                        }
-
-                        self.마이페이지_프로필_닉네임.text = 닉네임
-
-                        self.마이페이지_프로필_이메일.text = 이메일
+        
+        유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+                print("컬렉션 조회 실패")
+                return
+            }
+            
+            if let userDocument = documents.first {
+                let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
+                let 닉네임 = userDocument["닉네임"] as? String ?? ""
+                let 이메일 = userDocument["이메일"] as? String ?? ""
+                
+                닉네임_캐싱 = 닉네임
+                이메일_캐싱 = 이메일
+                
+                DispatchQueue.main.async {
+                    self.캐시된_유저_닉네임_이메일_마이페이지_적용하기(닉네임: 닉네임_캐싱, 이메일: 이메일_캐싱)
+                    if let url = URL(string: 프로필이미지URL) {
+                        self.마이페이지_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
                     }
                 }
             }
         }
+    }
+    
+    private func 캐시된_유저_닉네임_이메일_마이페이지_적용하기( 닉네임: String?, 이메일: String?) {
+        
+        if let 닉네임 = 닉네임 {
+            self.마이페이지_프로필_닉네임.text = 닉네임
+        }
+        
+        if let 이메일 = 이메일 {
+            self.마이페이지_프로필_이메일.text = 이메일
+        }
+    }
 }
+
 extension Mypage: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // 모달 외부를 탭하면 모달을 dismiss
+        
         if presentedViewController != nil && touch.view == view {
             return true
         }
