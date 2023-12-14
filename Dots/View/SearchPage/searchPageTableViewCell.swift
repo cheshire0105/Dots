@@ -30,14 +30,14 @@ class searchPageTableViewCell: UITableViewCell {
     }
 
     override func prepareForReuse() {
-         super.prepareForReuse()
-         // 셀이 재사용될 때 초기화 작업을 수행합니다.
-         popularCellImageView.image = nil
-         ExhibitionTitleLabel.text = nil
-         museumLabel.text = nil
-         // SDWebImage 로딩 취소
-         popularCellImageView.sd_cancelCurrentImageLoad()
-     }
+        super.prepareForReuse()
+        // 셀이 재사용될 때 초기화 작업을 수행합니다.
+        popularCellImageView.image = nil
+        ExhibitionTitleLabel.text = nil
+        museumLabel.text = nil
+        // SDWebImage 로딩 취소
+        popularCellImageView.sd_cancelCurrentImageLoad()
+    }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -48,7 +48,7 @@ class searchPageTableViewCell: UITableViewCell {
 
         popularCellImageView.backgroundColor = .gray // 임시 배경색 설정
         popularCellImageView.layer.cornerRadius = 15 // 모서리 둥글게
-           popularCellImageView.clipsToBounds = true    // 이미지가 뷰의 경계를 넘어가지 않도록
+        popularCellImageView.clipsToBounds = true    // 이미지가 뷰의 경계를 넘어가지 않도록
         popularCellImageView.contentMode = .scaleAspectFill // 이미지 콘텐츠 모드 설정
 
         contentView.addSubview(popularCellImageView)
@@ -102,8 +102,28 @@ extension searchPageTableViewCell {
                 return
             }
             DispatchQueue.main.async {
-                self.popularCellImageView.sd_setImage(with: url, placeholderImage: nil)
+                self.popularCellImageView.sd_setImage(with: url, placeholderImage: nil, options: [], completed: { image, error, cacheType, url in
+                    if let error = error {
+                        print("Error downloading image: \(error.localizedDescription)")
+                    } else {
+                        // 캐시에서 로드되었는지 확인
+                        switch cacheType {
+                        case .none:
+                            print("Image downloaded from the internet for document ID: \(documentId)")
+                        case .disk:
+                            print("Image loaded from disk cache for document ID: \(documentId)")
+                        case .memory:
+                            print("Image loaded from memory cache for document ID: \(documentId)")
+                        @unknown default:
+                            print("Unknown cache type for document ID: \(documentId)")
+                        }
+                    }
+                })
             }
         }
     }
+
+
 }
+
+
