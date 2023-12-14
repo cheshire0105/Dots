@@ -377,7 +377,7 @@ extension Mypage {
     //               }
     //           }
     //       }
-    func fetchUserVisitedDates() {
+    func 특정날짜방문_캘린더_적용() {
         guard let uid = getCurrentUserUID() else {
             print("User not authenticated")
             return
@@ -388,34 +388,31 @@ extension Mypage {
         
         posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
             guard let self = self, let 메인_문서들 = querySnapshot?.documents, error == nil else {
-                print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
             
             self.특정날짜 = []
             
             for 메인_문서 in 메인_문서들 {
-                self.fetchUserVisitDateFromReviews(uid: uid, document: 메인_문서)
+                self.달력_방문날짜_포스터_업데이트(uid: uid, document: 메인_문서)
             }
             
             self.캘린더.reloadData()
         }
     }
     
-    func fetchUserVisitDateFromReviews(uid: String, document: QueryDocumentSnapshot) {
+    func 달력_방문날짜_포스터_업데이트(uid: String, document: QueryDocumentSnapshot) {
         let reviews_서브컬렉션 = document.reference.collection("reviews")
         
-        // addSnapshotListener를 사용하여 실시간으로 변경을 감지
         reviews_서브컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
             guard let self = self, let 서브_문서들 = querySnapshot?.documents, error == nil else {
-                print("문서 불러오기 오류: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
             
             for 서브_문서 in 서브_문서들 {
                 if let 다녀온_날짜 = 서브_문서["유저_다녀옴_날짜"] as? String {
                     if uid == 서브_문서.documentID {
-                        self.fetchImageURLAndUpdateArray(documentID: document.documentID, imageURL: 다녀온_날짜)
+                        self.달력_방문날짜_포스터_업데이트_배열(documentID: document.documentID, imageURL: 다녀온_날짜)
                         self.캘린더.reloadData()
                         
                     } else {
@@ -425,7 +422,7 @@ extension Mypage {
         }
     }
     
-    func fetchImageURLAndUpdateArray(documentID: String, imageURL: String) {
+    func 달력_방문날짜_포스터_업데이트_배열(documentID: String, imageURL: String) {
         let 스토리지 = Storage.storage()
         let 스토리지참조 = 스토리지.reference().child("images")
         
@@ -434,7 +431,6 @@ extension Mypage {
         
         이미지파일참조.downloadURL { [weak self] (url, 에러) in
             if let 에러 = 에러 {
-                print("다운로드 URL 가져오기 오류: \(에러.localizedDescription)")
                 return
             }
             
@@ -510,7 +506,7 @@ extension Mypage {
         
         포스터컬렉션.getDocuments { (쿼리스냅샷, 에러) in
             guard let 문서들 = 쿼리스냅샷?.documents, 에러 == nil else {
-                print("문서 가져오기 오류: \(에러?.localizedDescription ?? "알 수 없는 오류")")
+//                print("문서 가져오기 오류: \(에러?.localizedDescription ?? "알 수 없는 오류")")
                 return
             }
             
@@ -526,13 +522,11 @@ extension Mypage {
                         if error.domain == StorageErrorDomain, let errorCode = StorageErrorCode(rawValue: error.code), errorCode == .objectNotFound {
                             return
                         }
-                        print("Metadata 가져오기 오류: \(error.localizedDescription)")
                         return
                     }
 
                     이미지파일참조.downloadURL { (url, 에러) in
                         if let 에러 = 에러 {
-                            print("다운로드 URL 가져오기 오류: \(에러.localizedDescription)")
                             return
                         }
                         
@@ -551,7 +545,6 @@ extension Mypage {
     func 리뷰서브컬렉션내포스터이미지URL업데이트(리뷰컬렉션: CollectionReference, 이미지URL: String) {
         리뷰컬렉션.getDocuments { (쿼리스냅샷, 에러) in
             guard let 문서들 = 쿼리스냅샷?.documents, 에러 == nil else {
-                print("리뷰 서브컬렉션 문서 가져오기 오류: \(에러?.localizedDescription ?? "알 수 없는 오류")")
                 return
             }
             

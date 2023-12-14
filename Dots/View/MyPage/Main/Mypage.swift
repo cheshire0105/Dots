@@ -185,7 +185,6 @@ class Mypage: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
-//        fetchUserVisitedDates()
         캘린더.reloadData()
     }
     override func viewDidLoad() {
@@ -210,14 +209,12 @@ class Mypage: UIViewController {
         tapGestureRecognizer.delegate = self
         view.addGestureRecognizer(tapGestureRecognizer)
         
-        fetchUserVisitedDates()
-//        SDImageCache.shared.clearMemory()
-//        SDImageCache.shared.clearDisk()
+        특정날짜방문_캘린더_적용()
+
         
     }
     
     @objc private func handleOutsideTap() {
-        // 모달이 표시 중이면 dismiss
         if presentedViewController != nil {
             dismiss(animated: true, completion: nil)
         }
