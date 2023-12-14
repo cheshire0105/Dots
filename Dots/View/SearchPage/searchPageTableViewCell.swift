@@ -3,7 +3,7 @@
 //  Dots
 //
 //  Created by cheshire on 11/2/23.
-//
+// 최신화
 
 import Foundation
 import UIKit
