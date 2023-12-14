@@ -341,36 +341,40 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
 
-
     @objc func confirmButtonTapped() {
-        let isSelected = recordButton.isSelected
-        recordButton.isSelected = !isSelected
-        let newImageName = isSelected ? "footprint" : "footprint 1"
-        recordButton.setImage(UIImage(named: newImageName), for: .normal)
-
-        customAlertView.isHidden = true
-        blurEffectView.isHidden = true
-
         let selectedDate = datePicker.date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: selectedDate)
 
-        // Firebase Firestore에 데이터 저장
-        // 'posterImageName' 속성을 사용하여 'posterName'을 전달합니다.
         if let posterName = self.posterImageName {
-              addVisitDateToFirestore(visitDate: dateString, posterName: posterName) {
-                  self.fetchVisitorCountAndUpdateLabel() // 방문자 수 업데이트
-              }
-          } else {
-              print("Poster name is not available")
-          }
+            checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] alreadyVisited, _ in
+                let isNewVisit = !alreadyVisited
+                self?.addVisitDateToFirestore(visitDate: dateString, posterName: posterName, isNewVisit: isNewVisit) {
+                    self?.fetchVisitorCountAndUpdateLabel()
+                    DispatchQueue.main.async {
+                        self?.customAlertView.isHidden = true
+                        self?.blurEffectView.isHidden = true
+                        if !alreadyVisited {
+                            // 방문을 처음 등록하는 경우에만 아이콘 변경
+                            self?.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
+                        }
+                    }
+                }
+            }
+        } else {
+            print("Poster name is not available")
+        }
     }
 
 
 
 
-    func addVisitDateToFirestore(visitDate: String, posterName: String, completion: @escaping () -> Void) {
+
+
+
+
+    func addVisitDateToFirestore(visitDate: String, posterName: String, isNewVisit: Bool, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
         let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(Auth.auth().currentUser?.uid ?? "")
         let posterDocument = db.collection("posters").document(posterName)
@@ -384,20 +388,13 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 return nil
             }
 
-            let newVisitorCount = (posterDocumentSnapshot.data()?["다녀옴"] as? Int ?? 0) + 1
-
-            if !posterDocumentSnapshot.exists {
-                // 문서가 없는 경우, 초기 데이터로 문서 생성
-                transaction.setData(["다녀옴": newVisitorCount], forDocument: posterDocument)
-            } else {
-                // 문서가 있는 경우, 기존 데이터 업데이트
-                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+            if isNewVisit {
+                let currentVisitorCount = (posterDocumentSnapshot.data()?["visits"] as? Int ?? 0)
+                let newVisitorCount = currentVisitorCount + 1
+                transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
             }
 
-            // 사용자 방문 날짜 등록
-            transaction.setData(["유저_다녀옴_날짜": visitDate], forDocument: userVisitDocument)
             transaction.setData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument)
-
 
             return nil
         }) { (object, error) in
@@ -405,7 +402,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 print("트랜잭션 실패: \(error)")
             } else {
                 print("트랜잭션이 성공적으로 완료됨")
-                self.fetchVisitorCountAndUpdateLabel() // 여기에서 호출
+                completion()
             }
         }
     }
@@ -429,7 +426,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             }
 
             if let document = documentSnapshot, document.exists {
-                let visitorCount = document.data()?["다녀옴"] as? Int ?? 0
+                let visitorCount = document.data()?["visits"] as? Int ?? 0
                 DispatchQueue.main.async {
                     if visitorCount > 0 {
                         self?.visitorCountLabel.text = "\(visitorCount)명이 다녀왔어요"
@@ -700,18 +697,18 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         mapAlertView.addSubview(confirmButton)
 
-        confirmButton.snp.makeConstraints { make in
-            make.top.equalTo(newView.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview().inset(50)
-            make.height.equalTo(40)
-        }
-
-
-        deepLinkLabel.snp.makeConstraints { make in
-            make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
-            make.centerY.equalTo(newView.snp.centerY)
-            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-        }
+//        confirmButton.snp.makeConstraints { make in
+//            make.top.equalTo(newView.snp.bottom).offset(20)
+//            make.leading.trailing.equalToSuperview().inset(50)
+//            make.height.equalTo(40)
+//        }
+//
+//
+//        deepLinkLabel.snp.makeConstraints { make in
+//            make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
+//            make.centerY.equalTo(newView.snp.centerY)
+//            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
+//        }
     }
 
     @objc private func shareDeepLink() {
@@ -773,8 +770,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(datePicker.snp.bottom).offset(10)
             make.centerX.equalTo(customAlertView.snp.centerX)
-            make.width.equalTo(273) // 버튼의 너비
-            make.height.equalTo(56) // 버튼의 높이
+//            make.width.equalTo(273) // 버튼의 너비
+//            make.height.equalTo(56) // 버튼의 높이
             make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
         }
 
@@ -800,9 +797,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         deleteVisitDateInFirestore(posterName: posterName) {
-            self.fetchVisitorCountAndUpdateLabel() // 방문자 수 업데이트
+            self.fetchVisitorCountAndUpdateLabel()
+            self.recordButton.setImage(UIImage(named: "footprint"), for: .normal) // 아이콘을 기본 이미지로 변경
         }
     }
+
 
 
     func deleteVisitDateInFirestore(posterName: String, completion: @escaping () -> Void) {
@@ -824,10 +823,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 return nil
             }
 
-            if let visitorCount = posterDocumentSnapshot.data()?["다녀옴"] as? Int, visitorCount > 0 {
+            if let visitorCount = posterDocumentSnapshot.data()?["visits"] as? Int, visitorCount > 0 {
                 // 방문자 수를 1 감소시키는 로직
                 let newVisitorCount = visitorCount - 1
-                transaction.updateData(["다녀옴": newVisitorCount], forDocument: posterDocument)
+                transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
             }
 
             // 사용자 방문 날짜 삭제

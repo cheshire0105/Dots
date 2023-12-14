@@ -39,6 +39,8 @@ class searchPageTableViewCell: UITableViewCell {
         popularCellImageView.backgroundColor = .gray // 임시 배경색 설정
         popularCellImageView.layer.cornerRadius = 15 // 모서리 둥글게
            popularCellImageView.clipsToBounds = true    // 이미지가 뷰의 경계를 넘어가지 않도록
+        popularCellImageView.contentMode = .scaleAspectFill // 이미지 콘텐츠 모드 설정
+
         contentView.addSubview(popularCellImageView)
 
         ExhibitionTitleLabel.textColor = .white
