@@ -507,14 +507,20 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
                 return cell
 
             case 1:
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
-                configureSecondSectionCell(cell, at: indexPath)
-                return cell
+                      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
+                      if indexPath.item < secondSectionExhibitions.count {
+                          let exhibition = secondSectionExhibitions[indexPath.item]
+                          cell.configure(with: exhibition)
+                      }
+                      return cell
 
             case 2:
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
-                configureThirdSectionCell(cell, at: indexPath)
-                return cell
+                      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "선별_전시_컬렉션_셀", for: indexPath) as! 선별_전시_컬렉션_셀
+                      if indexPath.item < thirdSectionExhibitions.count {
+                          let exhibition = thirdSectionExhibitions[indexPath.item]
+                          cell.configure(with: exhibition)
+                      }
+                      return cell
 
             default:
                 return UICollectionViewCell()

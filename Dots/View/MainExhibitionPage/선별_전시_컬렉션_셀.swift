@@ -7,12 +7,19 @@
 
 import Foundation
 import UIKit
+import FirebaseStorage
 
 class 선별_전시_컬렉션_셀: UICollectionViewCell {
 
     var imageView: UIImageView!
     var titleLabel: UILabel!
     var dateLabel: UILabel!
+
+    override func prepareForReuse() {
+          super.prepareForReuse()
+          imageView.image = nil
+          titleLabel.text = nil
+      }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -62,6 +69,29 @@ class 선별_전시_컬렉션_셀: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    var currentImageName: String?
+
+    func configure(with exhibition: ExhibitionModel) {
+        titleLabel.text = exhibition.title
+        currentImageName = exhibition.poster
+        loadImage(for: imageView, with: exhibition.poster)
+    }
+
+    private func loadImage(for imageView: UIImageView, with imageName: String) {
+        let storageRef = Storage.storage().reference(withPath: "images/\(imageName).png")
+        storageRef.downloadURL { [weak self] (url, error) in
+            guard let url = url, error == nil else {
+                print("이미지 다운로드 URL 가져오기 실패: \(error?.localizedDescription ?? "알 수 없는 오류")")
+                return
+            }
+            DispatchQueue.main.async {
+                if self?.currentImageName == imageName {
+                    imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                }
+            }
+        }
+    }
 }
 
 
@@ -85,5 +115,7 @@ class 선별_전시_컬렉션_셀_헤더: UICollectionReusableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+
 }
 
