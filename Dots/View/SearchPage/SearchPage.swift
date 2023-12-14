@@ -514,13 +514,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                 return UITableViewCell() // 또는 적절한 기본값 반환
             }
             let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
-            let cellModel = currentData[indexPath.row]
-
-            // 텍스트 바인딩 및 이미지 로드
-            bindText(for: cell, with: cellModel.imageDocumentId)
-            loadImage(for: cell, with: cellModel.imageDocumentId)
-
-            return cell
+              let cellModel = currentData[indexPath.row]
+              cell.configure(with: cellModel) // 셀 구성
+              return cell
         }
     }
 

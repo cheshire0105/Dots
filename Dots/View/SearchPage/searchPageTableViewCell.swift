@@ -29,6 +29,16 @@ class searchPageTableViewCell: UITableViewCell {
 
     }
 
+    override func prepareForReuse() {
+         super.prepareForReuse()
+         // 셀이 재사용될 때 초기화 작업을 수행합니다.
+         popularCellImageView.image = nil
+         ExhibitionTitleLabel.text = nil
+         museumLabel.text = nil
+         // SDWebImage 로딩 취소
+         popularCellImageView.sd_cancelCurrentImageLoad()
+     }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -74,4 +84,26 @@ class searchPageTableViewCell: UITableViewCell {
         }
     }
 
+}
+extension searchPageTableViewCell {
+    func configure(with model: PopularCellModel) {
+        ExhibitionTitleLabel.text = model.title
+        museumLabel.text = model.subTitle
+        loadImage(for: model.imageDocumentId)
+    }
+
+    private func loadImage(for documentId: String) {
+        let imagePath = "images/\(documentId).png"
+        let storageRef = Storage.storage().reference(withPath: imagePath)
+
+        storageRef.downloadURL { [weak self] (url, error) in
+            guard let self = self, let url = url, error == nil else {
+                print("Error getting download URL: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            DispatchQueue.main.async {
+                self.popularCellImageView.sd_setImage(with: url, placeholderImage: nil)
+            }
+        }
+    }
 }
