@@ -537,7 +537,7 @@ class 마이페이지_설정_페이지 : UIViewController, UINavigationControlle
         버튼_클릭()
       
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+          self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -689,15 +689,15 @@ extension 마이페이지_설정_페이지 {
     
     private func 설정아이템들_구성() {
         설정아이템들 = [
-            [설정아이템(title: "프로필 공개 / 비공개", isSwitchOn: false, action: { /* 프로필 공개 / 비공개 기능 구현 */ })],
+            [설정아이템(title: "프로필 공개 / 비공개", isSwitchOn: false, action: { /* 프로필 공개 / 비공개 기능  */ })],
             [
-                설정아이템(title: "프로필 변경", isSwitchOn: false, action: { /* 프로필 변경 기능 구현 */ }),
-                설정아이템(title: "이메일 변경", isSwitchOn: false, action: { /* 이메일 변경 기능 구현 */ }),
-                설정아이템(title: "비밀번호 변경", isSwitchOn: false, action: { /* 비밀번호 변경 기능 구현 */ }),
-                설정아이템(title: "알림 설정", isSwitchOn: false, action: { /* 알림 설정 기능 구현 */ })
+                설정아이템(title: "프로필 변경", isSwitchOn: false, action: { /* 프로필 변경 기능  */ }),
+                설정아이템(title: "이메일 변경", isSwitchOn: false, action: { /* 이메일 변경 기능  */ }),
+                설정아이템(title: "비밀번호 변경", isSwitchOn: false, action: { /* 비밀번호 변경 기능  */ }),
+                설정아이템(title: "알림 설정", isSwitchOn: false, action: { /* 알림 설정 기능  */ })
             ],
-            [설정아이템(title: "로그아웃", isSwitchOn: false, action: { /* 로그아웃 기능 구현 */ })],
-            [설정아이템(title: "회원 탈퇴", isSwitchOn: false, action: { /* 회원 탈퇴 기능 구현 */ })]
+            [설정아이템(title: "로그아웃", isSwitchOn: false, action: { /* 로그아웃  기능  */ })],
+            [설정아이템(title: "회원 탈퇴", isSwitchOn: false, action: { /* 회원 탈퇴 기능  */ })]
         ]
     }
 }
@@ -782,6 +782,29 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.0
     }
+   
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+           if section == 0 || section == 2 || section == 3 {
+               view.tintColor = .clear
+           } else {
+               view.tintColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+               
+               let header = view as! UITableViewHeaderFooterView
+               header.textLabel?.textColor = .white
+           }
+       }
+
+       func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+           if indexPath.section == 0 || indexPath.section == 2 || indexPath.section == 3 , indexPath.section == 1 && indexPath.row == 3 {
+               cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+           } else {
+               cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+           }
+           if indexPath.row == 설정아이템들[indexPath.section].count - 1 {
+               cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+           }
+       }
+    
 }
 
 class 설정_셀: UITableViewCell {
