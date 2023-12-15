@@ -6,7 +6,7 @@ import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
 
-class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate {
+class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     var 활성화된텍스트필드: UITextField?
     var imageURL: URL?
 
@@ -120,6 +120,9 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
         UI레이아웃()
         버튼_클릭()
         새_닉네임_텍스트필드.delegate = self
+        
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     private func showAlert(message: String) {
@@ -317,13 +320,15 @@ extension 프로필변경_화면{
             make.height.equalTo(44)
         }
         구분선.snp.makeConstraints { make in
-            make.top.equalTo(새_닉네임_텍스트필드.snp.bottom).offset(170)
+//            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
+            make.bottom.equalTo(변경_버튼.snp.top).offset(-20)
         }
         변경_버튼.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(15)
+//            make.top.equalTo(구분선.snp.bottom).offset(15)
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(32)
             make.width.equalTo(74)
+            make.bottom.equalToSuperview().offset(-50)
         }
     }
 }

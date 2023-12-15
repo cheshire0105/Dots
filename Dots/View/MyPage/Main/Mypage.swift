@@ -198,6 +198,7 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = UIColor.clear
         navigationController?.isNavigationBarHidden = true
+        
         버튼_클릭()
         UI레이아웃()
         버튼_백_레이아웃 ()
@@ -213,7 +214,10 @@ class Mypage: UIViewController {
         
         특정날짜방문_캘린더_적용()
 
-        
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+
+          // InteractivePopGestureRecognizer의 Delegate 설정
+          self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     @objc private func handleOutsideTap() {
@@ -405,7 +409,6 @@ extension UIImage {
 
 
 extension Mypage {
-    
     
     //    private func 접속_유저_데이터_마이페이지_적용하기() {
     //          guard let 현재접속중인유저 = Auth.auth().currentUser else {

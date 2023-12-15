@@ -497,7 +497,7 @@ struct 설정아이템 {
     var isSwitchOn: Bool
     let action: () -> Void
 }
-class 마이페이지_설정_페이지 : UIViewController {
+class 마이페이지_설정_페이지 : UIViewController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     
     private let 페이지_제목 = {
         let label = UILabel()
@@ -528,19 +528,29 @@ class 마이페이지_설정_페이지 : UIViewController {
     
     override func viewDidLoad() {
         view.backgroundColor = .black
-        navigationItem.hidesBackButton = true
-        navigationController?.isNavigationBarHidden = true
-        tabBarController?.tabBar.isHidden = true
-
+   
         UI레이아웃()
         설정_테이블뷰.delegate = self
         설정_테이블뷰.dataSource = self
         설정_테이블뷰.register(설정_셀.self, forCellReuseIdentifier: "설정_셀")
         설정아이템들_구성()
         버튼_클릭()
+      
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+ 
+        navigationItem.hidesBackButton = true
+        navigationController?.isNavigationBarHidden = true
+        tabBarController?.tabBar.isHidden = true
+        
+
+
+    }
+ 
     func 로그아웃_유저로그아웃() {
         do {
             if let 현재접속중인유저 = Auth.auth().currentUser {
@@ -804,3 +814,4 @@ class 설정_셀: UITableViewCell {
         버튼_이름_라벨.text = title
     }
 }
+

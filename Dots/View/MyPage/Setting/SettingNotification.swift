@@ -1,6 +1,6 @@
 import UIKit
 
-class 알림설정_화면 : UIViewController {
+class 알림설정_화면 : UIViewController, UIGestureRecognizerDelegate {
     private let 뒤로가기_버튼 = {
         let button = UIButton()
         button.setImage(UIImage(named: "loginBack"), for: .selected)
@@ -155,6 +155,8 @@ class 알림설정_화면 : UIViewController {
         UI레이아웃()
         버튼_클릭()
         화면_제스쳐_실행 ()
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
    
