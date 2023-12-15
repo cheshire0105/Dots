@@ -349,21 +349,46 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         if let posterName = self.posterImageName {
             checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] alreadyVisited, _ in
-                let isNewVisit = !alreadyVisited
-                self?.addVisitDateToFirestore(visitDate: dateString, posterName: posterName, isNewVisit: isNewVisit) {
-                    self?.fetchVisitorCountAndUpdateLabel()
-                    DispatchQueue.main.async {
-                        self?.customAlertView.isHidden = true
-                        self?.blurEffectView.isHidden = true
-                        if !alreadyVisited {
-                            // 방문을 처음 등록하는 경우에만 아이콘 변경
-                            self?.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
-                        }
+                if alreadyVisited {
+                    // 이미 방문을 등록한 경우, 날짜만 업데이트합니다.
+                    self?.updateVisitDateInFirestore(visitDate: dateString, posterName: posterName) {
+                        self?.dismissAlertViews()
+                    }
+                } else {
+                    // 방문을 처음 등록하는 경우, 날짜를 추가하고 방문 횟수를 증가시킵니다.
+                    self?.addVisitDateToFirestore(visitDate: dateString, posterName: posterName) {
+                        self?.dismissAlertViews()
                     }
                 }
             }
         } else {
             print("Poster name is not available")
+        }
+    }
+
+    func dismissAlertViews() {
+        DispatchQueue.main.async {
+            self.customAlertView.isHidden = true
+            self.blurEffectView.isHidden = true
+            self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
+        }
+    }
+
+    func updateVisitDateInFirestore(visitDate: String, posterName: String, completion: @escaping () -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("User ID is not available")
+            return
+        }
+
+        let userVisitDocument = Firestore.firestore().collection("posters").document(posterName).collection("reviews").document(userID)
+
+        userVisitDocument.updateData(["유저_다녀옴_날짜": visitDate, "visited": true]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated")
+                completion()
+            }
         }
     }
 
@@ -373,12 +398,17 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
+    func addVisitDateToFirestore(visitDate: String, posterName: String, completion: @escaping () -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("User ID is not available")
+            return
+        }
 
-    func addVisitDateToFirestore(visitDate: String, posterName: String, isNewVisit: Bool, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
-        let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(Auth.auth().currentUser?.uid ?? "")
+        let userVisitDocument = db.collection("posters").document(posterName).collection("reviews").document(userID)
         let posterDocument = db.collection("posters").document(posterName)
 
+        // Firestore의 트랜잭션을 사용하여 방문 횟수를 안전하게 증가시킵니다.
         db.runTransaction({ (transaction, errorPointer) -> Any? in
             let posterDocumentSnapshot: DocumentSnapshot
             do {
@@ -388,13 +418,14 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 return nil
             }
 
-            if isNewVisit {
-                let currentVisitorCount = (posterDocumentSnapshot.data()?["visits"] as? Int ?? 0)
-                let newVisitorCount = currentVisitorCount + 1
-                transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
-            }
+            // 현재 방문 횟수를 가져옵니다.
+            let currentVisitorCount = posterDocumentSnapshot.data()?["visits"] as? Int ?? 0
+            // 방문 횟수를 1 증가시킵니다.
+            let newVisitorCount = currentVisitorCount + 1
 
-            transaction.setData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument)
+            // 사용자 방문 데이터와 포스터의 방문 횟수를 업데이트합니다.
+            transaction.updateData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument)
+            transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
 
             return nil
         }) { (object, error) in
@@ -406,6 +437,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             }
         }
     }
+
+
 
 
 
