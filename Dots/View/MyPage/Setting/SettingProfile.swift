@@ -101,6 +101,8 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate 
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
+        tabBarController?.tabBar.isHidden = true
+
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         if let 제공업체 = Auth.auth().currentUser?.providerData {

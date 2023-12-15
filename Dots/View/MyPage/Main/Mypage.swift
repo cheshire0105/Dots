@@ -186,6 +186,8 @@ class Mypage: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
         캘린더.reloadData()
+        tabBarController?.tabBar.isHidden = false
+
     }
     override func viewDidLoad() {
         super.viewDidLoad()

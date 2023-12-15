@@ -530,6 +530,8 @@ class 마이페이지_설정_페이지 : UIViewController {
         view.backgroundColor = .black
         navigationItem.hidesBackButton = true
         navigationController?.isNavigationBarHidden = true
+        tabBarController?.tabBar.isHidden = true
+
         UI레이아웃()
         설정_테이블뷰.delegate = self
         설정_테이블뷰.dataSource = self

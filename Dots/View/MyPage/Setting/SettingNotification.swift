@@ -150,6 +150,7 @@ class 알림설정_화면 : UIViewController {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
+        tabBarController?.tabBar.isHidden = true
 
         UI레이아웃()
         버튼_클릭()
