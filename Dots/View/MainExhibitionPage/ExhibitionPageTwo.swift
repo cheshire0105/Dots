@@ -369,8 +369,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     func dismissAlertViews() {
         DispatchQueue.main.async {
             self.customAlertView.isHidden = true
+            self.mapAlertView.isHidden = true // mapAlertView도 숨깁니다.
             self.blurEffectView.isHidden = true
-            self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
         }
     }
 
@@ -429,12 +429,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
             return nil
         }) { (object, error) in
-            if let error = error {
-                print("트랜잭션 실패: \(error)")
-            } else {
-                print("트랜잭션이 성공적으로 완료됨")
-                completion()
-            }
+               if let error = error {
+                   print("트랜잭션 실패: \(error)")
+               } else {
+                   print("트랜잭션이 성공적으로 완료됨")
+                   self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
+
+                   completion()
+                   self.fetchVisitorCountAndUpdateLabel() // 방문자 수 레이블을 업데이트합니다.
+               }
         }
     }
 
@@ -830,8 +833,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         deleteVisitDateInFirestore(posterName: posterName) {
-            self.fetchVisitorCountAndUpdateLabel()
+            self.dismissAlertViews() // 얼럿창 숨김
             self.recordButton.setImage(UIImage(named: "footprint"), for: .normal) // 아이콘을 기본 이미지로 변경
+            self.fetchVisitorCountAndUpdateLabel() // 방문자 수 레이블 업데이트
         }
     }
 
@@ -857,12 +861,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             }
 
             if let visitorCount = posterDocumentSnapshot.data()?["visits"] as? Int, visitorCount > 0 {
-                // 방문자 수를 1 감소시키는 로직
                 let newVisitorCount = visitorCount - 1
                 transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
             }
 
-            // 사용자 방문 날짜 삭제
             transaction.updateData(["유저_다녀옴_날짜": FieldValue.delete(), "visited": false], forDocument: userVisitDocument)
 
             return nil
@@ -871,20 +873,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 print("트랜잭션 실패: \(error)")
             } else {
                 print("트랜잭션이 성공적으로 완료됨")
-                self.fetchVisitorCountAndUpdateLabel() // 여기에서 호출
-                self.customAlertView.isHidden = true
-                self.blurEffectView.isHidden = true
+                self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
 
-                // 방문자 수 업데이트 및 UI 변경
-                DispatchQueue.main.async { [weak self] in
-                    self?.fetchVisitorCountAndUpdateLabel()
-                    self?.customAlertView.isHidden = true
-                    self?.blurEffectView.isHidden = true
-                    // footprint 이미지를 기본 이미지로 변경
-                    self?.recordButton.setImage(UIImage(named: "footprint"), for: .normal)
-                }
+                completion()
+                self.fetchVisitorCountAndUpdateLabel() // 방문자 수 레이블을 업데이트합니다.
             }
-
         }
     }
 
