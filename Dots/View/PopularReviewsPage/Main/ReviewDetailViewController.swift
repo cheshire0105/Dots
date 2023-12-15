@@ -62,17 +62,17 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
 
     // 추가된 프로퍼티
-       var museumName: String?
-       var exhibitionTitle: String?
+    var museumName: String?
+    var exhibitionTitle: String?
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
-//        loadImages() // 이미지 로드
+        //        loadImages() // 이미지 로드
         loadImages(from: imageUrls)
 
-        
+
         setupNavigationBackButton()
         setupNavigationTitleAndSubtitle() // 변경된 메서드 호출
 
@@ -88,19 +88,19 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
 
 
-        
+
         if let reviewData = review {
-             // UI 컴포넌트에 데이터 바인딩
-             nameLabel.text = reviewData.nickname
-             timeLabel.text = convertDateToString(reviewData.createdAt)
-             reviewTitle.text = reviewData.title
-             contentLabel.text = reviewData.content
-             // profileImageView에 이미지 로드 (예: URL에서 이미지를 로드하는 경우)
+            // UI 컴포넌트에 데이터 바인딩
+            nameLabel.text = reviewData.nickname
+            timeLabel.text = convertDateToString(reviewData.createdAt)
+            reviewTitle.text = reviewData.title
+            contentLabel.text = reviewData.content
+            // profileImageView에 이미지 로드 (예: URL에서 이미지를 로드하는 경우)
             // 리뷰에 사진이 없는 경우
-                    if reviewData.photoUrls.isEmpty {
-                        photoCollectionView.isHidden = true
-                        adjustLayoutForNoPhotos()
-                    }
+            if reviewData.photoUrls.isEmpty {
+                photoCollectionView.isHidden = true
+                adjustLayoutForNoPhotos()
+            }
             // URL 문자열을 사용하여 이미지 로드
             if let imageUrl = URL(string: reviewData.profileImageUrl) {
                 // SDWebImage를 사용하여 프로필 이미지 로드 및 캐시
@@ -115,15 +115,15 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
 
             // 사진 유무에 따라 컬렉션 뷰의 가시성 조정
-                  photoCollectionView.isHidden = reviewData.photoUrls.isEmpty
-                  if photoCollectionView.isHidden {
-                      adjustLayoutForNoPhotos()
-                  } else {
-                      adjustLayoutForPhotos()
-                  }
-         }
+            photoCollectionView.isHidden = reviewData.photoUrls.isEmpty
+            if photoCollectionView.isHidden {
+                adjustLayoutForNoPhotos()
+            } else {
+                adjustLayoutForPhotos()
+            }
+        }
 
-            
+
     }
 
     // 이미지 로드 함수
@@ -165,11 +165,11 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
 
 
-     // UICollectionViewDataSource 및 UICollectionViewDelegate 메서드 구현
+    // UICollectionViewDataSource 및 UICollectionViewDelegate 메서드 구현
     // UICollectionViewDataSource 메서드
-      func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-          return imageDatas.count
-      }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return imageDatas.count
+    }
 
 
 
@@ -264,32 +264,32 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     private func collectionViewSetup() {
 
         let layout = UICollectionViewFlowLayout()
-         layout.scrollDirection = .horizontal
-         layout.minimumLineSpacing = 0  // 셀 사이의 간격을 0으로 설정
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0  // 셀 사이의 간격을 0으로 설정
 
-         // 컬렉션 뷰의 셀 크기를 화면 너비에 맞춤
-         let cellWidth = view.bounds.width - 40 // 20 points의 여유를 좌우에 줌
-         layout.itemSize = CGSize(width: cellWidth, height: cellWidth)
+        // 컬렉션 뷰의 셀 크기를 화면 너비에 맞춤
+        let cellWidth = view.bounds.width - 40 // 20 points의 여유를 좌우에 줌
+        layout.itemSize = CGSize(width: cellWidth, height: cellWidth)
 
         // photoCollectionView가 아직 초기화되지 않았다면 생성합니다.
         if photoCollectionView == nil {
-                photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-                photoCollectionView.backgroundColor = .clear
-              photoCollectionView.delegate = self
-              photoCollectionView.dataSource = self
-              photoCollectionView.isPagingEnabled = true
-              photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
+            photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            photoCollectionView.backgroundColor = .clear
+            photoCollectionView.delegate = self
+            photoCollectionView.dataSource = self
+            photoCollectionView.isPagingEnabled = true
+            photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
             photoCollectionView.isHidden = true // 기본적으로 숨겨진 상태로 설정
 
 
-              scrollView.addSubview(photoCollectionView)
-              photoCollectionView.snp.makeConstraints { make in
-                  make.top.equalTo(scrollView.snp.top).offset(20)
-                  make.centerX.equalTo(view.snp.centerX)
-                  make.width.equalTo(cellWidth)
-                  make.height.equalTo(cellWidth)
-              }
-          }
+            scrollView.addSubview(photoCollectionView)
+            photoCollectionView.snp.makeConstraints { make in
+                make.top.equalTo(scrollView.snp.top).offset(20)
+                make.centerX.equalTo(view.snp.centerX)
+                make.width.equalTo(cellWidth)
+                make.height.equalTo(cellWidth)
+            }
+        }
 
 
     }
@@ -317,7 +317,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     private func setupSquareViewAndLabel() {
 
-        
+
 
 
         scrollView.addSubview(profileImageView)
@@ -360,36 +360,33 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         }
 
         scrollView.addSubview(contentLabel)
-            contentLabel.text = """
-        최근 다녀온 인상주의 작가전에서 많은 영감을 받았습니다. 이번 전시에서는 다양한 작가들의 작품을 통해 인상주의의 다양한 표현과 미학에 대한 통찰을 얻을 수 있었습니다. 먼저, 전시에는 독특하고 선명한 색채가 돋보이는 작품들이 많았습니다. 작가들은 강렬한 색상을 통해 감정과 분위기를 전달하며 관람자에게 강한 인상을 남겼습니다. 특히, 대조적인 색감을 활용한 작품은 눈에 띄게 독창적이었습니다.
-        인상주의는 자연의 아름다움을 강조하고 일상적인 풍경을 미적으로 해석하는 경향이 있습니다. 이번 전시에서는 도시의 소란스러운 풍경이나 자연의 고요함이 아름답게 표현된 작품들이 많았습니다. 이를 통해 작가들은 우리 주변의 일상에서도 예술을 발견할 수 있다는 메시지를 전달한 것 같았습니다.
-        또한, 작품들은 각자의 시대적 맥락과 문화적 배경을 반영하면서도 개인적인 감성을 잘 표현했습니다. 이는 인상주의의 특징 중 하나로, 개인적인 경험과 감정을 작품에 담아내어 관람자와 소통하는 데 성공한 결과로 보입니다.
-        이번 전시를 통해 인상주의의 다양한 스타일과 접근법을 경험하면서 예술의 폭넓은 가능성에 대한 새로운 시각을 얻을 수 있었습니다. 작가들의 창의적인 시도와 자유로운 표현이 예술의 다양성을 더욱 풍부하게 만들어준 것 같습니다.
+        contentLabel.text = """
+        최근 다녀온 인상주의 작가전에서
         """
-            contentLabel.numberOfLines = 0
-            contentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
-            contentLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-            contentLabel.lineBreakMode = .byWordWrapping
-            var paragraphStyle = NSMutableParagraphStyle()
-//            paragraphStyle.lineHeightMultiple = 1.21
-            // Line height: 18 pt
-            paragraphStyle.alignment = .justified
-            let attrString = NSMutableAttributedString(string: contentLabel.text!)
-            paragraphStyle.lineSpacing = 1
-            attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
-            contentLabel.attributedText = attrString
-            contentLabel.snp.makeConstraints { make in
-              make.top.equalTo(reviewTitle.snp.bottom).offset(20)
-                make.leading.equalTo(view.snp.leading).inset(20)
-                make.trailing.equalTo(view.snp.trailing).inset(20)
-        //      make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
-            }
+        contentLabel.numberOfLines = 0
+        contentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
+        contentLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        contentLabel.lineBreakMode = .byWordWrapping
+        var paragraphStyle = NSMutableParagraphStyle()
+        //            paragraphStyle.lineHeightMultiple = 1.21
+        // Line height: 18 pt
+        paragraphStyle.alignment = .justified
+        let attrString = NSMutableAttributedString(string: contentLabel.text!)
+        paragraphStyle.lineSpacing = 1
+        attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
+        contentLabel.attributedText = attrString
+        contentLabel.snp.makeConstraints { make in
+            make.top.equalTo(reviewTitle.snp.bottom).offset(20)
+            make.leading.equalTo(view.snp.leading).inset(20)
+            make.trailing.equalTo(view.snp.trailing).inset(20)
+            //      make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
+        }
 
 
         // 첫 번째 추가 이미지 뷰 및 레이블 구성
         additionalImageView1.image = UIImage(named: "Vector 3")
 
-//        additionalLabel1.text = "123"
+        //        additionalLabel1.text = "123"
         additionalLabel1.text = "123"
         additionalLabel1.textColor = .white
         additionalLabel1.font = UIFont(name: "Pretendard-Light", size: 12)
@@ -409,7 +406,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         additionalLabel2.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
 
 
-//        additionalLabel2.text = "456"
+        //        additionalLabel2.text = "456"
         additionalLabel2.text = "456"
 
         // 스타일 및 글꼴 설정 등
@@ -426,7 +423,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             make.left.equalTo(contentLabel.snp.left)
             make.width.equalTo(17.5)
             make.height.equalTo(14.5)
-//            make.bottom.equalToSuperview().offset(-10)//      
+            //            make.bottom.equalToSuperview().offset(-10)//
             make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
 
 
@@ -482,7 +479,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             navController.popViewController(animated: true)
             self.dismiss(animated: true, completion: nil)
 
-        } 
+        }
     }
 
 
@@ -492,7 +489,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
 
     }
-
+    
 }
 
 class PhotoCollectionViewCell: UICollectionViewCell {
