@@ -349,8 +349,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
         // 오른쪽 네비게이션 바 버튼 설정
         let rightButton = UIBarButtonItem(title: "다른 지역", style: .plain, target: self, action: #selector(rightButtonTapped))
-        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.white, .font: UIFont(name: "Pretendard-Regular", size: 14)], for: .normal)
-        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.gray, .font: UIFont(name: "Pretendard-Regular", size: 14)], for: .highlighted)
+        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.white, .font: UIFont(name: "Pretendard-Bold", size: 14)], for: .normal)
+        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.gray, .font: UIFont(name: "Pretendard-Bold", size: 14)], for: .highlighted)
         self.navigationItem.rightBarButtonItem = rightButton
     }
 
