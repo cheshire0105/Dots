@@ -553,6 +553,27 @@ extension 마이페이지_설정_페이지  {
         let indexPath = IndexPath(row: 0, section: 0)
         설정아이템들[indexPath.section][indexPath.row].isSwitchOn = sender.isOn
     }
+    @objc func 셀_클릭(for cell: 설정_셀) {
+        if let 셀_제목_라벨 = cell.버튼_이름_라벨.text {
+            print("선택된 셀의 라벨: \(셀_제목_라벨)")
+            if 셀_제목_라벨 == "프로필 변경" {
+                let 프로필변경_화면이동 = 프로필변경_화면()
+                navigationController?.pushViewController(프로필변경_화면이동, animated: true)
+            }
+            else if 셀_제목_라벨 == "이메일 변경" {
+                let 이메일변경_화면이동 = 이메일변경_화면()
+                navigationController?.pushViewController(이메일변경_화면이동, animated: true)
+            }
+            else if 셀_제목_라벨 == "비밀번호 변경" {
+                let 비밀번호변경_화면이동 = 비밀번호변경_화면()
+                navigationController?.pushViewController(비밀번호변경_화면이동, animated: true)
+            }
+            else if 셀_제목_라벨 == "알림 설정" {
+                let 알림설정_화면이동 = 알림설정_화면()
+                navigationController?.pushViewController(알림설정_화면이동, animated: true)
+            }
+        }
+    }
 }
 //레이아웃 관련
 extension 마이페이지_설정_페이지 {
@@ -619,10 +640,11 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
             스위치.isOn = 설정아이템.isSwitchOn
             스위치.addTarget(self, action: #selector(프로필스위치변경), for: .valueChanged)
             셀.accessoryView = 스위치
-            셀.selectionStyle = .none // 클릭 무효화
+            셀.selectionStyle = .none
         } else if indexPath.section == 1 {
             셀.accessoryType = .disclosureIndicator
             셀.tintColor = UIColor.lightGray
+            
         } else {
             셀.accessoryType = .none
         }
@@ -640,8 +662,13 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
 
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
            tableView.deselectRow(at: indexPath, animated: true)
-           설정아이템들[indexPath.section][indexPath.row].action()
+//           설정아이템들[indexPath.section][indexPath.row].action()
+            if indexPath.section == 1 {
+                let selectedCell = (tableView.cellForRow(at: indexPath) as? 설정_셀)!
+                   셀_클릭(for: selectedCell)
+               }
        }
+    
 
         func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
            switch section {
