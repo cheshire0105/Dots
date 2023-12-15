@@ -385,8 +385,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     func loadPopularExhibitions() {
         Firestore.firestore().collection("posters")
-            .order(by: "visits", descending: false) // Firestore 내에서 '다녀옴' 필드에 따라 내림차순 정렬
-            .limit(to: 10)
+            .order(by: "visits", descending: false) // 'visits'에 따라 내림차순 정렬
+            .limit(to: 1000)
             .getDocuments { [weak self] (snapshot, error) in
                 guard let self = self else { return }
 
@@ -403,15 +403,15 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                 for document in snapshot.documents {
                     group.enter()
                     let posterDocumentId = document.documentID
+                    let visits = document.data()["visits"] as? Int ?? 0 // 'visits' 값 추출
+
+                    print("Document ID: \(posterDocumentId), Visits: \(visits)") // 'visits' 값 출력
 
                     Firestore.firestore().collection("전시_상세").document(posterDocumentId).getDocument { (detailDocument, error) in
                         defer { group.leave() }
 
                         if let detailDocument = detailDocument, let data = detailDocument.data() {
                             let exhibition = ExhibitionModel(dictionary: data)
-                            print("visits 값: \(exhibition.visits)") // 로그 추가
-                            print("세번째 타이틀 이름: \(exhibition.title)") // 여기에서 '다녀옴' 값을 로그로 출력
-
                             loadedExhibitions.append(exhibition)
                         } else {
                             print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
@@ -420,11 +420,19 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                 }
 
                 group.notify(queue: .main) {
-                    // 여기에서 Swift 내부에서 '다녀옴' 필드에 따라 다시 정렬
+                    // 'visits' 필드에 따라 내림차순으로 정렬
                     self.thirdSectionExhibitions = loadedExhibitions.sorted { $0.visits > $1.visits }
+
+                    // 정렬된 배열의 내용을 출력
+                    print("정렬된 전시회 목록:")
+                    for exhibition in self.thirdSectionExhibitions {
+                        print("전시: \(exhibition.title)")
+                    }
+
                     self.MainExhibitionCollectionView.reloadData()
                 }
             }
+
     }
 
 

@@ -424,7 +424,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
             let newVisitorCount = currentVisitorCount + 1
 
             // 사용자 방문 데이터와 포스터의 방문 횟수를 업데이트합니다.
-            transaction.updateData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument)
+            transaction.setData(["유저_다녀옴_날짜": visitDate, "visited": true], forDocument: userVisitDocument, merge: true)
+
             transaction.updateData(["visits": newVisitorCount], forDocument: posterDocument)
 
             return nil
