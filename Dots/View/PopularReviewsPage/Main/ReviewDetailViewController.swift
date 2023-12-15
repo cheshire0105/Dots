@@ -10,6 +10,8 @@
 import Foundation
 import UIKit
 import SDWebImage
+import Firebase
+import FirebaseFirestore
 
 struct ImageData {
     let url: URL
@@ -109,13 +111,23 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             // URL 문자열을 사용하여 이미지 로드
             if let imageUrl = URL(string: reviewData.profileImageUrl) {
                 // SDWebImage를 사용하여 프로필 이미지 로드 및 캐시
-                profileImageView.sd_setImage(with: imageUrl, placeholderImage: UIImage(named: "defaultProfileImage"), completed: { (image, error, cacheType, url) in
-                    if cacheType == .none {
-                        print("Profile Image was downloaded and cached: \(url?.absoluteString ?? "Unknown URL")")
-                    } else {
-                        print("Profile Image was retrieved from cache")
+                profileImageView.sd_setImage(with: imageUrl, placeholderImage: UIImage(named: "defaultProfileImage")) { [weak self] (image, error, cacheType, url) in
+                    DispatchQueue.main.async {
+                        if let strongSelf = self {
+                            if let error = error {
+                                print("Error loading image: \(error)")
+                            } else if let image = image {
+                                print("Image loaded successfully. Image: \(image)")
+                                strongSelf.profileImageView.image = image
+                                strongSelf.profileImageView.backgroundColor = .clear // 이미지 확인을 위해 배경색 제거
+                            } else {
+                                print("Image is nil")
+                            }
+                        }
                     }
-                })
+                }
+
+
             }
 
 
@@ -544,3 +556,5 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+
