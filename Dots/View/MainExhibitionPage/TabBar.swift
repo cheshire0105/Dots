@@ -26,8 +26,8 @@ class TabBar: UITabBarController {
         let secondVC = SearchPage()
         secondVC.tabBarItem = UITabBarItem(title: "검색", image: UIImage(named: "search"), tag: 1)
 
-        let thirdVC = PopularReviewsPage()
-        thirdVC.tabBarItem = UITabBarItem(title: "인기", image: UIImage(named: "hot"), tag: 2)
+//        let thirdVC = PopularReviewsPage()
+//        thirdVC.tabBarItem = UITabBarItem(title: "인기", image: UIImage(named: "hot"), tag: 2)
 
 //        let fourthVC = MapPage()
 //        fourthVC.tabBarItem = UITabBarItem(title: "지도", image: UIImage(named: "map"), tag: 3)
@@ -35,7 +35,7 @@ class TabBar: UITabBarController {
         let fifthVC = Mypage()
         fifthVC.tabBarItem = UITabBarItem(title: "마이", image: UIImage(named: "mypage"), tag: 3)
 
-        viewControllers = [firstVC, secondVC, thirdVC, fifthVC].map {
+        viewControllers = [firstVC, secondVC, fifthVC].map {
             UINavigationController(rootViewController: $0)
         }
     }

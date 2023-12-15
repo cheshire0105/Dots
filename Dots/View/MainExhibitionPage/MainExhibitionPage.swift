@@ -337,21 +337,32 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     func setupNavigationBar() {
         // 네비게이션 타이틀 설정
-        self.navigationItem.title = "Dots"
-        // 네비게이션 바 배경색과 타이틀 색상 설정
+        self.navigationItem.title = ""
+
+        // 네비게이션 바 배경색 설정
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = .black // 배경색을 검은색으로 설정
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
-
 
         // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.standardAppearance = appearance
 
-        // 네비게이션 바 대형 타이틀 설정
-        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
+        // 오른쪽 네비게이션 바 버튼 설정
+        let rightButton = UIBarButtonItem(title: "다른 지역", style: .plain, target: self, action: #selector(rightButtonTapped))
+        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.white, .font: UIFont(name: "Pretendard-Regular", size: 14)], for: .normal)
+        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.gray, .font: UIFont(name: "Pretendard-Regular", size: 14)], for: .highlighted)
+        self.navigationItem.rightBarButtonItem = rightButton
     }
+
+    @objc private func rightButtonTapped() {
+        // 버튼이 눌렸을 때의 액션
+        print("네비게이션 바 오른쪽 버튼이 눌렸습니다.")
+        customAlertView.isHidden = false
+        blurEffectView.isHidden = false
+    }
+
+
+
 
     private func fetchExhibitionData() {
         let collectionRef = Firestore.firestore().collection("메인페이지_첫번째_섹션")
@@ -584,8 +595,8 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
             if indexPath.section == 1 {
                 header.label.text = "\(selectedRegion)의 전시"
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
-                header.addGestureRecognizer(tapGesture)
+//                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
+//                header.addGestureRecognizer(tapGesture)
             } else if indexPath.section == 2 {
                 header.label.text = "가장 많이 다녀온 전시"
             }
@@ -595,10 +606,10 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     }
 
 
-    @objc func headerTapped() {
-        customAlertView.isHidden = false
-        blurEffectView.isHidden = false
-    }
+//    @objc func headerTapped() {
+//        customAlertView.isHidden = false
+//        blurEffectView.isHidden = false
+//    }
 
     @objc private func dismissAlertView() {
         customAlertView.isHidden = true
