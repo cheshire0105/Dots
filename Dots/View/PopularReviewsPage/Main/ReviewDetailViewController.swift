@@ -65,11 +65,16 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     var museumName: String?
     var exhibitionTitle: String?
 
+    private var pageControl: UIPageControl!
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         //        loadImages() // 이미지 로드
+        setupPageControl()  // 이 부분을 확인
+
         loadImages(from: imageUrls)
 
 
@@ -126,6 +131,20 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     }
 
+    private func setupPageControl() {
+        pageControl = UIPageControl()
+        pageControl.numberOfPages = imageDatas.count
+        pageControl.currentPage = 0
+        pageControl.pageIndicatorTintColor = .gray
+        pageControl.currentPageIndicatorTintColor = .white
+        view.addSubview(pageControl)
+
+        //        pageControl.snp.makeConstraints { make in
+        //            make.centerX.equalTo(view)
+        //            make.top.equalTo(photoCollectionView.snp.bottom).offset(10)
+        //        }
+    }
+
     // 이미지 로드 함수
     func loadImages(from urls: [String]) {
         imageDatas.removeAll() // 기존 이미지 데이터 초기화
@@ -138,6 +157,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                     DispatchQueue.main.async {
                         self.imageDatas.append(ImageData(url: url, image: image))
                         self.photoCollectionView.reloadData()
+                        self.pageControl.numberOfPages = self.imageDatas.count
+
                     }
                 }
             }
@@ -280,6 +301,9 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             photoCollectionView.isPagingEnabled = true
             photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
             photoCollectionView.isHidden = true // 기본적으로 숨겨진 상태로 설정
+            // 스크롤 바 숨기기
+            photoCollectionView.showsHorizontalScrollIndicator = false
+            photoCollectionView.showsVerticalScrollIndicator = false
 
 
             scrollView.addSubview(photoCollectionView)
@@ -289,6 +313,11 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                 make.width.equalTo(cellWidth)
                 make.height.equalTo(cellWidth)
             }
+        }
+
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalTo(view)
+            make.top.equalTo(photoCollectionView.snp.bottom).offset(10)
         }
 
 
@@ -489,8 +518,16 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
 
     }
-    
+
 }
+
+extension ReviewDetailViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let pageIndex = round(scrollView.contentOffset.x / view.frame.width)
+        pageControl.currentPage = Int(pageIndex)
+    }
+}
+
 
 class PhotoCollectionViewCell: UICollectionViewCell {
     let imageView = UIImageView()
