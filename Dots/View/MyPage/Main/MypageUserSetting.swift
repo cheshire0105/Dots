@@ -726,20 +726,20 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
             스위치.addTarget(self, action: #selector(프로필스위치변경), for: .valueChanged)
             셀.accessoryView = 스위치
             셀.selectionStyle = .none
-            셀.layer.cornerRadius = 20
+            셀.layer.cornerRadius = 10
             
         } else if indexPath.section == 1 {
             셀.accessoryType = .disclosureIndicator
             셀.tintColor = UIColor.lightGray
             if indexPath.row == 0 {
-                셀.layer.cornerRadius = 20
+                셀.layer.cornerRadius = 10
                 셀.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             } else if indexPath.row == 3 {
-                셀.layer.cornerRadius = 20
+                셀.layer.cornerRadius = 10
                 셀.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
             }
         }  else if indexPath.section == 2 && indexPath.row == 0{
-            셀.layer.cornerRadius = 20
+            셀.layer.cornerRadius = 10
             
         }
         else {
@@ -748,7 +748,7 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
         if indexPath.section == 3 && indexPath.row == 0 {
             셀.버튼_이름_라벨.textColor = .red
             셀.selectionStyle = .none
-            셀.layer.cornerRadius = 20
+            셀.layer.cornerRadius = 10
         }
         return 셀
     }
@@ -804,6 +804,19 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
                cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
            }
        }
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+          tabBarController?.tabBar.isHidden = true
+      }
+
+      func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+          if !decelerate {
+              tabBarController?.tabBar.isHidden = true
+          }
+      }
+
+      func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+          tabBarController?.tabBar.isHidden = true
+      }
     
 }
 
