@@ -163,7 +163,7 @@ class Mypage: UIViewController {
         calendar.appearance.weekdayTextColor = UIColor.darkGray
         calendar.appearance.todayColor = UIColor.white
         
-        calendar.appearance.todaySelectionColor = UIColor.clear
+        calendar.appearance.todaySelectionColor = UIColor.white
 //        calendar.appearance.titleTodayColor = UIColor(named: "neon")
         calendar.appearance.titleTodayColor = UIColor.black
         
@@ -185,7 +185,7 @@ class Mypage: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
-        캘린더.reloadData()
+        특정날짜방문_캘린더_적용()
         tabBarController?.tabBar.isHidden = false
 
     }
