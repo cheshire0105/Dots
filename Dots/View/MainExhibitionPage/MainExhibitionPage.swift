@@ -354,6 +354,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         self.navigationItem.rightBarButtonItem = rightButton
     }
 
+
     @objc private func rightButtonTapped() {
         // 버튼이 눌렸을 때의 액션
         print("네비게이션 바 오른쪽 버튼이 눌렸습니다.")
