@@ -671,11 +671,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
     @objc func segmentChanged(_ sender: UISegmentedControl) {
-         // Only show the floating action button when the first segment ("Reviews") is selected
-         floatingActionButton.isHidden = sender.selectedSegmentIndex != 0
-         reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
-         detailScrollView.isHidden = sender.selectedSegmentIndex != 1
-     }
+        if sender.selectedSegmentIndex == 0 { // 후기 탭 선택 시
+            reviewsTableView.isHidden = false
+            detailScrollView.isHidden = true
+            floatingActionButton.isHidden = reviews.isEmpty // 리뷰가 없으면 버튼 숨김
+        } else { // 상세정보 탭 선택 시
+            reviewsTableView.isHidden = true
+            detailScrollView.isHidden = false
+            floatingActionButton.isHidden = true // 상세정보 탭에서는 항상 버튼 숨김
+        }
+    }
+
 
     // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
