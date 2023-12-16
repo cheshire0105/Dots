@@ -656,6 +656,19 @@ extension 마이페이지_설정_페이지  {
                 
                 present(로그아웃_알럿, animated: true, completion: nil)
             }
+            else if 셀_제목_라벨 == "회원 탈퇴" {
+                let 회원탈퇴_알럿 = UIAlertController(title: "회원탈퇴", message: "모든 정보가 삭제됩니다. 정말 탈퇴하시나요 ?", preferredStyle: .alert)
+                
+                let 회원탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+                회원탈퇴_알럿.addAction(회원탈퇴취소_버튼)
+                
+                let 회원탈퇴확인_버튼 = UIAlertAction(title: "회원탈퇴", style: .destructive) { _ in
+                    self.회원탈퇴_기능()
+                }
+                회원탈퇴_알럿.addAction(회원탈퇴확인_버튼)
+                
+                present(회원탈퇴_알럿, animated: true, completion: nil)
+            }
             
         }
     }
@@ -851,3 +864,76 @@ class 설정_셀: UITableViewCell {
     }
 }
 
+
+
+extension 마이페이지_설정_페이지 {
+    
+    func 회원탈퇴_기능() {
+        // 현재 접속 중인 사용자 확인
+        if let 현재접속중인유저 = Auth.auth().currentUser {
+            // 사용자의 인증 방법이 비밀번호인지 확인
+            if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "password" {
+                // Firestore에서 해당 사용자의 데이터 삭제
+                회원탈퇴시_파이어스토어_데이터_삭제_함수 {
+                    // Firestore 데이터 삭제 작업이 완료되면 Auth에서 사용자 탈퇴
+                    self.회원탈퇴_auth()
+                }
+            } else {
+                // 다른 인증 방법으로 가입된 경우에 대한 처리
+                print("도트 회원가입 자체 서비스 방식으로 가입한 계정이 아닙니다.")
+            }
+        }
+    }
+
+    func 회원탈퇴시_파이어스토어_데이터_삭제_함수(completion: @escaping () -> Void) {
+        if let 현재접속중인유저 = Auth.auth().currentUser {
+            let 파이어스토어 = Firestore.firestore()
+            
+            // 여러 컬렉션의 이름을 배열로 선언
+            let 컬렉션들 = ["유저_데이터_관리"]
+            
+            // 각 컬렉션에 대해 순회하면서 UID와 일치하는 문서를 찾아 삭제
+            for 컬렉션 in 컬렉션들 {
+                파이어스토어.collection(컬렉션).whereField("UID", isEqualTo: 현재접속중인유저.uid).getDocuments { [weak self] (querySnapshot, 에러) in
+                    guard let self = self else { return }
+                    
+                    if let 에러 = 에러 {
+                        print("Firestore 조회 에러: \(에러.localizedDescription)")
+                    } else {
+                        for 문서 in querySnapshot?.documents ?? [] {
+                            문서.reference.delete { error in
+                                if let error = error {
+                                    print("Firestore 문서 삭제 에러: \(error.localizedDescription)")
+                                } else {
+                                    print("Firestore 문서 삭제 성공")
+                                }
+                            }
+                        }
+                    }
+                    
+                    // 클로저를 이용하여 비동기 작업 완료 후 호출
+                    completion()
+                }
+            }
+        }
+    }
+
+    func 회원탈퇴_auth() {
+        do {
+            try Auth.auth().currentUser?.delete(completion: { error in
+                if let error = error {
+                    print("계정 탈퇴 실패: \(error.localizedDescription)")
+                } else {
+                    print("계정이 성공적으로 탈퇴되었습니다.")
+                    let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
+                    let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
+                    로그인화면_이동.modalPresentationStyle = .fullScreen
+                    self.present(로그인화면_이동, animated: true, completion: nil)
+                    UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+                }
+            })
+        } catch {
+            print("탈퇴 실패: \(error.localizedDescription)")
+        }
+    }
+}
