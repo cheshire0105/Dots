@@ -41,7 +41,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     private lazy var customAlertView: UIView = {
         let view = UIView()
         // 여기에 얼럿 뷰 디자인 설정
-        view.layer.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1).cgColor
+        view.layer.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1).cgColor
         view.layer.cornerRadius = 15
         view.isHidden = true
         return view
@@ -51,7 +51,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     private lazy var alertTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "다른 지역의 전시도 찾아볼까요?"
-        label.textColor = .black
+        label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         label.textAlignment = .center
         return label
@@ -60,8 +60,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     private lazy var alertConfirmButton: UIButton = {
         let button = UIButton()
         button.setTitle("찾기", for: .normal)
-        button.backgroundColor = .black // 검은색 배경
-        button.setTitleColor(.white, for: .normal) // 하얀색 텍스트
+        button.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        button.setTitleColor(.black, for: .normal) // 하얀색 텍스트
         button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
         button.layer.cornerRadius = 20 // 모서리를 둥글게
         button.addTarget(self, action: #selector(alertConfirmButtonTapped), for: .touchUpInside)
@@ -82,7 +82,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     private lazy var regionPickerView: UIPickerView = {
         let pickerView = UIPickerView()
-        pickerView.overrideUserInterfaceStyle = .light
+        pickerView.overrideUserInterfaceStyle = .dark
         pickerView.dataSource = self
         pickerView.delegate = self
         return pickerView
