@@ -26,6 +26,7 @@ class 회원가입_두번째_뷰컨트롤러 : UIViewController, UICollectionVie
         button.isSelected = !button.isSelected
         button.backgroundColor = .white
         button.layer.cornerRadius = 20
+        button.isHidden = true
         return button
     } ()
     private let 건너뛰기_버튼 = {
@@ -173,7 +174,7 @@ extension 회원가입_두번째_뷰컨트롤러 {
 extension 회원가입_두번째_뷰컨트롤러 {
     
     private func 버튼_클릭() {
-        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
+//        뒤로가기_버튼.addTarget(self, action: #selector(뒤로가기_버튼_클릭), for: .touchUpInside)
         건너뛰기_버튼.addTarget(self, action: #selector(건너뛰기_버튼_클릭), for: .touchUpInside)
         다음_버튼.addTarget(self, action: #selector(다음_버튼_클릭), for: .touchUpInside)
     }
