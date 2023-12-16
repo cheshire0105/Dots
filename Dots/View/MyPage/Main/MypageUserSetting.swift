@@ -870,59 +870,35 @@ class 설정_셀: UITableViewCell {
 extension 마이페이지_설정_페이지 {
     
     func 회원탈퇴_기능() {
-        // 현재 접속 중인 사용자 확인
         if let 현재접속중인유저 = Auth.auth().currentUser {
-            // 사용자의 인증 방법이 비밀번호인지 확인
             if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "password" {
-                // Firestore에서 해당 사용자의 데이터 삭제
-                회원탈퇴시_파이어스토어_데이터_삭제_함수 {
-                    // Firestore 데이터 삭제 작업이 완료되면 Auth에서 사용자 탈퇴
-                    self.회원탈퇴_auth()
+               
+                회원탈퇴_auth()
+                
                 }
+            else if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "google.com" {
+                let alertController = UIAlertController(title: "구글 계정입니다.", message: "구글 계정은 도트 서비스에서 회원 탈퇴를 지원하지 않습니다.", preferredStyle: .alert)
+
+                let 확인액션 = UIAlertAction(title: "확인", style: .default) { _ in
+                }
+
+                alertController.addAction(확인액션)
+
+                self.present(alertController, animated: true, completion: nil)
+
+            }
             } else {
-                // 다른 인증 방법으로 가입된 경우에 대한 처리
                 print("도트 회원가입 자체 서비스 방식으로 가입한 계정이 아닙니다.")
             }
         }
-    }
     
-    func 회원탈퇴시_파이어스토어_데이터_삭제_함수(completion: @escaping () -> Void) {
-        if let 현재접속중인유저 = Auth.auth().currentUser {
-            let 파이어스토어 = Firestore.firestore()
-            
-            // 여러 컬렉션의 이름을 배열로 선언
-            let 컬렉션들 = ["유저_데이터_관리"]
-            
-            // 각 컬렉션에 대해 순회하면서 UID와 일치하는 문서를 찾아 삭제
-            for 컬렉션 in 컬렉션들 {
-                파이어스토어.collection(컬렉션).whereField("UID", isEqualTo: 현재접속중인유저.uid).getDocuments { [weak self] (querySnapshot, 에러) in
-                    guard let self = self else { return }
-                    
-                    if let 에러 = 에러 {
-                        print("Firestore 조회 에러: \(에러.localizedDescription)")
-                    } else {
-                        for 문서 in querySnapshot?.documents ?? [] {
-                            문서.reference.delete { error in
-                                if let error = error {
-                                    print("Firestore 문서 삭제 에러: \(error.localizedDescription)")
-                                } else {
-                                    print("Firestore 문서 삭제 성공")
-                                }
-                            }
-                        }
-                    }
-                    
-                    // 클로저를 이용하여 비동기 작업 완료 후 호출
-                    completion()
-                }
-            }
-        }
-    }
+    
+   
+
     
     func 회원탈퇴_auth() {
         if let user = Auth.auth().currentUser {
-            // UIAlertController를 사용하여 비밀번호 입력 받기
-            let alertController = UIAlertController(title: "재인증", message: "계속하기 위해 비밀번호를 입력하세요.", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "재인증", message: "회원탈퇴 진행을 위해 비밀번호를 입력하세요.", preferredStyle: .alert)
             
             alertController.addTextField { textField in
                 textField.placeholder = "비밀번호"
@@ -935,7 +911,6 @@ extension 마이페이지_설정_페이지 {
             let 확인액션 = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
                 guard let self = self, let passwordTextField = alertController.textFields?.first else { return }
                 
-                // 입력받은 비밀번호를 사용하여 재인증
                 let password = passwordTextField.text ?? ""
                 let credential = EmailAuthProvider.credential(withEmail: user.email!, password: password)
                 
@@ -943,14 +918,12 @@ extension 마이페이지_설정_페이지 {
                     if let error = error {
                         print("재인증 실패: \(error.localizedDescription)")
                     } else {
-                        // 다시 인증이 성공하면 계정 탈퇴 수행
                         self.실제_계정탈퇴()
                     }
                 }
             }
             alertController.addAction(확인액션)
             
-            // UIAlertController를 현재 화면에 표시
             self.present(alertController, animated: true, completion: nil)
         }
     }
