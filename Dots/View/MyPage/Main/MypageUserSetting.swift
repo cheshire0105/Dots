@@ -528,29 +528,29 @@ class 마이페이지_설정_페이지 : UIViewController, UINavigationControlle
     
     override func viewDidLoad() {
         view.backgroundColor = .black
-   
+        
         UI레이아웃()
         설정_테이블뷰.delegate = self
         설정_테이블뷰.dataSource = self
         설정_테이블뷰.register(설정_셀.self, forCellReuseIdentifier: "설정_셀")
         설정아이템들_구성()
         버튼_클릭()
-      
+        
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-          self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
- 
+        
         navigationItem.hidesBackButton = true
         navigationController?.isNavigationBarHidden = true
         tabBarController?.tabBar.isHidden = true
         
-
-
+        
+        
     }
- 
+    
     func 로그아웃_유저로그아웃() {
         do {
             if let 현재접속중인유저 = Auth.auth().currentUser {
@@ -657,17 +657,18 @@ extension 마이페이지_설정_페이지  {
                 present(로그아웃_알럿, animated: true, completion: nil)
             }
             else if 셀_제목_라벨 == "회원 탈퇴" {
-                let 회원탈퇴_알럿 = UIAlertController(title: "회원탈퇴", message: "모든 정보가 삭제됩니다. 정말 탈퇴하시나요 ?", preferredStyle: .alert)
-                
-                let 회원탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-                회원탈퇴_알럿.addAction(회원탈퇴취소_버튼)
-                
-                let 회원탈퇴확인_버튼 = UIAlertAction(title: "회원탈퇴", style: .destructive) { _ in
-                    self.회원탈퇴_기능()
-                }
-                회원탈퇴_알럿.addAction(회원탈퇴확인_버튼)
-                
-                present(회원탈퇴_알럿, animated: true, completion: nil)
+//                let 회원탈퇴_알럿 = UIAlertController(title: "회원탈퇴", message: "모든 정보가 삭제됩니다. 정말 탈퇴하시나요 ?", preferredStyle: .alert)
+//                
+//                let 회원탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+//                회원탈퇴_알럿.addAction(회원탈퇴취소_버튼)
+//                
+//                let 회원탈퇴확인_버튼 = UIAlertAction(title: "회원탈퇴", style: .destructive) { _ in
+//                    self.회원탈퇴_기능()
+//                }
+//                회원탈퇴_알럿.addAction(회원탈퇴확인_버튼)
+//                
+//                present(회원탈퇴_알럿, animated: true, completion: nil)
+                회원탈퇴_기능()
             }
             
         }
@@ -795,41 +796,41 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.0
     }
-   
+    
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-           if section == 0 || section == 2 || section == 3 {
-               view.tintColor = .clear
-           } else {
-               view.tintColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
-               
-               let header = view as! UITableViewHeaderFooterView
-               header.textLabel?.textColor = .white
-           }
-       }
-
-       func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-           if indexPath.section == 0 || indexPath.section == 2 || indexPath.section == 3 , indexPath.section == 1 && indexPath.row == 3 {
-               cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-           } else {
-               cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-           }
-           if indexPath.row == 설정아이템들[indexPath.section].count - 1 {
-               cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-           }
-       }
+        if section == 0 || section == 2 || section == 3 {
+            view.tintColor = .clear
+        } else {
+            view.tintColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+            
+            let header = view as! UITableViewHeaderFooterView
+            header.textLabel?.textColor = .white
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 || indexPath.section == 2 || indexPath.section == 3 , indexPath.section == 1 && indexPath.row == 3 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        }
+        if indexPath.row == 설정아이템들[indexPath.section].count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        }
+    }
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-          tabBarController?.tabBar.isHidden = true
-      }
-
-      func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-          if !decelerate {
-              tabBarController?.tabBar.isHidden = true
-          }
-      }
-
-      func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-          tabBarController?.tabBar.isHidden = true
-      }
+        tabBarController?.tabBar.isHidden = true
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            tabBarController?.tabBar.isHidden = true
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        tabBarController?.tabBar.isHidden = true
+    }
     
 }
 
@@ -884,7 +885,7 @@ extension 마이페이지_설정_페이지 {
             }
         }
     }
-
+    
     func 회원탈퇴시_파이어스토어_데이터_삭제_함수(completion: @escaping () -> Void) {
         if let 현재접속중인유저 = Auth.auth().currentUser {
             let 파이어스토어 = Firestore.firestore()
@@ -917,10 +918,47 @@ extension 마이페이지_설정_페이지 {
             }
         }
     }
-
+    
     func 회원탈퇴_auth() {
+        if let user = Auth.auth().currentUser {
+            // UIAlertController를 사용하여 비밀번호 입력 받기
+            let alertController = UIAlertController(title: "재인증", message: "계속하기 위해 비밀번호를 입력하세요.", preferredStyle: .alert)
+            
+            alertController.addTextField { textField in
+                textField.placeholder = "비밀번호"
+                textField.isSecureTextEntry = true
+            }
+            
+            let 취소액션 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+            alertController.addAction(취소액션)
+            
+            let 확인액션 = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+                guard let self = self, let passwordTextField = alertController.textFields?.first else { return }
+                
+                // 입력받은 비밀번호를 사용하여 재인증
+                let password = passwordTextField.text ?? ""
+                let credential = EmailAuthProvider.credential(withEmail: user.email!, password: password)
+                
+                user.reauthenticate(with: credential) { _, error in
+                    if let error = error {
+                        print("재인증 실패: \(error.localizedDescription)")
+                    } else {
+                        // 다시 인증이 성공하면 계정 탈퇴 수행
+                        self.실제_계정탈퇴()
+                    }
+                }
+            }
+            alertController.addAction(확인액션)
+            
+            // UIAlertController를 현재 화면에 표시
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    func 실제_계정탈퇴() {
         do {
-            try Auth.auth().currentUser?.delete(completion: { error in
+            try Auth.auth().currentUser?.delete(completion: { [weak self] error in
+                guard let self = self else { return }
+                
                 if let error = error {
                     print("계정 탈퇴 실패: \(error.localizedDescription)")
                 } else {
@@ -928,7 +966,7 @@ extension 마이페이지_설정_페이지 {
                     let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
                     let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
                     로그인화면_이동.modalPresentationStyle = .fullScreen
-                    self.present(로그인화면_이동, animated: true, completion: nil)
+                    present(로그인화면_이동, animated: true, completion: nil)
                     UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
                 }
             })
