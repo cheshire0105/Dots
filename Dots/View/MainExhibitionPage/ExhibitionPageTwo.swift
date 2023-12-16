@@ -114,7 +114,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     private lazy var customAlertView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        view.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
         view.layer.cornerRadius = 20
         view.isHidden = true // 처음에는 숨겨둡니다.
         return view
@@ -123,7 +123,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     private lazy var alertTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "언제 다녀오셨나요?"
-        label.textColor = .black
+        label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         label.textAlignment = .center
         return label
@@ -132,7 +132,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     private lazy var alertSubtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
-        label.textColor = .darkGray
+        label.textColor = UIColor(red: 0.757, green: 0.753, blue: 0.773, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 14)
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -143,7 +143,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .wheels
-        picker.overrideUserInterfaceStyle = .light
+        picker.overrideUserInterfaceStyle = .dark
 
         // 한국어 로케일 설정
         picker.locale = Locale(identifier: "ko-KR")
@@ -178,8 +178,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     private lazy var confirmButton: UIButton = {
         let button = UIButton()
         button.setTitle("수정", for: .normal)
-        button.backgroundColor = .black
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 20 // 모서리 둥글게
 
         // 폰트 설정
@@ -294,9 +294,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
             // 수정하는 경우에만 삭제 버튼을 보여줍니다.
             deleteButton.isHidden = false
-
             // 버튼 제목을 "수정"으로 설정
             confirmButton.setTitle("수정 하기", for: .normal)
+            confirmButton.setTitleColor(UIColor(red: 0.745, green: 0.741, blue: 0.761, alpha: 1), for: .normal)
+
+            confirmButton.backgroundColor = UIColor(red: 0.224, green: 0.231, blue: 0.243, alpha: 1)
+
         } else {
             alertSubtitleLabel.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
 
@@ -305,6 +308,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
             // 버튼 제목을 "등록하기"로 설정
             confirmButton.setTitle("등록하기", for: .normal)
+            confirmButton.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+            confirmButton.setTitleColor(.black, for: .normal)
+
+
         }
 
         self.blurEffectView.isHidden = false
