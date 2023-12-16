@@ -263,32 +263,56 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 
 //이메일 중복확인 관련
 extension 회원가입_첫번째_뷰컨트롤러 {
+//    @objc func 회원가입_중복확인_버튼_클릭() {
+//        guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
+//            
+//            알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.", presentingViewController: self)
+//            return
+//        }
+//        let 데이터베이스 = Firestore.firestore()
+//        let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+//        
+//        유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, 에러) in
+//            guard let self = self else { return }
+//            
+//            if let 에러 = 에러 {
+//                print("Firestore에서 이메일 중복 확인 실패: \(에러.localizedDescription)")
+//                
+//                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패", presentingViewController: self)
+//                return
+//            }
+//            
+//            if snapshot?.isEmpty == false {
+//                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "중복된 이메일입니다.", presentingViewController: self)
+//            } else {
+//                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.", presentingViewController: self)
+//            }
+//        }
+//    }
     @objc func 회원가입_중복확인_버튼_클릭() {
         guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
-            
             알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.", presentingViewController: self)
             return
         }
-        let 데이터베이스 = Firestore.firestore()
-        let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
         
-        유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, 에러) in
+        Auth.auth().fetchSignInMethods(forEmail: 이메일) { [weak self] (methods, error) in
             guard let self = self else { return }
             
-            if let 에러 = 에러 {
-                print("Firestore에서 이메일 중복 확인 실패: \(에러.localizedDescription)")
-                
+            if let error = error {
+                print("Auth에서 이메일 중복 확인 실패: \(error.localizedDescription)")
                 알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패", presentingViewController: self)
                 return
             }
             
-            if snapshot?.isEmpty == false {
-                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "중복된 이메일입니다.", presentingViewController: self)
+            if let signInMethods = methods, !signInMethods.isEmpty {
+                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이미 등록된 이메일입니다.", presentingViewController: self)
             } else {
                 알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.", presentingViewController: self)
             }
         }
     }
+
+
 }
 
 

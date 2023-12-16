@@ -877,14 +877,14 @@ extension 마이페이지_설정_페이지 {
                 
                 }
             else if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "google.com" {
-                let alertController = UIAlertController(title: "구글 계정입니다.", message: "구글 계정은 도트 서비스에서 회원 탈퇴를 지원하지 않습니다.", preferredStyle: .alert)
+                let 구글계정일경우_알럿 = UIAlertController(title: "구글 계정입니다.", message: "구글 계정은 회원 탈퇴 서비스를 지원하지 않습니다.", preferredStyle: .alert)
 
                 let 확인액션 = UIAlertAction(title: "확인", style: .default) { _ in
                 }
 
-                alertController.addAction(확인액션)
+                구글계정일경우_알럿.addAction(확인액션)
 
-                self.present(alertController, animated: true, completion: nil)
+                self.present(구글계정일경우_알럿, animated: true, completion: nil)
 
             }
             } else {
@@ -898,18 +898,18 @@ extension 마이페이지_설정_페이지 {
     
     func 회원탈퇴_auth() {
         if let user = Auth.auth().currentUser {
-            let alertController = UIAlertController(title: "재인증", message: "회원탈퇴 진행을 위해 비밀번호를 입력하세요.", preferredStyle: .alert)
+            let 재인증요청_텍스트필드_알럿 = UIAlertController(title: "재인증", message: "회원탈퇴 진행을 위해 비밀번호를 입력하세요.", preferredStyle: .alert)
             
-            alertController.addTextField { textField in
+            재인증요청_텍스트필드_알럿.addTextField { textField in
                 textField.placeholder = "비밀번호"
                 textField.isSecureTextEntry = true
             }
             
             let 취소액션 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-            alertController.addAction(취소액션)
+            재인증요청_텍스트필드_알럿.addAction(취소액션)
             
             let 확인액션 = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
-                guard let self = self, let passwordTextField = alertController.textFields?.first else { return }
+                guard let self = self, let passwordTextField = 재인증요청_텍스트필드_알럿.textFields?.first else { return }
                 
                 let password = passwordTextField.text ?? ""
                 let credential = EmailAuthProvider.credential(withEmail: user.email!, password: password)
@@ -922,9 +922,9 @@ extension 마이페이지_설정_페이지 {
                     }
                 }
             }
-            alertController.addAction(확인액션)
+            재인증요청_텍스트필드_알럿.addAction(확인액션)
             
-            self.present(alertController, animated: true, completion: nil)
+            self.present(재인증요청_텍스트필드_알럿, animated: true, completion: nil)
         }
     }
     func 실제_계정탈퇴() {
