@@ -66,19 +66,19 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         self.title = "리암 길릭 : Alterants"
 
         // Custom Title View 생성 및 설정
-           let titleLabel = UILabel()
-           titleLabel.numberOfLines = 0 // 여러 줄 표시 허용
-           titleLabel.text = reviewTitle ?? "기본 타이틀" // 여기에 여러 줄 텍스트 설정
-           titleLabel.textAlignment = .center
-           titleLabel.textColor = .white
-           titleLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-           titleLabel.lineBreakMode = .byWordWrapping
+           let exhibitionTitleLabel = UILabel()
+           exhibitionTitleLabel.numberOfLines = 0 // 여러 줄 표시 허용
+           exhibitionTitleLabel.text = reviewTitle ?? "기본 타이틀" // 여기에 여러 줄 텍스트 설정
+           exhibitionTitleLabel.textAlignment = .center
+           exhibitionTitleLabel.textColor = .white
+           exhibitionTitleLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+           exhibitionTitleLabel.lineBreakMode = .byWordWrapping
 
            // Navigation Item에 Title View 설정
-           self.navigationItem.titleView = titleLabel
+           self.navigationItem.titleView = exhibitionTitleLabel
 
            // Title View의 제약 조건 설정 (필요한 경우)
-           titleLabel.snp.makeConstraints { make in
+           exhibitionTitleLabel.snp.makeConstraints { make in
                make.width.lessThanOrEqualTo(self.view.frame.width - 40) // 적절한 너비 제한 설정
            }
 
