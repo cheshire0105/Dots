@@ -605,7 +605,7 @@ class 마이페이지_설정_페이지 : UIViewController, UINavigationControlle
             let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
             let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
             로그인화면_이동.modalPresentationStyle = .fullScreen
-            present(로그인화면_이동, animated: true, completion: nil)
+            present(로그인화면_이동, animated: false, completion: nil)
             UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
         } catch {
             print("로그아웃 실패: \(error.localizedDescription)")
@@ -657,18 +657,18 @@ extension 마이페이지_설정_페이지  {
                 present(로그아웃_알럿, animated: true, completion: nil)
             }
             else if 셀_제목_라벨 == "회원 탈퇴" {
-//                let 회원탈퇴_알럿 = UIAlertController(title: "회원탈퇴", message: "모든 정보가 삭제됩니다. 정말 탈퇴하시나요 ?", preferredStyle: .alert)
-//                
-//                let 회원탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-//                회원탈퇴_알럿.addAction(회원탈퇴취소_버튼)
-//                
-//                let 회원탈퇴확인_버튼 = UIAlertAction(title: "회원탈퇴", style: .destructive) { _ in
-//                    self.회원탈퇴_기능()
-//                }
-//                회원탈퇴_알럿.addAction(회원탈퇴확인_버튼)
-//                
-//                present(회원탈퇴_알럿, animated: true, completion: nil)
-                회원탈퇴_기능()
+                let 회원탈퇴_알럿 = UIAlertController(title: "회원탈퇴", message: "모든 정보가 삭제됩니다. 정말 탈퇴하시나요 ?", preferredStyle: .alert)
+
+                let 회원탈퇴취소_버튼 = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+                회원탈퇴_알럿.addAction(회원탈퇴취소_버튼)
+
+                let 회원탈퇴확인_버튼 = UIAlertAction(title: "회원탈퇴", style: .destructive) { _ in
+                    self.회원탈퇴_기능()
+                }
+                회원탈퇴_알럿.addAction(회원탈퇴확인_버튼)
+
+                present(회원탈퇴_알럿, animated: true, completion: nil)
+
             }
             
         }
@@ -866,39 +866,34 @@ class 설정_셀: UITableViewCell {
 }
 
 
-
 extension 마이페이지_설정_페이지 {
     
     func 회원탈퇴_기능() {
         if let 현재접속중인유저 = Auth.auth().currentUser {
             if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "password" {
-               
+                UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
                 회원탈퇴_auth()
                 
-                }
-            else if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "google.com" {
+                
+            } else if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "google.com" {
                 let 구글계정일경우_알럿 = UIAlertController(title: "구글 계정입니다.", message: "구글 계정은 회원 탈퇴 서비스를 지원하지 않습니다.", preferredStyle: .alert)
-
+                
                 let 확인액션 = UIAlertAction(title: "확인", style: .default) { _ in
                 }
-
+                
                 구글계정일경우_알럿.addAction(확인액션)
-
+                
                 self.present(구글계정일경우_알럿, animated: true, completion: nil)
-
             }
-            } else {
-                print("도트 회원가입 자체 서비스 방식으로 가입한 계정이 아닙니다.")
-            }
+        } else {
+            print("도트 회원가입 자체 서비스 방식으로 가입한 계정이 아닙니다.")
         }
+    }
     
-    
-   
-
     
     func 회원탈퇴_auth() {
         if let user = Auth.auth().currentUser {
-            let 재인증요청_텍스트필드_알럿 = UIAlertController(title: "재인증", message: "회원탈퇴 진행을 위해 비밀번호를 입력하세요.", preferredStyle: .alert)
+            let 재인증요청_텍스트필드_알럿 = UIAlertController(title: "회원탈퇴", message: "회원탈퇴 진행을 위해 비밀번호를 입력하세요.", preferredStyle: .alert)
             
             재인증요청_텍스트필드_알럿.addTextField { textField in
                 textField.placeholder = "비밀번호"
@@ -918,33 +913,62 @@ extension 마이페이지_설정_페이지 {
                     if let error = error {
                         print("재인증 실패: \(error.localizedDescription)")
                     } else {
-                        self.실제_계정탈퇴()
+                        self.파이어스토어에서_도트회원_정보_삭제 ()
+                        DispatchQueue.main.async {
+                            let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
+                            let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
+                            로그인화면_이동.modalPresentationStyle = .fullScreen
+
+                            self.present(로그인화면_이동, animated: true, completion: nil)
+                        }
                     }
                 }
             }
             재인증요청_텍스트필드_알럿.addAction(확인액션)
-            
-            self.present(재인증요청_텍스트필드_알럿, animated: true, completion: nil)
+            self.present(재인증요청_텍스트필드_알럿, animated: false, completion: nil)
+        }
+    }
+    func 파이어스토어에서_도트회원_정보_삭제 () {
+        if let 현재접속중인유저 = Auth.auth().currentUser {
+            if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "password" {
+                let 데이터베이스 = Firestore.firestore()
+                let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+                
+                유저컬렉션.document(현재접속중인유저.uid).delete { error in
+                    if let error = error {
+                        print("Firestore에서 사용자 데이터 삭제 실패: \(error.localizedDescription)")
+                    } else {
+                        print("Firestore에서 사용자 데이터 삭제 성공")
+                        
+                        현재접속중인유저.delete { error in
+                            if let error = error {
+                                print("Firebase Authentication에서 사용자 삭제 실패: \(error.localizedDescription)")
+                            } else {
+                                print("Firebase Authentication에서 사용자 삭제 성공")
+                                self.실제_계정탈퇴()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     func 실제_계정탈퇴() {
         do {
             try Auth.auth().currentUser?.delete(completion: { [weak self] error in
                 guard let self = self else { return }
-                
+
                 if let error = error {
                     print("계정 탈퇴 실패: \(error.localizedDescription)")
                 } else {
                     print("계정이 성공적으로 탈퇴되었습니다.")
-                    let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
-                    let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
-                    로그인화면_이동.modalPresentationStyle = .fullScreen
-                    present(로그인화면_이동, animated: true, completion: nil)
-                    UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+                   
                 }
             })
         } catch {
             print("탈퇴 실패: \(error.localizedDescription)")
         }
     }
+
 }
+
