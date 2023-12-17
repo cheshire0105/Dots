@@ -326,11 +326,16 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         selectedRegion = "인사동"
         loadExhibitions(forRegion: selectedRegion)  // 두 번째 섹션 데이터 로드
 
-        if let 현제접속중인_유저 = Auth.auth().currentUser {
+       
+        if let currentUser = Auth.auth().currentUser {
             print("로그인한 사용자 정보:")
-            print("UID: \(현제접속중인_유저.uid)")
-            print("이메일: \(현제접속중인_유저.email ?? "없음")")
+            print("UID: \(currentUser.uid)")
+            print("이메일: \(currentUser.email ?? "없음")")
             print("계정이 로그인되었습니다.")
+
+            // 싱글톤 인스턴스에 사용자 정보 저장
+            CurrentUser.shared.uid = currentUser.uid
+            CurrentUser.shared.email = currentUser.email
         }
     }
 

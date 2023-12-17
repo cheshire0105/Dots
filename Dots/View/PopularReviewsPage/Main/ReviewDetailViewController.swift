@@ -12,6 +12,8 @@ import UIKit
 import SDWebImage
 import Firebase
 import FirebaseFirestore
+import FirebaseAuth
+
 
 struct ImageData {
     let url: URL
@@ -91,6 +93,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         setupSquareViewAndLabel()
         setupNavigationTitleView() // 변경된 메서드 호출
         configureNavigationBar()
+        setupRightNavigationButton()
 
 
 
@@ -142,6 +145,48 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
 
     }
+
+    private func setupRightNavigationButton() {
+        let rightButtonImage = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 2")
+        let rightButton = UIBarButtonItem(image: rightButtonImage, style: .plain, target: self, action: nil)
+
+        if let currentUserID = CurrentUser.shared.uid, let reviewUserID = review?.userId {
+            if currentUserID == reviewUserID {
+                if #available(iOS 14, *) {
+                    rightButton.menu = createContextMenu()
+                    rightButton.action = nil
+                } else {
+                    rightButton.target = self
+                    rightButton.action = #selector(showMenuForOlderIOS)
+                }
+            }
+        }
+
+        self.navigationItem.rightBarButtonItem = rightButton
+    }
+
+
+    @objc func showMenu() {
+
+    }
+    @available(iOS 14, *)
+    private func createContextMenu() -> UIMenu {
+        let modifyAction = UIAction(title: "수정하기", image: UIImage(systemName: "pencil")) { action in
+            // 수정하기 로직
+        }
+
+        let deleteAction = UIAction(title: "삭제하기", image: UIImage(systemName: "trash")) { action in
+            // 삭제하기 로직
+        }
+
+        return UIMenu(title: "", children: [modifyAction, deleteAction])
+    }
+
+    @objc private func showMenuForOlderIOS() {
+        // iOS 14 미만에서 사용될 메뉴 표시 로직
+    }
+
+
 
     private func setupPageControl() {
         pageControl = UIPageControl()
@@ -558,3 +603,11 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 }
 
 
+class CurrentUser {
+    static let shared = CurrentUser()
+
+    var uid: String?
+    var email: String?
+
+    private init() {}
+}

@@ -200,8 +200,10 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                                     nickname: nickname,
                                     profileImageUrl: profileImageUrl,
-                                    photoUrls: data["images"] as? [String] ?? []
+                                    photoUrls: data["images"] as? [String] ?? [],
+                                    userId: data["userId"] as? String ?? "" // 여기에 userId를 추가
                                 )
+
                                 newReviews.append(review)
                                 
                             }
