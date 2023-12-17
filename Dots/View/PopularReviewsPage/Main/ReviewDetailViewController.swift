@@ -71,7 +71,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     
     private var pageControl: UIPageControl!
     
-    
+        
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -180,15 +180,17 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     }
     @available(iOS 14, *)
     private func createOwnReviewMenu() -> UIMenu {
-        // 현재 사용자의 후기에 대한 메뉴
-        let modifyAction = UIAction(title: "수정하기", image: UIImage(systemName: "pencil")) { action in
-            // 수정 로직
+        // 수정 액션
+        let modifyAction = UIAction(title: "수정하기", image: UIImage(systemName: "pencil")) { [weak self] action in
+            self?.editReviewButtonTapped()
         }
+        // 삭제 액션
         let deleteAction = UIAction(title: "삭제하기", image: UIImage(systemName: "trash")) { action in
             // 삭제 로직
         }
         return UIMenu(title: "", children: [modifyAction, deleteAction])
     }
+
     
     @available(iOS 14, *)
     private func createOtherUserReviewMenu() -> UIMenu {
@@ -342,7 +344,24 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         }
     }
     
-    
+    @objc private func editReviewButtonTapped() {
+        guard let reviewData = review else { return }
+
+        let editViewController = ReviewEditPage()
+
+        // 기존 데이터 전달
+        editViewController.originalTitle = reviewData.title
+        editViewController.originalContent = reviewData.content
+        editViewController.originalImages = selectedImages
+
+        // 네비게이션 타이틀에 사용될 데이터 전달
+        editViewController.exhibitionTitle = exhibitionTitle
+        editViewController.museumName = museumName
+
+        navigationController?.pushViewController(editViewController, animated: true)
+    }
+
+
     func convertDateToString(_ date: Date) -> String {
         let formatter = RelativeDateTimeFormatter()
         formatter.locale = Locale(identifier: "ko-KR") // 한국어로 설정
@@ -377,7 +396,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             photoCollectionView.isPagingEnabled = true
             photoCollectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
             photoCollectionView.isHidden = true // 기본적으로 숨겨진 상태로 설정
-            // 스크롤 바 숨기기
+            // 스크롤 바 숨기기ReviewEditPage
             photoCollectionView.showsHorizontalScrollIndicator = false
             photoCollectionView.showsVerticalScrollIndicator = false
             
