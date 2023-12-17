@@ -1,9 +1,9 @@
 //
-//  ReviewWrittePage.swift
+//  ReviewEditPage.swift
 //  Dots
 //
-//  Created by cheshire on 11/13/23.
-// 최신화 커밋 푸쉬 2023년 11월 13일 월 오후 11:23
+//  Created by cheshire on 12/17/23.
+//
 
 import Foundation
 import UIKit
@@ -12,12 +12,25 @@ import SnapKit
 import Firebase
 import FirebaseStorage
 
-protocol ReviewWritePageDelegate: AnyObject {
-    func didSubmitReview()
-}
+class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource, PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
 
+        selectedImages.removeAll() // 기존 이미지를 제거합니다.
 
-class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource {
+        for result in results {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
+                if let image = object as? UIImage {
+                    DispatchQueue.main.async {
+                        self.selectedImages.append(image)
+                        self.collectionView.reloadData()
+                        self.updateCollectionViewLayout() // 레이아웃 업데이트 호출
+                    }
+                }
+            }
+        }
+    }
+
 
     // 텍스트 필드 속성 정의
     let titleTextField = UITextField()
@@ -41,8 +54,12 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     var contentTextViewBottomConstraint: Constraint?
 
+    var originalTitle: String?
+    var originalContent: String?
+    var originalImages: [UIImage]?
 
-
+    var exhibitionTitle: String?
+        var museumName: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,6 +159,42 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             make.left.right.equalTo(view).inset(10)
             self.contentTextViewBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).constraint
         }
+
+        // 기존 데이터 바인딩
+         titleTextField.text = originalTitle
+         contentTextView.text = originalContent
+         if let images = originalImages {
+             selectedImages = images
+         }
+
+        setupNavigationTitle()
+
+    }
+
+    private func setupNavigationTitle() {
+        // 네비게이션 타이틀 및 서브타이틀 설정
+        let titleLabel = UILabel()
+        titleLabel.text = exhibitionTitle ?? "기본 전시 제목"
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        titleLabel.textColor = .white
+        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        titleLabel.lineBreakMode = .byWordWrapping
+
+        let subtitleLabel = UILabel()
+        subtitleLabel.text = museumName ?? "기본 뮤지엄 이름"
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.textColor = .lightGray
+        subtitleLabel.font = UIFont.systemFont(ofSize: 12)
+
+
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        titleStackView.axis = .vertical
+        titleStackView.alignment = .center
+        titleStackView.distribution = .equalCentering
+
+        self.navigationItem.titleView = titleStackView
     }
 
     deinit {
@@ -602,66 +655,4 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     }
 
 }
-
-// PHPickerViewControllerDelegate 메서드
-extension ReviewWritePage: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
-
-        selectedImages.removeAll() // 기존 이미지를 제거합니다.
-
-        for result in results {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
-                if let image = object as? UIImage {
-                    DispatchQueue.main.async {
-                        self.selectedImages.append(image)
-                        self.collectionView.reloadData()
-                        self.updateCollectionViewLayout() // 레이아웃 업데이트 호출
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-
-class ImageCollectionViewCell: UICollectionViewCell {
-    let imageView = UIImageView()
-    let deleteButton = UIButton()
-
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func setupViews() {
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 10 // 셀의 모서리를 둥글게 합니다.
-        contentView.addSubview(imageView)
-
-
-        deleteButton.setImage(UIImage(named: "xbutton"), for: .normal)
-        contentView.addSubview(deleteButton)
-
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-
-        deleteButton.snp.makeConstraints { make in
-            make.top.right.equalToSuperview().inset(8)
-            make.width.height.equalTo(25)
-        }
-    }
-
-
-}
-
-
 
