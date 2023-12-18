@@ -488,11 +488,16 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
     // UITextViewDelegate 메서드를 사용하여 플레이스홀더 처리
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == .lightGray {
+        if textView.text == "자유롭게 후기를 작성해주세요." {
             textView.text = nil
             textView.textColor = .white
+        } else {
+            // 텍스트가 기본 메시지가 아닌 경우 커서를 텍스트의 끝으로 이동
+            let endPosition = textView.endOfDocument
+            textView.selectedTextRange = textView.textRange(from: endPosition, to: endPosition)
         }
     }
+
 
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
