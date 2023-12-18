@@ -15,7 +15,9 @@ struct Review {
     var profileImageUrl: String
     var photoUrls: [String] // 유저가 올린 사진들의 URL
     var userId: String // 리뷰 작성자의 고유 식별자
+    var posterName: String? // 포스터 이름 (옵셔널로 선언)
 }
+
 
 
 

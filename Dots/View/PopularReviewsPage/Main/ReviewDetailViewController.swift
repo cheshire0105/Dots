@@ -349,17 +349,24 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
         let editViewController = ReviewEditPage()
 
-        // 기존 데이터 전달
-        editViewController.originalTitle = reviewData.title
-        editViewController.originalContent = reviewData.content
-        editViewController.originalImages = selectedImages
+        // 기존 리뷰 데이터 전달
+            editViewController.originalTitle = reviewData.title
+            editViewController.originalContent = reviewData.content
+            editViewController.posterName = reviewData.posterName
+            editViewController.exhibitionTitle = exhibitionTitle // 전시 제목 전달
+            editViewController.museumName = museumName // 뮤지엄 이름 전달
 
-        // 네비게이션 타이틀에 사용될 데이터 전달
-        editViewController.exhibitionTitle = exhibitionTitle
-        editViewController.museumName = museumName
+        // 이미지 데이터 변환 및 전달
+           let images = imageDatas.compactMap { $0.image }
+           editViewController.originalImages = images
+
+        print("수정으로 전달하는 이미지 베열 주소\(editViewController.originalImages)")
 
         navigationController?.pushViewController(editViewController, animated: true)
     }
+
+
+
 
 
     func convertDateToString(_ date: Date) -> String {

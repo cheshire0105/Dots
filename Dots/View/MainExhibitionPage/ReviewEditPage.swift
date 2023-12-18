@@ -169,6 +169,8 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
         setupNavigationTitle()
 
+        
+
     }
 
     private func setupNavigationTitle() {
@@ -188,7 +190,6 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         subtitleLabel.textColor = .lightGray
         subtitleLabel.font = UIFont.systemFont(ofSize: 12)
 
-
         let titleStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
         titleStackView.axis = .vertical
         titleStackView.alignment = .center
@@ -196,6 +197,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
         self.navigationItem.titleView = titleStackView
     }
+
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -284,13 +286,15 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else {
-            return UICollectionViewCell()
+            fatalError("Unable to dequeue ImageCollectionViewCell")
         }
-        cell.imageView.image = selectedImages[indexPath.row]
-        cell.deleteButton.tag = indexPath.row // 태그를 사용하여 어떤 셀의 'x' 버튼이 탭되었는지 식별합니다.
-        cell.deleteButton.addTarget(self, action: #selector(deleteImage(_:)), for: .touchUpInside)
+        let image = selectedImages[indexPath.row]
+        cell.imageView.image = image
         return cell
     }
+
+
+
 
     @objc func deleteImage(_ sender: UIButton) {
         let index = sender.tag
