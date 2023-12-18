@@ -148,7 +148,6 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         setupNavigationTitle()
 
         updateCollectionViewLayout()
-        loadExistingImages()
 
         // 장기간 눌러서 드래그 앤 드롭을 활성화
            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
@@ -174,7 +173,10 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let movedImage = selectedImages.remove(at: sourceIndexPath.item)
         selectedImages.insert(movedImage, at: destinationIndexPath.item)
+        // 셀의 인덱스 재정렬
+          collectionView.reloadData()
     }
+
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
@@ -193,20 +195,10 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         }
     }
 
+    
 
-    func loadExistingImages() {
-        imageUrls.forEach { urlString in
-            guard let url = URL(string: urlString) else { return }
-            SDWebImageManager.shared.loadImage(with: url, options: [], progress: nil) { [weak self] (image, _, _, _, _, _) in
-                if let image = image {
-                    DispatchQueue.main.async {
-                        self?.selectedImages.append(image)
-                        self?.collectionView.reloadData()
-                    }
-                }
-            }
-        }
-    }
+
+
 
 
     private func setupNavigationTitle() {
@@ -356,6 +348,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         guard index < selectedImages.count else {
             return
         }
+
 
         // 배열에서 먼저 삭제
         selectedImages.remove(at: index)
