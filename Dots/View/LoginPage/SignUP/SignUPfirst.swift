@@ -70,10 +70,14 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         
         textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
-        
-        
-        
         return textField
+    } ()
+    
+    private let 이메일_리프레쉬 = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "Refresh"), for: .normal)
+        button.isHidden = true
+        return button
     } ()
     private let 회원가입_중복확인_버튼 = {
         let button = UIButton()
@@ -234,7 +238,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         회원가입_중복확인_버튼.addTarget(self, action: #selector(회원가입_중복확인_버튼_클릭), for: .touchUpInside)
         비밀번호_표시_온오프.addTarget(self, action: #selector(비밀번호_표시_온오프_클릭), for: .touchUpInside)
         구글_버튼.addTarget(self, action: #selector(구글_버튼_클릭), for: .touchUpInside)
-        
+        이메일_리프레쉬.addTarget(self, action: #selector(이메일_리프레쉬_클릭), for: .touchUpInside)
     }
     
     @objc func 뒤로가기_버튼_클릭() {
@@ -256,6 +260,11 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         }
     }
     
+    @objc func 이메일_리프레쉬_클릭() {
+        회원가입_이메일_텍스트필드.text = ""
+        회원가입_중복확인_버튼.setTitle("중복확인", for: .selected)
+    }
+    
     
     
     
@@ -264,33 +273,56 @@ extension 회원가입_첫번째_뷰컨트롤러 {
 //이메일 중복확인 관련
 extension 회원가입_첫번째_뷰컨트롤러 {
     @objc func 회원가입_중복확인_버튼_클릭() {
-        guard let 이메일 = 회원가입_이메일_텍스트필드.text, !이메일.isEmpty else {
-            알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일을 입력하세요.", presentingViewController: self)
+        guard let 이메일 = 회원가입_이메일_텍스트필드.text else {
             return
         }
         
-        let 데이터베이스 = Firestore.firestore()
-        let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리")
-        
-        유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (snapshot, 에러) in
-            guard let self = self else { return }
-            
-            if let 에러 = 에러 {
-                print("Firestore에서 이메일 중복 확인 실패: \(에러.localizedDescription)")
-                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이메일 중복 확인 실패", presentingViewController: self)
+        Auth.auth().fetchSignInMethods(forEmail: 이메일) { (methods, error) in
+            if let error = error {
+                print("이메일 중복 확인 에러: \(error.localizedDescription)")
+                self.이메일_백.layer.borderColor = UIColor.red.cgColor
                 return
             }
             
-            if snapshot?.isEmpty == false {
-                // 이미 사용 중인 이메일
-                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "이미 사용 중인 이메일입니다.", presentingViewController: self)
+            if let signInMethods = methods, signInMethods.isEmpty {
+              
             } else {
-                // 사용 가능한 이메일
-                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "사용 가능한 이메일입니다.", presentingViewController: self)
+              
+                let 데이터베이스 = Firestore.firestore()
+                let 유저데이터컬렉션 = 데이터베이스.collection("유저_데이터_관리")
+                
+                유저데이터컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { (snapshot, error) in
+                    if let error = error {
+                        print("Firestore 이메일 중복 확인 에러: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    if let documents = snapshot?.documents, !documents.isEmpty {
+                     
+                        self.회원가입_회원가입_버튼.isUserInteractionEnabled = false
+                        self.회원가입_회원가입_버튼.setTitle("이미 사용중인 이메일입니다.", for: .selected)
+                        self.회원가입_회원가입_버튼.setTitleColor(UIColor.red, for: .selected)
+                        self.회원가입_중복확인_버튼.setTitle("재확인", for: .selected)
+                        self.이메일_백.layer.borderColor = UIColor.red.cgColor
+                    } else {
+                      
+                        self.회원가입_회원가입_버튼.isEnabled = true
+                        self.회원가입_회원가입_버튼.isUserInteractionEnabled = true
+                        self.회원가입_회원가입_버튼.setTitle("회원가입", for: .selected)
+                        self.회원가입_회원가입_버튼.setTitleColor(UIColor.black, for: .selected)
+                        self.회원가입_중복확인_버튼.setTitle("중복확인 완료", for: .selected)
+                        self.이메일_백.layer.borderColor = UIColor(named: "neon")?.cgColor
+                        self.이메일_리프레쉬.isHidden = false
+
+
+
+                    }
+                }
             }
         }
     }
-
+    
+    
 }
 
 
@@ -309,7 +341,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             "마지막로그인": 마지막로그인,
             "마지막로그아웃": 마지막로그아웃
         ]
-
+        
         데이터베이스.collection("유저_데이터_관리").document(유저ID).setData(userData) { 에러 in
             if let 에러 = 에러 {
                 print("Firestore에 사용자 정보 저장 실패: \(에러.localizedDescription)")
@@ -318,17 +350,17 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             }
         }
     }
-
-
+    
+    
     private func 유저_프로필_저장(유저ID: String, 닉네임: String, 프로필이미지URL: String) {
         let 데이터베이스 = Firestore.firestore()
         let 유저프로필컬렉션 = 데이터베이스.collection("유저_프로필")
-
+        
         let userProfileData: [String: Any] = [
             "닉네임": 닉네임,
             "프로필이미지URL": 프로필이미지URL
         ]
-
+        
         유저프로필컬렉션.document(유저ID).setData(userProfileData) { 에러 in
             if let 에러 = 에러 {
                 print("유저 프로필 정보 저장 실패: \(에러.localizedDescription)")
@@ -337,13 +369,13 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             }
         }
     }
-
-
+    
+    
     
     @objc func 회원가입_회원가입_버튼_클릭() {
-//        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
-//        self.navigationController?.pushViewController(다음화면_이동, animated: true)
-//        self.navigationItem.hidesBackButton = true
+        //        let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+        //        self.navigationController?.pushViewController(다음화면_이동, animated: true)
+        //        self.navigationItem.hidesBackButton = true
         print("다음 페이지로 이동")
         guard let 이메일 = 회원가입_이메일_텍스트필드.text,
               let 비밀번호 = 회원가입_비밀번호_텍스트필드.text,
@@ -354,26 +386,26 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         
         Auth.auth().createUser(withEmail: 이메일, password: 비밀번호) { [weak self] (authResult, 에러) in
             guard let self = self else { return }
-
+            
             if let 에러 = 에러 {
                 print("회원가입 실패: \(에러.localizedDescription)")
                 return
             }
-
+            
             print("회원가입 성공")
-
+            
             // 생성된 UUID를 가져옵니다.
             guard let 유저ID = authResult?.user.uid else { return }
-
+            
             // Firestore에 사용자 정보 저장
             self.회원가입_유저정보_업로드(유저ID: 유저ID, 회원가입_타입: "도트", 닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL, 마지막로그인: "로그인 기록이 없음", 마지막로그아웃: "로그아웃 기록이 없음")
-
+            
             // 다음 화면으로 이동
             let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
             self.navigationController?.pushViewController(다음화면_이동, animated: true)
             self.navigationItem.hidesBackButton = true
         }
-
+        
         
     }
 }
@@ -398,6 +430,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         view.addSubview(구글_버튼)
         view.addSubview(애플_버튼)
         view.addSubview(트위터_버튼)
+        view.addSubview(이메일_리프레쉬)
         뒤로가기_버튼.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
@@ -426,6 +459,11 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             make.leading.equalToSuperview().offset(24)
             make.trailing.equalToSuperview().offset(-24)
             make.height.equalTo(50)
+        }
+        이메일_리프레쉬.snp.makeConstraints { make in
+            make.centerY.equalTo(이메일_백.snp.centerY)
+            make.leading.equalTo(회원가입_중복확인_버튼.snp.trailing).offset(5)
+            make.size.equalTo(15)
         }
         회원가입_이메일_텍스트필드.snp.makeConstraints { make in
             make.top.equalTo(이메일_백)
