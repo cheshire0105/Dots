@@ -61,7 +61,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
     var originalImages: [UIImage]?
 
     var exhibitionTitle: String?
-        var museumName: String?
+    var museumName: String?
 
     var imageUrls: [String] = []
 
@@ -139,7 +139,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         configureInputAccessoryView()
 
         setupCollectionView()
-//        updateCollectionViewLayout()
+        //        updateCollectionViewLayout()
         collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCollectionViewCell")
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -157,11 +157,11 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         }
 
         // 기존 데이터 바인딩
-         titleTextField.text = originalTitle
-         contentTextView.text = originalContent
-         if let images = originalImages {
-             selectedImages = images
-         }
+        titleTextField.text = originalTitle
+        contentTextView.text = originalContent
+        if let images = originalImages {
+            selectedImages = images
+        }
 
         setupNavigationTitle()
 
@@ -555,12 +555,19 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         self.dismiss(animated: true, completion: nil)
     }
 
+
+
     @objc func registerButtonTapped() {
         guard let userId = Auth.auth().currentUser?.uid,
               let posterName = posterName, !posterName.isEmpty,
               let title = titleTextField.text, !title.isEmpty,
               let content = contentTextView.text, !content.isEmpty else {
             print("필요한 정보가 부족합니다.")
+            print("UserID: \(Auth.auth().currentUser?.uid ?? "nil")")
+            print("PosterName: \(posterName ?? "nil")")
+            print("Title: \(titleTextField.text ?? "nil")")
+            print("Content: \(contentTextView.text ?? "nil")")
+
             return
         }
 

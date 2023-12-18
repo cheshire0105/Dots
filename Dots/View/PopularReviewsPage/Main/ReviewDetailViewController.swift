@@ -107,6 +107,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             contentLabel.text = reviewData.content
             // profileImageView에 이미지 로드 (예: URL에서 이미지를 로드하는 경우)
             // 리뷰에 사진이 없는 경우
+            print("포스터 이름: \(reviewData.posterName ?? "nil")")
+
             if reviewData.photoUrls.isEmpty {
                 photoCollectionView.isHidden = true
                 adjustLayoutForNoPhotos()
@@ -360,6 +362,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
            let images = imageDatas.compactMap { $0.image }
            editViewController.originalImages = images
         print("전달되는 이미지 URL 배열: \(reviewData.photoUrls)")
+        print("포스터이름\(editViewController.posterName)")
 
         editViewController.imageUrls = reviewData.photoUrls // 여기서 reviewData.photoUrls는 URL 문자열 배열입니다.
 
