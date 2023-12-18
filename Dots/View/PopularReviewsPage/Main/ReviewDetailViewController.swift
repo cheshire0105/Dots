@@ -359,6 +359,10 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         // 이미지 데이터 변환 및 전달
            let images = imageDatas.compactMap { $0.image }
            editViewController.originalImages = images
+        print("전달되는 이미지 URL 배열: \(reviewData.photoUrls)")
+
+        editViewController.imageUrls = reviewData.photoUrls // 여기서 reviewData.photoUrls는 URL 문자열 배열입니다.
+
 
         print("수정으로 전달하는 이미지 베열 주소\(editViewController.originalImages)")
 

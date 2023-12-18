@@ -11,8 +11,10 @@ import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위�
 import SnapKit
 import Firebase
 import FirebaseStorage
+import SDWebImage
 
 class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource, PHPickerViewControllerDelegate {
+
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
 
@@ -61,19 +63,13 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
     var exhibitionTitle: String?
         var museumName: String?
 
+    var imageUrls: [String] = []
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         titleTextField.becomeFirstResponder()
-
-
-        // posterName 값 확인
-        if let posterName = posterName {
-            print("Poster name: \(posterName)")
-        } else {
-            print("Poster name not provided")
-        }
-
 
 
 
@@ -143,7 +139,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         configureInputAccessoryView()
 
         setupCollectionView()
-        updateCollectionViewLayout()
+//        updateCollectionViewLayout()
         collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCollectionViewCell")
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -169,7 +165,8 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
         setupNavigationTitle()
 
-        
+        updateCollectionViewLayout()
+
 
     }
 
@@ -281,17 +278,32 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
     // 컬렉션 뷰 데이터 소스 메서드
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(selectedImages.count)
         return selectedImages.count
     }
+
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else {
             fatalError("Unable to dequeue ImageCollectionViewCell")
         }
+
         let image = selectedImages[indexPath.row]
         cell.imageView.image = image
+
+        // 이미지가 셀에 할당되었는지 확인 (디버깅 용도)
+        print("Setting image for cell at index \(indexPath.row)")
+
+        // 이미지 사이즈 확인 (디버깅 용도)
+        if let imageSize = image.size as CGSize? {
+            print("Image size: \(imageSize.width)x\(imageSize.height)")
+        }
+
         return cell
     }
+
+
+
 
 
 
@@ -580,6 +592,30 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             }
         }
     }
+
+    func loadImages(from urls: [String]) {
+        print("Loading images from URLs: \(urls)") // URL 배열을 출력합니다.
+
+        urls.forEach { urlString in
+            guard let url = URL(string: urlString) else { return }
+
+            // SDWebImage를 사용하여 이미지 로드
+            SDWebImageManager.shared.loadImage(with: url, options: [], progress: nil) { [weak self] (image, _, _, _, _, _) in
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self?.selectedImages.append(image)
+                        print("이미지 로드 성공 및 배열 추가: \(url)") // 배열에 이미지 추가 확인
+                        self?.collectionView.reloadData()
+                    }
+                } else {
+                    print("이미지 로드 실패: \(url)")
+                }
+            }
+        }
+    }
+
+
+
 
     func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {
         var uploadedUrls = [String]()
