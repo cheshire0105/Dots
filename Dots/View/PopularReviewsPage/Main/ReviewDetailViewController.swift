@@ -230,22 +230,29 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     // 이미지 로드 함수
     func loadImages(from urls: [String]) {
         imageDatas.removeAll() // 기존 이미지 데이터 초기화
-        
+        let group = DispatchGroup() // URL 별로 이미지 로드 작업을 그룹화하기 위한 DispatchGroup 생성
+
         for urlString in urls {
             guard let url = URL(string: urlString) else { continue }
+            group.enter() // 작업 시작을 DispatchGroup에 알림
+
             // SDWebImage를 사용하여 이미지를 다운로드 및 캐시
             SDWebImageManager.shared.loadImage(with: url, options: [], progress: nil) { (image, data, error, cacheType, finished, imageURL) in
                 if finished, let image = image {
                     DispatchQueue.main.async {
-                        self.imageDatas.append(ImageData(url: url, image: image))
-                        self.photoCollectionView.reloadData()
-                        self.pageControl.numberOfPages = self.imageDatas.count
-                        
+                        self.imageDatas.append(ImageData(url: url, image: image)) // 순서대로 이미지 데이터 추가
                     }
                 }
+                group.leave() // 작업 완료를 DispatchGroup에 알림
             }
         }
+
+        group.notify(queue: .main) {
+            self.photoCollectionView.reloadData() // 모든 이미지 로드 작업 완료 후 컬렉션 뷰 갱신
+            self.pageControl.numberOfPages = self.imageDatas.count // 페이지 컨트롤 업데이트
+        }
     }
+
     
     
     private func adjustLayoutForPhotos() {
@@ -277,17 +284,18 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     
     
     
+    // UICollectionViewDataSource 메서드
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
+
         let imageData = imageDatas[indexPath.row]
         cell.imageView.image = imageData.image // 로드된 이미지 사용
-        
+
         return cell
     }
-    
+
     
     
     private func configureNavigationBar() {

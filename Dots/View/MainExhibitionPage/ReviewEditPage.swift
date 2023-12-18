@@ -151,8 +151,8 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         updateCollectionViewLayout()
 
         // 장기간 눌러서 드래그 앤 드롭을 활성화
-           let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
-           collectionView.addGestureRecognizer(longPressGesture)
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+        collectionView.addGestureRecognizer(longPressGesture)
 
     }
 
@@ -170,13 +170,19 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         }
     }
 
-    // 컬렉션 뷰 데이터 소스 메서드에서 아이템을 이동할 수 있게 구현
+    // 이미지 순서 변경 처리
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let movedImage = selectedImages.remove(at: sourceIndexPath.item)
         selectedImages.insert(movedImage, at: destinationIndexPath.item)
-        // 셀의 인덱스 재정렬
-          collectionView.reloadData()
+        collectionView.reloadData()
+
+        // 순서 변경 로그 출력
+        print("이미지 이동됨: \(sourceIndexPath.item) 에서 \(destinationIndexPath.item) 으로")
     }
+
+
+
+    
 
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
@@ -196,7 +202,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         }
     }
 
-    
+
 
 
 
@@ -525,11 +531,11 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
     // UIImagePickerControllerDelegate 메서드
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        // 선택한 사진을 처리합니다.
         if let image = info[.originalImage] as? UIImage {
+            // 선택된 이미지를 배열에 추가
             selectedImages.append(image)
             collectionView.reloadData()
-            updateCollectionViewLayout() // 컬렉션 뷰 레이아웃 업데이트
+            updateCollectionViewLayout() // 레이아웃 업데이트
         }
         picker.dismiss(animated: true, completion: nil)
     }
@@ -596,43 +602,30 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
               let title = titleTextField.text, !title.isEmpty,
               let content = contentTextView.text, !content.isEmpty else {
             print("필요한 정보가 부족합니다.")
-            print("UserID: \(Auth.auth().currentUser?.uid ?? "nil")")
-            print("PosterName: \(posterName ?? "nil")")
-            print("Title: \(titleTextField.text ?? "nil")")
-            print("Content: \(contentTextView.text ?? "nil")")
-
             return
         }
 
-        let reviewData: [String: Any] = [
-            "userId": userId, // 현재 로그인한 사용자의 ID를 추가
+        // 이미지 업로드를 먼저 수행
+        uploadImages(userId: userId, posterName: posterName) { [weak self] uploadedUrls in
+            // 업로드된 이미지 URL들을 사용하여 Firestore 문서를 업데이트
+            let reviewData: [String: Any] = [
+                "userId": userId,
+                "title": title,
+                "content": content,
+                "createdAt": FieldValue.serverTimestamp(),
+                "images": uploadedUrls // 업로드된 이미지 URL 배열 사용
+            ]
 
-            "title": title,
-            "content": content,
-            "createdAt": FieldValue.serverTimestamp(), // 현재 시간
-            // 필요한 추가 데이터
-        ]
+            let docRef = Firestore.firestore().collection("posters").document(posterName)
+                .collection("reviews").document(userId)
 
-        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에 리뷰 저장, 문서 ID는 유저의 UUID로 설정
-        let docRef = Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").document(userId)
-
-
-        docRef.setData(reviewData) { [weak self] error in
-            if let error = error {
-                print("Error writing document: \(error)")
-            } else {
-                // 이미지 업로드 후, 결과 URL을 가져와 Firestore 문서에 업데이트
-                self?.uploadImages(userId: userId, posterName: posterName) { urls in
-                    docRef.updateData(["images": urls]) { error in
-                        if let error = error {
-                            print("Error updating document: \(error)")
-                        } else {
-                            self?.delegate?.didSubmitReview()
-                        }
-                    }
+            docRef.setData(reviewData) { error in
+                if let error = error {
+                    print("Error writing document: \(error)")
+                } else {
+                    self?.delegate?.didSubmitReview()
+                    self?.dismiss(animated: true, completion: nil)
                 }
-                self?.dismiss(animated: true, completion: nil)
             }
         }
     }
@@ -661,6 +654,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
 
 
+    // 이미지를 업로드하고 URL 배열을 반환하는 함수
     func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {
         var uploadedUrls = [String]()
         let uploadGroup = DispatchGroup()
@@ -676,8 +670,8 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
 
             storageRef.putData(imageData, metadata: nil) { metadata, error in
-                guard let metadata = metadata else {
-                    print("Error uploading image: \(error?.localizedDescription ?? "")")
+                guard metadata != nil else {
+                    print("이미지 업로드 실패: \(error?.localizedDescription ?? "")")
                     uploadGroup.leave()
                     return
                 }
@@ -685,8 +679,6 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
                 storageRef.downloadURL { (url, error) in
                     if let downloadURL = url {
                         uploadedUrls.append(downloadURL.absoluteString)
-                    } else {
-                        print("Error getting download URL: \(error?.localizedDescription ?? "")")
                     }
                     uploadGroup.leave()
                 }
@@ -697,6 +689,8 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             completion(uploadedUrls)
         }
     }
+
+
 
 
     func addImageUrlToFirestore(userId: String, posterName: String, imageUrl: String) {
