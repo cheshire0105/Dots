@@ -15,24 +15,6 @@ import SDWebImage
 
 class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource, PHPickerViewControllerDelegate {
 
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
-
-        selectedImages.removeAll() // 기존 이미지를 제거합니다.
-
-        for result in results {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
-                if let image = object as? UIImage {
-                    DispatchQueue.main.async {
-                        self.selectedImages.append(image)
-                        self.collectionView.reloadData()
-                        self.updateCollectionViewLayout() // 레이아웃 업데이트 호출
-                    }
-                }
-            }
-        }
-    }
-
 
     // 텍스트 필드 속성 정의
     let titleTextField = UITextField()
@@ -166,9 +148,66 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         setupNavigationTitle()
 
         updateCollectionViewLayout()
+        loadExistingImages()
 
+        // 장기간 눌러서 드래그 앤 드롭을 활성화
+           let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+           collectionView.addGestureRecognizer(longPressGesture)
 
     }
+
+    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { return }
+            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
+
+    // 컬렉션 뷰 데이터 소스 메서드에서 아이템을 이동할 수 있게 구현
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedImage = selectedImages.remove(at: sourceIndexPath.item)
+        selectedImages.insert(movedImage, at: destinationIndexPath.item)
+    }
+
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+
+        for result in results {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
+                if let image = object as? UIImage {
+                    DispatchQueue.main.async {
+                        // 중복 확인 로직을 적용하거나, 간단히 모든 이미지 추가
+                        self.selectedImages.append(image)
+                        self.collectionView.reloadData()
+                        self.updateCollectionViewLayout() // 레이아웃 업데이트 호출
+                    }
+                }
+            }
+        }
+    }
+
+
+    func loadExistingImages() {
+        imageUrls.forEach { urlString in
+            guard let url = URL(string: urlString) else { return }
+            SDWebImageManager.shared.loadImage(with: url, options: [], progress: nil) { [weak self] (image, _, _, _, _, _) in
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self?.selectedImages.append(image)
+                        self?.collectionView.reloadData()
+                    }
+                }
+            }
+        }
+    }
+
 
     private func setupNavigationTitle() {
         // 네비게이션 타이틀 및 서브타이틀 설정
