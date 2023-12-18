@@ -493,7 +493,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
     @objc func presentInfoModal() {
         let detailViewController = DetailViewController()
-        detailViewController.posterImageName = self.posterImageName // 포스터 이름 설정
+        detailViewController.posterImageName = self.posterImageName // 포스터 이름을 전달합니다.
 
         // DetailViewController의 presentationController 설정
         if let sheetController = detailViewController.presentationController as? UISheetPresentationController {

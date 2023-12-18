@@ -47,7 +47,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     private let nameLabel = UILabel()
     private let timeLabel = UILabel()
     
-    
+    var posterName: String? // 추가된 프로퍼티
+
     
     // 새로운 컴포넌트 선언
     let additionalImageView1 = UIImageView()
@@ -76,6 +77,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+        print("리뷰 디테일 페이지의 posterName\(self.posterName)")
         //        loadImages() // 이미지 로드
         setupPageControl()  // 이 부분을 확인
         
@@ -107,7 +109,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             contentLabel.text = reviewData.content
             // profileImageView에 이미지 로드 (예: URL에서 이미지를 로드하는 경우)
             // 리뷰에 사진이 없는 경우
-            print("포스터 이름: \(reviewData.posterName ?? "nil")")
+            print("포스터 이름: \(self.posterName ?? "nil")")
 
             if reviewData.photoUrls.isEmpty {
                 photoCollectionView.isHidden = true
@@ -354,7 +356,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         // 기존 리뷰 데이터 전달
             editViewController.originalTitle = reviewData.title
             editViewController.originalContent = reviewData.content
-            editViewController.posterName = reviewData.posterName
+            editViewController.posterName = self.posterName
             editViewController.exhibitionTitle = exhibitionTitle // 전시 제목 전달
             editViewController.museumName = museumName // 뮤지엄 이름 전달
 

@@ -522,7 +522,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
             textView.text = "자유롭게 후기를 작성해주세요."
-            textView.textColor = .lightGray
+            textView.textColor = .white
         }
     }
 
@@ -544,7 +544,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
         view.addSubview(textView)
         textView.backgroundColor = .black
 
-        textView.textColor = .lightGray // placeholder 처럼 보이게 하려면 색상을 조절하세요
+        textView.textColor = .white // placeholder 처럼 보이게 하려면 색상을 조절하세요
         textView.font = UIFont.systemFont(ofSize: fontSize)
         textView.text = text
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 10)

@@ -53,7 +53,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 //       }
     let refreshControl = UIRefreshControl() // 새로고침 컨트롤 생성
 
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadReviews()
@@ -753,9 +753,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         detailViewController.review = selectedReview
         detailViewController.museumName = exhibitionTitleLabel.text
         detailViewController.exhibitionTitle = exhibitionTitle
-
         // 이미지 URL 배열을 전달합니다.
         detailViewController.imageUrls = selectedReview.photoUrls
+
+        // 여기에 posterName 값을 추가합니다.
+            detailViewController.posterName = self.posterImageName
+        print("detailViewController.posterName의 정보 \(String(describing: detailViewController.posterName))")
 
         let navigationController = UINavigationController(rootViewController: detailViewController)
         navigationController.modalPresentationStyle = .fullScreen
