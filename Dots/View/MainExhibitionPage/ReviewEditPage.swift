@@ -299,6 +299,10 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             print("Image size: \(imageSize.width)x\(imageSize.height)")
         }
 
+        cell.deleteButton.tag = indexPath.row
+        cell.deleteButton.addTarget(self, action: #selector(deleteImage(_:)), for: .touchUpInside)
+
+
         return cell
     }
 
