@@ -660,57 +660,48 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     }
 
     private func setupAlertView() {
+
+        mapAlertView.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
         mapAlertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(310)
-            make.height.equalTo(200)
+            make.height.equalTo(180)
         }
+
 
         // "공유" 타이틀 레이블 생성 및 설정
         let titleLabel = UILabel()
-        titleLabel.text = "공유"
-        titleLabel.textColor = .black
-        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 18)
-        titleLabel.textAlignment = .center
+        titleLabel.text = "전시를 공유할까요?"
+        titleLabel.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
+        titleLabel.font = UIFont(name: "Pretendard-SemiBold", size: 18)
 
         mapAlertView.addSubview(titleLabel)
 
         // 타이틀 레이블의 제약 조건 설정
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(mapAlertView.snp.top).offset(20)
-            make.left.right.equalTo(mapAlertView).inset(10)
+            make.left.equalTo(mapAlertView).inset(24)
+        }
+
+        // "공유" 타이틀 레이블 생성 및 설정
+        let titleLabelTwo = UILabel()
+        titleLabelTwo.text = "함께 하고 싶은 친구에게 전시정보를 공유해보세요."
+        titleLabelTwo.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
+        titleLabelTwo.font = UIFont(name: "Pretendard-Regular", size: 16)
+        titleLabelTwo.numberOfLines = 2
+        titleLabelTwo.lineBreakMode = .byCharWrapping // 단어 단위로 줄 바꿈 설정
+
+
+        mapAlertView.addSubview(titleLabelTwo)
+
+        // 타이틀 레이블의 제약 조건 설정
+        titleLabelTwo.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.leading.equalTo(mapAlertView.snp.leading).inset(24)
+            make.trailing.equalTo(mapAlertView.snp.trailing).inset(24)
         }
 
 
-
-        // 새로운 뷰 생성 및 설정
-        let newView = UIView()
-        newView.layer.backgroundColor = UIColor(red: 0.736, green: 0.832, blue: 0.018, alpha: 1).cgColor
-        newView.layer.cornerRadius = 5
-
-        mapAlertView.addSubview(newView)
-
-        // 새로운 뷰의 제약 조건 설정
-        newView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().inset(20)
-            make.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(60)
-        }
-
-        // 새로운 뷰에 이미지 뷰 추가
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit // 콘텐츠 모드 설정
-        imageView.image = UIImage(named: "tabler_link") // 이미지 설정
-
-        newView.addSubview(imageView)
-
-        // 이미지 뷰의 제약 조건 설정
-        imageView.snp.makeConstraints { make in
-            make.left.equalTo(newView.snp.left).offset(17) // 왼쪽 여백 설정
-            make.centerY.equalTo(newView.snp.centerY) // 세로 중앙 정렬
-            make.width.height.equalTo(20) // 이미지 뷰의 크기 설정
-        }
 
 
         // 딥 링크 URL 생성
@@ -721,7 +712,6 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         deepLinkLabel.text = deepLink
         deepLinkLabel.textColor = .black
         deepLinkLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-        deepLinkLabel.textAlignment = .center
         deepLinkLabel.numberOfLines = 0
         deepLinkLabel.isUserInteractionEnabled = true // 사용자 상호작용 활성화
 
@@ -731,8 +721,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         let confirmButton = UIButton()
         confirmButton.setTitle("공유 하기", for: .normal)
         confirmButton.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        confirmButton.backgroundColor = .black
-        confirmButton.setTitleColor(.white, for: .normal)
+        confirmButton.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        confirmButton.setTitleColor(.black, for: .normal)
         confirmButton.layer.cornerRadius = 20 // 모서리 둥글게
         confirmButton.addTarget(self, action: #selector(shareDeepLink), for: .touchUpInside)
 
@@ -741,18 +731,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         mapAlertView.addSubview(confirmButton)
 
-//        confirmButton.snp.makeConstraints { make in
-//            make.top.equalTo(newView.snp.bottom).offset(20)
-//            make.leading.trailing.equalToSuperview().inset(50)
-//            make.height.equalTo(40)
-//        }
-//
-//
-//        deepLinkLabel.snp.makeConstraints { make in
-//            make.left.equalTo(imageView.snp.right).offset(20) // 이미지 뷰 오른쪽에 여백을 두고 배치
-//            make.centerY.equalTo(newView.snp.centerY)
-//            make.right.lessThanOrEqualTo(newView.snp.right).offset(-12) // 오른쪽 여백 설정
-//        }
+        confirmButton.snp.makeConstraints { make in
+            make.top.equalTo(titleLabelTwo.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(50)
+            make.height.equalTo(40)
+        }
+
     }
 
     @objc private func shareDeepLink() {
