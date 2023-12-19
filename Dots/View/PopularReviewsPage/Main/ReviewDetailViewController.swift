@@ -149,7 +149,27 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
     }
-    
+
+    func sortImageUrls(_ urls: [String]) -> [String] {
+        return urls.sorted { url1, url2 in
+            // 순서 번호 추출 로직
+            let order1 = extractOrderFromUrl(url1)
+            let order2 = extractOrderFromUrl(url2)
+            return order1 < order2
+        }
+    }
+
+    func extractOrderFromUrl(_ url: String) -> Int {
+        // URL에서 순서 번호 추출 로직
+        // 예: "DvI2_0.jpg"에서 0 추출
+        let components = url.components(separatedBy: "_")
+        if components.count > 1 {
+            return Int(components[1].split(separator: ".").first ?? "0") ?? 0
+        }
+        return 0
+    }
+
+
     private func setupRightNavigationButton() {
         let rightButtonImage = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 2")
         let rightButton = UIBarButtonItem(image: rightButtonImage, style: .plain, target: self, action: nil)
@@ -229,10 +249,12 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     
     // 이미지 로드 함수
     func loadImages(from urls: [String]) {
+        let sortedUrls = sortImageUrls(imageUrls)
+
         imageDatas.removeAll() // 기존 이미지 데이터 초기화
         let group = DispatchGroup() // URL 별로 이미지 로드 작업을 그룹화하기 위한 DispatchGroup 생성
 
-        for urlString in urls {
+        for urlString in sortedUrls {
             guard let url = URL(string: urlString) else { continue }
             group.enter() // 작업 시작을 DispatchGroup에 알림
 

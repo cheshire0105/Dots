@@ -605,6 +605,9 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             return
         }
 
+        // 현재 선택된 이미지 배열 상태 확인
+        print("업로드할 이미지 배열: \(selectedImages)")
+
         // 이미지 업로드를 먼저 수행
         uploadImages(userId: userId, posterName: posterName) { [weak self] uploadedUrls in
             // 업로드된 이미지 URL들을 사용하여 Firestore 문서를 업데이트
@@ -629,6 +632,7 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             }
         }
     }
+
 
     func loadImages(from urls: [String]) {
         print("Loading images from URLs: \(urls)") // URL 배열을 출력합니다.
