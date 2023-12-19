@@ -4,6 +4,8 @@ import FirebaseFirestore
 import GoogleSignIn
 import FirebaseCore
 import SnapKit
+import Toast_Swift
+
 
 class 로그인_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
     var 활성화된텍스트필드: UITextField?
@@ -235,13 +237,29 @@ extension 로그인_뷰컨트롤러 {
             guard let self = self else { return }
             
             if let 로그인_실패 = 에러 {
+//                print("로그인 실패: \(로그인_실패.localizedDescription)")
+//                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: """
+//입력을 하지않았거나
+//기입 정보와 일치하는 계정이없습니다.
+//""", presentingViewController: self)
                 print("로그인 실패: \(로그인_실패.localizedDescription)")
-                알럿센터.알럿_메시지.경고_알럿(알럿_메세지: """
-입력을 하지않았거나
-기입 정보와 일치하는 계정이없습니다.
-""", presentingViewController: self)
+                var 토스트 = ToastStyle()
+
+                토스트.backgroundColor = UIColor(red: 1, green: 0.269, blue: 0.269, alpha: 1)
+                토스트.messageColor = .black
+                토스트.cornerRadius = 20
+
+                self.view.makeToast(
+                    " 회원님의 이메일 비밀번호 정보를 확인해주세요 ",
+                    duration: 2.5,
+                    position: .top,
+                    style: 토스트
+
+                    )
+
             } else {
                 print("로그인 성공")
+              
                 let 파이어스토어 = Firestore.firestore()
                 파이어스토어.collection("유저_데이터_관리").whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (컬렉션, 에러) in
                     guard let self = self else { return }
@@ -291,11 +309,33 @@ extension 로그인_뷰컨트롤러 {
                         }
                     } else {
                         print("Firestore: 이미 로그인된 상태입니다.")
-                        알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "타 기기에 이미 로그인되어있는 계정입니다.", presentingViewController: self)
+//                        알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "타 기기에 이미 로그인되어있는 계정입니다.", presentingViewController: self)  var 토스트 = ToastStyle()
+                        var 토스트 = ToastStyle()
+                        토스트.backgroundColor = UIColor(red: 1, green: 0.269, blue: 0.269, alpha: 1)
+                        토스트.messageColor = .black
+                        토스트.cornerRadius = 20
+
+                        self.view.makeToast(
+                            " 타 기기에 이미 로그인되어있는 계정입니다. ",
+                            duration: 2.5,
+                            position: .top,
+                            style: 토스트
+                            )
                     }
                 } else {
                     print("Firestore: 등록된 계정이 없습니다.")
-                    알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "등록된 계정이 없습니다.", presentingViewController: self)
+//                    알럿센터.알럿_메시지.경고_알럿(알럿_메세지: "등록된 계정이 없습니다.", presentingViewController: self)
+                    var 토스트 = ToastStyle()
+                    토스트.backgroundColor = UIColor(red: 1, green: 0.269, blue: 0.269, alpha: 1)
+                    토스트.messageColor = .black
+                    토스트.cornerRadius = 20
+
+                    self.view.makeToast(
+                        " 등록된 계정이 없습니다. ",
+                        duration: 2.5,
+                        position: .top,
+                        style: 토스트
+                        )
                 }
             }
         }
