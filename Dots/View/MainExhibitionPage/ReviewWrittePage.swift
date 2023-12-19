@@ -515,26 +515,23 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         }
 
         let reviewData: [String: Any] = [
-            "userId": userId, // 현재 로그인한 사용자의 ID를 추가
-
             "title": title,
             "content": content,
             "createdAt": FieldValue.serverTimestamp(), // 현재 시간
             // 필요한 추가 데이터
         ]
 
-        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에 리뷰 저장, 문서 ID는 유저의 UUID로 설정
+        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에서 문서를 업데이트, 문서 ID는 유저의 UUID로 설정
         let docRef = Firestore.firestore().collection("posters").document(posterName)
             .collection("reviews").document(userId)
 
-
-        docRef.setData(reviewData) { [weak self] error in
+        docRef.updateData(reviewData) { [weak self] error in
             if let error = error {
-                print("Error writing document: \(error)")
+                print("Error updating document: \(error)")
             } else {
                 // 이미지 업로드 후, 결과 URL을 가져와 Firestore 문서에 업데이트
                 self?.uploadImages(userId: userId, posterName: posterName) { urls in
-                    docRef.updateData(["images": urls]) { error in
+                    docRef.updateData(["images": FieldValue.arrayUnion(urls)]) { error in
                         if let error = error {
                             print("Error updating document: \(error)")
                         } else {

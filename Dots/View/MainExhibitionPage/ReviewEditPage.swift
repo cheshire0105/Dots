@@ -620,16 +620,16 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             ]
 
             let docRef = Firestore.firestore().collection("posters").document(posterName)
-                .collection("reviews").document(userId)
+                       .collection("reviews").document(userId)
 
-            docRef.setData(reviewData) { error in
-                if let error = error {
-                    print("Error writing document: \(error)")
-                } else {
-                    self?.delegate?.didSubmitReview()
-                    self?.dismiss(animated: true, completion: nil)
-                }
-            }
+                   docRef.updateData(reviewData) { error in
+                       if let error = error {
+                           print("Error updating document: \(error)")
+                       } else {
+                           self?.delegate?.didSubmitReview()
+                           self?.dismiss(animated: true, completion: nil)
+                       }
+                   }
         }
     }
 
