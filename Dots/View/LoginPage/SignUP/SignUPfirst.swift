@@ -263,6 +263,9 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     @objc func 이메일_리프레쉬_클릭() {
         회원가입_이메일_텍스트필드.text = ""
         회원가입_중복확인_버튼.setTitle("중복확인", for: .selected)
+        이메일_리프레쉬.isHidden = true
+        self.회원가입_이메일_텍스트필드.isEnabled = true
+
     }
     
     
@@ -305,7 +308,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
                         self.회원가입_중복확인_버튼.setTitle("재확인", for: .selected)
                         self.이메일_백.layer.borderColor = UIColor.red.cgColor
                     } else {
-                      
+                        self.회원가입_이메일_텍스트필드.isEnabled = false
                         self.회원가입_회원가입_버튼.isEnabled = true
                         self.회원가입_회원가입_버튼.isUserInteractionEnabled = true
                         self.회원가입_회원가입_버튼.setTitle("회원가입", for: .selected)
