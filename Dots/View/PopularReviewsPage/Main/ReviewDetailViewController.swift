@@ -13,6 +13,7 @@ import SDWebImage
 import Firebase
 import FirebaseFirestore
 import FirebaseAuth
+import FirebaseStorage
 
 
 struct ImageData {
@@ -213,9 +214,10 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             self?.editReviewButtonTapped()
         }
         // 삭제 액션
-        let deleteAction = UIAction(title: "삭제하기", image: UIImage(systemName: "trash")) { action in
-            // 삭제 로직
+        let deleteAction = UIAction(title: "삭제하기", image: UIImage(systemName: "trash")) { [weak self] action in
+            self?.deleteReview()
         }
+
         return UIMenu(title: "", children: [modifyAction, deleteAction])
     }
 
@@ -250,7 +252,56 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         //            make.top.equalTo(photoCollectionView.snp.bottom).offset(10)
         //        }
     }
-    
+
+    // 리뷰 삭제 메서드
+    func deleteReview() {
+        guard let userId = Auth.auth().currentUser?.uid,
+              let posterName = posterName, !posterName.isEmpty else {
+            print("필요한 정보가 부족합니다.")
+            return
+        }
+        // Firestore에서 리뷰 데이터 삭제
+        let db = Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").document(userId).delete() { [weak self] error in
+            if let error = error {
+                print("Error removing review: \(error)")
+            } else {
+                print("Review successfully removed")
+                self?.deleteImagesFromStorage(userId: userId, posterName: posterName) // 이미지 삭제 메서드 호출
+            }
+        }
+    }
+
+
+    // Firebase Storage에서 이미지 삭제 메서드
+    func deleteImagesFromStorage(userId: String, posterName: String) {
+        let storage = Storage.storage()
+
+        for (index, _) in selectedImages.enumerated() {
+            let imageName = "\(userId)_\(index).jpg"
+            let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
+
+            storageRef.delete { error in
+                if let error = error {
+                    print("Error deleting image: \(error)")
+                } else {
+                    print("Image successfully deleted")
+                }
+            }
+        }
+        // 리뷰 삭제 후 UI 업데이트 또는 이전 화면으로 돌아가기
+        updateUIAfterDeletion()
+    }
+
+    // 삭제 후 UI 업데이트 메서드
+    func updateUIAfterDeletion() {
+        // 모달 뷰 컨트롤러를 닫고 이전 화면으로 돌아가는 로직
+        self.dismiss(animated: true, completion: nil)
+    }
+
+
+
+
     // 이미지 로드 함수
     func loadImages(from urls: [String]) {
         let sortedUrls = sortImageUrls(imageUrls)
