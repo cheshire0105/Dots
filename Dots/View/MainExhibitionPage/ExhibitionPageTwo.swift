@@ -125,7 +125,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         label.text = "언제 다녀오셨나요?"
         label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
-        label.textAlignment = .center
+//        label.textAlignment = .center
         return label
     }()
 
@@ -134,7 +134,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         label.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
         label.textColor = UIColor(red: 0.757, green: 0.753, blue: 0.773, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 14)
-        label.textAlignment = .center
+//        label.textAlignment = .center
         label.numberOfLines = 0
         return label
     }()
@@ -804,7 +804,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
         alertTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(customAlertView.snp.top).offset(20)
-            make.left.right.equalTo(customAlertView).inset(10)
+            make.left.right.equalTo(customAlertView).inset(30)
         }
 
         alertSubtitleLabel.snp.makeConstraints { make in
