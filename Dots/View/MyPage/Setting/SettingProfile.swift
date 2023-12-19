@@ -1,4 +1,5 @@
 import UIKit
+import Toast_Swift
 import SnapKit
 import Firebase
 import GoogleSignIn
@@ -9,7 +10,7 @@ import FirebaseStorage
 class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     var 활성화된텍스트필드: UITextField?
     var imageURL: URL?
-
+    
     
     private let 뒤로가기_버튼 = {
         let button = UIButton()
@@ -102,7 +103,7 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate,
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
         tabBarController?.tabBar.isHidden = true
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         if let 제공업체 = Auth.auth().currentUser?.providerData {
@@ -115,7 +116,7 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate,
             }
         }
         캐시된_유저_데이터_마이페이지_적용하기()
-  
+        
         
         UI레이아웃()
         버튼_클릭()
@@ -160,17 +161,17 @@ extension 프로필변경_화면 {
     @objc private func 변경_버튼_클릭() {
         guard let email = Auth.auth().currentUser?.email,
               let newNickname = 새_닉네임_텍스트필드.text else {
-                print("현재 로그인된 이메일 또는 새 닉네임을 가져올 수 없습니다.")
-                return
+            print("현재 로그인된 이메일 또는 새 닉네임을 가져올 수 없습니다.")
+            return
         }
-
+        
         if let 제공업체 = Auth.auth().currentUser?.providerData {
             for 유저정보 in 제공업체 {
                 if 유저정보.providerID == "password" {
-               
+                    
                     print("도트회원 조회완료")
                     
-        
+                    
                     guard let image = 새_프로필_이미지_버튼.image(for: .selected) else {
                         print("프로필 이미지가 선택되지 않았습니다.")
                         return
@@ -197,13 +198,30 @@ extension 프로필변경_화면 {
                                     let 업데이트필드: [String: Any] = ["프로필이미지URL": url.absoluteString,
                                                                  "닉네임": newNickname
                                     ]
-                                        
-                                 
+                                    
+                                    
                                     유저컬렉션.document(문서UID).updateData(업데이트필드) { 에러 in
                                         if let 에러 = 에러 {
                                             print("유저_데이터_관리에서 문서 업데이트 에러: \(에러.localizedDescription)")
                                         } else {
                                             print("프로필 이미지 URL 및 닉네임 업데이트 성공")
+                                            var 토스트 = 마이페이지_설정_페이지()
+                                            DispatchQueue.main.async {
+                                                var 토스트 = ToastStyle()
+                                                토스트.backgroundColor = UIColor(named: "neon") ?? UIColor.white
+                                                토스트.messageColor = .black
+                                                토스트.cornerRadius = 20
+                                                
+                                                self.view.makeToast(
+                                                    " 회원님의 프로필이 업데이트 되었습니다. ",
+                                                    duration: 2.5,
+                                                    position: .top,
+                                                    style: 토스트
+                                                )
+                                            }
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                                self.navigationController?.popViewController(animated: true)
+                                            }
                                         }
                                     }
                                 }
@@ -216,7 +234,7 @@ extension 프로필변경_화면 {
             }
         }
     }
-
+    
     
     
     private func 이미지_업로드(_ 이미지: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
@@ -320,11 +338,11 @@ extension 프로필변경_화면{
             make.height.equalTo(44)
         }
         구분선.snp.makeConstraints { make in
-//            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
+            //            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
             make.bottom.equalTo(변경_버튼.snp.top).offset(-20)
         }
         변경_버튼.snp.makeConstraints { make in
-//            make.top.equalTo(구분선.snp.bottom).offset(15)
+            //            make.top.equalTo(구분선.snp.bottom).offset(15)
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(32)
             make.width.equalTo(74)
@@ -402,44 +420,44 @@ extension 프로필변경_화면 {
 extension 프로필변경_화면 {
     
     private func 현재_유저_프로필이미지_적용하기() {
-            guard let 현재접속중인유저 = Auth.auth().currentUser else {
-                return
-            }
-
+        guard let 현재접속중인유저 = Auth.auth().currentUser else {
+            return
+        }
+        
         let 파이어스토어 = Firestore.firestore()
         let 이메일 = 현재접속중인유저.email ?? ""
         let 유저컬렉션: CollectionReference
-
+        
         if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
             유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         } else {
             유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
         }
-
-            유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in
-                guard let self = self, let documents = querySnapshot?.documents, error == nil else {
-                    print("컬렉션 조회 실패")
-                    return
-                }
-
-                if let userDocument = documents.first {
-                    let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
-                    let 닉네임 = userDocument["닉네임"] as? String ?? ""
-
-
-                    DispatchQueue.main.async {
-                        if let url = URL(string: 프로필이미지URL) {
-                            self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
-                            self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .selected, completed: nil)
-                        }
-                        self.새_닉네임_텍스트필드.text = 닉네임
-
-
-                    
+        
+        유저컬렉션.whereField("이메일", isEqualTo: 현재접속중인유저.email ?? "").getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self, let documents = querySnapshot?.documents, error == nil else {
+                print("컬렉션 조회 실패")
+                return
+            }
+            
+            if let userDocument = documents.first {
+                let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
+                let 닉네임 = userDocument["닉네임"] as? String ?? ""
+                
+                
+                DispatchQueue.main.async {
+                    if let url = URL(string: 프로필이미지URL) {
+                        self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
+                        self.새_프로필_이미지_버튼.sd_setImage(with: url, for: .selected, completed: nil)
                     }
+                    self.새_닉네임_텍스트필드.text = 닉네임
+                    
+                    
+                    
                 }
             }
         }
+    }
     private func 캐시된_유저_데이터_마이페이지_적용하기() {
         var 닉네임_캐싱: String?
         var 이메일_캐싱: String?
@@ -472,7 +490,7 @@ extension 프로필변경_화면 {
                 let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
                 let 닉네임 = userDocument["닉네임"] as? String ?? ""
                 let 이메일 = userDocument["이메일"] as? String ?? ""
-                            
+                
                 닉네임_캐싱 = 닉네임
                 이메일_캐싱 = 이메일
                 

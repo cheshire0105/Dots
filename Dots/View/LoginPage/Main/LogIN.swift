@@ -254,7 +254,6 @@ extension 로그인_뷰컨트롤러 {
                     duration: 2.5,
                     position: .top,
                     style: 토스트
-
                     )
 
             } else {

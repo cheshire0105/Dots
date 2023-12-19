@@ -329,19 +329,12 @@ extension 회원가입_첫번째_뷰컨트롤러 {
                         self.회원가입_중복확인_버튼.isUserInteractionEnabled = false
                         self.이메일_백.layer.borderColor = UIColor(named: "neon")?.cgColor
                         self.이메일_리프레쉬.isHidden = false
-
-
-
                     }
                 }
             }
         }
     }
-    
-    
 }
-
-
 // 회원가입 유저 정보 업로드 관련
 extension 회원가입_첫번째_뷰컨트롤러 {
     
