@@ -362,7 +362,7 @@ extension Mypage {
         let 설정_이동 = 마이페이지_설정_페이지()
         self.navigationController?.pushViewController(설정_이동, animated: false)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     
@@ -370,28 +370,28 @@ extension Mypage {
         let 알림_이동 = 마이페이지_알림()
         self.navigationController?.pushViewController(알림_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     @objc func 마이페이지_전시_버튼_클릭 () {
         let 전시_이동 = 마이페이지_전시()
         self.navigationController?.pushViewController(전시_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     @objc func 마이페이지_후기_버튼_클릭 () {
         let 후기_이동 = 마이페이지_리뷰()
         self.navigationController?.pushViewController(후기_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     @objc func 마이페이지_보관함_버튼_클릭 () {
         let 보관함_이동 = 마이페이지_보관함()
         self.navigationController?.pushViewController(보관함_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     
