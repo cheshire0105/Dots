@@ -395,7 +395,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     func loadPopularExhibitions() {
         Firestore.firestore().collection("posters")
-            .order(by: "visits", descending: false) // 'visits'에 따라 내림차순 정렬
+            .order(by: "visits", descending: true) // 'visits'에 따라 내림차순 정렬
             .limit(to: 1000)
             .getDocuments { [weak self] (snapshot, error) in
                 guard let self = self else { return }
@@ -407,42 +407,32 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
                 guard let snapshot = snapshot else { return }
 
-                var loadedExhibitions: [ExhibitionModel] = []
-                let group = DispatchGroup()
+                let dispatchGroup = DispatchGroup() // 모든 세부 정보 로드가 완료될 때까지 기다리기 위한 그룹
 
+                var loadedExhibitions: [(exhibition: ExhibitionModel, visits: Int)] = []
                 for document in snapshot.documents {
-                    group.enter()
+                    dispatchGroup.enter() // 그룹에 작업 추가
                     let posterDocumentId = document.documentID
                     let visits = document.data()["visits"] as? Int ?? 0 // 'visits' 값 추출
 
-                    print("Document ID: \(posterDocumentId), Visits: \(visits)") // 'visits' 값 출력
-
                     Firestore.firestore().collection("전시_상세").document(posterDocumentId).getDocument { (detailDocument, error) in
-                        defer { group.leave() }
+                        defer { dispatchGroup.leave() } // 작업이 끝날 때 그룹에서 제거
 
                         if let detailDocument = detailDocument, let data = detailDocument.data() {
                             let exhibition = ExhibitionModel(dictionary: data)
-                            loadedExhibitions.append(exhibition)
+                            loadedExhibitions.append((exhibition: exhibition, visits: visits))
                         } else {
                             print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
                         }
                     }
                 }
 
-                group.notify(queue: .main) {
-                    // 'visits' 필드에 따라 내림차순으로 정렬
-                    self.thirdSectionExhibitions = loadedExhibitions.sorted { $0.visits > $1.visits }
-
-                    // 정렬된 배열의 내용을 출력
-                    print("정렬된 전시회 목록:")
-                    for exhibition in self.thirdSectionExhibitions {
-                        print("전시: \(exhibition.title)")
-                    }
-
+                dispatchGroup.notify(queue: .main) {
+                    // 모든 세부 정보가 로드되면, 'visits' 값에 따라 내림차순으로 정렬
+                    self.thirdSectionExhibitions = loadedExhibitions.sorted { $0.visits > $1.visits }.map { $0.exhibition }
                     self.MainExhibitionCollectionView.reloadData()
                 }
             }
-
     }
 
 
