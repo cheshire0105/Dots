@@ -1115,14 +1115,14 @@ class ReviewTableViewCell: UITableViewCell {
     // UI 컴포넌트 선언
     private lazy var nickNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Bold", size: 12)
+        label.font = UIFont(name: "Pretendard-Bold", size: 14)
         label.textColor = .white
         return label
     }()
 
     private lazy var contentLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 12)
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
         label.textColor = .white
         label.numberOfLines = 3 // 멀티라인을 허용합니다.
         return label
@@ -1138,7 +1138,7 @@ class ReviewTableViewCell: UITableViewCell {
 
     private lazy var timeLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Bold", size: 10)
+        label.font = UIFont(name: "Pretendard-Bold", size: 12)
         label.textColor = .white
         return label
     }()
@@ -1168,15 +1168,15 @@ class ReviewTableViewCell: UITableViewCell {
 
     private lazy var likeCount: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 10)
-        label.textColor = .white
+        label.font = UIFont(name: "Pretendard-Regular", size: 12)
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
         return label
     }()
 
     private lazy var viewCount: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 10)
-        label.textColor = .white
+        label.font = UIFont(name: "Pretendard-Regular", size: 12)
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
         return label
     }()
 
@@ -1271,8 +1271,8 @@ class ReviewTableViewCell: UITableViewCell {
         extraImageView1.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(15)
             make.left.equalToSuperview().offset(10)
-            make.width.equalTo(11.82)
-            make.height.equalTo(10) // 원하는 크기로 조정
+            make.width.equalTo(13.82)
+            make.height.equalTo(12) // 원하는 크기로 조정
             make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
 
         }
@@ -1281,7 +1281,7 @@ class ReviewTableViewCell: UITableViewCell {
         extraImageView2.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(13)
             make.left.equalTo(likeCount.snp.right).offset(10)
-            make.width.height.equalTo(15) // 원하는 크기로 조정
+            make.width.height.equalTo(17) // 원하는 크기로 조정
         }
 
         // label123 레이아웃 설정
