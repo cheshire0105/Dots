@@ -81,8 +81,10 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         //        loadImages() // 이미지 로드
         setupPageControl()  // 이 부분을 확인
         
-        loadImages(from: imageUrls)
-        
+        // 이미지 URL 배열을 정렬하고, 정렬된 배열로 이미지를 로드합니다.
+           let sortedUrls = sortImageUrls(imageUrls)
+           loadImages(from: sortedUrls)
+
         
         setupNavigationBackButton()
         setupNavigationTitleAndSubtitle() // 변경된 메서드 호출
@@ -160,13 +162,11 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     }
 
     func extractOrderFromUrl(_ url: String) -> Int {
-        // URL에서 순서 번호 추출 로직
-        // 예: "DvI2_0.jpg"에서 0 추출
-        let components = url.components(separatedBy: "_")
-        if components.count > 1 {
-            return Int(components[1].split(separator: ".").first ?? "0") ?? 0
-        }
-        return 0
+        // URL에서 파일 이름을 추출
+        let fileName = url.components(separatedBy: "/").last ?? ""
+        // 파일 이름에서 순서 번호 추출
+        let numberString = fileName.components(separatedBy: "_").last?.components(separatedBy: ".").first ?? "0"
+        return Int(numberString) ?? 0
     }
 
 

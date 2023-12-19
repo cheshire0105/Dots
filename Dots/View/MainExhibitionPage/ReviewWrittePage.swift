@@ -142,6 +142,34 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             make.left.right.equalTo(view).inset(10)
             self.contentTextViewBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).constraint
         }
+
+        // 장기간 눌러서 드래그 앤 드롭을 활성화
+           let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+           collectionView.addGestureRecognizer(longPressGesture)
+    }
+
+    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { return }
+            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
+
+    // 이미지 순서 변경 처리
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedImage = selectedImages.remove(at: sourceIndexPath.item)
+        selectedImages.insert(movedImage, at: destinationIndexPath.item)
+        collectionView.reloadData()
+
+        // 순서 변경 로그 출력
+        print("이미지 이동됨: \(sourceIndexPath.item) 에서 \(destinationIndexPath.item) 으로")
     }
 
     deinit {
@@ -530,6 +558,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 continue
             }
 
+            // 이미지 이름을 인덱스를 포함하여 설정
             let imageName = "\(userId)_\(index).jpg"
             let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
 
@@ -555,6 +584,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             completion(uploadedUrls)
         }
     }
+
 
 
     func addImageUrlToFirestore(userId: String, posterName: String, imageUrl: String) {
