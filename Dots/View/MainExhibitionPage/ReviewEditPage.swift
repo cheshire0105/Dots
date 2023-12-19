@@ -1,9 +1,9 @@
 //
-//  ReviewWrittePage.swift
+//  ReviewEditPage.swift
 //  Dots
 //
-//  Created by cheshire on 11/13/23.
-// 최신화 커밋 푸쉬 2023년 11월 13일 월 오후 11:23
+//  Created by cheshire on 12/17/23.
+// 테스트
 
 import Foundation
 import UIKit
@@ -11,13 +11,11 @@ import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위�
 import SnapKit
 import Firebase
 import FirebaseStorage
-
-protocol ReviewWritePageDelegate: AnyObject {
-    func didSubmitReview()
-}
+import SDWebImage
 
 
-class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource {
+class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource, PHPickerViewControllerDelegate {
+
 
     // 텍스트 필드 속성 정의
     let titleTextField = UITextField()
@@ -41,22 +39,20 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     var contentTextViewBottomConstraint: Constraint?
 
+    var originalTitle: String?
+    var originalContent: String?
+    var originalImages: [UIImage]?
 
+    var exhibitionTitle: String?
+    var museumName: String?
+
+    var imageUrls: [String] = []
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         titleTextField.becomeFirstResponder()
-
-
-        // posterName 값 확인
-        if let posterName = posterName {
-            print("Poster name: \(posterName)")
-        } else {
-            print("Poster name not provided")
-        }
-
 
 
 
@@ -126,7 +122,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         configureInputAccessoryView()
 
         setupCollectionView()
-        updateCollectionViewLayout()
+        //        updateCollectionViewLayout()
         collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCollectionViewCell")
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -143,9 +139,21 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             self.contentTextViewBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).constraint
         }
 
+        // 기존 데이터 바인딩
+        titleTextField.text = originalTitle
+        contentTextView.text = originalContent
+        if let images = originalImages {
+            selectedImages = images
+        }
+
+        setupNavigationTitle()
+
+        updateCollectionViewLayout()
+
         // 장기간 눌러서 드래그 앤 드롭을 활성화
-           let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
-           collectionView.addGestureRecognizer(longPressGesture)
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+        collectionView.addGestureRecognizer(longPressGesture)
+
     }
 
     @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
@@ -171,6 +179,60 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         // 순서 변경 로그 출력
         print("이미지 이동됨: \(sourceIndexPath.item) 에서 \(destinationIndexPath.item) 으로")
     }
+
+
+
+    
+
+
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+
+        for result in results {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
+                if let image = object as? UIImage {
+                    DispatchQueue.main.async {
+                        // 중복 확인 로직을 적용하거나, 간단히 모든 이미지 추가
+                        self.selectedImages.append(image)
+                        self.collectionView.reloadData()
+                        self.updateCollectionViewLayout() // 레이아웃 업데이트 호출
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+    private func setupNavigationTitle() {
+        // 네비게이션 타이틀 및 서브타이틀 설정
+        let titleLabel = UILabel()
+        titleLabel.text = exhibitionTitle ?? "기본 전시 제목"
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        titleLabel.textColor = .white
+        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        titleLabel.lineBreakMode = .byWordWrapping
+
+        let subtitleLabel = UILabel()
+        subtitleLabel.text = museumName ?? "기본 뮤지엄 이름"
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.textColor = .lightGray
+        subtitleLabel.font = UIFont.systemFont(ofSize: 12)
+
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        titleStackView.axis = .vertical
+        titleStackView.alignment = .center
+        titleStackView.distribution = .equalCentering
+
+        self.navigationItem.titleView = titleStackView
+    }
+
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -254,24 +316,46 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     // 컬렉션 뷰 데이터 소스 메서드
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(selectedImages.count)
         return selectedImages.count
     }
 
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else {
-            return UICollectionViewCell()
+            fatalError("Unable to dequeue ImageCollectionViewCell")
         }
-        cell.imageView.image = selectedImages[indexPath.row]
-        cell.deleteButton.tag = indexPath.row // 태그를 사용하여 어떤 셀의 'x' 버튼이 탭되었는지 식별합니다.
+
+        let image = selectedImages[indexPath.row]
+        cell.imageView.image = image
+
+        // 이미지가 셀에 할당되었는지 확인 (디버깅 용도)
+        print("Setting image for cell at index \(indexPath.row)")
+
+        // 이미지 사이즈 확인 (디버깅 용도)
+        if let imageSize = image.size as CGSize? {
+            print("Image size: \(imageSize.width)x\(imageSize.height)")
+        }
+
+        cell.deleteButton.tag = indexPath.row
         cell.deleteButton.addTarget(self, action: #selector(deleteImage(_:)), for: .touchUpInside)
+
+
         return cell
     }
+
+
+
+
+
+
 
     @objc func deleteImage(_ sender: UIButton) {
         let index = sender.tag
         guard index < selectedImages.count else {
             return
         }
+
 
         // 배열에서 먼저 삭제
         selectedImages.remove(at: index)
@@ -447,11 +531,11 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     // UIImagePickerControllerDelegate 메서드
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        // 선택한 사진을 처리합니다.
         if let image = info[.originalImage] as? UIImage {
+            // 선택된 이미지를 배열에 추가
             selectedImages.append(image)
             collectionView.reloadData()
-            updateCollectionViewLayout() // 컬렉션 뷰 레이아웃 업데이트
+            updateCollectionViewLayout() // 레이아웃 업데이트
         }
         picker.dismiss(animated: true, completion: nil)
     }
@@ -463,16 +547,21 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
 
     // UITextViewDelegate 메서드를 사용하여 플레이스홀더 처리
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == .lightGray {
+        if textView.text == "자유롭게 후기를 작성해주세요." {
             textView.text = nil
             textView.textColor = .white
+        } else {
+            // 텍스트가 기본 메시지가 아닌 경우 커서를 텍스트의 끝으로 이동
+            let endPosition = textView.endOfDocument
+            textView.selectedTextRange = textView.textRange(from: endPosition, to: endPosition)
         }
     }
+
 
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
             textView.text = "자유롭게 후기를 작성해주세요."
-            textView.textColor = .lightGray
+            textView.textColor = .white
         }
     }
 
@@ -494,7 +583,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         view.addSubview(textView)
         textView.backgroundColor = .black
 
-        textView.textColor = .lightGray // placeholder 처럼 보이게 하려면 색상을 조절하세요
+        textView.textColor = .white // placeholder 처럼 보이게 하려면 색상을 조절하세요
         textView.font = UIFont.systemFont(ofSize: fontSize)
         textView.text = text
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 10)
@@ -505,6 +594,8 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         self.dismiss(animated: true, completion: nil)
     }
 
+
+
     @objc func registerButtonTapped() {
         guard let userId = Auth.auth().currentUser?.uid,
               let posterName = posterName, !posterName.isEmpty,
@@ -514,39 +605,60 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             return
         }
 
-        let reviewData: [String: Any] = [
-            "userId": userId, // 현재 로그인한 사용자의 ID를 추가
+        // 현재 선택된 이미지 배열 상태 확인
+        print("업로드할 이미지 배열: \(selectedImages)")
 
-            "title": title,
-            "content": content,
-            "createdAt": FieldValue.serverTimestamp(), // 현재 시간
-            // 필요한 추가 데이터
-        ]
+        // 이미지 업로드를 먼저 수행
+        uploadImages(userId: userId, posterName: posterName) { [weak self] uploadedUrls in
+            // 업로드된 이미지 URL들을 사용하여 Firestore 문서를 업데이트
+            let reviewData: [String: Any] = [
+                "userId": userId,
+                "title": title,
+                "content": content,
+                "createdAt": FieldValue.serverTimestamp(),
+                "images": uploadedUrls // 업로드된 이미지 URL 배열 사용
+            ]
 
-        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에 리뷰 저장, 문서 ID는 유저의 UUID로 설정
-        let docRef = Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").document(userId)
+            let docRef = Firestore.firestore().collection("posters").document(posterName)
+                .collection("reviews").document(userId)
 
-
-        docRef.setData(reviewData) { [weak self] error in
-            if let error = error {
-                print("Error writing document: \(error)")
-            } else {
-                // 이미지 업로드 후, 결과 URL을 가져와 Firestore 문서에 업데이트
-                self?.uploadImages(userId: userId, posterName: posterName) { urls in
-                    docRef.updateData(["images": urls]) { error in
-                        if let error = error {
-                            print("Error updating document: \(error)")
-                        } else {
-                            self?.delegate?.didSubmitReview()
-                        }
-                    }
+            docRef.setData(reviewData) { error in
+                if let error = error {
+                    print("Error writing document: \(error)")
+                } else {
+                    self?.delegate?.didSubmitReview()
+                    self?.dismiss(animated: true, completion: nil)
                 }
-                self?.dismiss(animated: true, completion: nil)
             }
         }
     }
 
+
+    func loadImages(from urls: [String]) {
+        print("Loading images from URLs: \(urls)") // URL 배열을 출력합니다.
+
+        urls.forEach { urlString in
+            guard let url = URL(string: urlString) else { return }
+
+            // SDWebImage를 사용하여 이미지 로드
+            SDWebImageManager.shared.loadImage(with: url, options: [], progress: nil) { [weak self] (image, _, _, _, _, _) in
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self?.selectedImages.append(image)
+                        print("이미지 로드 성공 및 배열 추가: \(url)") // 배열에 이미지 추가 확인
+                        self?.collectionView.reloadData()
+                    }
+                } else {
+                    print("이미지 로드 실패: \(url)")
+                }
+            }
+        }
+    }
+
+
+
+
+    // 이미지를 업로드하고 URL 배열을 반환하는 함수
     func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {
         var uploadedUrls = [String]()
         let uploadGroup = DispatchGroup()
@@ -558,13 +670,12 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 continue
             }
 
-            // 이미지 이름을 인덱스를 포함하여 설정
             let imageName = "\(userId)_\(index).jpg"
             let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
 
             storageRef.putData(imageData, metadata: nil) { metadata, error in
-                guard let metadata = metadata else {
-                    print("Error uploading image: \(error?.localizedDescription ?? "")")
+                guard metadata != nil else {
+                    print("이미지 업로드 실패: \(error?.localizedDescription ?? "")")
                     uploadGroup.leave()
                     return
                 }
@@ -572,8 +683,6 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 storageRef.downloadURL { (url, error) in
                     if let downloadURL = url {
                         uploadedUrls.append(downloadURL.absoluteString)
-                    } else {
-                        print("Error getting download URL: \(error?.localizedDescription ?? "")")
                     }
                     uploadGroup.leave()
                 }
@@ -584,6 +693,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             completion(uploadedUrls)
         }
     }
+
 
 
 
@@ -632,66 +742,4 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     }
 
 }
-
-// PHPickerViewControllerDelegate 메서드
-extension ReviewWritePage: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
-
-        selectedImages.removeAll() // 기존 이미지를 제거합니다.
-
-        for result in results {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
-                if let image = object as? UIImage {
-                    DispatchQueue.main.async {
-                        self.selectedImages.append(image)
-                        self.collectionView.reloadData()
-                        self.updateCollectionViewLayout() // 레이아웃 업데이트 호출
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-
-class ImageCollectionViewCell: UICollectionViewCell {
-    let imageView = UIImageView()
-    let deleteButton = UIButton()
-
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func setupViews() {
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 10 // 셀의 모서리를 둥글게 합니다.
-        contentView.addSubview(imageView)
-
-
-        deleteButton.setImage(UIImage(named: "xbutton"), for: .normal)
-        contentView.addSubview(deleteButton)
-
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-
-        deleteButton.snp.makeConstraints { make in
-            make.top.right.equalToSuperview().inset(8)
-            make.width.height.equalTo(25)
-        }
-    }
-
-
-}
-
-
 

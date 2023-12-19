@@ -38,7 +38,54 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window?.rootViewController = launchScreenVC
         window?.makeKeyAndVisible()
+
+        // 딥 링크 처리
+        if let urlContext = connectionOptions.urlContexts.first {
+            handleDeepLink(url: urlContext.url)
+        }
     }
+
+
+    private func handleDeepLink(url: URL) {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              let host = components.host,
+              let queryItems = components.queryItems,
+              let posterImageName = queryItems.first(where: { $0.name == "poster" })?.value else {
+            return
+        }
+
+        if host == "backgroundImage" {
+            // 메인 탭 바 컨트롤러 생성
+            let mainTabBar = TabBar()
+
+            // 첫 번째 탭에 해당하는 네비게이션 컨트롤러를 가져옵니다.
+            if let mainNavController = mainTabBar.viewControllers?.first as? UINavigationController {
+                // MainExhibitionPage 인스턴스 생성 및 탭 아이템 설정
+                let mainPage = MainExhibitionPage()
+                mainPage.tabBarItem = UITabBarItem(title: "전시", image: UIImage(named: "home"), tag: 0)
+
+                // 네비게이션 스택에 MainExhibitionPage 인스턴스를 루트로 설정
+                mainNavController.viewControllers = [mainPage]
+
+                // BackgroundImageViewController 설정 및 네비게이션 스택에 푸시
+                let backgroundImageVC = BackgroundImageViewController()
+                backgroundImageVC.posterImageName = posterImageName
+                mainNavController.pushViewController(backgroundImageVC, animated: false)
+            }
+
+            // 탭 바 컨트롤러를 루트 뷰 컨트롤러로 설정
+            window?.rootViewController = mainTabBar
+            window?.makeKeyAndVisible()
+        }
+    }
+
+
+
+
+
+
+
+
 
     private func isUserLoggedIn() -> Bool {
         return UserDefaults.standard.bool(forKey: "isUserLoggedIn")
@@ -75,30 +122,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
+        handleDeepLink(url: url)
+
 
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               let host = components.host else {
             return
         }
 
-        if host == "backgroundImage",
-           let queryItems = components.queryItems,
-           let posterImageName = queryItems.first(where: { $0.name == "poster" })?.value {
 
-            // BackgroundImageViewController 인스턴스 생성 및 설정
-            let backgroundImageVC = BackgroundImageViewController()
-            backgroundImageVC.posterImageName = posterImageName
 
-//            // 네비게이션 컨트롤러를 찾아서 뷰 컨트롤러 푸시
-//            if let rootVC = self.window?.rootViewController as? UINavigationController {
-//                rootVC.pushViewController(backgroundImageVC, animated: true)
-//            }
-            // 또는 다른 네비게이션/프레젠테이션 로직을 여기에 추가
-        }
-
-        // 다른 URL 스키마 처리 (예: Google 로그인)
-        // ...
     }
+
 
 }
 

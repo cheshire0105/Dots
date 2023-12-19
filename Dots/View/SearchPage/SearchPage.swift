@@ -292,8 +292,8 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         if isRefresh || cachedData == nil {
             Firestore.firestore().collection("posters")
                 .order(by: "likes", descending: false)
-                .limit(to: 10)
-                .getDocuments { [weak self] (querySnapshot, error) in
+                .limit(to: 1000)
+                .getDocuments { [weak self] (snapshot, error) in
                     guard let self = self else {
                         print("Error loading posters: \(error?.localizedDescription ?? "Unknown error")")
                         return
@@ -302,11 +302,15 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                     var popularExhibitions: [PopularCellModel] = []
 
                     let group = DispatchGroup()
-                    for document in querySnapshot?.documents ?? [] {
+                    for document in snapshot?.documents ?? [] {
                         group.enter()
-                        let imageDocumentId = document.documentID // 문서 ID
+                        let imageDocumentId = document.documentID
+                        let likes = document.data()["likes"] as? Int ?? 0
 
-                        // "전시_상세" 컬렉션에서 추가 데이터를 조회
+                        // likes 값 출력
+                        print("Document ID: \(imageDocumentId), Likes: \(likes)")
+
+                        // '전시_상세' 컬렉션에서 추가 정보 조회
                         Firestore.firestore().collection("전시_상세").document(imageDocumentId).getDocument { (detailDocument, error) in
                             defer { group.leave() }
 
@@ -314,9 +318,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                                 let data = detailDocument.data()
                                 let title = data?["전시_타이틀"] as? String ?? "Unknown Title"
                                 let subTitle = data?["미술관_이름"] as? String ?? "Unknown SubTitle"
-                                let likes = data?["likes"] as? Int ?? 0
                                 popularExhibitions.append(PopularCellModel(imageDocumentId: imageDocumentId, title: title, subTitle: subTitle, likes: likes))
-
                             } else {
                                 print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
                             }
@@ -328,14 +330,11 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                         self.tableView.reloadData()
                         self.refreshControl.endRefreshing()
                     }
-
-
                 }
         } else {
-              // 캐시된 데이터를 사용하여 테이블 뷰 갱신
-              self.currentData = cachedData ?? []
-              self.tableView.reloadData()
-          }
+            self.currentData = cachedData ?? []
+            self.tableView.reloadData()
+        }
     }
 
     func bindText(for cell: searchPageTableViewCell, with documentId: String) {
@@ -514,13 +513,9 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
                 return UITableViewCell() // 또는 적절한 기본값 반환
             }
             let cell = tableView.dequeueReusableCell(withIdentifier: "searchPageTableViewCell", for: indexPath) as! searchPageTableViewCell
-            let cellModel = currentData[indexPath.row]
-
-            // 텍스트 바인딩 및 이미지 로드
-            bindText(for: cell, with: cellModel.imageDocumentId)
-            loadImage(for: cell, with: cellModel.imageDocumentId)
-
-            return cell
+              let cellModel = currentData[indexPath.row]
+              cell.configure(with: cellModel) // 셀 구성
+              return cell
         }
     }
 
