@@ -1123,7 +1123,7 @@ class ReviewTableViewCell: UITableViewCell {
     private lazy var contentLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 14)
-        label.textColor = .white
+        label.textColor = UIColor(red: 0.497, green: 0.497, blue: 0.497, alpha: 1)
         label.numberOfLines = 3 // 멀티라인을 허용합니다.
         return label
     }()
@@ -1138,7 +1138,7 @@ class ReviewTableViewCell: UITableViewCell {
 
     private lazy var timeLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Bold", size: 12)
+        label.font = UIFont(name: "Pretendard-Regular", size: 12)
         label.textColor = .white
         return label
     }()
@@ -1148,7 +1148,7 @@ class ReviewTableViewCell: UITableViewCell {
     private lazy var newTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 18)
-        label.textColor = .white
+        label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         return label
     }()
 

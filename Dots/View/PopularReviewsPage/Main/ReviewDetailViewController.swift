@@ -593,12 +593,16 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         """
         contentLabel.numberOfLines = 0
         contentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
-        contentLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        contentLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
         contentLabel.lineBreakMode = .byWordWrapping
         var paragraphStyle = NSMutableParagraphStyle()
         //            paragraphStyle.lineHeightMultiple = 1.21
         // Line height: 18 pt
         paragraphStyle.alignment = .justified
+        // 원하는 행간 비율 (160%)
+        let lineHeightMultiple: CGFloat = 1.34
+        // 폰트 크기에 비례하여 행간 설정
+        paragraphStyle.lineHeightMultiple = lineHeightMultiple
         let attrString = NSMutableAttributedString(string: contentLabel.text!)
         paragraphStyle.lineSpacing = 1
         attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
