@@ -84,8 +84,8 @@ class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationCon
         button.layer.cornerRadius = 30
         //button.backgroundColor = UIColor(named: "neon")
         button.isSelected = !button.isSelected
-        button.setTitle("중복확인", for: .normal)
-        button.setTitle("중복확인", for: .selected)
+        button.setTitle("중복 확인", for: .normal)
+        button.setTitle("중복 확인", for: .selected)
         button.setTitleColor(UIColor(named: "neon"), for: .selected)
         button.setTitleColor(UIColor.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
@@ -262,10 +262,16 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     
     @objc func 이메일_리프레쉬_클릭() {
         회원가입_이메일_텍스트필드.text = ""
-        회원가입_중복확인_버튼.setTitle("중복확인", for: .selected)
+        회원가입_중복확인_버튼.setTitle("중복 확인", for: .selected)
         이메일_리프레쉬.isHidden = true
         self.회원가입_이메일_텍스트필드.isEnabled = true
-
+        self.회원가입_중복확인_버튼.setTitleColor(UIColor(named: "neon"), for: .selected)
+        self.회원가입_이메일_텍스트필드.textColor = UIColor.white
+        self.회원가입_회원가입_버튼.setTitle("회원가입", for: .selected)
+        self.회원가입_회원가입_버튼.setTitleColor(UIColor.black, for: .selected)
+        self.회원가입_회원가입_버튼.isUserInteractionEnabled = true
+        self.회원가입_회원가입_버튼.isEnabled = true
+        self.회원가입_중복확인_버튼.isUserInteractionEnabled = true
     }
     
     
@@ -301,19 +307,26 @@ extension 회원가입_첫번째_뷰컨트롤러 {
                     }
                     
                     if let documents = snapshot?.documents, !documents.isEmpty {
-                     
+                        self.회원가입_이메일_텍스트필드.isEnabled = false
+                        self.회원가입_이메일_텍스트필드.textColor = UIColor.red
                         self.회원가입_회원가입_버튼.isUserInteractionEnabled = false
                         self.회원가입_회원가입_버튼.setTitle("이미 사용중인 이메일입니다.", for: .selected)
                         self.회원가입_회원가입_버튼.setTitleColor(UIColor.red, for: .selected)
-                        self.회원가입_중복확인_버튼.setTitle("재확인", for: .selected)
+                        self.회원가입_중복확인_버튼.setTitle("사용 불가", for: .selected)
+                        self.회원가입_중복확인_버튼.setTitleColor(UIColor.red, for: .selected)
+                        self.회원가입_중복확인_버튼.isUserInteractionEnabled = false
                         self.이메일_백.layer.borderColor = UIColor.red.cgColor
+                        self.이메일_리프레쉬.isHidden = false
+
                     } else {
                         self.회원가입_이메일_텍스트필드.isEnabled = false
+                        self.회원가입_이메일_텍스트필드.textColor = UIColor(named: "neon")
                         self.회원가입_회원가입_버튼.isEnabled = true
                         self.회원가입_회원가입_버튼.isUserInteractionEnabled = true
                         self.회원가입_회원가입_버튼.setTitle("회원가입", for: .selected)
                         self.회원가입_회원가입_버튼.setTitleColor(UIColor.black, for: .selected)
-                        self.회원가입_중복확인_버튼.setTitle("중복확인 완료", for: .selected)
+                        self.회원가입_중복확인_버튼.setTitle("사용 가능", for: .selected)
+                        self.회원가입_중복확인_버튼.isUserInteractionEnabled = false
                         self.이메일_백.layer.borderColor = UIColor(named: "neon")?.cgColor
                         self.이메일_리프레쉬.isHidden = false
 
