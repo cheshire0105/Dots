@@ -41,7 +41,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     private lazy var customAlertView: UIView = {
         let view = UIView()
         // 여기에 얼럿 뷰 디자인 설정
-        view.layer.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1).cgColor
+        view.layer.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1).cgColor
         view.layer.cornerRadius = 15
         view.isHidden = true
         return view
@@ -51,7 +51,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     private lazy var alertTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "다른 지역의 전시도 찾아볼까요?"
-        label.textColor = .black
+        label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         label.textAlignment = .center
         return label
@@ -60,8 +60,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     private lazy var alertConfirmButton: UIButton = {
         let button = UIButton()
         button.setTitle("찾기", for: .normal)
-        button.backgroundColor = .black // 검은색 배경
-        button.setTitleColor(.white, for: .normal) // 하얀색 텍스트
+        button.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        button.setTitleColor(.black, for: .normal) // 하얀색 텍스트
         button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
         button.layer.cornerRadius = 20 // 모서리를 둥글게
         button.addTarget(self, action: #selector(alertConfirmButtonTapped), for: .touchUpInside)
@@ -82,7 +82,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     private lazy var regionPickerView: UIPickerView = {
         let pickerView = UIPickerView()
-        pickerView.overrideUserInterfaceStyle = .light
+        pickerView.overrideUserInterfaceStyle = .dark
         pickerView.dataSource = self
         pickerView.delegate = self
         return pickerView
@@ -288,8 +288,12 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
+        tabBarController?.tabBar.isHidden = false
 
     }
+
+
+
 
     override func viewDidAppear(_ animated: Bool) {
 
@@ -326,32 +330,49 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
         selectedRegion = "인사동"
         loadExhibitions(forRegion: selectedRegion)  // 두 번째 섹션 데이터 로드
 
-        if let 현제접속중인_유저 = Auth.auth().currentUser {
+       
+        if let currentUser = Auth.auth().currentUser {
             print("로그인한 사용자 정보:")
-            print("UID: \(현제접속중인_유저.uid)")
-            print("이메일: \(현제접속중인_유저.email ?? "없음")")
+            print("UID: \(currentUser.uid)")
+            print("이메일: \(currentUser.email ?? "없음")")
             print("계정이 로그인되었습니다.")
+
+            // 싱글톤 인스턴스에 사용자 정보 저장
+            CurrentUser.shared.uid = currentUser.uid
+            CurrentUser.shared.email = currentUser.email
         }
     }
 
 
     func setupNavigationBar() {
         // 네비게이션 타이틀 설정
-        self.navigationItem.title = "Dots"
-        // 네비게이션 바 배경색과 타이틀 색상 설정
+        self.navigationItem.title = ""
+
+        // 네비게이션 바 배경색 설정
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = .black // 배경색을 검은색으로 설정
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white] // 타이틀을 하얀색으로 설정
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white] // 대형 타이틀도 하얀색으로 설정
-
 
         // iOS 15 이상에서는 아래 설정도 필요할 수 있습니다.
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.standardAppearance = appearance
 
-        // 네비게이션 바 대형 타이틀 설정
-        navigationController?.navigationBar.prefersLargeTitles = true // 대형 타이틀 활성화
+        // 오른쪽 네비게이션 바 버튼 설정
+        let rightButton = UIBarButtonItem(title: "다른 지역", style: .plain, target: self, action: #selector(rightButtonTapped))
+        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.white, .font: UIFont(name: "Pretendard-Bold", size: 14)], for: .normal)
+        rightButton.setTitleTextAttributes([.foregroundColor: UIColor.gray, .font: UIFont(name: "Pretendard-Bold", size: 14)], for: .highlighted)
+        self.navigationItem.rightBarButtonItem = rightButton
     }
+
+
+    @objc private func rightButtonTapped() {
+        // 버튼이 눌렸을 때의 액션
+        print("네비게이션 바 오른쪽 버튼이 눌렸습니다.")
+        customAlertView.isHidden = false
+        blurEffectView.isHidden = false
+    }
+
+
+
 
     private func fetchExhibitionData() {
         let collectionRef = Firestore.firestore().collection("메인페이지_첫번째_섹션")
@@ -374,8 +395,8 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
 
     func loadPopularExhibitions() {
         Firestore.firestore().collection("posters")
-            .order(by: "visits", descending: false) // Firestore 내에서 '다녀옴' 필드에 따라 내림차순 정렬
-            .limit(to: 10)
+            .order(by: "visits", descending: false) // 'visits'에 따라 내림차순 정렬
+            .limit(to: 1000)
             .getDocuments { [weak self] (snapshot, error) in
                 guard let self = self else { return }
 
@@ -392,15 +413,15 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                 for document in snapshot.documents {
                     group.enter()
                     let posterDocumentId = document.documentID
+                    let visits = document.data()["visits"] as? Int ?? 0 // 'visits' 값 추출
+
+                    print("Document ID: \(posterDocumentId), Visits: \(visits)") // 'visits' 값 출력
 
                     Firestore.firestore().collection("전시_상세").document(posterDocumentId).getDocument { (detailDocument, error) in
                         defer { group.leave() }
 
                         if let detailDocument = detailDocument, let data = detailDocument.data() {
                             let exhibition = ExhibitionModel(dictionary: data)
-                            print("visits 값: \(exhibition.visits)") // 로그 추가
-                            print("세번째 타이틀 이름: \(exhibition.title)") // 여기에서 '다녀옴' 값을 로그로 출력
-
                             loadedExhibitions.append(exhibition)
                         } else {
                             print("Detail document does not exist: \(error?.localizedDescription ?? "Unknown error")")
@@ -409,11 +430,19 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
                 }
 
                 group.notify(queue: .main) {
-                    // 여기에서 Swift 내부에서 '다녀옴' 필드에 따라 다시 정렬
+                    // 'visits' 필드에 따라 내림차순으로 정렬
                     self.thirdSectionExhibitions = loadedExhibitions.sorted { $0.visits > $1.visits }
+
+                    // 정렬된 배열의 내용을 출력
+                    print("정렬된 전시회 목록:")
+                    for exhibition in self.thirdSectionExhibitions {
+                        print("전시: \(exhibition.title)")
+                    }
+
                     self.MainExhibitionCollectionView.reloadData()
                 }
             }
+
     }
 
 
@@ -584,8 +613,8 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "선별_전시_컬렉션_셀_헤더", for: indexPath) as! 선별_전시_컬렉션_셀_헤더
             if indexPath.section == 1 {
                 header.label.text = "\(selectedRegion)의 전시"
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
-                header.addGestureRecognizer(tapGesture)
+//                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
+//                header.addGestureRecognizer(tapGesture)
             } else if indexPath.section == 2 {
                 header.label.text = "가장 많이 다녀온 전시"
             }
@@ -595,10 +624,10 @@ extension MainExhibitionPage: UICollectionViewDataSource, UICollectionViewDelega
     }
 
 
-    @objc func headerTapped() {
-        customAlertView.isHidden = false
-        blurEffectView.isHidden = false
-    }
+//    @objc func headerTapped() {
+//        customAlertView.isHidden = false
+//        blurEffectView.isHidden = false
+//    }
 
     @objc private func dismissAlertView() {
         customAlertView.isHidden = true

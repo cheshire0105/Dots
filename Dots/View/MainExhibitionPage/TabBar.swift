@@ -26,8 +26,8 @@ class TabBar: UITabBarController {
         let secondVC = SearchPage()
         secondVC.tabBarItem = UITabBarItem(title: "검색", image: UIImage(named: "search"), tag: 1)
 
-        let thirdVC = PopularReviewsPage()
-        thirdVC.tabBarItem = UITabBarItem(title: "인기", image: UIImage(named: "hot"), tag: 2)
+//        let thirdVC = PopularReviewsPage()
+//        thirdVC.tabBarItem = UITabBarItem(title: "인기", image: UIImage(named: "hot"), tag: 2)
 
 //        let fourthVC = MapPage()
 //        fourthVC.tabBarItem = UITabBarItem(title: "지도", image: UIImage(named: "map"), tag: 3)
@@ -35,7 +35,7 @@ class TabBar: UITabBarController {
         let fifthVC = Mypage()
         fifthVC.tabBarItem = UITabBarItem(title: "마이", image: UIImage(named: "mypage"), tag: 3)
 
-        viewControllers = [firstVC, secondVC, thirdVC, fifthVC].map {
+        viewControllers = [firstVC, secondVC, fifthVC].map {
             UINavigationController(rootViewController: $0)
         }
     }
@@ -66,30 +66,3 @@ class TabBar: UITabBarController {
 
 }
 
-import SwiftUI
-import UIKit
-
-// UIKit의 GlassTabBar를 SwiftUI에서 사용할 수 있도록 래핑하는 뷰
-struct GlassTabBarWrapper: UIViewControllerRepresentable {
-    typealias UIViewControllerType = TabBar
-
-    // SwiftUI에서 UIViewController를 생성합니다.
-    func makeUIViewController(context: Context) -> TabBar {
-        return TabBar()
-    }
-
-    // UIViewController를 업데이트합니다.
-    func updateUIViewController(_ uiViewController: TabBar, context: Context) {
-        // 필요한 업데이트 로직을 추가합니다.
-    }
-}
-
-// SwiftUI 프리뷰
-struct GlassTabBarWrapper_Previews: PreviewProvider {
-    static var previews: some View {
-        GlassTabBarWrapper()
-    }
-}
-
-// cn0105@naver.com
-// 111111!

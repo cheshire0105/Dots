@@ -53,7 +53,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 //       }
     let refreshControl = UIRefreshControl() // 새로고침 컨트롤 생성
 
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadReviews()
@@ -88,6 +88,81 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
           // 로드 완료 후 새로고침 컨트롤 종료
           refreshControl.endRefreshing()
       }
+
+    func makeEmptyTableViewBackgroundView() -> UIView {
+        let emptyView = UIView(frame: CGRect(x: 0, y: 0, width: reviewsTableView.bounds.size.width, height: reviewsTableView.bounds.size.height))
+        let messageLabel = UILabel()
+        messageLabel.text = "아직 후기가 없어요."
+        messageLabel.textColor = .white
+        messageLabel.textAlignment = .center
+        messageLabel.font = UIFont(name: "Pretendard-Bold", size: 30)
+
+        let messageLabelTwo = UILabel()
+        messageLabelTwo.text = "회원님이 남겨주신 후기가 다른 회원의 관람에 도움이 될 수 있어요. 첫 후기를 남겨볼까요?"
+        messageLabelTwo.textColor = UIColor(red: 0.757, green: 0.753, blue: 0.773, alpha: 1)
+        messageLabelTwo.textAlignment = .center
+        messageLabelTwo.numberOfLines = 0
+        messageLabelTwo.font = UIFont(name: "Pretendard-Bold", size: 16)
+
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "내후기 1 1") // "emptyImage"는 프로젝트에 포함된 이미지 파일 이름
+
+        let newReviewButton = UIButton(type: .system)
+            newReviewButton.setTitle("후기 작성하기", for: .normal)
+            newReviewButton.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 16)
+            newReviewButton.backgroundColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+            newReviewButton.setTitleColor(.black, for: .normal)
+            newReviewButton.layer.cornerRadius = 22
+            newReviewButton.addTarget(self, action: #selector(newReviewButtonTapped), for: .touchUpInside)
+
+            emptyView.addSubview(newReviewButton)
+
+        emptyView.addSubview(imageView)
+        emptyView.addSubview(messageLabel)
+        emptyView.addSubview(messageLabelTwo)
+
+
+        // 이미지와 레이블 레이아웃 설정
+        imageView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview() // 가로축 중앙에 배치
+            make.centerY.equalToSuperview().offset(-50) // 세로축 중앙에서 30포인트 위로
+            make.width.equalTo(100) // 이미지 크기 설정
+            make.height.equalTo(imageView.snp.width) // 정사각형 이미지
+        }
+
+
+        messageLabel.snp.makeConstraints { make in
+            make.top.equalTo(imageView.snp.bottom).offset(50)
+            make.left.right.equalToSuperview().inset(20)
+        }
+
+        messageLabelTwo.snp.makeConstraints { make in
+            make.top.equalTo(messageLabel.snp.bottom).offset(10)
+            make.left.right.equalToSuperview().inset(57)
+        }
+
+        newReviewButton.snp.makeConstraints { make in
+            make.top.equalTo(messageLabelTwo.snp.bottom).offset(30)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(150)
+            make.height.equalTo(44)
+        }
+
+
+        return emptyView
+    }
+
+    @objc func newReviewButtonTapped() {
+        // 후기 작성 페이지 또는 관련 액션을 여기서 처리
+        let reviewWriteVC = ReviewWritePage()
+        reviewWriteVC.delegate = self
+        reviewWriteVC.posterName = self.posterImageName
+        reviewWriteVC.reviewTitle = self.exhibitionTitle
+        let navController = UINavigationController(rootViewController: reviewWriteVC)
+        navController.modalPresentationStyle = .fullScreen
+        self.present(navController, animated: true, completion: nil)
+    }
+
 
     func loadReviews() {
         guard let posterName = posterImageName else {
@@ -125,9 +200,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                                     nickname: nickname,
                                     profileImageUrl: profileImageUrl,
-                                    photoUrls: data["images"] as? [String] ?? []
+                                    photoUrls: data["images"] as? [String] ?? [],
+                                    userId: data["userId"] as? String ?? "" // 여기에 userId를 추가
                                 )
+
                                 newReviews.append(review)
+                                
                             }
                             group.leave()
                         }
@@ -136,9 +214,23 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                 group.notify(queue: .main) {
                     self.reviews = newReviews
                     self.reviewsTableView.reloadData()
+                    self.updateTableViewBackground()
+
                 }
             }
     }
+
+    // 테이블 뷰 배경 업데이트 함수
+    func updateTableViewBackground() {
+        if reviews.isEmpty {
+            reviewsTableView.backgroundView = makeEmptyTableViewBackgroundView()
+            floatingActionButton.isHidden = true // 리뷰가 없을 때 플로팅 버튼 숨김
+        } else {
+            reviewsTableView.backgroundView = nil
+            floatingActionButton.isHidden = false // 리뷰가 있을 때 플로팅 버튼 표시
+        }
+    }
+
 
 
 
@@ -445,7 +537,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
             containerView.snp.makeConstraints { make in
                 make.width.equalTo(itemWidth) // 계산된 너비 설정
-                make.height.equalTo(130) // 설정된 높이
+                make.height.equalTo(160) // 설정된 높이
             }
 
             // 정사각형 뷰 생성 및 설정
@@ -479,7 +571,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             label.textColor = .white
             label.textAlignment = .center
             label.font = UIFont(name: "Pretendard-Regular", size: 12)
-            label.numberOfLines = 0 // 최대 두 줄로 설정
+            label.numberOfLines = 0
             containerView.addSubview(label) // containerView에 label 추가
 
             label.snp.makeConstraints { make in
@@ -581,11 +673,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
     @objc func segmentChanged(_ sender: UISegmentedControl) {
-         // Only show the floating action button when the first segment ("Reviews") is selected
-         floatingActionButton.isHidden = sender.selectedSegmentIndex != 0
-         reviewsTableView.isHidden = sender.selectedSegmentIndex != 0
-         detailScrollView.isHidden = sender.selectedSegmentIndex != 1
-     }
+        if sender.selectedSegmentIndex == 0 { // 후기 탭 선택 시
+            reviewsTableView.isHidden = false
+            detailScrollView.isHidden = true
+            floatingActionButton.isHidden = reviews.isEmpty // 리뷰가 없으면 버튼 숨김
+        } else { // 상세정보 탭 선택 시
+            reviewsTableView.isHidden = true
+            detailScrollView.isHidden = false
+            floatingActionButton.isHidden = true // 상세정보 탭에서는 항상 버튼 숨김
+        }
+    }
+
 
     // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -655,9 +753,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         detailViewController.review = selectedReview
         detailViewController.museumName = exhibitionTitleLabel.text
         detailViewController.exhibitionTitle = exhibitionTitle
-
         // 이미지 URL 배열을 전달합니다.
         detailViewController.imageUrls = selectedReview.photoUrls
+
+        // 여기에 posterName 값을 추가합니다.
+            detailViewController.posterName = self.posterImageName
+        print("detailViewController.posterName의 정보 \(String(describing: detailViewController.posterName))")
 
         let navigationController = UINavigationController(rootViewController: detailViewController)
         navigationController.modalPresentationStyle = .fullScreen
