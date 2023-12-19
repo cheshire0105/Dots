@@ -1271,15 +1271,15 @@ class ReviewTableViewCell: UITableViewCell {
         extraImageView1.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(15)
             make.left.equalToSuperview().offset(10)
-            make.width.equalTo(13.82)
-            make.height.equalTo(12) // 원하는 크기로 조정
+            make.width.equalTo(15.82)
+            make.height.equalTo(14) // 원하는 크기로 조정
             make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
 
         }
 
         // 두 번째 이미지 뷰 레이아웃 설정
         extraImageView2.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(13)
+            make.top.equalTo(contentLabel.snp.bottom).offset(14)
             make.left.equalTo(likeCount.snp.right).offset(10)
             make.width.height.equalTo(17) // 원하는 크기로 조정
         }

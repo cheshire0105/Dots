@@ -628,7 +628,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
         // 두 번째 추가 이미지 뷰 및 레이블 구성
-        additionalImageView2.image = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view")
+        additionalImageView2.image = UIImage(named: "Union (2) 2")
         additionalLabel2.textColor = .white
         additionalLabel2.font = UIFont(name: "Pretendard-Light", size: 12)
         additionalLabel2.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
@@ -664,9 +664,9 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         // 두 번째 추가 이미지 뷰와 레이블 레이아웃
         additionalImageView2.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(25)
+            make.top.equalTo(contentLabel.snp.bottom).offset(27.0)
             make.left.equalTo(additionalLabel1.snp.right).offset(10)
-            make.width.height.equalTo(24)
+            make.width.height.equalTo(20)
         }
         
         additionalLabel2.snp.makeConstraints { make in
@@ -735,6 +735,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 14
         contentView.addSubview(imageView)
         imageView.frame = contentView.bounds
     }

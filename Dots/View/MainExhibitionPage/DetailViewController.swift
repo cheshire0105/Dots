@@ -699,7 +699,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let timeString = convertDateToString(review.createdAt) // 리뷰 작성 시간을 문자열로 변환
 
         // 셀에 리뷰 정보를 설정합니다.
-        cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "Vector 4"), extraImageView2: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1"), text123: "123", text456: "456")
+        cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 3"), extraImageView2: UIImage(named: "Union (2) 1"), text123: "123", text456: "456")
 
         // SDWebImage를 사용하여 프로필 이미지 캐시 및 로드
          if let profileImageUrl = URL(string: review.profileImageUrl) {
