@@ -1,4 +1,4 @@
-// 최신화  - 유저 설정 페이지 재작업
+// 최신화  - 유저 설정 페이지 
 import UIKit
 import SnapKit
 import FSCalendar
