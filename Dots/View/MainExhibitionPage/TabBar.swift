@@ -66,30 +66,3 @@ class TabBar: UITabBarController {
 
 }
 
-import SwiftUI
-import UIKit
-
-// UIKit의 GlassTabBar를 SwiftUI에서 사용할 수 있도록 래핑하는 뷰
-struct GlassTabBarWrapper: UIViewControllerRepresentable {
-    typealias UIViewControllerType = TabBar
-
-    // SwiftUI에서 UIViewController를 생성합니다.
-    func makeUIViewController(context: Context) -> TabBar {
-        return TabBar()
-    }
-
-    // UIViewController를 업데이트합니다.
-    func updateUIViewController(_ uiViewController: TabBar, context: Context) {
-        // 필요한 업데이트 로직을 추가합니다.
-    }
-}
-
-// SwiftUI 프리뷰
-struct GlassTabBarWrapper_Previews: PreviewProvider {
-    static var previews: some View {
-        GlassTabBarWrapper()
-    }
-}
-
-// cn0105@naver.com
-// 111111!

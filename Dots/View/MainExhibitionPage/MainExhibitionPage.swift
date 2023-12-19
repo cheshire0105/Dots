@@ -288,8 +288,12 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
+        tabBarController?.tabBar.isHidden = false
 
     }
+
+
+
 
     override func viewDidAppear(_ animated: Bool) {
 

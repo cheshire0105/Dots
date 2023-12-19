@@ -273,6 +273,24 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
+    // 전시 타이틀을 조회하고 설정하는 함수
+    func fetchAndSetExhibitionTitle(posterId: String) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("전시_상세").document(posterId)
+
+        docRef.getDocument { [weak self] (document, error) in
+            if let document = document, document.exists {
+                if let exhibitionTitle = document.data()?["전시_타이틀"] as? String {
+                    DispatchQueue.main.async {
+                        self?.titleLabel.text = exhibitionTitle
+                    }
+                }
+            } else {
+                print("Document does not exist or error: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
+
 
     func showAlreadyRegisteredAlert() {
         let alert = UIAlertController(title: "알림", message: "이미 이 전시를 방문하셨습니다.", preferredStyle: .alert)
@@ -561,6 +579,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
+    
+
 
 
     override func viewDidLoad() {
@@ -607,6 +627,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         if let posterName = posterImageName {
             setupBackgroundImage(with: posterName)
         }
+
+        // 딥링크에서 poster 매개변수 값을 사용하여 전시 타이틀을 설정합니다.
+            if let posterId = self.posterImageName {
+                fetchAndSetExhibitionTitle(posterId: posterId)
+            }
 
         if let posterName = self.posterImageName {
             checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] visited in
