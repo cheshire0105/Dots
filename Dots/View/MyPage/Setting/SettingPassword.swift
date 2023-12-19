@@ -2,7 +2,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 
-class 비밀번호변경_화면 : UIViewController {
+class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate {
     
     var 활성화된텍스트필드: UITextField?
     
@@ -198,7 +198,8 @@ class 비밀번호변경_화면 : UIViewController {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
-        
+        tabBarController?.tabBar.isHidden = true
+
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         if let 제공업체 = Auth.auth().currentUser?.providerData {
@@ -228,6 +229,9 @@ class 비밀번호변경_화면 : UIViewController {
         }
         
         현재_비밀번호_실시간_조회_불러오기()
+        
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
     }
     private func showAlert(message: String) {
@@ -661,13 +665,15 @@ extension 비밀번호변경_화면{
             make.height.equalTo(44)
         }
         구분선.snp.makeConstraints { make in
-            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
+//            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
+            make.bottom.equalTo(변경_버튼.snp.top).offset(-20)
         }
         변경_버튼.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(15)
+//            make.top.equalTo(구분선.snp.bottom).offset(15)
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(32)
             make.width.equalTo(74)
+            make.bottom.equalToSuperview().offset(-50)
         }
         현재비밀번호_라벨.snp.makeConstraints { make in
             make.bottom.equalTo(현재_비밀번호_백.snp.top)

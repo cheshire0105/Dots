@@ -1,4 +1,4 @@
-// 최신화  유저_다녀옴_날짜 데이터를 해당 유저의 마이페이지 켈린더에 표시하기
+// 최신화  - 유저 설정 페이지 재작업
 import UIKit
 import SnapKit
 import FSCalendar
@@ -163,7 +163,7 @@ class Mypage: UIViewController {
         calendar.appearance.weekdayTextColor = UIColor.darkGray
         calendar.appearance.todayColor = UIColor.white
         
-        calendar.appearance.todaySelectionColor = UIColor.clear
+        calendar.appearance.todaySelectionColor = UIColor.white
 //        calendar.appearance.titleTodayColor = UIColor(named: "neon")
         calendar.appearance.titleTodayColor = UIColor.black
         
@@ -185,7 +185,9 @@ class Mypage: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
-        캘린더.reloadData()
+        특정날짜방문_캘린더_적용()
+        tabBarController?.tabBar.isHidden = false
+
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -196,6 +198,7 @@ class Mypage: UIViewController {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = UIColor.clear
         navigationController?.isNavigationBarHidden = true
+        
         버튼_클릭()
         UI레이아웃()
         버튼_백_레이아웃 ()
@@ -211,7 +214,10 @@ class Mypage: UIViewController {
         
         특정날짜방문_캘린더_적용()
 
-        
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+
+          // InteractivePopGestureRecognizer의 Delegate 설정
+          self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     @objc private func handleOutsideTap() {
@@ -403,7 +409,6 @@ extension UIImage {
 
 
 extension Mypage {
-    
     
     //    private func 접속_유저_데이터_마이페이지_적용하기() {
     //          guard let 현재접속중인유저 = Auth.auth().currentUser else {

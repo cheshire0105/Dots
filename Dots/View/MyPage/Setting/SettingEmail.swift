@@ -4,7 +4,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import GoogleSignIn
 
-class 이메일변경_화면 : UIViewController {
+class 이메일변경_화면 : UIViewController, UIGestureRecognizerDelegate {
     var 활성화된텍스트필드: UITextField?
 
     private let 뒤로가기_버튼 = {
@@ -108,6 +108,8 @@ class 이메일변경_화면 : UIViewController {
         view.backgroundColor = .black
         view.layer.cornerRadius = 20
         view.layer.borderWidth = 0.3
+        tabBarController?.tabBar.isHidden = true
+
         NotificationCenter.default.addObserver(self, selector: #selector(키보드가올라올때), name: UIResponder.keyboardWillShowNotification, object: nil)
         if let 제공업체 = Auth.auth().currentUser?.providerData {
             for 유저정보 in 제공업체 {
@@ -127,6 +129,9 @@ class 이메일변경_화면 : UIViewController {
         if let currentLoggedInEmail = getCurrentLoggedInEmail() {
                현재_이메일_텍스트필드.text = currentLoggedInEmail
         }
+        
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     private func showAlert(message: String) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
@@ -197,13 +202,15 @@ extension 이메일변경_화면{
             make.height.equalTo(44)
         }
         구분선.snp.makeConstraints { make in
-            make.top.equalTo(새_이메일_텍스트필드.snp.bottom).offset(180)
+//            make.top.equalTo(새_비밀번호_확인_텍스트필드.snp.bottom).offset(141)
+            make.bottom.equalTo(변경_버튼.snp.top).offset(-20)
         }
         변경_버튼.snp.makeConstraints { make in
-            make.top.equalTo(구분선.snp.bottom).offset(15)
+//            make.top.equalTo(구분선.snp.bottom).offset(15)
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(32)
             make.width.equalTo(74)
+            make.bottom.equalToSuperview().offset(-50)
         }
     }
 }
