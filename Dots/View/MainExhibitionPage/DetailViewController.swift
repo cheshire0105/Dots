@@ -172,15 +172,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         Firestore.firestore().collection("posters").document(posterName)
             .collection("reviews")
-            .order(by: "createdAt", descending: false) // 날짜 기준 내림차순 정렬
-            .getDocuments { (querySnapshot, error) in
+            .order(by: "createdAt", descending: true) // 날짜 기준 내림차순 정렬
+            .getDocuments { [weak self] (querySnapshot, error) in
                 if let error = error {
                     print("Error getting documents: \(error)")
                     return
                 }
-                var newReviews: [Review] = []
-                print(newReviews.count)
+
                 let group = DispatchGroup()
+                var newReviews: [Review] = []
 
                 querySnapshot?.documents.forEach { document in
                     group.enter()
@@ -189,6 +189,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
                     Firestore.firestore().collection("유저_데이터_관리").document(userId)
                         .getDocument { (userDoc, error) in
+                            defer { group.leave() }
+
                             if let userDoc = userDoc, userDoc.exists {
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
@@ -205,17 +207,16 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                 )
 
                                 newReviews.append(review)
-                                
                             }
-                            group.leave()
                         }
                 }
 
                 group.notify(queue: .main) {
-                    self.reviews = newReviews
-                    self.reviewsTableView.reloadData()
-                    self.updateTableViewBackground()
-
+                    // 모든 비동기 작업이 완료된 후에 실행됩니다.
+                    // newReviews 배열을 createdAt 기준으로 정렬합니다.
+                    self?.reviews = newReviews.sorted(by: { $0.createdAt > $1.createdAt })
+                    self?.reviewsTableView.reloadData()
+                    self?.updateTableViewBackground()
                 }
             }
     }
