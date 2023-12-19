@@ -537,7 +537,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
             containerView.snp.makeConstraints { make in
                 make.width.equalTo(itemWidth) // 계산된 너비 설정
-                make.height.equalTo(130) // 설정된 높이
+                make.height.equalTo(160) // 설정된 높이
             }
 
             // 정사각형 뷰 생성 및 설정
@@ -571,7 +571,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             label.textColor = .white
             label.textAlignment = .center
             label.font = UIFont(name: "Pretendard-Regular", size: 12)
-            label.numberOfLines = 0 // 최대 두 줄로 설정
+            label.numberOfLines = 0
             containerView.addSubview(label) // containerView에 label 추가
 
             label.snp.makeConstraints { make in
