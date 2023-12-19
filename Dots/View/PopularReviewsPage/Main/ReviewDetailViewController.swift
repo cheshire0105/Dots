@@ -72,7 +72,11 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     
     private var pageControl: UIPageControl!
     
-        
+    override func viewWillAppear(_ animated: Bool) {
+
+
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -317,6 +321,9 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
         return cell
     }
+
+
+
 
     
     
