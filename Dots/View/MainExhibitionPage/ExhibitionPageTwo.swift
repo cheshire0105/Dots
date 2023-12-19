@@ -1438,7 +1438,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
 
         // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
-        annotationView?.image = UIImage(named: "place 1")
+        annotationView?.image = UIImage(named: "place 2")
         return annotationView
     }
 
