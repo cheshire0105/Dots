@@ -1506,6 +1506,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         kakaoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
         kakaoLabel.textColor = .white
         kakaoLabel.textAlignment = .center
+        // 카카오맵 버튼에 액션 추가
+            kakaoButton.addTarget(self, action: #selector(openKakaoMap), for: .touchUpInside)
 
         // 네이버 스택 뷰 설정
         let naverStackView = UIStackView(arrangedSubviews: [naverButton, naverLabel])
@@ -1606,6 +1608,27 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
     }
 
+    @objc func openKakaoMap() {
+        guard let museumName = self.museumName else {
+            print("미술관 이름이 설정되지 않았습니다.")
+            return
+        }
+
+        let kakaoMapURLString = "kakaomap://search?q=\(museumName)"
+        guard let encodedURLString = kakaoMapURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedURLString) else {
+            print("유효하지 않은 URL입니다.")
+            return
+        }
+
+        // 카카오맵 앱 열기 또는 앱 스토어로 이동
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            let appStoreURL = URL(string: "https://apps.apple.com/app/id304608425")!
+            UIApplication.shared.open(appStoreURL)
+        }
+    }
 
 
 

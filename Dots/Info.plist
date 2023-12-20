@@ -5,6 +5,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>nmap</string>
+		<string>kakaomap</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
