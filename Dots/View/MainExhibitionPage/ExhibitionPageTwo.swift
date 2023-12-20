@@ -1411,14 +1411,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             return
         }
 
-        // "전시_상세" 컬렉션에서 해당 이미지 이름의 문서를 조회합니다.
         let docRef = database.collection("전시_상세").document(imageName)
 
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
-                if let locationData = document.get("전시_좌표") as? GeoPoint {
+                let locationData = document.get("전시_좌표") as? GeoPoint
+                let museumName = document.get("미술관_이름") as? String ?? "미술관 이름 없음"
+
+                if let locationData = locationData {
                     let location = CLLocationCoordinate2D(latitude: locationData.latitude, longitude: locationData.longitude)
-                    self.centerMapOnLocation(location: location)
+                    self.centerMapOnLocation(location: location, museumName: museumName)
                 } else {
                     print("장소_좌표 필드가 없습니다.")
                 }
@@ -1429,12 +1431,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 
     // 지도에 핀을 추가하는 메서드
-    private func addPinAtLocation(location: CLLocationCoordinate2D) {
+    private func addPinAtLocation(location: CLLocationCoordinate2D, museumName: String) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = location
+        annotation.title = museumName // "미술관_이름"을 타이틀로 설정
         mapView.addAnnotation(annotation)
     }
-
     // MKMapViewDelegate 메서드
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "MyPin"
@@ -1442,23 +1444,40 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
         if annotationView == nil {
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView?.canShowCallout = true // 필요한 경우 콜아웃을 표시할 수 있습니다.
+            annotationView?.canShowCallout = true
+            annotationView?.image = UIImage(named: "place 2")
+//            annotationView?.backgroundColor = .gray
+
+            let label = UILabel()
+            label.text = annotation.title ?? "미술관 이름 없음"
+            label.textColor = .white // 글자색을 하얀색으로 설정
+            label.font = UIFont(name: "Pretendard-Medium", size: 20)
+//            label.backgroundColor = .gray
+            label.textAlignment = .center
+            label.sizeToFit()
+
+            // 레이블의 위치를 이미지의 중앙에 맞춥니다.
+            let labelX = label.frame.width / 6
+            let labelY = annotationView?.image?.size.height ?? 0 // 이미지 높이 기준
+            label.frame = CGRect(x: labelX, y: labelY, width: label.frame.width, height: label.frame.height)
+            annotationView?.addSubview(label)
         } else {
             annotationView?.annotation = annotation
         }
 
-        // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
-        annotationView?.image = UIImage(named: "place 2")
         return annotationView
     }
 
-    private func centerMapOnLocation(location: CLLocationCoordinate2D) {
+
+
+    private func centerMapOnLocation(location: CLLocationCoordinate2D, museumName: String) {
         let regionRadius: CLLocationDistance = 200
         let coordinateRegion = MKCoordinateRegion(center: location,
                                                   latitudinalMeters: regionRadius,
                                                   longitudinalMeters: regionRadius)
-        addPinAtLocation(location: location)
+        addPinAtLocation(location: location, museumName: museumName)
 
         mapView.setRegion(coordinateRegion, animated: true)
     }
+
 }
