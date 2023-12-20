@@ -1373,6 +1373,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var locationData: CLLocationCoordinate2D? // 위치 데이터를 저장할 프로퍼티 추가
     var locationManager: CLLocationManager!
 
+    var museumName: String? // 미술관 이름을 저장할 프로퍼티 추가
 
 
     override func viewDidAppear(_ animated: Bool) {
@@ -1453,28 +1454,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
     
 
+
     @objc func floatingButtonTapped() {
-        guard let locationData = self.locationData else {
-            print("위치 데이터가 설정되지 않았습니다.")
+        guard let museumName = self.museumName else {
+            print("미술관 이름이 설정되지 않았습니다.")
             return
         }
 
-        // 출발지 (사용자의 현재 위치)를 가져오기 위한 CLLocationManager
-        let locationManager = CLLocationManager()
-        guard let currentLocation = locationManager.location else {
-            print("현재 위치를 가져올 수 없습니다.")
-            return
-        }
-
-        // URL 스키마에 필요한 파라미터 설정
-        let slat = currentLocation.coordinate.latitude
-        let slng = currentLocation.coordinate.longitude
-        let dlat = locationData.latitude
-        let dlng = locationData.longitude
         let appname = Bundle.main.bundleIdentifier ?? "yourAppName"
-
-        // 네이버 지도 앱 길찾기 URL 스키마 생성
-        let naverMapURLString = "nmap://route/car?slat=\(slat)&slng=\(slng)&dlat=\(dlat)&dlng=\(dlng)&appname=\(appname)"
+        let naverMapURLString = "nmap://search?query=\(museumName)&appname=\(appname)"
         guard let encodedURLString = naverMapURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: encodedURLString) else {
             print("유효하지 않은 URL입니다.")
@@ -1485,10 +1473,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         if UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         } else {
-            // 네이버 지도 앱이 설치되어 있지 않은 경우 App Store 링크로 이동
             let appStoreURL = URL(string: "http://itunes.apple.com/app/id311867728?mt=8")!
             UIApplication.shared.open(appStoreURL)
         }
+
+    
     }
 
 
@@ -1508,29 +1497,29 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
 
     private func fetchLocationData() {
-        guard let imageName = self.imageName else {
-            print("이미지 이름이 설정되지 않았습니다.")
-            return
-        }
+           guard let imageName = self.imageName else {
+               print("이미지 이름이 설정되지 않았습니다.")
+               return
+           }
 
-        let docRef = database.collection("전시_상세").document(imageName)
-        docRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                let geoPoint = document.get("전시_좌표") as? GeoPoint
-                let museumName = document.get("미술관_이름") as? String ?? "미술관 이름 없음"
+           let docRef = database.collection("전시_상세").document(imageName)
+           docRef.getDocument { (document, error) in
+               if let document = document, document.exists {
+                   let geoPoint = document.get("전시_좌표") as? GeoPoint
+                   self.museumName = document.get("미술관_이름") as? String ?? "미술관 이름 없음"
 
-                if let geoPoint = geoPoint {
-                    let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
-                    self.locationData = location // 위치 데이터 저장
-                    self.centerMapOnLocation(location: location, museumName: museumName)
-                } else {
-                    print("장소_좌표 필드가 없습니다.")
-                }
-            } else {
-                print("문서를 찾을 수 없거나 오류가 발생했습니다: \(error?.localizedDescription ?? "Unknown error")")
-            }
-        }
-    }
+                   if let geoPoint = geoPoint {
+                       let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                       self.locationData = location // 위치 데이터 저장
+                       self.centerMapOnLocation(location: location, museumName: self.museumName!)
+                   } else {
+                       print("장소_좌표 필드가 없습니다.")
+                   }
+               } else {
+                   print("문서를 찾을 수 없거나 오류가 발생했습니다: \(error?.localizedDescription ?? "Unknown error")")
+               }
+           }
+       }
 
     // 지도에 핀을 추가하는 메서드
     private func addPinAtLocation(location: CLLocationCoordinate2D, museumName: String) {
