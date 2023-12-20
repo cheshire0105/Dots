@@ -1330,7 +1330,7 @@ import MapKit
 import FirebaseFirestore
 
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     var mapView: MKMapView!
     let database = Firestore.firestore()
     var imageName: String? // 이미지 이름을 저장할 프로퍼티
@@ -1350,6 +1350,30 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
     }()
+
+    lazy var floatingButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 23 // 모서리 둥글게 설정
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+        button.setImage(UIImage(named: "🦆 icon _add pin alt_"), for: .normal) // 길찾기 이미지
+        button.setTitle("길찾기", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont(name: "Pretendard-regular", size: 16)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -24, bottom: 0, right: -10) // 이미지와 텍스트 간격 조정
+        button.addTarget(self, action: #selector(floatingButtonTapped), for: .touchUpInside) // 액션 추가
+
+        return button
+    }()
+
+    var locationData: CLLocationCoordinate2D? // 위치 데이터를 저장할 프로퍼티 추가
+    var locationManager: CLLocationManager!
+
+
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -1378,13 +1402,47 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         print(imageName)
         view.addSubview(backButton)
 
+
+        view.addSubview(floatingButton)
+
+        floatingButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-20) // 하단에서 20포인트 위
+            make.centerX.equalTo(view.safeAreaLayoutGuide.snp.centerX) // 화면의 가로축 중앙
+            make.width.equalTo(106) // 너비 설정
+            make.height.equalTo(46) // 높이 설정
+        }
+
+
         backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
             make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
 
+        configureLocationManager() // 위치 관리자 설정
+
+
     }
+
+    func configureLocationManager() {
+         locationManager = CLLocationManager()
+         locationManager.delegate = self
+         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+         locationManager.requestWhenInUseAuthorization()
+         locationManager.startUpdatingLocation()
+     }
+
+     // CLLocationManagerDelegate 메서드
+     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+         if let location = locations.first {
+             // 현재 위치 처리
+             print("Current location: \(location.coordinate)")
+         }
+     }
+
+     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+         print("Failed to find user's location: \(error.localizedDescription)")
+     }
 
     @objc func backButtonTapped() {
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
@@ -1393,8 +1451,52 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     }
 
+    
+
+    @objc func floatingButtonTapped() {
+        guard let locationData = self.locationData else {
+            print("위치 데이터가 설정되지 않았습니다.")
+            return
+        }
+
+        // 출발지 (사용자의 현재 위치)를 가져오기 위한 CLLocationManager
+        let locationManager = CLLocationManager()
+        guard let currentLocation = locationManager.location else {
+            print("현재 위치를 가져올 수 없습니다.")
+            return
+        }
+
+        // URL 스키마에 필요한 파라미터 설정
+        let slat = currentLocation.coordinate.latitude
+        let slng = currentLocation.coordinate.longitude
+        let dlat = locationData.latitude
+        let dlng = locationData.longitude
+        let appname = Bundle.main.bundleIdentifier ?? "yourAppName"
+
+        // 네이버 지도 앱 길찾기 URL 스키마 생성
+        let naverMapURLString = "nmap://route/car?slat=\(slat)&slng=\(slng)&dlat=\(dlat)&dlng=\(dlng)&appname=\(appname)"
+        guard let encodedURLString = naverMapURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedURLString) else {
+            print("유효하지 않은 URL입니다.")
+            return
+        }
+
+        // 네이버 지도 앱 열기 또는 앱 스토어로 이동
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            // 네이버 지도 앱이 설치되어 있지 않은 경우 App Store 링크로 이동
+            let appStoreURL = URL(string: "http://itunes.apple.com/app/id311867728?mt=8")!
+            UIApplication.shared.open(appStoreURL)
+        }
+    }
+
+
+
 
     private func setupMapView() {
+
+        
         mapView = MKMapView(frame: self.view.bounds)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView = MKMapView(frame: self.view.bounds)
@@ -1412,14 +1514,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
 
         let docRef = database.collection("전시_상세").document(imageName)
-
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
-                let locationData = document.get("전시_좌표") as? GeoPoint
+                let geoPoint = document.get("전시_좌표") as? GeoPoint
                 let museumName = document.get("미술관_이름") as? String ?? "미술관 이름 없음"
 
-                if let locationData = locationData {
-                    let location = CLLocationCoordinate2D(latitude: locationData.latitude, longitude: locationData.longitude)
+                if let geoPoint = geoPoint {
+                    let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                    self.locationData = location // 위치 데이터 저장
                     self.centerMapOnLocation(location: location, museumName: museumName)
                 } else {
                     print("장소_좌표 필드가 없습니다.")
