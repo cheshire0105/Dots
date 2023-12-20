@@ -15,10 +15,11 @@ class Mypage: UIViewController {
         print("유저_다녀옴_날짜: \(유저_다녀옴_날짜)")
     }
     
-    // 추가 디버깅
-    func print특정날짜() {
-        print("특정날짜: \(특정날짜)")
-    }
+    let 배경_백 = {
+        let blurEffect = UIBlurEffect(style: .systemChromeMaterialDark)
+               let visualEffectView = UIVisualEffectView(effect: blurEffect)
+               return visualEffectView
+       }()
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
@@ -348,7 +349,12 @@ class Mypage: UIViewController {
             make.bottom.equalToSuperview().offset(-60)
         }
     }
-    
+    func 백_레이아웃() {
+        view.addSubview(배경_백)
+             배경_백.snp.makeConstraints { make in
+               make.edges.equalToSuperview()
+           }
+    }
 }
 
 extension Mypage {

@@ -20,6 +20,7 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
         label.text = "다녀온 날짜 변경"
         label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         label.textAlignment = .center
+        label.textColor = .black
         return label
     }()
     let 변경하기_버튼 = {
@@ -175,10 +176,13 @@ extension 켈린더_수정_뷰컨트롤러 : UIPickerViewDelegate , UIPickerView
         switch component {
         case 0:
             픽커뷰_년월일_텍스속성.text = "\(년도[row])년"
+            픽커뷰_년월일_텍스속성.textColor = .black
         case 1:
             픽커뷰_년월일_텍스속성.text = "\(월[row])월"
+            픽커뷰_년월일_텍스속성.textColor = .black
         case 2:
             픽커뷰_년월일_텍스속성.text = "\(일[row])일"
+            픽커뷰_년월일_텍스속성.textColor = .black
         default:
             break
         }

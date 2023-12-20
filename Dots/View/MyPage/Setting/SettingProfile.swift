@@ -213,12 +213,12 @@ extension 프로필변경_화면 {
                                                 
                                                 self.view.makeToast(
                                                     " 회원님의 프로필이 업데이트 되었습니다. ",
-                                                    duration: 2.5,
+                                                    duration: 2,
                                                     position: .top,
                                                     style: 토스트
                                                 )
                                             }
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                                 self.navigationController?.popViewController(animated: true)
                                             }
                                         }

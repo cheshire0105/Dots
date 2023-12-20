@@ -90,6 +90,7 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
         
         캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
         self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+//        백_레이아웃()
     }
 
     
@@ -119,6 +120,8 @@ extension Mypage {
         
         캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
         self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+//        백_레이아웃()
+
     }
 }
 
