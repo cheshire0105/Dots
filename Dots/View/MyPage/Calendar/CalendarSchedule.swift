@@ -1,6 +1,11 @@
 import UIKit
-
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
 class 캘린더_스케쥴_등록_모달 : UIViewController {
+    
+   
+
     
     private let 손잡이 = {
         let uiView = UIView()
@@ -46,45 +51,52 @@ class 캘린더_스케쥴_등록_모달 : UIViewController {
 }
 
 
-extension 캘린더_스케쥴_등록_모달 {
-    
-    private func UI레이아웃 () {
-        view.addSubview(손잡이)
-        view.addSubview(페이지_제목)
-        view.addSubview(캘린더_전시_테이블뷰)
-        
-        손잡이.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(5)
-            make.width.equalTo(40)
-        }
-        페이지_제목.snp.makeConstraints { make in
-            make.top.equalTo(손잡이.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-        }
-        캘린더_전시_테이블뷰.snp.makeConstraints { make in
-            make.top.equalTo(페이지_제목.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(5)
-            make.trailing.equalToSuperview().offset(-5)
-            make.bottom.equalToSuperview().offset(-5)
-        }
-    }
+
+
+
+
+
+
+
+struct 셀_데이터 {
+    var 포스터이미지: String
+    var 전시명: String
+    var 장소: String
+    var 방문날짜: String
 }
+
+struct 셀_배열 {
+    var 셀_데이터_배열: [셀_데이터] = [
+        셀_데이터(포스터이미지: "이미지1", 전시명: "전시1", 장소: "장소1", 방문날짜: "날짜1"),
+        셀_데이터(포스터이미지: "이미지2", 전시명: "전시2", 장소: "장소2", 방문날짜: "날짜2"),
+        셀_데이터(포스터이미지: "이미지3", 전시명: "전시3", 장소: "장소3", 방문날짜: "날짜3"),
+        셀_데이터(포스터이미지: "이미지4", 전시명: "전시4", 장소: "장소4", 방문날짜: "날짜4"),
+    ]
+}
+
+var 셀_데이터_배열 = 셀_배열()
+
+
+
 extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 10
+  1
     }
+
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 셀_데이터_배열.셀_데이터_배열.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "캘린더_스케쥴_등록_셀", for: indexPath) as? 캘린더_스케쥴_등록_셀 else {
             return UITableViewCell()
         }
+        
+        let 데이터 = 셀_데이터_배열.셀_데이터_배열[indexPath.row]
+        cell.셀_데이터 = 데이터
+
         if cell.isSelected {
              cell.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
          } else {
@@ -161,6 +173,26 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 extension 캘린더_스케쥴_등록_모달 {
     func findViewController() -> UIViewController? {
         var responder: UIResponder? = self
@@ -174,4 +206,31 @@ extension 캘린더_스케쥴_등록_모달 {
     }
     
     
+}
+
+
+extension 캘린더_스케쥴_등록_모달 {
+    
+    private func UI레이아웃 () {
+        view.addSubview(손잡이)
+        view.addSubview(페이지_제목)
+        view.addSubview(캘린더_전시_테이블뷰)
+        
+        손잡이.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(10)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(5)
+            make.width.equalTo(40)
+        }
+        페이지_제목.snp.makeConstraints { make in
+            make.top.equalTo(손잡이.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
+        }
+        캘린더_전시_테이블뷰.snp.makeConstraints { make in
+            make.top.equalTo(페이지_제목.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(5)
+            make.trailing.equalToSuperview().offset(-5)
+            make.bottom.equalToSuperview().offset(-5)
+        }
+    }
 }

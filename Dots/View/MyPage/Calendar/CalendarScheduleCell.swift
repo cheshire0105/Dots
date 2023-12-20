@@ -4,6 +4,17 @@ import SnapKit
 
 class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     
+    var 셀_데이터: 셀_데이터? {
+           didSet {
+               guard let 데이터 = 셀_데이터 else { return }
+
+               전시_포스터_이미지.image = UIImage(named: 데이터.포스터이미지)
+               전시명_라벨.text = 데이터.전시명
+               장소_라벨.text = 데이터.장소
+               방문날짜_라벨.text = 데이터.방문날짜
+           }
+       }
+
     
     let 이미지_백 = {
         let uiView = UIView()
@@ -104,7 +115,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
            backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
 
            캘린더_스케쥴_등록_셀_레이아웃()
-           버튼_클릭()
+           
            
            if let 평균색상_추출 = 전시_포스터_이미지.image?.이미지_평균색상(){
                이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
@@ -123,76 +134,6 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
 
 
 
-extension 캘린더_스케쥴_등록_셀 {
-    
-    func 버튼_클릭 () {
-        내후기_버튼.addTarget(self, action: #selector(내후기_버튼_클릭), for: .touchUpInside)
-        내후기_수정_버튼.addTarget(self, action: #selector(내후기_수정_버튼_클릭), for: .touchUpInside)
-        내후기_삭제_버튼.addTarget(self, action: #selector(내후기_삭제_버튼_클릭), for: .touchUpInside)
-        
-    }
-    
-    @objc func 내후기_버튼_클릭 () {
-        print("내후기_버튼_클릭")
-
-    }
-    @objc func 내후기_수정_버튼_클릭 () {
-        print("내후기_수정_버튼_클릭")
-//        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
-//            let 수정_뷰 = 켈린더_수정_뷰컨트롤러()
-//            수정_뷰.modalPresentationStyle = .fullScreen
-//            셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
-//        }
-    }
-    
-    
-    @objc func 내후기_삭제_버튼_클릭 () {
-        print("내후기_삭제_버튼_클릭")
-//        if let 셀_제약_벗어난_뷰_띄우기 = self.findViewController() {
-//            let 수정_뷰 = 켈린더_삭제_뷰컨트롤러()
-//            수정_뷰.modalPresentationStyle = .fullScreen
-//            셀_제약_벗어난_뷰_띄우기.present(수정_뷰, animated: false, completion: nil)
-//        }
-    }
-}
-
-
-
-
-
-//
-////셀 애니메이션+영역 재설정관련
-//extension 캘린더_스케쥴_등록_셀 {
-//    
-//    func 셀_클릭_애니메이션_on() {
-//        UIView.animate(withDuration: 0.3, animations: {
-//            self.transform = CGAffineTransform(translationX: -self.bounds.width * 5/10, y: 0)
-//            
-//        })
-//    }
-//    func 셀_클릭_애니메이션_off() {
-//        UIView.animate(withDuration: 0.3, animations: {
-//            self.transform = .identity
-//        })
-//    }
-//    
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let convertedPoint = 내후기_수정_버튼.convert(point, from: self)
-//        if 내후기_수정_버튼.bounds.contains(convertedPoint) {
-//            return 내후기_수정_버튼
-//        }
-//        
-//        let convertedPoint2 = 내후기_삭제_버튼.convert(point, from: self)
-//        if 내후기_삭제_버튼.bounds.contains(convertedPoint2) {
-//            return 내후기_삭제_버튼
-//        }
-//        
-//        return super.hitTest(point, with: event)
-//    }
-//    
-//}
-
-
 extension 캘린더_스케쥴_등록_셀{
     func 캘린더_스케쥴_등록_셀_레이아웃() {
         contentView.addSubview(이미지_백)
@@ -205,10 +146,7 @@ extension 캘린더_스케쥴_등록_셀{
         contentView.addSubview(방문날짜_라벨)
         
         contentView.addSubview(내후기_버튼)
-        
-//        contentView.addSubview(내후기_수정_버튼)
-//        contentView.addSubview(내후기_삭제_버튼)
-        
+  
         이미지_백.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(5)
             make.leading.equalToSuperview().offset(5)
@@ -253,21 +191,7 @@ extension 캘린더_스케쥴_등록_셀{
             make.leading.equalTo(전시명_라벨)
             make.bottom.equalTo(전시_포스터_이미지)
         }
-        
-//        내후기_수정_버튼.snp.makeConstraints { make in
-//            make.top.bottom.equalTo(라벨_백)
-//            make.leading.equalTo(라벨_백.snp.trailing).offset(15)
-//            make.width.equalTo(80)
-//        }
-//        
-//        내후기_삭제_버튼.snp.makeConstraints { make in
-//            make.top.bottom.equalTo(라벨_백)
-//            make.leading.equalTo(내후기_수정_버튼.snp.trailing).offset(10)
-//            make.width.equalTo(80)
-//        }
     }
-    
-    
 }
 
 
@@ -289,16 +213,4 @@ extension UIImage {
     }
 }
 
-//
-//extension UIView {
-//    func findViewController() -> UIViewController? {
-//        var responder: UIResponder? = self
-//        while let nextResponder = responder?.next {
-//            responder = nextResponder
-//            if let viewController = responder as? UIViewController {
-//                return viewController
-//            }
-//        }
-//        return nil
-//    }
-//}
+
