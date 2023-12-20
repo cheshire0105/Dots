@@ -1375,6 +1375,22 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
     var museumName: String? // 미술관 이름을 저장할 프로퍼티 추가
 
+    private lazy var mapAlertView: UIView = {
+            let view = UIView()
+            view.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
+            view.layer.cornerRadius = 20
+            view.isHidden = true // 처음에는 숨겨둡니다.
+            return view
+        }()
+
+    private lazy var blurEffectView: UIVisualEffectView = {
+          let blurEffect = UIBlurEffect(style: .dark)
+          let view = UIVisualEffectView(effect: blurEffect)
+          view.frame = self.view.bounds
+          view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+          view.isHidden = true // 처음에는 숨겨둡니다.
+          return view
+      }()
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -1403,27 +1419,128 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         print(imageName)
         view.addSubview(backButton)
 
-
-        view.addSubview(floatingButton)
-
-        floatingButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-20) // 하단에서 20포인트 위
-            make.centerX.equalTo(view.safeAreaLayoutGuide.snp.centerX) // 화면의 가로축 중앙
-            make.width.equalTo(106) // 너비 설정
-            make.height.equalTo(46) // 높이 설정
-        }
-
-
         backButton.snp.makeConstraints { make in // SnapKit을 사용하여 제약 조건 설정
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16) // leading edge로부터 10포인트 떨어진 곳에 위치
             make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
 
-        configureLocationManager() // 위치 관리자 설정
 
+        // 먼저 blurEffectView를 추가합니다.
+        view.addSubview(blurEffectView)
+        blurEffectView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
 
+        // blurEffectView가 추가된 후에 tapGesture를 추가합니다.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissMapAlertView))
+        blurEffectView.addGestureRecognizer(tapGesture)
+        blurEffectView.isUserInteractionEnabled = true
+
+        view.addSubview(floatingButton)
+        setupFloatingButtonConstraints()
+
+        // 이제 mapAlertView를 추가합니다.
+        view.addSubview(mapAlertView)
+        setupMapAlertViewConstraints()
+
+        configureLocationManager()
     }
+
+    private func setupFloatingButtonConstraints() {
+        floatingButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-20)
+            make.centerX.equalTo(view.safeAreaLayoutGuide.snp.centerX)
+            make.width.equalTo(106)
+            make.height.equalTo(46)
+        }
+    }
+
+    private func setupMapAlertViewConstraints() {
+        mapAlertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(320)
+            make.height.equalTo(180)
+        }
+        // 여기에 mapAlertView 내부에 들어갈 컴포넌트들을 추가하고 제약 조건을 설정합니다.
+    }
+
+
+    @objc func modalLoadButtonTapped() {
+           blurEffectView.isHidden = false
+           mapAlertView.isHidden = false
+       }
+
+    @objc func dismissMapAlertView() {
+        // 얼럿 창을 닫고, 길찾기 버튼을 다시 표시합니다.
+        mapAlertView.isHidden = true
+        blurEffectView.isHidden = true
+        floatingButton.isHidden = false  // 길찾기 버튼 다시 표시
+    }
+
+
+    private func setupMapAlertView() {
+        // "길찾기" 레이블 설정
+        let guideLabel = UILabel()
+        guideLabel.text = "길찾기"
+        guideLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        guideLabel.textColor = .white
+
+        // 네이버 지도 버튼 및 레이블 설정
+        let naverButton = UIButton()
+        naverButton.setImage(UIImage(named: "image 72"), for: .normal)
+        let naverLabel = UILabel()
+        naverLabel.text = "네이버 지도"
+        naverLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        naverLabel.textColor = .white
+        naverLabel.textAlignment = .center
+        // 네이버 지도 버튼에 액션 추가
+           naverButton.addTarget(self, action: #selector(naverMapMove), for: .touchUpInside)
+
+
+        // 카카오맵 버튼 및 레이블 설정
+        let kakaoButton = UIButton()
+        kakaoButton.setImage(UIImage(named: "image 73"), for: .normal)
+        let kakaoLabel = UILabel()
+        kakaoLabel.text = "카카오맵"
+        kakaoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        kakaoLabel.textColor = .white
+        kakaoLabel.textAlignment = .center
+
+        // 네이버 스택 뷰 설정
+        let naverStackView = UIStackView(arrangedSubviews: [naverButton, naverLabel])
+        naverStackView.axis = .vertical
+        naverStackView.spacing = 10
+        naverStackView.alignment = .center
+
+        // 카카오 스택 뷰 설정
+        let kakaoStackView = UIStackView(arrangedSubviews: [kakaoButton, kakaoLabel])
+        kakaoStackView.axis = .vertical
+        kakaoStackView.spacing = 10
+        kakaoStackView.alignment = .center
+
+        // 메인 스택 뷰 설정
+        let mainStackView = UIStackView(arrangedSubviews: [naverStackView, kakaoStackView])
+        mainStackView.axis = .horizontal
+        mainStackView.spacing = 10
+        mainStackView.distribution = .fillEqually
+
+        mapAlertView.addSubview(guideLabel)
+        mapAlertView.addSubview(mainStackView)
+
+        guideLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.leading.equalToSuperview().inset(20)
+        }
+
+        mainStackView.snp.makeConstraints { make in
+            make.top.equalTo(guideLabel.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(150)
+        }
+    }
+
+
 
     func configureLocationManager() {
          locationManager = CLLocationManager()
@@ -1456,6 +1573,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
 
     @objc func floatingButtonTapped() {
+        // 길찾기 버튼을 누르면 얼럿 창을 표시하고, 길찾기 버튼을 숨깁니다.
+        blurEffectView.isHidden = false
+        mapAlertView.isHidden = false
+        floatingButton.isHidden = true  // 길찾기 버튼 숨기기
+
+        // 얼럿 창에 추가될 내용 구성 및 설정
+        setupMapAlertView()
+    }
+
+    @objc func naverMapMove() {
         guard let museumName = self.museumName else {
             print("미술관 이름이 설정되지 않았습니다.")
             return
@@ -1477,7 +1604,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             UIApplication.shared.open(appStoreURL)
         }
 
-    
     }
 
 
