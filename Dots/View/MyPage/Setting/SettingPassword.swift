@@ -87,7 +87,7 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         
-        textField.clearButtonMode = .whileEditing
+//        textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
         textField.isSecureTextEntry = true
         
@@ -122,7 +122,7 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         
-        textField.clearButtonMode = .whileEditing
+//        textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
         textField.isSecureTextEntry = true
         
