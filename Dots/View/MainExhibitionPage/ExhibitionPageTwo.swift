@@ -1456,10 +1456,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             label.textAlignment = .center
             label.sizeToFit()
 
-            // 레이블의 위치를 이미지의 중앙에 맞춥니다.
-            let labelX = label.frame.width / 6
-            let labelY = annotationView?.image?.size.height ?? 0 // 이미지 높이 기준
+            // 레이블의 위치를 이미지의 아래 중앙에 맞춥니다.
+            let imageWidth = annotationView?.image?.size.width ?? 0 // 이미지 너비
+            let imageHeight = annotationView?.image?.size.height ?? 0 // 이미지 높이
+
+            let labelX = (imageWidth - label.frame.width) / 2 // 중앙 정렬을 위한 X좌표 계산
+            let labelY = imageHeight // 이미지 아래에 위치하도록 Y좌표 설정
+
             label.frame = CGRect(x: labelX, y: labelY, width: label.frame.width, height: label.frame.height)
+
             annotationView?.addSubview(label)
         } else {
             annotationView?.annotation = annotation
