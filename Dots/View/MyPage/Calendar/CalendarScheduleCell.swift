@@ -5,16 +5,24 @@ import SnapKit
 class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     
     var 셀_데이터: 셀_데이터? {
-           didSet {
-               guard let 데이터 = 셀_데이터 else { return }
+          didSet {
+              guard let 데이터 = 셀_데이터 else { return }
 
-               전시_포스터_이미지.image = UIImage(named: 데이터.포스터이미지)
-               전시명_라벨.text = 데이터.전시명
-               장소_라벨.text = 데이터.장소
-               방문날짜_라벨.text = 데이터.방문날짜
+              전시_포스터_이미지(from: 데이터.포스터이미지URL)
+              전시명_라벨.text = 데이터.전시명
+              장소_라벨.text = 데이터.장소
+              방문날짜_라벨.text = 데이터.방문날짜
+          }
+      }
+    func 전시_포스터_이미지(from url: String) {
+           guard let imageURL = URL(string: url) else {
+               전시_포스터_이미지.image = UIImage(named: "기본프로필사진")
+               return
            }
-       }
 
+           전시_포스터_이미지.sd_setImage(with: imageURL, completed: nil)
+       }
+   
     
     let 이미지_백 = {
         let uiView = UIView()

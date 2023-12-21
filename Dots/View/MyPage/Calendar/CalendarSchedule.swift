@@ -2,6 +2,8 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
+import SDWebImage
+
 class 캘린더_스케쥴_등록_모달 : UIViewController {
     
     
@@ -65,7 +67,7 @@ class 캘린더_스케쥴_등록_모달 : UIViewController {
 
 
 struct 셀_데이터 {
-    var 포스터이미지: String
+    var 포스터이미지URL: String
     var 전시명: String
     var 장소: String
     var 방문날짜: String
@@ -117,7 +119,7 @@ extension 캘린더_스케쥴_등록_모달 {
                     }
                     
                     guard let 리뷰문서데이터 = 리뷰문서스냅샷?.data(),
-                          let 포스터이미지 = 리뷰문서데이터["포스터이미지"] as? String,
+                          let 포스터이미지URL = 리뷰문서데이터["포스터이미지"] as? String,
                           let 방문날짜 = 리뷰문서데이터["유저_다녀옴_날짜"] as? String else {
                         return
                     }
@@ -133,18 +135,37 @@ extension 캘린더_스케쥴_등록_모달 {
                               let 전시장소 = 전시상세데이터["미술관_이름"] as? String else {
                             return
                         }
-                        
-                        let 데이터 = 셀_데이터(포스터이미지: 포스터이미지, 전시명: 전시명, 장소: 전시장소, 방문날짜: 방문날짜)
-                        셀_데이터_배열.셀_데이터_배열.append(데이터)
-                        self.캘린더_전시_테이블뷰.reloadData()
-                        print(셀_데이터_배열.셀_데이터_배열)
-
+                        self.다운로드된_전시_포스터_이미지(from: 포스터이미지URL) { 이미지 in
+                            if 이미지 != nil {
+                                let 데이터 = 셀_데이터(포스터이미지URL: 포스터이미지URL, 전시명: 전시명, 장소: 전시장소, 방문날짜: 방문날짜)
+                                셀_데이터_배열.셀_데이터_배열.append(데이터)
+                                self.캘린더_전시_테이블뷰.reloadData()
+                            }
+                        }
                     }
                 }
             }
         }
     }
-
+        func 다운로드된_전시_포스터_이미지(from url: String, completion: @escaping (UIImage?) -> Void) {
+            guard let imageURL = URL(string: url) else {
+                completion(nil)
+                return
+            }
+            
+            let 데이터테스크 = URLSession.shared.dataTask(with: imageURL) { 데이터, 응답, 에러 in
+                guard let imageData = 데이터, 에러 == nil else {
+                    completion(nil)
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    completion(UIImage(data: imageData))
+                }
+            }
+            
+            데이터테스크.resume()
+        }
 }
 //
 //
@@ -172,7 +193,7 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
         }
         
         let 데이터 = 셀_데이터_배열.셀_데이터_배열[indexPath.row]
-        cell.전시_포스터_이미지.image = UIImage(named: 데이터.포스터이미지)
+        cell.전시_포스터_이미지(from: 데이터.포스터이미지URL)
         cell.전시명_라벨.text = 데이터.전시명
         cell.장소_라벨.text = 데이터.장소
         cell.방문날짜_라벨.text = 데이터.방문날짜
