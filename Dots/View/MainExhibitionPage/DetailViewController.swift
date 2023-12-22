@@ -186,6 +186,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                     group.enter()
                     let data = document.data()
                     let userId = document.documentID // UUID로 가정
+                    let likes = data["likes"] as? [String: Bool] ?? [:]
+
 
                     Firestore.firestore().collection("유저_데이터_관리").document(userId)
                         .getDocument { (userDoc, error) in
@@ -205,7 +207,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                     nickname: nickname,
                                     profileImageUrl: profileImageUrl,
                                     photoUrls: data["images"] as? [String] ?? [],
-                                    userId: data["userId"] as? String ?? "", userReviewUUID: userReviewUUID // 여기에 userId를 추가,
+                                    userId: data["userId"] as? String ?? "", 
+                                    userReviewUUID: userReviewUUID,
+                                    likes: likes
 
                                 )
 
@@ -702,8 +706,22 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let review = reviews[indexPath.row]
         let timeString = convertDateToString(review.createdAt) // 리뷰 작성 시간을 문자열로 변환
 
+        // 현재 접속 중인 사용자의 ID를 가져옵니다. (Firebase Auth 사용 시)
+            guard let currentUserID = Auth.auth().currentUser?.uid else {
+                print("Current user ID not available")
+                return cell
+            }
+
+        let isLikedByCurrentUser = review.likes[currentUserID] ?? false
+
+        // '좋아요' 상태에 따른 이미지 설정
+           let likeImageName = isLikedByCurrentUser ? "streamline_interface-edit-view-eye-eyeball-open-view 4" : "streamline_interface-edit-view-eye-eyeball-open-view 3"
+           let likeImage = UIImage(named: likeImageName)
+
+
         // 셀에 리뷰 정보를 설정합니다.
-        cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 3"), extraImageView2: UIImage(named: "Union (2) 1"), text123: "123", text456: "456")
+        cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: convertDateToString(review.createdAt), newTitle: review.title, extraImageView1: likeImage, extraImageView2: UIImage(named: "Union (2) 1"), text123: "123", text456: "456")
+
 
         // SDWebImage를 사용하여 프로필 이미지 캐시 및 로드
          if let profileImageUrl = URL(string: review.profileImageUrl) {
@@ -719,7 +737,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         return cell
     }
 
-
+    
 
     // 날짜 변환 함수 (예제)
     func convertDateToString(_ date: Date) -> String {
