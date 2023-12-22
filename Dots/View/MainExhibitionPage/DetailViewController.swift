@@ -198,6 +198,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                 let nickname = userData?["닉네임"] as? String ?? ""
                                 let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
                                 let userReviewUUID = document.documentID // UUID를 가져옵니다.
+                                let likesNum = data["likesNum"] as? Int ?? 0 // 'likesNum' 필드를 읽어옴
+
 
 
                                 let review = Review(
@@ -209,7 +211,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                     photoUrls: data["images"] as? [String] ?? [],
                                     userId: data["userId"] as? String ?? "", 
                                     userReviewUUID: userReviewUUID,
-                                    likes: likes
+                                    likes: likes,
+                                    likesNum: likesNum
+
 
                                 )
 
@@ -720,7 +724,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
         // 셀에 리뷰 정보를 설정합니다.
-        cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: convertDateToString(review.createdAt), newTitle: review.title, extraImageView1: likeImage, extraImageView2: UIImage(named: "Union (2) 1"), text123: "123", text456: "456")
+        cell.setReview(nikeName: review.nickname, 
+                       content: review.content,
+                       profileImageUrl: review.profileImageUrl,
+                       nickname: convertDateToString(review.createdAt),
+                       newTitle: review.title, 
+                       extraImageView1: likeImage,
+                       extraImageView2: UIImage(named: "Union (2) 1"),
+                       text123: "\(review.likesNum)", // 'text123'에 좋아요 수 표시
+                       text456: "456")
 
 
         // SDWebImage를 사용하여 프로필 이미지 캐시 및 로드
