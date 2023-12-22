@@ -98,7 +98,6 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
 
 // 켈린더 sheet present modal
 extension Mypage  {
-    // ... (이전의 코드는 그대로 유지)
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         if Calendar.current.isDateInToday(date) {
@@ -107,13 +106,11 @@ extension Mypage  {
             calendar.appearance.titleSelectionColor = UIColor.white
         }
 
-        // 클릭된 날짜에 대한 처리
         handleSelectedDate(date)
     }
     
     private func handleSelectedDate(_ date: Date) {
-        // 클릭된 날짜에 대한 처리를 여기에 추가하세요.
-        // 예를 들어, 모달을 띄우는 등의 동작을 수행할 수 있습니다.
+        
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
 
         if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {

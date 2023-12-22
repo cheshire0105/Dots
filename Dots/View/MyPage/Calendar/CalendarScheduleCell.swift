@@ -45,7 +45,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     
     var 전시_포스터_이미지 = {
         var imageView = UIImageView()
-        imageView.image = UIImage(named: "help")
+        imageView.image = UIImage(named: "morningStar")
         imageView.layer.cornerRadius = 15
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
