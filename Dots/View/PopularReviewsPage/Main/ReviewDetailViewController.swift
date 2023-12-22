@@ -158,7 +158,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             }
         }
         
-        
+        checkLikeStatusAndUpdateIcon()
+
     }
 
     func sortImageUrls(_ urls: [String]) -> [String] {
@@ -684,10 +685,83 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
     }
 
-@objc private func additionalImageButton1Tapped() {
-       // 새로운 이미지로 변경
-       additionalImageButton1.setImage(UIImage(named: "Vector 5"), for: .normal)
-   }
+    @objc private func additionalImageButton1Tapped() {
+        guard let userReviewUUID = userReviewUUID, let posterName = posterName, let currentUserID = CurrentUser.shared.uid else {
+            print("필요한 정보가 부족합니다.")
+            return
+        }
+
+        let reviewRef = Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").document(userReviewUUID)
+
+        reviewRef.getDocument { [weak self] documentSnapshot, error in
+            guard let document = documentSnapshot, error == nil else {
+                print("Error fetching document: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            var likes = document.data()?["likes"] as? [String: Bool] ?? [:]
+            // 사용자의 좋아요 상태 반전
+            likes[currentUserID] = !(likes[currentUserID] ?? false)
+
+            DispatchQueue.main.async {
+
+
+                // UI 업데이트는 즉시 수행
+                let isLikedNow = likes[currentUserID] ?? false
+                self?.updateLikeButtonUI(isLiked: isLikedNow, likeCount: likes.values.filter { $0 }.count)
+            }
+
+                // Firestore 업데이트는 백그라운드에서 수행
+                reviewRef.updateData(["likes": likes]) { error in
+                    if let error = error {
+                        print("Error updating likes: \(error.localizedDescription)")
+                    } else {
+                        print("Likes successfully updated.")
+                    }
+                }
+
+        }
+    }
+
+ 
+    private func updateLikeButtonUI(isLiked: Bool, likeCount: Int) {
+        // 좋아요 상태에 따라 아이콘 변경
+        let iconName = isLiked ? "Vector 5" : "Vector 3"
+        additionalImageButton1.setImage(UIImage(named: iconName), for: .normal)
+        additionalLabel1.text = "\(likeCount)"
+    }
+
+
+    func checkLikeStatusAndUpdateIcon() {
+        guard let userReviewUUID = userReviewUUID, let posterName = posterName, let currentUserID = CurrentUser.shared.uid else {
+            print("필요한 정보가 부족합니다.")
+            return
+        }
+
+        let reviewRef = Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").document(userReviewUUID)
+
+        reviewRef.getDocument { [weak self] documentSnapshot, error in
+            DispatchQueue.main.async {
+                guard let document = documentSnapshot, error == nil else {
+                    print("Error fetching document: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
+
+                let likes = document.data()?["likes"] as? [String: Bool] ?? [:]
+                let isLiked = likes[currentUserID] ?? false
+                self?.updateLikeButtonIcon(isLiked: isLiked)
+            }
+        }
+    }
+
+
+    func updateLikeButtonIcon(isLiked: Bool) {
+        let iconName = isLiked ? "Vector 5" : "Vector 3" // 좋아요 상태에 따른 아이콘 이름 변경
+        additionalImageButton1.setImage(UIImage(named: iconName), for: .normal)
+    }
+
 
     private func setupNavigationTitleAndSubtitle() {
         let titleLabel = UILabel()
