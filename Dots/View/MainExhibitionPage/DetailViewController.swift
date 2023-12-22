@@ -730,9 +730,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                        nickname: convertDateToString(review.createdAt),
                        newTitle: review.title, 
                        extraImageView1: likeImage,
-                       extraImageView2: UIImage(named: "Union (2) 1"),
+                       extraImageView2: UIImage(named: ""),
                        text123: "\(review.likesNum)", // 'text123'에 좋아요 수 표시
-                       text456: "456")
+                       text456: "")
 
 
         // SDWebImage를 사용하여 프로필 이미지 캐시 및 로드

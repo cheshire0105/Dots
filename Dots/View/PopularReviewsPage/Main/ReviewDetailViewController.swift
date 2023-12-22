@@ -638,14 +638,14 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
         // 두 번째 추가 이미지 뷰 및 레이블 구성
-        additionalImageView2.image = UIImage(named: "Union (2) 2")
+        additionalImageView2.image = UIImage(named: "")
         additionalLabel2.textColor = .white
         additionalLabel2.font = UIFont(name: "Pretendard-Light", size: 12)
         additionalLabel2.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
         
         
         //        additionalLabel2.text = "456"
-        additionalLabel2.text = "456"
+        additionalLabel2.text = ""
         
         // 스타일 및 글꼴 설정 등
         
