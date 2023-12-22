@@ -15,13 +15,20 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
           }
       }
     func 전시_포스터_이미지(from url: String) {
-           guard let imageURL = URL(string: url) else {
-               전시_포스터_이미지.image = UIImage(named: "기본프로필사진")
-               return
-           }
+        guard let imageURL = URL(string: url) else {
+            전시_포스터_이미지.image = UIImage(named: "기본프로필사진")
+            return
+        }
 
-           전시_포스터_이미지.sd_setImage(with: imageURL, completed: nil)
-       }
+        전시_포스터_이미지.sd_setImage(with: imageURL) { [weak self] (image, error, _, _) in
+            if let image = image {
+                if let 평균색상_추출 = image.이미지_평균색상() {
+                    self?.이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
+                    self?.라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
+                }
+            }
+        }
+    }
    
     
     let 이미지_백 = {
@@ -64,7 +71,9 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     let 장소_라벨 = {
         let label = UILabel()
         label.text = "전시 장소"
-        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+//        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        label.textColor = UIColor.black
+
         
         label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textAlignment = .left
@@ -75,7 +84,9 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
         let label = UILabel()
         label.text = "2022년 2월 2일"
         label.font = UIFont(name: "HelveticaNeue", size: 12)
-        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+//        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        label.textColor = UIColor.black
+
         
         label.textAlignment = .left
         return label
