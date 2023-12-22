@@ -701,36 +701,36 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             }
 
             var likes = document.data()?["likes"] as? [String: Bool] ?? [:]
-            // 사용자의 좋아요 상태 반전
-            likes[currentUserID] = !(likes[currentUserID] ?? false)
+            let currentLikeStatus = likes[currentUserID] ?? false
+            // 좋아요 상태 반전
+            likes[currentUserID] = !currentLikeStatus
+
+            // 좋아요 수 업데이트
+            var likesNum = document.data()?["likesNum"] as? Int ?? 0
+            likesNum += (currentLikeStatus ? -1 : 1)
 
             DispatchQueue.main.async {
-
-
-                // UI 업데이트는 즉시 수행
-                let isLikedNow = likes[currentUserID] ?? false
-                self?.updateLikeButtonUI(isLiked: isLikedNow, likeCount: likes.values.filter { $0 }.count)
+                // UI 업데이트
+                self?.updateLikeButtonUI(isLiked: !currentLikeStatus, likeCount: likesNum)
             }
 
-                // Firestore 업데이트는 백그라운드에서 수행
-                reviewRef.updateData(["likes": likes]) { error in
-                    if let error = error {
-                        print("Error updating likes: \(error.localizedDescription)")
-                    } else {
-                        print("Likes successfully updated.")
-                    }
+            // Firestore 업데이트
+            reviewRef.updateData(["likes": likes, "likesNum": likesNum]) { error in
+                if let error = error {
+                    print("Error updating likes: \(error.localizedDescription)")
+                } else {
+                    print("Likes successfully updated.")
                 }
-
+            }
         }
     }
 
- 
     private func updateLikeButtonUI(isLiked: Bool, likeCount: Int) {
-        // 좋아요 상태에 따라 아이콘 변경
         let iconName = isLiked ? "Vector 5" : "Vector 3"
         additionalImageButton1.setImage(UIImage(named: iconName), for: .normal)
         additionalLabel1.text = "\(likeCount)"
     }
+
 
 
     func checkLikeStatusAndUpdateIcon() {
@@ -750,11 +750,20 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                 }
 
                 let likes = document.data()?["likes"] as? [String: Bool] ?? [:]
+                let likesNum = document.data()?["likesNum"] as? Int ?? 0 // 좋아요 수 가져오기
                 let isLiked = likes[currentUserID] ?? false
+
+                // 좋아요 아이콘과 수 업데이트
                 self?.updateLikeButtonIcon(isLiked: isLiked)
+                self?.updateLikesCount(likesNum)
             }
         }
     }
+
+    func updateLikesCount(_ count: Int) {
+        additionalLabel1.text = "\(count)"
+    }
+
 
 
     func updateLikeButtonIcon(isLiked: Bool) {
