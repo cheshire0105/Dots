@@ -13,9 +13,10 @@ struct Review {
     var createdAt: Date
     var nickname: String
     var profileImageUrl: String
-    var photoUrls: [String] // 유저가 올린 사진들의 URL
-    var userId: String // 리뷰 작성자의 고유 식별자
-    var posterName: String? // 포스터 이름 (옵셔널로 선언)
+    var photoUrls: [String]
+    var userId: String
+    var userReviewUUID: String // 사용자 리뷰의 UUID를 저장하는 프로퍼티 추가
+    var posterName: String?
 }
 
 

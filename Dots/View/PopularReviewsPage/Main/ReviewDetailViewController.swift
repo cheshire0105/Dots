@@ -66,7 +66,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     
     var imageUrls: [String] = [] // 이미지 URL 배열 추가
     
-    
+    var userReviewUUID : String?
+
     // 추가된 프로퍼티
     var museumName: String?
     var exhibitionTitle: String?
@@ -85,6 +86,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         super.viewDidLoad()
         view.backgroundColor = .black
         print("리뷰 디테일 페이지의 posterName\(self.posterName)")
+        print("후기 남긴 유저의 UUID \(userReviewUUID)")
         //        loadImages() // 이미지 로드
         setupPageControl()  // 이 부분을 확인
         

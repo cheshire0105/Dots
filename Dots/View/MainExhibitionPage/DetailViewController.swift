@@ -195,6 +195,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
                                 let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
+                                let userReviewUUID = document.documentID // UUID를 가져옵니다.
+
 
                                 let review = Review(
                                     title: data["title"] as? String ?? "",
@@ -203,7 +205,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                     nickname: nickname,
                                     profileImageUrl: profileImageUrl,
                                     photoUrls: data["images"] as? [String] ?? [],
-                                    userId: data["userId"] as? String ?? "" // 여기에 userId를 추가
+                                    userId: data["userId"] as? String ?? "", userReviewUUID: userReviewUUID // 여기에 userId를 추가,
+
                                 )
 
                                 newReviews.append(review)
@@ -756,6 +759,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         detailViewController.exhibitionTitle = exhibitionTitle
         // 이미지 URL 배열을 전달합니다.
         detailViewController.imageUrls = selectedReview.photoUrls
+        detailViewController.userReviewUUID = selectedReview.userReviewUUID // UUID를 전달합니다.
+
 
         // 여기에 posterName 값을 추가합니다.
             detailViewController.posterName = self.posterImageName
