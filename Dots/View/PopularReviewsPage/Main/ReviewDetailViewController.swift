@@ -52,7 +52,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     
     // 새로운 컴포넌트 선언
-    let additionalImageView1 = UIImageView()
+    let additionalImageButton1 = UIButton()
     let additionalLabel1 = UILabel()
     let additionalImageView2 = UIImageView()
     let additionalLabel2 = UILabel()
@@ -72,7 +72,9 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     var exhibitionTitle: String?
     
     private var pageControl: UIPageControl!
+
     
+
     override func viewWillAppear(_ animated: Bool) {
 
 
@@ -616,8 +618,9 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
         // 첫 번째 추가 이미지 뷰 및 레이블 구성
-        additionalImageView1.image = UIImage(named: "Vector 3")
-        
+        additionalImageButton1.setImage(UIImage(named: "Vector 3"), for: .normal)
+        additionalImageButton1.addTarget(self, action: #selector(additionalImageButton1Tapped), for: .touchUpInside)
+
         //        additionalLabel1.text = "123"
         additionalLabel1.text = "123"
         additionalLabel1.textColor = .white
@@ -643,27 +646,25 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         // 스타일 및 글꼴 설정 등
         
-        scrollView.addSubview(additionalImageView1)
+        scrollView.addSubview(additionalImageButton1)
         scrollView.addSubview(additionalLabel1)
         scrollView.addSubview(additionalImageView2)
         scrollView.addSubview(additionalLabel2)
         
         
         
-        additionalImageView1.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(30)
-            make.left.equalTo(contentLabel.snp.left)
-            make.width.equalTo(17.5)
-            make.height.equalTo(14.5)
-            //            make.bottom.equalToSuperview().offset(-10)//
-            make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
-            
-            
-        }
-        
+        additionalImageButton1.snp.makeConstraints { make in
+               make.top.equalTo(contentLabel.snp.bottom).offset(30)
+               make.left.equalTo(contentLabel.snp.left)
+               make.width.equalTo(17.5)
+               make.height.equalTo(14.5)
+               make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
+           }
+
+
         additionalLabel1.snp.makeConstraints { make in
-            make.centerY.equalTo(additionalImageView1)
-            make.left.equalTo(additionalImageView1.snp.right).offset(10)
+            make.centerY.equalTo(additionalImageButton1)
+            make.left.equalTo(additionalImageButton1.snp.right).offset(10)
         }
         
         // 두 번째 추가 이미지 뷰와 레이블 레이아웃
@@ -680,7 +681,12 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
     }
-    
+
+@objc private func additionalImageButton1Tapped() {
+       // 새로운 이미지로 변경
+       additionalImageButton1.setImage(UIImage(named: "Vector 5"), for: .normal)
+   }
+
     private func setupNavigationTitleAndSubtitle() {
         let titleLabel = UILabel()
         titleLabel.text = exhibitionTitle // 여기에 전시 타이틀을 설정
