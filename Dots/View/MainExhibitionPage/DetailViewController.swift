@@ -38,7 +38,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     
 
 
-    var labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
+    var labelContents = ["전시 기간: 23.11.10 - 24.02.12", "전시 시간: 09:00 - 17:00", "가격: 2,000원", "장르/작품수: 16점", "작가: 김구림 외 3명"]
+    let alertTitles = ["전시 기간", "전시 시간", "가격", "장르/작품수", "작가"]
+
 
     var mapView: MKMapView!
     let squaresStackView = UIStackView()
@@ -542,40 +544,35 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 스택 뷰에 이미지 뷰와 레이블을 추가하는 코드
         // 상위 컨테이너 뷰와 각각의 스택을 만들어서 그 안에 이미지와 레이블을 넣습니다.
         for index in 0..<5 {
+
+            
             // 컨테이너 뷰 생성
             let containerView = UIView()
-            containerView.clipsToBounds = true // 모서리가 둥근 하위 뷰를 클리핑하기 위함
+            containerView.clipsToBounds = true
             squaresStackView.addArrangedSubview(containerView)
 
             containerView.snp.makeConstraints { make in
-                make.width.equalTo(itemWidth) // 계산된 너비 설정
-                make.height.equalTo(160) // 설정된 높이
+                make.width.equalTo(itemWidth)
+                make.height.equalTo(160)
             }
 
-            // 정사각형 뷰 생성 및 설정
-            let squareView = UIView()
-            squareView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2) // 20% 투명도의 흰색 배경 설정
+            // 버튼 생성 및 설정
+            let button = UIButton()
+            button.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+            button.layer.cornerRadius = 10
+            button.setImage(UIImage(named: imageNames[index]), for: .normal)
+            button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+            containerView.addSubview(button)
 
-            squareView.layer.cornerRadius = 10 // 모서리 둥글게 설정
-            containerView.addSubview(squareView) // 컨테이너 뷰에 squareView 추가
-
-            squareView.snp.makeConstraints { make in
-                make.top.equalTo(containerView.snp.top) // 상단 맞춤
-                make.width.equalTo(containerView.snp.width) // 너비 맞춤
-                make.height.equalTo(squareView.snp.width) // 높이를 너비와 동일하게 설정하여 정사각형 만듬
-                make.centerX.equalTo(containerView.snp.centerX) // 가운데 맞춤
+            button.snp.makeConstraints { make in
+                make.top.equalTo(containerView.snp.top)
+                make.width.equalTo(containerView.snp.width)
+                make.height.equalTo(button.snp.width)
+                make.centerX.equalTo(containerView.snp.centerX)
             }
 
-            // 이미지 뷰 설정
-            let imageView = UIImageView()
-            imageView.contentMode = .scaleAspectFit
-            imageView.image = UIImage(named: imageNames[index])
-            squareView.addSubview(imageView) // squareView에 imageView 추가
+            button.tag = index
 
-            imageView.snp.makeConstraints { make in
-                make.size.equalTo(squareView.snp.size).multipliedBy(0.5) // squareView 대비 80% 크기로 설정
-                make.center.equalTo(squareView.snp.center) // squareView 중앙에 위치
-            }
 
             // 레이블 설정
             let label = UILabel()
@@ -584,12 +581,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             label.textAlignment = .center
             label.font = UIFont(name: "Pretendard-Regular", size: 12)
             label.numberOfLines = 0
-            containerView.addSubview(label) // containerView에 label 추가
+            containerView.addSubview(label)
 
             label.snp.makeConstraints { make in
-                make.top.equalTo(squareView.snp.bottom).offset(10) // squareView 아래에 위치
-                make.centerX.equalTo(containerView.snp.centerX) // containerView 중앙에 위치
-                make.leading.trailing.equalTo(containerView) // containerView의 leading과 trailing에 맞춤
+                make.top.equalTo(button.snp.bottom).offset(10)
+                make.centerX.equalTo(containerView.snp.centerX)
+                make.leading.trailing.equalTo(containerView)
             }
         }
 
@@ -681,6 +678,20 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             UIApplication.shared.windows.first?.rootViewController?.present(navController, animated: true, completion: nil)
         }
     }
+
+    // 버튼 탭 액션
+    @objc func buttonTapped(sender: UIButton) {
+        let tag = sender.tag
+        let alertTitle = alertTitles[tag] // 변경된 부분: 새로운 제목을 사용합니다.
+        let labelText = labelContents[tag]
+
+        // 얼럿창 생성 및 표시
+        let alert = UIAlertController(title: alertTitle, message: labelText, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "닫기", style: .cancel, handler: nil))
+        present(alert, animated: true)
+    }
+
+
 
 
 
