@@ -580,7 +580,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
-    
+
 
 
 
@@ -1363,8 +1363,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         button.setImage(UIImage(named: "🦆 icon _add pin alt_"), for: .normal) // 길찾기 이미지
         button.setTitle("길찾기", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-regular", size: 16)
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -24, bottom: 0, right: -10) // 이미지와 텍스트 간격 조정
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -13, bottom: 0, right: 0) // 이미지와 텍스트 간격 조정
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         button.addTarget(self, action: #selector(floatingButtonTapped), for: .touchUpInside) // 액션 추가
 
         return button
@@ -1571,7 +1572,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
     }
 
-    
+
 
 
     @objc func floatingButtonTapped() {
@@ -1634,7 +1635,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
     private func setupMapView() {
 
-        
+
         mapView = MKMapView(frame: self.view.bounds)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView = MKMapView(frame: self.view.bounds)
