@@ -300,14 +300,18 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     // 스택 뷰 업데이트 함수
+    // 스택 뷰 업데이트 함수
     private func updateStackView() {
         // squaresStackView에 있는 각 레이블에 새로운 값을 설정합니다.
-        for (index, label) in squaresStackView.arrangedSubviews.enumerated() {
-            if let containerView = label as? UIView, let label = containerView.subviews.last as? UILabel {
-                label.text = labelContents[index]
+        for (index, view) in squaresStackView.arrangedSubviews.enumerated() {
+            if let containerView = view as? UIView, let label = containerView.subviews.last as? UILabel {
+                // 줄바꿈 문자를 실제 줄바꿈으로 변환
+                let detailTextWithLineBreaks = labelContents[index].replacingOccurrences(of: "\\n", with: "\n")
+                label.text = detailTextWithLineBreaks
             }
         }
     }
+
 
 
 
@@ -562,6 +566,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             button.layer.cornerRadius = 10
             button.setImage(UIImage(named: imageNames[index]), for: .normal)
             button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+
             containerView.addSubview(button)
 
             button.snp.makeConstraints { make in
@@ -579,8 +584,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             label.text = labelContents[index]
             label.textColor = .white
             label.textAlignment = .center
-            label.font = UIFont(name: "Pretendard-Regular", size: 12)
-            label.numberOfLines = 0
+            label.font = UIFont(name: "Pretendard-Regular", size: 11)
+            label.numberOfLines = 5
             containerView.addSubview(label)
 
             label.snp.makeConstraints { make in
@@ -680,16 +685,21 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     // 버튼 탭 액션
+    // 버튼 탭 액션
     @objc func buttonTapped(sender: UIButton) {
         let tag = sender.tag
-        let alertTitle = alertTitles[tag] // 변경된 부분: 새로운 제목을 사용합니다.
+        let alertTitle = alertTitles[tag]
         let labelText = labelContents[tag]
 
+        // 줄바꿈 문자를 실제 줄바꿈으로 변환
+        let labelTextWithLineBreaks = labelText.replacingOccurrences(of: "\\n", with: "\n")
+
         // 얼럿창 생성 및 표시
-        let alert = UIAlertController(title: alertTitle, message: labelText, preferredStyle: .alert)
+        let alert = UIAlertController(title: alertTitle, message: labelTextWithLineBreaks, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "닫기", style: .cancel, handler: nil))
         present(alert, animated: true)
     }
+
 
 
 
