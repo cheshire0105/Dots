@@ -80,6 +80,8 @@ struct 셀_데이터 {
     var 전시명: String
     var 장소: String
     var 방문날짜: String
+    var 리뷰문서ID: String
+
 }
 
 struct 셀_배열 {
@@ -132,6 +134,8 @@ extension 캘린더_스케쥴_등록_모달 {
                           let 방문날짜 = 리뷰문서데이터["유저_다녀옴_날짜"] as? String else {
                         return
                     }
+                    let 리뷰문서ID = 리뷰문서스냅샷?.documentID ?? "" // 리뷰 문서의 ID를 가져옴
+
                     
                     데이터베이스.collection("전시_상세").document(포스터스문서ID).addSnapshotListener { (전시상세스냅샷, 전시에러) in
                         if let 전시에러 = 전시에러 {
@@ -147,8 +151,8 @@ extension 캘린더_스케쥴_등록_모달 {
                         
                         self.다운로드된_전시_포스터_이미지(from: 포스터이미지URL) { 이미지 in
                             if 이미지 != nil {
-                                let 데이터 = 셀_데이터(포스터이미지URL: 포스터이미지URL, 전시명: 전시명, 장소: 전시장소, 방문날짜: 방문날짜)
-                                
+                                let 데이터 = 셀_데이터(포스터이미지URL: 포스터이미지URL, 전시명: 전시명, 장소: 전시장소, 방문날짜: 방문날짜, 리뷰문서ID: 리뷰문서ID)
+
                                 if !self.셀_데이터_배열.셀_데이터_배열.contains(where: { $0.포스터이미지URL == 데이터.포스터이미지URL }) {
                                     self.셀_데이터_배열.셀_데이터_배열.append(데이터)
                                     //                                          self.캘린더_전시_테이블뷰.reloadData()
@@ -238,13 +242,13 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
             
             print("수정 버튼 클릭")
             
-            if let 현제모달 = self.findViewController() {
-                현제모달.dismiss(animated: true) {
-                    let 새모달 = 켈린더_수정_뷰컨트롤러()
-                    새모달.modalPresentationStyle = .fullScreen
-                    현제모달.present(새모달, animated: false, completion: nil)
-                }
-            }
+//            if let 현제모달 = self.findViewController() {
+//                현제모달.dismiss(animated: true) {
+//                    let 새모달 = 켈린더_수정_뷰컨트롤러()
+//                    새모달.modalPresentationStyle = .fullScreen
+//                    현제모달.present(새모달, animated: false, completion: nil)
+//                }
+//            }
             
             completionHandler(true)
         }
@@ -255,14 +259,34 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
         let 삭제 = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
             print("삭제 버튼 클릭")
             
-            if let 현제모달 = self.findViewController() {
-                현제모달.dismiss(animated: true) {
-                    let 새모달 = 켈린더_삭제_뷰컨트롤러()
-                    새모달.modalPresentationStyle = .fullScreen
-                    현제모달.present(새모달, animated: false, completion: nil)
-                    
-                }
-            }
+//            if let 현제모달 = self.findViewController() {
+//                현제모달.dismiss(animated: true) {
+//                    let 새모달 = 켈린더_삭제_뷰컨트롤러()
+//                    새모달.modalPresentationStyle = .fullScreen
+//                    현제모달.present(새모달, animated: false, completion: nil)
+//                    
+//                }
+//            }
+               let 선택된데이터 = self.셀_데이터_배열.셀_데이터_배열[indexPath.row]
+
+               let 데이터베이스 = Firestore.firestore()
+               let uid = Auth.auth().currentUser?.uid ?? ""
+               let 포스터스문서ID = "포스터스문서의ID"
+               let 리뷰문서ID = 선택된데이터.리뷰문서ID
+               let 리뷰문서참조 = 데이터베이스.collection("posters").document(포스터스문서ID).collection("reviews").document(리뷰문서ID)
+               
+               리뷰문서참조.delete { error in
+                   if let error = error {
+                       print("리뷰 문서 삭제 에러: \(error.localizedDescription)")
+                   } else {
+                       print("리뷰 문서 삭제 성공")
+
+                       self.셀_데이터_배열.셀_데이터_배열.remove(at: indexPath.row)
+                       self.캘린더_전시_테이블뷰.reloadData()
+                   }
+               }
+
+
             completionHandler(true)
         }
         삭제.image = UIImage(named: "내후기delete")

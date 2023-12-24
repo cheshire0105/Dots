@@ -5,21 +5,21 @@ import SnapKit
 class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     
     var 셀_데이터: 셀_데이터? {
-          didSet {
-              guard let 데이터 = 셀_데이터 else { return }
-
-              전시_포스터_이미지(from: 데이터.포스터이미지URL)
-              전시명_라벨.text = 데이터.전시명
-              장소_라벨.text = 데이터.장소
-              방문날짜_라벨.text = 데이터.방문날짜
-          }
-      }
+        didSet {
+            guard let 데이터 = 셀_데이터 else { return }
+            
+            전시_포스터_이미지(from: 데이터.포스터이미지URL)
+            전시명_라벨.text = 데이터.전시명
+            장소_라벨.text = 데이터.장소
+            방문날짜_라벨.text = 데이터.방문날짜
+        }
+    }
     func 전시_포스터_이미지(from url: String) {
         guard let imageURL = URL(string: url) else {
             전시_포스터_이미지.image = UIImage(named: "기본프로필사진")
             return
         }
-
+        
         전시_포스터_이미지.sd_setImage(with: imageURL) { [weak self] (image, error, _, _) in
             if let image = image {
                 if let 평균색상_추출 = image.이미지_평균색상() {
@@ -29,7 +29,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
             }
         }
     }
-   
+    
     
     let 이미지_백 = {
         let uiView = UIView()
@@ -71,9 +71,9 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     let 장소_라벨 = {
         let label = UILabel()
         label.text = "전시 장소"
-//        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        //        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         label.textColor = UIColor.black
-
+        
         
         label.font = UIFont(name: "HelveticaNeue", size: 12)
         label.textAlignment = .left
@@ -84,9 +84,9 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
         let label = UILabel()
         label.text = "2022년 2월 2일"
         label.font = UIFont(name: "HelveticaNeue", size: 12)
-//        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        //        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         label.textColor = UIColor.black
-
+        
         
         label.textAlignment = .left
         return label
@@ -129,27 +129,27 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-           super.init(style: style, reuseIdentifier: reuseIdentifier)
-           self.isUserInteractionEnabled = true
-           backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
-
-           캘린더_스케쥴_등록_셀_레이아웃()
-           
-           
-           if let 평균색상_추출 = 전시_포스터_이미지.image?.이미지_평균색상(){
-               이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
-               라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
-           }
-       }
-       
-       required init?(coder aDecoder: NSCoder) {
-           fatalError("init(coder:) has not been implemented")
-       }
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.isUserInteractionEnabled = true
+        backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+        
+        캘린더_스케쥴_등록_셀_레이아웃()
+        
+        
+        if let 평균색상_추출 = 전시_포스터_이미지.image?.이미지_평균색상(){
+            이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
+            라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func prepareForReuse() {
         super.prepareForReuse()
         self.selectionStyle = .none
     }
-   }
+}
 
 
 
@@ -165,7 +165,7 @@ extension 캘린더_스케쥴_등록_셀{
         contentView.addSubview(방문날짜_라벨)
         
         contentView.addSubview(내후기_버튼)
-  
+        
         이미지_백.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(5)
             make.leading.equalToSuperview().offset(5)
