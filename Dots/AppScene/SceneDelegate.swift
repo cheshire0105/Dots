@@ -47,6 +47,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     private func handleDeepLink(url: URL) {
+
+        if !isUserLoggedIn() {
+             // 로그인이 되어 있지 않으면, 로그인 뷰 컨트롤러로 이동합니다.
+             let loginVC = 로그인_뷰컨트롤러() // 로그인 뷰 컨트롤러의 실제 클래스 이름으로 교체해야 합니다.
+             let navigationController = UINavigationController(rootViewController: loginVC)
+             window?.rootViewController = navigationController
+             window?.makeKeyAndVisible()
+             return
+         }
+
+        
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               let host = components.host,
               let queryItems = components.queryItems,
@@ -77,6 +88,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.rootViewController = mainTabBar
             window?.makeKeyAndVisible()
         }
+
     }
 
 
