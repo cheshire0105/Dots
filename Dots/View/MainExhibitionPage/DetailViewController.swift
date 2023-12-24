@@ -685,11 +685,21 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
     // 버튼 탭 액션
     @objc func buttonTapped(sender: UIButton) {
+        // 버튼의 시각적 변화 (눌림 효과)
+        UIView.animate(withDuration: 0.1, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        }) { _ in
+            sender.transform = .identity
+        }
+
+        // 진동 효과
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+
+        // 나머지 기능 처리 (예: 얼럿 표시)
         let tag = sender.tag
         let alertTitle = alertTitles[tag]
         let labelText = labelContents[tag].replacingOccurrences(of: "\\n", with: "\n")
-
-        // 기존 UIAlertController 대신 CustomAlertView를 사용
         showCustomAlert(title: alertTitle, message: labelText)
     }
 
