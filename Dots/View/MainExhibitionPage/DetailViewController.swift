@@ -300,17 +300,16 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     // 스택 뷰 업데이트 함수
-    // 스택 뷰 업데이트 함수
     private func updateStackView() {
         // squaresStackView에 있는 각 레이블에 새로운 값을 설정합니다.
         for (index, view) in squaresStackView.arrangedSubviews.enumerated() {
             if let containerView = view as? UIView, let label = containerView.subviews.last as? UILabel {
-                // 줄바꿈 문자를 실제 줄바꿈으로 변환
-                let detailTextWithLineBreaks = labelContents[index].replacingOccurrences(of: "\\n", with: "\n")
-                label.text = detailTextWithLineBreaks
+                // alertTitles 배열에서 해당 인덱스의 값을 가져와 설정합니다.
+                label.text = alertTitles[index]
             }
         }
     }
+
 
 
 
@@ -557,7 +556,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
             containerView.snp.makeConstraints { make in
                 make.width.equalTo(itemWidth)
-                make.height.equalTo(160)
+                make.height.equalTo(85)
             }
 
             // 버튼 생성 및 설정
@@ -685,20 +684,16 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     // 버튼 탭 액션
-    // 버튼 탭 액션
     @objc func buttonTapped(sender: UIButton) {
         let tag = sender.tag
         let alertTitle = alertTitles[tag]
-        let labelText = labelContents[tag]
+        let labelText = labelContents[tag].replacingOccurrences(of: "\\n", with: "\n")
 
-        // 줄바꿈 문자를 실제 줄바꿈으로 변환
-        let labelTextWithLineBreaks = labelText.replacingOccurrences(of: "\\n", with: "\n")
-
-        // 얼럿창 생성 및 표시
-        let alert = UIAlertController(title: alertTitle, message: labelTextWithLineBreaks, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "닫기", style: .cancel, handler: nil))
-        present(alert, animated: true)
+        // 기존 UIAlertController 대신 CustomAlertView를 사용
+        showCustomAlert(title: alertTitle, message: labelText)
     }
+
+
 
 
 
@@ -828,5 +823,156 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 extension DetailViewController: ReviewWritePageDelegate {
     func didSubmitReview() {
         loadReviews() // 리뷰를 다시 로드합니다.
+    }
+}
+
+// DetailViewController.swift
+extension DetailViewController {
+    func showCustomAlert(title: String, message: String) {
+        let customAlertVC = CustomAlertViewController()
+        customAlertVC.configure(title: title, message: message)
+        customAlertVC.modalPresentationStyle = .overFullScreen
+        present(customAlertVC, animated: false, completion: nil)
+    }
+}
+
+
+
+
+import SnapKit
+
+import SnapKit
+
+class CustomAlertView: UIView {
+    var titleLabel = UILabel()
+    var messageLabel = UILabel()
+    var closeButton = UIButton()
+
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
+    }
+
+    private func setupView() {
+        backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
+        layer.cornerRadius = 20
+
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont(name: "Pretendard-SemiBold", size: 21)
+        titleLabel.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
+
+        messageLabel.textAlignment = .center
+        messageLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
+        messageLabel.textColor = UIColor(red: 0.757, green: 0.753, blue: 0.773, alpha: 1)
+        messageLabel.numberOfLines = 0
+
+        addSubview(titleLabel)
+        addSubview(messageLabel)
+
+        setupConstraints()
+
+        // 닫기 버튼 설정
+                closeButton.setTitle("닫기", for: .normal)
+                closeButton.backgroundColor = UIColor(red: 0.224, green: 0.231, blue: 0.243, alpha: 1)
+                closeButton.layer.cornerRadius = 20 // 모서리 둥글게
+                closeButton.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 15)
+                closeButton.setTitleColor(UIColor(red: 0.745, green: 0.741, blue: 0.761, alpha: 1), for: .normal) // 버튼 텍스트 색상
+                closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+
+                addSubview(closeButton)
+
+                setupCloseButtonConstraints()
+    }
+
+    @objc private func closeButtonTapped() {
+          // 버튼 탭 이벤트 처리. 실제로 얼럿을 닫는 동작은 CustomAlertViewController에서 구현합니다.
+      }
+
+    private func setupCloseButtonConstraints() {
+            closeButton.snp.makeConstraints { make in
+                make.top.equalTo(messageLabel.snp.bottom).offset(20)
+                make.centerX.equalToSuperview()
+                make.width.equalTo(100)
+                make.height.equalTo(40)
+                make.bottom.greaterThanOrEqualToSuperview().offset(-20)
+            }
+        }
+
+
+    private func setupConstraints() {
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+        }
+
+        messageLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+//            make.bottom.greaterThanOrEqualToSuperview().offset(-20)
+        }
+    }
+
+    func configure(title: String, message: String) {
+         titleLabel.text = title
+         messageLabel.text = message
+
+         // 내용에 따라 크기를 조정하기 위해 레이아웃을 업데이트합니다.
+         layoutIfNeeded()
+
+         // 내용에 맞게 얼럿 창의 크기를 조정합니다.
+         adjustSizeToFitContent()
+     }
+
+     private func adjustSizeToFitContent() {
+         // 내용에 따라 얼럿 창의 크기를 재계산합니다.
+         let targetSize = CGSize(width: 250, height: UIView.layoutFittingCompressedSize.height)
+         let fittingSize = systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+         frame.size = CGSize(width: 250, height: fittingSize.height)
+     }
+}
+
+// CustomAlertViewController.swift
+import UIKit
+
+class CustomAlertViewController: UIViewController {
+    var titleLabelText: String?
+    var messageText: String?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.frame = self.view.bounds
+        view.addSubview(blurView)
+
+        let alertView = CustomAlertView()
+               alertView.configure(title: titleLabelText ?? "", message: messageText ?? "")
+               alertView.closeButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
+        alertView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(alertView)
+
+        NSLayoutConstraint.activate([
+            alertView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            alertView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            alertView.widthAnchor.constraint(equalToConstant: 250)
+        ])
+    }
+
+    @objc private func dismissAlert() {
+          dismiss(animated: false, completion: nil)
+      }
+
+    func configure(title: String, message: String) {
+        titleLabelText = title
+        messageText = message
     }
 }
