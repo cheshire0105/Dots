@@ -127,7 +127,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 이미지와 레이블 레이아웃 설정
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview() // 가로축 중앙에 배치
-            make.centerY.equalToSuperview().offset(-50) // 세로축 중앙에서 30포인트 위로
+            make.top.equalToSuperview().offset(60)
             make.width.equalTo(100) // 이미지 크기 설정
             make.height.equalTo(imageView.snp.width) // 정사각형 이미지
         }
