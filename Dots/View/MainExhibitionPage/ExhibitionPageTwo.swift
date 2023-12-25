@@ -126,7 +126,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         label.text = "언제 다녀오셨나요?"
         label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
-//        label.textAlignment = .center
+        //        label.textAlignment = .center
         return label
     }()
 
@@ -135,7 +135,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         label.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
         label.textColor = UIColor(red: 0.757, green: 0.753, blue: 0.773, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 14)
-//        label.textAlignment = .center
+        //        label.textAlignment = .center
         label.numberOfLines = 0
         return label
     }()
@@ -456,15 +456,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
             return nil
         }) { (object, error) in
-               if let error = error {
-                   print("트랜잭션 실패: \(error)")
-               } else {
-                   print("트랜잭션이 성공적으로 완료됨")
-                   self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
+            if let error = error {
+                print("트랜잭션 실패: \(error)")
+            } else {
+                print("트랜잭션이 성공적으로 완료됨")
+                self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
 
-                   completion()
-                   self.fetchVisitorCountAndUpdateLabel() // 방문자 수 레이블을 업데이트합니다.
-               }
+                completion()
+                self.fetchVisitorCountAndUpdateLabel() // 방문자 수 레이블을 업데이트합니다.
+            }
         }
     }
 
@@ -539,7 +539,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
-//        tabBarController?.tabBar.isHidden = true
+        //        tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: animated)
         updateHeartIconStateFromFirestore()
 
@@ -630,9 +630,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         // 딥링크에서 poster 매개변수 값을 사용하여 전시 타이틀을 설정합니다.
-            if let posterId = self.posterImageName {
-                fetchAndSetExhibitionTitle(posterId: posterId)
-            }
+        if let posterId = self.posterImageName {
+            fetchAndSetExhibitionTitle(posterId: posterId)
+        }
 
         if let posterName = self.posterImageName {
             checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] visited in
@@ -824,8 +824,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(datePicker.snp.bottom).offset(10)
             make.centerX.equalTo(customAlertView.snp.centerX)
-//            make.width.equalTo(273) // 버튼의 너비
-//            make.height.equalTo(56) // 버튼의 높이
+            //            make.width.equalTo(273) // 버튼의 너비
+            //            make.height.equalTo(56) // 버튼의 높이
             make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
         }
 
@@ -993,6 +993,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     @objc func heartIconTapped() {
+
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+        feedbackGenerator.impactOccurred()
+
         guard let posterName = self.posterImageName, let userID = Auth.auth().currentUser?.uid else {
             print("Poster name or user ID is not available")
             return
@@ -1040,7 +1044,19 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 DispatchQueue.main.async {
                     // 좋아요 상태의 UI를 토글합니다.
                     self?.heartIcon.isSelected.toggle()
+                    if self?.heartIcon.isSelected == true {
+                        // 좋아요 상태일 때 토스트 메시지 표시
+                        var style = ToastStyle()
+                        style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+                        style.messageColor = .white
+                        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+                        self?.view.makeToast("전시가 마음에 드셨군요!", duration: 2.0, position: .center, style: style)
+                        ToastManager.shared.isTapToDismissEnabled = true
+                    }
                     self?.updateHeartIconState()
+
+
                 }
             }
         }
@@ -1051,11 +1067,14 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         if heartIcon.isSelected {
             // 좋아요 상태일 때
             heartIcon.setImage(UIImage(named: "Vector 2"), for: .normal)
+
         } else {
             // 좋아요 상태가 아닐 때
             heartIcon.setImage(UIImage(named: "라이크"), for: .normal)
         }
     }
+
+
 
 
 
@@ -1377,21 +1396,21 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var museumName: String? // 미술관 이름을 저장할 프로퍼티 추가
 
     private lazy var mapAlertView: UIView = {
-            let view = UIView()
-            view.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
-            view.layer.cornerRadius = 20
-            view.isHidden = true // 처음에는 숨겨둡니다.
-            return view
-        }()
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
+        view.layer.cornerRadius = 20
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
 
     private lazy var blurEffectView: UIVisualEffectView = {
-          let blurEffect = UIBlurEffect(style: .dark)
-          let view = UIVisualEffectView(effect: blurEffect)
-          view.frame = self.view.bounds
-          view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-          view.isHidden = true // 처음에는 숨겨둡니다.
-          return view
-      }()
+        let blurEffect = UIBlurEffect(style: .dark)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.frame = self.view.bounds
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -1468,9 +1487,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
 
     @objc func modalLoadButtonTapped() {
-           blurEffectView.isHidden = false
-           mapAlertView.isHidden = false
-       }
+        blurEffectView.isHidden = false
+        mapAlertView.isHidden = false
+    }
 
     @objc func dismissMapAlertView() {
         // 얼럿 창을 닫고, 길찾기 버튼을 다시 표시합니다.
@@ -1496,7 +1515,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         naverLabel.textColor = .white
         naverLabel.textAlignment = .center
         // 네이버 지도 버튼에 액션 추가
-           naverButton.addTarget(self, action: #selector(naverMapMove), for: .touchUpInside)
+        naverButton.addTarget(self, action: #selector(naverMapMove), for: .touchUpInside)
 
 
         // 카카오맵 버튼 및 레이블 설정
@@ -1508,7 +1527,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         kakaoLabel.textColor = .white
         kakaoLabel.textAlignment = .center
         // 카카오맵 버튼에 액션 추가
-            kakaoButton.addTarget(self, action: #selector(openKakaoMap), for: .touchUpInside)
+        kakaoButton.addTarget(self, action: #selector(openKakaoMap), for: .touchUpInside)
 
         // 네이버 스택 뷰 설정
         let naverStackView = UIStackView(arrangedSubviews: [naverButton, naverLabel])
@@ -1546,24 +1565,24 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
 
     func configureLocationManager() {
-         locationManager = CLLocationManager()
-         locationManager.delegate = self
-         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-         locationManager.requestWhenInUseAuthorization()
-         locationManager.startUpdatingLocation()
-     }
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
 
-     // CLLocationManagerDelegate 메서드
-     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-         if let location = locations.first {
-             // 현재 위치 처리
-             print("Current location: \(location.coordinate)")
-         }
-     }
+    // CLLocationManagerDelegate 메서드
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            // 현재 위치 처리
+            print("Current location: \(location.coordinate)")
+        }
+    }
 
-     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-         print("Failed to find user's location: \(error.localizedDescription)")
-     }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Failed to find user's location: \(error.localizedDescription)")
+    }
 
     @objc func backButtonTapped() {
         // 여기에 뒤로 가기 버튼을 눌렀을 때의 동작을 구현하세요.
@@ -1647,29 +1666,29 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
 
     private func fetchLocationData() {
-           guard let imageName = self.imageName else {
-               print("이미지 이름이 설정되지 않았습니다.")
-               return
-           }
+        guard let imageName = self.imageName else {
+            print("이미지 이름이 설정되지 않았습니다.")
+            return
+        }
 
-           let docRef = database.collection("전시_상세").document(imageName)
-           docRef.getDocument { (document, error) in
-               if let document = document, document.exists {
-                   let geoPoint = document.get("전시_좌표") as? GeoPoint
-                   self.museumName = document.get("미술관_이름") as? String ?? "미술관 이름 없음"
+        let docRef = database.collection("전시_상세").document(imageName)
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let geoPoint = document.get("전시_좌표") as? GeoPoint
+                self.museumName = document.get("미술관_이름") as? String ?? "미술관 이름 없음"
 
-                   if let geoPoint = geoPoint {
-                       let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
-                       self.locationData = location // 위치 데이터 저장
-                       self.centerMapOnLocation(location: location, museumName: self.museumName!)
-                   } else {
-                       print("장소_좌표 필드가 없습니다.")
-                   }
-               } else {
-                   print("문서를 찾을 수 없거나 오류가 발생했습니다: \(error?.localizedDescription ?? "Unknown error")")
-               }
-           }
-       }
+                if let geoPoint = geoPoint {
+                    let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                    self.locationData = location // 위치 데이터 저장
+                    self.centerMapOnLocation(location: location, museumName: self.museumName!)
+                } else {
+                    print("장소_좌표 필드가 없습니다.")
+                }
+            } else {
+                print("문서를 찾을 수 없거나 오류가 발생했습니다: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
 
     // 지도에 핀을 추가하는 메서드
     private func addPinAtLocation(location: CLLocationCoordinate2D, museumName: String) {
@@ -1687,13 +1706,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             annotationView?.canShowCallout = true
             annotationView?.image = UIImage(named: "place 2")
-//            annotationView?.backgroundColor = .gray
+            //            annotationView?.backgroundColor = .gray
 
             let label = UILabel()
             label.text = annotation.title ?? "미술관 이름 없음"
             label.textColor = .white // 글자색을 하얀색으로 설정
             label.font = UIFont(name: "Pretendard-Medium", size: 20)
-//            label.backgroundColor = .gray
+            //            label.backgroundColor = .gray
             label.textAlignment = .center
             label.sizeToFit()
 

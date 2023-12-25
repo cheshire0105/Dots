@@ -686,6 +686,11 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     }
 
     @objc private func additionalImageButton1Tapped() {
+
+        // 햅틱 피드백 생성
+          let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+          feedbackGenerator.impactOccurred()
+        
         guard let userReviewUUID = userReviewUUID, let posterName = posterName, let currentUserID = CurrentUser.shared.uid else {
             print("필요한 정보가 부족합니다.")
             return
