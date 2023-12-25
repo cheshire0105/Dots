@@ -15,5 +15,7 @@ target 'Dots' do
   pod 'Toast-Swift'
   pod 'SkeletonView'
   pod 'AlgoliaSearchClient'
+    pod 'lottie-ios'
+
 
 end

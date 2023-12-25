@@ -14,6 +14,8 @@ import Firebase
 import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
+import Lottie
+
 
 
 struct ImageData {
@@ -71,7 +73,10 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     // 추가된 프로퍼티
     var museumName: String?
     var exhibitionTitle: String?
-    
+
+    let likeAnimationView = LottieAnimationView()
+
+
     private var pageControl: UIPageControl!
 
     
@@ -160,7 +165,30 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         checkLikeStatusAndUpdateIcon()
 
+        setupLikeAnimation()
+
+
     }
+
+    func setupLikeAnimation() {
+        // 로티 애니메이션 설정
+        likeAnimationView.animation = LottieAnimation.named("Animation - 1703493835464")
+        likeAnimationView.contentMode = .scaleAspectFill
+        likeAnimationView.isHidden = true
+
+        // additionalImageButton1에 로티 뷰 추가
+        additionalImageButton1.addSubview(likeAnimationView)
+
+        // 로티 뷰의 위치와 크기를 additionalImageButton1보다 크게 설정 (스냅킷 사용)
+        likeAnimationView.snp.makeConstraints { make in
+            make.centerX.equalTo(additionalImageButton1.snp.centerX)
+            make.centerY.equalTo(additionalImageButton1.snp.centerY)
+            make.width.equalTo(additionalImageButton1.snp.width).multipliedBy(3) // 버튼보다 20% 더 크게 설정
+            make.height.equalTo(additionalImageButton1.snp.height).multipliedBy(3) // 버튼보다 20% 더 크게 설정
+        }
+    }
+
+
 
     func sortImageUrls(_ urls: [String]) -> [String] {
         return urls.sorted { url1, url2 in
@@ -717,6 +745,14 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             DispatchQueue.main.async {
                 // UI 업데이트
                 self?.updateLikeButtonUI(isLiked: !currentLikeStatus, likeCount: likesNum)
+
+                // 로티 애니메이션 실행
+                       if !currentLikeStatus {
+                           self?.likeAnimationView.isHidden = false
+                           self?.likeAnimationView.play(completion: { finished in
+                               self?.likeAnimationView.isHidden = true
+                           })
+                       }
             }
 
             // Firestore 업데이트
