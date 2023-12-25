@@ -66,25 +66,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         if host == "backgroundImage" {
-            // 메인 탭 바 컨트롤러 생성
             let mainTabBar = TabBar()
 
-            // 첫 번째 탭에 해당하는 네비게이션 컨트롤러를 가져옵니다.
             if let mainNavController = mainTabBar.viewControllers?.first as? UINavigationController {
-                // MainExhibitionPage 인스턴스 생성 및 탭 아이템 설정
                 let mainPage = MainExhibitionPage()
                 mainPage.tabBarItem = UITabBarItem(title: "전시", image: UIImage(named: "home"), tag: 0)
 
-                // 네비게이션 스택에 MainExhibitionPage 인스턴스를 루트로 설정
                 mainNavController.viewControllers = [mainPage]
 
-                // BackgroundImageViewController 설정 및 네비게이션 스택에 푸시
+                // BackgroundImageViewController 인스턴스 생성 및 hidesBottomBarWhenPushed 설정
                 let backgroundImageVC = BackgroundImageViewController()
+                backgroundImageVC.hidesBottomBarWhenPushed = true
                 backgroundImageVC.posterImageName = posterImageName
+
                 mainNavController.pushViewController(backgroundImageVC, animated: false)
             }
 
-            // 탭 바 컨트롤러를 루트 뷰 컨트롤러로 설정
             window?.rootViewController = mainTabBar
             window?.makeKeyAndVisible()
         }
