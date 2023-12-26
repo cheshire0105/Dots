@@ -293,13 +293,23 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             print("필요한 정보가 부족합니다.")
             return
         }
-        // Firestore에서 리뷰 데이터 삭제
-        let db = Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").document(userId).delete() { [weak self] error in
+
+        // Firestore에서 특정 리뷰 데이터만 삭제
+        let reviewRef = Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").document(userId)
+
+        let fieldsToDelete: [String: Any] = [
+            "title": FieldValue.delete(),
+            "content": FieldValue.delete(),
+            "createdAt": FieldValue.delete(),
+            "images": FieldValue.delete()
+        ]
+
+        reviewRef.updateData(fieldsToDelete) { [weak self] error in
             if let error = error {
-                print("Error removing review: \(error)")
+                print("Error removing review fields: \(error)")
             } else {
-                print("Review successfully removed")
+                print("Review fields successfully removed")
                 self?.deleteImagesFromStorage(userId: userId, posterName: posterName) // 이미지 삭제 메서드 호출
             }
         }

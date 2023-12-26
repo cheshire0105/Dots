@@ -518,50 +518,35 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             return
         }
 
-        let reviewData: [String: Any] = [
-            "userId": userId, // 현재 사용자의 ID 추가
+        // 이미지 업로드를 먼저 수행
+        uploadImages(userId: userId, posterName: posterName) { [weak self] uploadedUrls in
+            // 업로드된 이미지 URL들을 사용하여 Firestore 문서를 업데이트
+            let reviewData: [String: Any] = [
+                "userId": userId,
+                "title": title,
+                "content": content,
+                "createdAt": FieldValue.serverTimestamp(),
+                "images": uploadedUrls // 업로드된 이미지 URL 배열 사용
+            ]
 
-            "title": title,
-            "content": content,
-            "createdAt": FieldValue.serverTimestamp()
-        ]
+            let docRef = Firestore.firestore().collection("posters").document(posterName)
+                       .collection("reviews").document(userId)
 
-        let docRef = Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").document(userId)
-
-        docRef.updateData(reviewData) { [weak self] error in
-               if let error = error {
-                   print("Error updating document: \(error)")
-               } else {
-                   self?.uploadImages(userId: userId, posterName: posterName) { urls in
-                       docRef.updateData(["images": FieldValue.arrayUnion(urls)]) { error in
-                           if let error = error {
-                               print("Error updating document: \(error)")
-                           } else {
-                               self?.delegate?.didSubmitReview()
-
-                               // 토스트 메시지 표시
-                               DispatchQueue.main.async {
-                                   var style = ToastStyle()
-                                   style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
-                                   style.messageColor = .white
-                                   style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
-
-                                   self?.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style)
-                                   ToastManager.shared.isTapToDismissEnabled = true
-
-                                   // 2초 후에 화면 닫기
-                                   DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                       self?.dismiss(animated: true, completion: nil)
-                                   }
-                               }
-                           }
-                       }
-                   }
-               }
-           }
+            docRef.setData(reviewData, merge: true) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    self?.delegate?.didSubmitReview()
+                    // 토스트 메시지 표시
+                    DispatchQueue.main.async {
+                        self?.showUploadSuccessToast()
+                    }
+                }
+            }
+        }
     }
 
+    // 이미지를 업로드하고 URL 배열을 반환하는 함수
     func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {
         var uploadedUrls = [String]()
         let uploadGroup = DispatchGroup()
@@ -573,12 +558,11 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 continue
             }
 
-            // 이미지 이름을 인덱스를 포함하여 설정
             let imageName = "\(userId)_\(index).jpg"
             let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
 
             storageRef.putData(imageData, metadata: nil) { metadata, error in
-                guard let metadata = metadata else {
+                guard metadata != nil else {
                     print("Error uploading image: \(error?.localizedDescription ?? "")")
                     uploadGroup.leave()
                     return
@@ -587,8 +571,6 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 storageRef.downloadURL { (url, error) in
                     if let downloadURL = url {
                         uploadedUrls.append(downloadURL.absoluteString)
-                    } else {
-                        print("Error getting download URL: \(error?.localizedDescription ?? "")")
                     }
                     uploadGroup.leave()
                 }
@@ -600,6 +582,21 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         }
     }
 
+    // 토스트 메시지 표시 함수
+    private func showUploadSuccessToast() {
+        var style = ToastStyle()
+        style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
+        style.messageColor = .white
+        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+        self.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style)
+        ToastManager.shared.isTapToDismissEnabled = true
+
+        // 2초 후에 화면 닫기
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
 
 
     func addImageUrlToFirestore(userId: String, posterName: String, imageUrl: String) {

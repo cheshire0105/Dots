@@ -47,6 +47,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var locationCoordinate: CLLocationCoordinate2D?
     var exhibitionDetail : String?
 
+
     var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
 //    override func viewWillAppear(_ animated: Bool) {
