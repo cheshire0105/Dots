@@ -1,20 +1,24 @@
 import UIKit
+import Firebase
+import FirebaseFirestore
 
 class 켈린더_수정_뷰컨트롤러 : UIViewController {
-    
+    var posterImageName: String?
+    var titleName : String?
     var 수정할셀데이터: 셀_데이터?
-
-    
+    var 캘린더리로드 = Mypage()
+    var 달력참조 = Mypage()
+    var 참조 = BackgroundImageViewController()
     let 배경_백 = {
         let blurEffect = UIBlurEffect(style: .systemChromeMaterialDark)
-               let visualEffectView = UIVisualEffectView(effect: blurEffect)
-               return visualEffectView
-       }()
+        let visualEffectView = UIVisualEffectView(effect: blurEffect)
+        return visualEffectView
+    }()
     let 수정_뷰 = {
-    let view = UIView()
+        let view = UIView()
         view.backgroundColor = UIColor(named: "neon")
         view.layer.cornerRadius = 30
-       return view
+        return view
         
     }()
     
@@ -41,21 +45,21 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
     
     //피커뷰
     let 연월일_피커뷰 = {
-          let pickerView = UIPickerView()
-          return pickerView
-      }()
-      
-      let 년도: [String] = {
-          return Array(2000...2099).map { "\($0)" }
-      }()
-      
-      let 월: [String] = {
-          return Array(1...12).map { "\($0)" }
-      }()
-      
-      let 일: [String] = {
-          return Array(1...31).map { "\($0)" }
-      }()
+        let pickerView = UIPickerView()
+        return pickerView
+    }()
+    
+    let 년도: [String] = {
+        return Array(2000...2099).map { "\($0)" }
+    }()
+    
+    let 월: [String] = {
+        return Array(1...12).map { "\($0)" }
+    }()
+    
+    let 일: [String] = {
+        return Array(1...31).map { "\($0)" }
+    }()
     //
     
     override func viewDidLoad() {
@@ -70,9 +74,9 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap))
         배경_백.addGestureRecognizer(tapGestureRecognizer)
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
-              배경_백.addGestureRecognizer(panGestureRecognizer)
+        배경_백.addGestureRecognizer(panGestureRecognizer)
         let panGestureRecognizer2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
-              수정_뷰.addGestureRecognizer(panGestureRecognizer2)
+        수정_뷰.addGestureRecognizer(panGestureRecognizer2)
         
         print("다녀온 날짜 변경 화면")
         print("----전달 받은 셀 데이터----")
@@ -82,14 +86,17 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
         print("방문날짜: \(수정할셀데이터?.방문날짜 ?? "")")
         print("리뷰문서ID: \(수정할셀데이터?.리뷰문서ID ?? "")")
         print("포스터스문서ID: \(수정할셀데이터?.포스터스문서ID ?? "")")
+        
+        posterImageName = "ExamplePoster"  // 예시로 "ExamplePoster"를 넣어줍니다.
+        
     }
     @objc private func handleBackgroundTap() {
-            dismiss(animated: false, completion: nil)
-        }
+        dismiss(animated: false, completion: nil)
+    }
     @objc private func handlePan(sender: UIPanGestureRecognizer) {
-       }
+    }
     
-   
+    
     
 }
 
@@ -97,28 +104,61 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
 
 extension 켈린더_수정_뷰컨트롤러 {
     func 버튼_클릭() {
-           변경하기_버튼.addTarget(self, action: #selector(변경하기_버튼_클릭), for: .touchUpInside)
-       }
-    @objc func 변경하기_버튼_클릭() {
-           let 선택된년도 = 년도[연월일_피커뷰.selectedRow(inComponent: 0)]
-           let 선택된월 = 월[연월일_피커뷰.selectedRow(inComponent: 1)]
-           let 선택된일 = 일[연월일_피커뷰.selectedRow(inComponent: 2)]
-
-        let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
-
-           print("[ 선택된 날짜: \(결과값)]으로 변경되었습니다")
-
-
-           dismiss(animated: false, completion: nil)
-
-       }
+        변경하기_버튼.addTarget(self, action: #selector(변경하기_버튼_클릭), for: .touchUpInside)
+    }
+        @objc func 변경하기_버튼_클릭() {
+            let 선택된년도 = 년도[연월일_피커뷰.selectedRow(inComponent: 0)]
+            let 선택된월 = 월[연월일_피커뷰.selectedRow(inComponent: 1)]
+            let 선택된일 = 일[연월일_피커뷰.selectedRow(inComponent: 2)]
+    
+            let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
+    
+            if let 리뷰문서ID = 수정할셀데이터?.리뷰문서ID,
+               let 포스터스문서ID = 수정할셀데이터?.포스터스문서ID {
+    
+                let db = Firestore.firestore()
+    
+                let reviewsRef = db.collection("posters").document(포스터스문서ID).collection("reviews").document(리뷰문서ID)
+    
+                let errorHandler: (Error) -> Void = { error in
+                    print("리뷰 서브컬렉션 문서 업데이트 실패: \(error.localizedDescription)")
+                }
+    
+                DispatchQueue.global(qos: .background).async {
+                    reviewsRef.updateData(["유저_다녀옴_날짜": 결과값]) { error in
+                        if let error = error {
+                            errorHandler(error)
+                        } else {
+                            print("리뷰 서브컬렉션 문서 업데이트 성공")
+    
+                            DispatchQueue.main.async {
+                                if let 수정된셀데이터 = self.수정할셀데이터 {
+                                    print("----배열에 저장된 데이터----")
+                                    print("포스터이미지URL: \(수정된셀데이터.포스터이미지URL )")
+                                    print("전시명: \(수정된셀데이터.전시명 )")
+                                    print("장소: \(수정된셀데이터.장소 )")
+                                    print("방문날짜: \(결과값)")
+                                    print("리뷰문서ID: \(수정된셀데이터.리뷰문서ID )")
+                                    print("포스터스문서ID: \(수정된셀데이터.포스터스문서ID )")
+    
+                                    self.달력참조.캘린더.reloadData()
+    
+                                    print("캘린더 리로드 완료")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            dismiss(animated: false, completion: nil)
+        }
 }
 
 extension 켈린더_수정_뷰컨트롤러 {
     
     func 레이아웃() {
         view.addSubview(배경_백)
-           
+        
         view.addSubview(수정_뷰)
         수정_뷰.addSubview(다녀온_날짜_변경_라벨)
         수정_뷰.addSubview(연월일_피커뷰)
@@ -170,25 +210,25 @@ extension 켈린더_수정_뷰컨트롤러 {
 extension 켈린더_수정_뷰컨트롤러 : UIPickerViewDelegate , UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-           return 3
-       }
-
-       func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-           switch component {
-           case 0:
-               return 년도.count
-           case 1:
-               return 월.count
-           case 2:
-               return 일.count
-           default:
-               return 0
-           }
-       }
-
+        return 3
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch component {
+        case 0:
+            return 년도.count
+        case 1:
+            return 월.count
+        case 2:
+            return 일.count
+        default:
+            return 0
+        }
+    }
+    
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let 픽커뷰_년월일_텍스속성 = UILabel()
-
+        
         switch component {
         case 0:
             픽커뷰_년월일_텍스속성.text = "\(년도[row])년"
@@ -202,13 +242,104 @@ extension 켈린더_수정_뷰컨트롤러 : UIPickerViewDelegate , UIPickerView
         default:
             break
         }
-
+        
         픽커뷰_년월일_텍스속성.font = UIFont(name: "Pretendard-SemiBold", size: 15)
         픽커뷰_년월일_텍스속성.textAlignment = .center
-
+        
         return 픽커뷰_년월일_텍스속성
     }
-
-       func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-       }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    }
 }
+
+
+//
+//extension 켈린더_수정_뷰컨트롤러 {
+//    
+//    
+//    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool, String?) -> Void) {
+//        
+//        let userVisitDocument = Firestore.firestore().collection("posters").document(수정할셀데이터!.포스터스문서ID).collection("reviews").document(수정할셀데이터!.리뷰문서ID)
+//        
+//        userVisitDocument.getDocument { (documentSnapshot, error) in
+//            if let error = error {
+//                print("Error fetching document: \(error)")
+//                completion(false, nil)
+//                return
+//            }
+//            
+//            if let document = documentSnapshot, document.exists {
+//                let visited = document.data()?["visited"] as? Bool ?? false
+//                let visitDate = document.data()?["유저_다녀옴_날짜"] as? String
+//                completion(visited, visitDate)
+//            } else {
+//                completion(false, nil)
+//            }
+//        }
+//    }
+//    
+//    
+//    
+//    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool) -> Void) {
+//        
+//        
+//        let userVisitDocument = Firestore.firestore().collection("posters").document(수정할셀데이터!.포스터스문서ID).collection("reviews").document(수정할셀데이터!.리뷰문서ID)
+//        
+//        userVisitDocument.getDocument { (documentSnapshot, error) in
+//            if let error = error {
+//                print("Error fetching document: \(error)")
+//                completion(false)
+//                return
+//            }
+//            
+//            if let document = documentSnapshot, document.exists {
+//                let visited = document.data()?["visited"] as? Bool ?? false
+//                completion(visited)
+//            } else {
+//                completion(false)
+//            
+//            }
+//        }
+//    }
+//        
+//        
+//        @objc func confirmButtonTapped() {
+//            let 선택된년도 = 년도[연월일_피커뷰.selectedRow(inComponent: 0)]
+//            let 선택된월 = 월[연월일_피커뷰.selectedRow(inComponent: 1)]
+//            let 선택된일 = 일[연월일_피커뷰.selectedRow(inComponent: 2)]
+//            
+//            let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
+//            
+//            if let posterName = self.posterImageName {
+//                checkIfVisitAlreadyRegistered(posterName: 수정할셀데이터!.포스터스문서ID) { [weak self] alreadyVisited, _ in
+//                    if alreadyVisited {
+//                        self?.updateVisitDateInFirestore(visitDate: 결과값, posterName: posterName) {
+//                            self!.dismiss(animated: false, completion: nil)
+//                        }
+//                    }
+//                }
+//            }else {
+//                print("Poster name is not available")
+//            }
+//        }
+//        
+//        func updateVisitDateInFirestore(visitDate: String, posterName: String, completion: @escaping () -> Void) {
+//            guard let userID = Auth.auth().currentUser?.uid else {
+//                print("User ID is not available")
+//                return
+//            }
+//            
+//            let userVisitDocument = Firestore.firestore().collection("posters").document(수정할셀데이터!.포스터스문서ID).collection("reviews").document(수정할셀데이터!.리뷰문서ID)
+//            
+//            userVisitDocument.updateData(["유저_다녀옴_날짜": visitDate, "visited": true]) { error in
+//                if let error = error {
+//                    print("Error updating document: \(error)")
+//                } else {
+//                    print("Document successfully updated")
+//                    completion()
+//                }
+//            }
+//        }
+//        
+//    }

@@ -55,16 +55,13 @@ class 캘린더_스케쥴_등록_모달 : UIViewController {
         캘린더_전시_테이블뷰.dataSource = self
         캘린더_전시_테이블뷰.register(캘린더_스케쥴_등록_셀.self, forCellReuseIdentifier: "캘린더_스케쥴_등록_셀")
         
-        
-        
+
     }
     override func viewWillAppear(_ animated: Bool) {
         데이터가져오기및UI업데이트()
-//        셀데이터배열조회()
-
+     
     }
     deinit {
-        // 뷰 컨트롤러가 해제되면 리스너도 제거
         listener?.remove()
     }
 }
@@ -82,7 +79,7 @@ struct 셀_데이터 {
     var 장소: String
     var 방문날짜: String
     var 리뷰문서ID: String
-    var 포스터스문서ID: String // 이 속성 추가
+    var 포스터스문서ID: String
 
     init(포스터이미지URL: String, 전시명: String, 장소: String, 방문날짜: String, 리뷰문서ID: String,포스터스문서ID: String) {
             self.포스터이미지URL = 포스터이미지URL
@@ -183,8 +180,7 @@ extension 캘린더_스케쥴_등록_모달 {
             return
         }
         
-        // SDWebImage를 사용하여 이미지 다운로드 및 캐싱
-        let 로딩중일때_나올_이미지 = UIImage(named: "기본프로필사진") // 로딩 중에 사용할 이미지
+        let 로딩중일때_나올_이미지 = UIImage(named: "기본프로필사진")
         SDWebImageManager.shared.loadImage(with: 이미지URL, options: [], progress: nil) { (image, _, _, _, _, _) in
             DispatchQueue.main.async {
                 completion(image ?? 로딩중일때_나올_이미지)
