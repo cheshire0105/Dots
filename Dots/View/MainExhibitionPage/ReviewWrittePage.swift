@@ -48,7 +48,10 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         super.viewDidLoad()
 
         titleTextField.becomeFirstResponder()
-
+        // 텍스트 필드 커서 색상 설정
+            titleTextField.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+            // 텍스트 뷰 커서 색상 설정
+            contentTextView.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         // posterName 값 확인
         if let posterName = posterName {

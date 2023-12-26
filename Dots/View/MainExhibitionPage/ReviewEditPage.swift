@@ -54,7 +54,9 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
         titleTextField.becomeFirstResponder()
 
-
+        titleTextField.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        // 텍스트 뷰 커서 색상 설정
+        contentTextView.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         self.view.backgroundColor = .black
 
