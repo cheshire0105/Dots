@@ -111,7 +111,12 @@ extension 켈린더_수정_뷰컨트롤러 {
             let 선택된월 = 월[연월일_피커뷰.selectedRow(inComponent: 1)]
             let 선택된일 = 일[연월일_피커뷰.selectedRow(inComponent: 2)]
     
-            let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
+//            let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
+            let formattedMonth = String(format: "%02d", Int(선택된월)!)
+              let formattedDay = String(format: "%02d", Int(선택된일)!)
+
+              let 결과값 = "\(선택된년도)-\(formattedMonth)-\(formattedDay)"
+
     
             if let 리뷰문서ID = 수정할셀데이터?.리뷰문서ID,
                let 포스터스문서ID = 수정할셀데이터?.포스터스문서ID {
@@ -133,7 +138,7 @@ extension 켈린더_수정_뷰컨트롤러 {
     
                             DispatchQueue.main.async {
                                 if let 수정된셀데이터 = self.수정할셀데이터 {
-                                    print("----배열에 저장된 데이터----")
+                                    print("----변경 성공후 업데이트 된 데이터----")
                                     print("포스터이미지URL: \(수정된셀데이터.포스터이미지URL )")
                                     print("전시명: \(수정된셀데이터.전시명 )")
                                     print("장소: \(수정된셀데이터.장소 )")
@@ -141,9 +146,9 @@ extension 켈린더_수정_뷰컨트롤러 {
                                     print("리뷰문서ID: \(수정된셀데이터.리뷰문서ID )")
                                     print("포스터스문서ID: \(수정된셀데이터.포스터스문서ID )")
     
-                                    self.달력참조.캘린더.reloadData()
+//                                    self.달력참조.캘린더.reloadData()
     
-                                    print("캘린더 리로드 완료")
+//                                    print("캘린더 리로드 완료")
                                 }
                             }
                         }
@@ -252,94 +257,3 @@ extension 켈린더_수정_뷰컨트롤러 : UIPickerViewDelegate , UIPickerView
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
     }
 }
-
-
-//
-//extension 켈린더_수정_뷰컨트롤러 {
-//    
-//    
-//    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool, String?) -> Void) {
-//        
-//        let userVisitDocument = Firestore.firestore().collection("posters").document(수정할셀데이터!.포스터스문서ID).collection("reviews").document(수정할셀데이터!.리뷰문서ID)
-//        
-//        userVisitDocument.getDocument { (documentSnapshot, error) in
-//            if let error = error {
-//                print("Error fetching document: \(error)")
-//                completion(false, nil)
-//                return
-//            }
-//            
-//            if let document = documentSnapshot, document.exists {
-//                let visited = document.data()?["visited"] as? Bool ?? false
-//                let visitDate = document.data()?["유저_다녀옴_날짜"] as? String
-//                completion(visited, visitDate)
-//            } else {
-//                completion(false, nil)
-//            }
-//        }
-//    }
-//    
-//    
-//    
-//    func checkIfVisitAlreadyRegistered(posterName: String, completion: @escaping (Bool) -> Void) {
-//        
-//        
-//        let userVisitDocument = Firestore.firestore().collection("posters").document(수정할셀데이터!.포스터스문서ID).collection("reviews").document(수정할셀데이터!.리뷰문서ID)
-//        
-//        userVisitDocument.getDocument { (documentSnapshot, error) in
-//            if let error = error {
-//                print("Error fetching document: \(error)")
-//                completion(false)
-//                return
-//            }
-//            
-//            if let document = documentSnapshot, document.exists {
-//                let visited = document.data()?["visited"] as? Bool ?? false
-//                completion(visited)
-//            } else {
-//                completion(false)
-//            
-//            }
-//        }
-//    }
-//        
-//        
-//        @objc func confirmButtonTapped() {
-//            let 선택된년도 = 년도[연월일_피커뷰.selectedRow(inComponent: 0)]
-//            let 선택된월 = 월[연월일_피커뷰.selectedRow(inComponent: 1)]
-//            let 선택된일 = 일[연월일_피커뷰.selectedRow(inComponent: 2)]
-//            
-//            let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
-//            
-//            if let posterName = self.posterImageName {
-//                checkIfVisitAlreadyRegistered(posterName: 수정할셀데이터!.포스터스문서ID) { [weak self] alreadyVisited, _ in
-//                    if alreadyVisited {
-//                        self?.updateVisitDateInFirestore(visitDate: 결과값, posterName: posterName) {
-//                            self!.dismiss(animated: false, completion: nil)
-//                        }
-//                    }
-//                }
-//            }else {
-//                print("Poster name is not available")
-//            }
-//        }
-//        
-//        func updateVisitDateInFirestore(visitDate: String, posterName: String, completion: @escaping () -> Void) {
-//            guard let userID = Auth.auth().currentUser?.uid else {
-//                print("User ID is not available")
-//                return
-//            }
-//            
-//            let userVisitDocument = Firestore.firestore().collection("posters").document(수정할셀데이터!.포스터스문서ID).collection("reviews").document(수정할셀데이터!.리뷰문서ID)
-//            
-//            userVisitDocument.updateData(["유저_다녀옴_날짜": visitDate, "visited": true]) { error in
-//                if let error = error {
-//                    print("Error updating document: \(error)")
-//                } else {
-//                    print("Document successfully updated")
-//                    completion()
-//                }
-//            }
-//        }
-//        
-//    }

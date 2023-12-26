@@ -215,7 +215,6 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         
         UI레이아웃()
         버튼_클릭()
-        화면_제스쳐_실행()
         
         새_비밀번호_텍스트필드.delegate = self
         현재_비밀번호_텍스트필드.delegate = self
@@ -473,19 +472,6 @@ extension 비밀번호변경_화면 {
     }
 }
 
-
-
-extension 비밀번호변경_화면 {
-    
-    func 화면_제스쳐_실행 () {
-        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
-        화면_제스쳐.direction = .right
-        view.addGestureRecognizer(화면_제스쳐)
-    }
-    @objc private func 화면_제스쳐_뒤로_가기() {
-        navigationController?.popViewController(animated: true)
-    }
-}
 
 
 
