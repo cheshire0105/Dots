@@ -519,6 +519,8 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         }
 
         let reviewData: [String: Any] = [
+            "userId": userId, // 현재 사용자의 ID 추가
+
             "title": title,
             "content": content,
             "createdAt": FieldValue.serverTimestamp()
