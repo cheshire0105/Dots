@@ -2,7 +2,7 @@ import UIKit
 
 class 켈린더_수정_뷰컨트롤러 : UIViewController {
     
-    var 선택된셀데이터: 셀_데이터?
+    var 수정할셀데이터: 셀_데이터?
 
     
     let 배경_백 = {
@@ -74,8 +74,14 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
         let panGestureRecognizer2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
               수정_뷰.addGestureRecognizer(panGestureRecognizer2)
         
-        
-        
+        print("다녀온 날짜 변경 화면")
+        print("----전달 받은 셀 데이터----")
+        print("포스터이미지URL: \(수정할셀데이터?.포스터이미지URL ?? "")")
+        print("전시명: \(수정할셀데이터?.전시명 ?? "")")
+        print("장소: \(수정할셀데이터?.장소 ?? "")")
+        print("방문날짜: \(수정할셀데이터?.방문날짜 ?? "")")
+        print("리뷰문서ID: \(수정할셀데이터?.리뷰문서ID ?? "")")
+        print("포스터스문서ID: \(수정할셀데이터?.포스터스문서ID ?? "")")
     }
     @objc private func handleBackgroundTap() {
             dismiss(animated: false, completion: nil)
@@ -98,9 +104,11 @@ extension 켈린더_수정_뷰컨트롤러 {
            let 선택된월 = 월[연월일_피커뷰.selectedRow(inComponent: 1)]
            let 선택된일 = 일[연월일_피커뷰.selectedRow(inComponent: 2)]
 
-//           print("[ 선택된 날짜: \(선택된년도)년 \(선택된월)월 \(선택된일)일 ]으로 변경되었습니다")
         let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
-            print("[ 선택된 날짜: \(결과값) ]으로 변경되었습니다")
+
+           print("[ 선택된 날짜: \(결과값)]으로 변경되었습니다")
+
+
            dismiss(animated: false, completion: nil)
 
        }
