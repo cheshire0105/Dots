@@ -518,31 +518,44 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             return
         }
 
-        // 이미지 업로드를 먼저 수행
+        // 이미지 업로드 수행
         uploadImages(userId: userId, posterName: posterName) { [weak self] uploadedUrls in
-            // 업로드된 이미지 URL들을 사용하여 Firestore 문서를 업데이트
             let reviewData: [String: Any] = [
                 "userId": userId,
                 "title": title,
                 "content": content,
                 "createdAt": FieldValue.serverTimestamp(),
-                "images": uploadedUrls // 업로드된 이미지 URL 배열 사용
+                "images": uploadedUrls
             ]
 
             let docRef = Firestore.firestore().collection("posters").document(posterName)
-                       .collection("reviews").document(userId)
+                           .collection("reviews").document(userId)
 
             docRef.setData(reviewData, merge: true) { error in
                 if let error = error {
                     print("Error updating document: \(error)")
                 } else {
                     self?.delegate?.didSubmitReview()
+
                     // 토스트 메시지 표시
                     DispatchQueue.main.async {
-                        self?.showUploadSuccessToast()
+                        self?.showUploadSuccessToastAndDismiss()
                     }
                 }
             }
+        }
+    }
+
+    // 토스트 메시지 표시 후 화면 닫기
+    private func showUploadSuccessToastAndDismiss() {
+        var style = ToastStyle()
+        style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
+        style.messageColor = .white
+        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+        self.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style) { didTap in
+            // 토스트 메시지가 사라진 후 화면을 닫습니다.
+            self.dismiss(animated: true, completion: nil)
         }
     }
 
@@ -582,21 +595,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         }
     }
 
-    // 토스트 메시지 표시 함수
-    private func showUploadSuccessToast() {
-        var style = ToastStyle()
-        style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
-        style.messageColor = .white
-        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
 
-        self.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style)
-        ToastManager.shared.isTapToDismissEnabled = true
-
-        // 2초 후에 화면 닫기
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
 
 
     func addImageUrlToFirestore(userId: String, posterName: String, imageUrl: String) {
