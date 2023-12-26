@@ -11,6 +11,7 @@ import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위�
 import SnapKit
 import Firebase
 import FirebaseStorage
+import Toast_Swift
 
 protocol ReviewWritePageDelegate: AnyObject {
     func didSubmitReview()
@@ -520,31 +521,43 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
         let reviewData: [String: Any] = [
             "title": title,
             "content": content,
-            "createdAt": FieldValue.serverTimestamp(), // 현재 시간
-            // 필요한 추가 데이터
+            "createdAt": FieldValue.serverTimestamp()
         ]
 
-        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에서 문서를 업데이트, 문서 ID는 유저의 UUID로 설정
         let docRef = Firestore.firestore().collection("posters").document(posterName)
             .collection("reviews").document(userId)
 
         docRef.updateData(reviewData) { [weak self] error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                // 이미지 업로드 후, 결과 URL을 가져와 Firestore 문서에 업데이트
-                self?.uploadImages(userId: userId, posterName: posterName) { urls in
-                    docRef.updateData(["images": FieldValue.arrayUnion(urls)]) { error in
-                        if let error = error {
-                            print("Error updating document: \(error)")
-                        } else {
-                            self?.delegate?.didSubmitReview()
-                        }
-                    }
-                }
-                self?.dismiss(animated: true, completion: nil)
-            }
-        }
+               if let error = error {
+                   print("Error updating document: \(error)")
+               } else {
+                   self?.uploadImages(userId: userId, posterName: posterName) { urls in
+                       docRef.updateData(["images": FieldValue.arrayUnion(urls)]) { error in
+                           if let error = error {
+                               print("Error updating document: \(error)")
+                           } else {
+                               self?.delegate?.didSubmitReview()
+
+                               // 토스트 메시지 표시
+                               DispatchQueue.main.async {
+                                   var style = ToastStyle()
+                                   style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
+                                   style.messageColor = .white
+                                   style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+                                   self?.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style)
+                                   ToastManager.shared.isTapToDismissEnabled = true
+
+                                   // 2초 후에 화면 닫기
+                                   DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                       self?.dismiss(animated: true, completion: nil)
+                                   }
+                               }
+                           }
+                       }
+                   }
+               }
+           }
     }
 
     func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {

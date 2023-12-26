@@ -12,6 +12,7 @@ import SnapKit
 import Firebase
 import FirebaseStorage
 import SDWebImage
+import Toast_Swift
 
 
 class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource, PHPickerViewControllerDelegate {
@@ -629,7 +630,21 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
                            print("Error updating document: \(error)")
                        } else {
                            self?.delegate?.didSubmitReview()
-                           self?.dismiss(animated: true, completion: nil)
+                           // 토스트 메시지 표시
+                           DispatchQueue.main.async {
+                               var style = ToastStyle()
+                               style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
+                               style.messageColor = .white
+                               style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+                               self?.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style)
+                               ToastManager.shared.isTapToDismissEnabled = true
+
+                               // 2초 후에 화면 닫기
+                               DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                   self?.dismiss(animated: true, completion: nil)
+                               }
+                           }
                        }
                    }
         }
