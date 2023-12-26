@@ -242,13 +242,20 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
             
             print("수정 버튼 클릭")
             
-//            if let 현제모달 = self.findViewController() {
-//                현제모달.dismiss(animated: true) {
-//                    let 새모달 = 켈린더_수정_뷰컨트롤러()
-//                    새모달.modalPresentationStyle = .fullScreen
-//                    현제모달.present(새모달, animated: false, completion: nil)
-//                }
-//            }
+            let 선택된데이터 = self.셀_데이터_배열.셀_데이터_배열[indexPath.row]
+                  print("포스터이미지URL: \(선택된데이터.포스터이미지URL)")
+                  print("전시명: \(선택된데이터.전시명)")
+                  print("장소: \(선택된데이터.장소)")
+                  print("방문날짜: \(선택된데이터.방문날짜)")
+                  print("리뷰문서ID: \(선택된데이터.리뷰문서ID)")
+            
+            if let 현제모달 = self.findViewController() {
+                현제모달.dismiss(animated: true) {
+                    let 새모달 = 켈린더_수정_뷰컨트롤러()
+                    새모달.modalPresentationStyle = .fullScreen
+                    현제모달.present(새모달, animated: false, completion: nil)
+                }
+            }
             
             completionHandler(true)
         }
@@ -347,3 +354,5 @@ extension 캘린더_스케쥴_등록_모달 {
         }
     }
 }
+
+

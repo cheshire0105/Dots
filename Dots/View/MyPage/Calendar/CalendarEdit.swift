@@ -2,6 +2,9 @@ import UIKit
 
 class 켈린더_수정_뷰컨트롤러 : UIViewController {
     
+    var 선택된셀데이터: 셀_데이터?
+
+    
     let 배경_백 = {
         let blurEffect = UIBlurEffect(style: .systemChromeMaterialDark)
                let visualEffectView = UIVisualEffectView(effect: blurEffect)
@@ -70,6 +73,9 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
               배경_백.addGestureRecognizer(panGestureRecognizer)
         let panGestureRecognizer2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
               수정_뷰.addGestureRecognizer(panGestureRecognizer2)
+        
+        
+        
     }
     @objc private func handleBackgroundTap() {
             dismiss(animated: false, completion: nil)
@@ -92,7 +98,9 @@ extension 켈린더_수정_뷰컨트롤러 {
            let 선택된월 = 월[연월일_피커뷰.selectedRow(inComponent: 1)]
            let 선택된일 = 일[연월일_피커뷰.selectedRow(inComponent: 2)]
 
-           print("[ 선택된 날짜: \(선택된년도)년 \(선택된월)월 \(선택된일)일 ]으로 변경되었습니다")
+//           print("[ 선택된 날짜: \(선택된년도)년 \(선택된월)월 \(선택된일)일 ]으로 변경되었습니다")
+        let 결과값 = "\(선택된년도)-\(선택된월)-\(선택된일)"
+            print("[ 선택된 날짜: \(결과값) ]으로 변경되었습니다")
            dismiss(animated: false, completion: nil)
 
        }
