@@ -384,6 +384,21 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                     // 방문을 처음 등록하는 경우, 날짜를 추가하고 방문 횟수를 증가시킵니다.
                     self?.addVisitDateToFirestore(visitDate: dateString, posterName: posterName) {
                         self?.dismissAlertViews()
+
+                        // 토스트 메시지 스타일 설정
+                        var style = ToastStyle()
+                        style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+                        style.messageColor = .white
+                        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+                        // 토스트 메시지 표시
+                        self?.view.makeToast("기록이 저장 되었습니다. 어떤 전시 였나요?", duration: 3.0, position: .center, style: style)
+                        ToastManager.shared.isTapToDismissEnabled = true
+
+                        // 3.5초 후에 화면 닫기
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                            self?.dismiss(animated: true, completion: nil)
+                        }
                     }
                 }
             }
@@ -1047,11 +1062,12 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                     if self?.heartIcon.isSelected == true {
                         // 좋아요 상태일 때 토스트 메시지 표시
                         var style = ToastStyle()
-                        style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+//                        style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
                         style.messageColor = .white
-                        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+                        style.backgroundColor = .clear
+                        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 30) ?? .systemFont(ofSize: 30)
 
-                        self?.view.makeToast("전시가 마음에 드셨군요!", duration: 2.0, position: .center, style: style)
+                        self?.view.makeToast("❤️", duration: 2.0, position: .center, style: style)
                         ToastManager.shared.isTapToDismissEnabled = true
                     }
                     self?.updateHeartIconState()
