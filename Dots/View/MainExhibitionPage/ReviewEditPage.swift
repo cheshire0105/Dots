@@ -633,15 +633,15 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
                            // 토스트 메시지 표시
                            DispatchQueue.main.async {
                                var style = ToastStyle()
-                               style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
+                               style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
                                style.messageColor = .white
                                style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
 
-                               self?.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style)
+                               self?.view.makeToast("수정이 완료되었습니다", duration: 3.0, position: .top, style: style)
                                ToastManager.shared.isTapToDismissEnabled = true
 
                                // 2초 후에 화면 닫기
-                               DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                               DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
                                    self?.dismiss(animated: true, completion: nil)
                                }
                            }

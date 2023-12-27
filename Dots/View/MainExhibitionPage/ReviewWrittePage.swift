@@ -48,6 +48,8 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     override func viewDidLoad() {
         super.viewDidLoad()
 
+
+
         titleTextField.becomeFirstResponder()
         // 텍스트 필드 커서 색상 설정
             titleTextField.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
@@ -518,8 +520,14 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             return
         }
 
+        print("업로드 시작: \(Date())")
+
+
         // 이미지 업로드 수행
         uploadImages(userId: userId, posterName: posterName) { [weak self] uploadedUrls in
+
+            print("업로드 완료: \(Date())")
+
             let reviewData: [String: Any] = [
                 "userId": userId,
                 "title": title,
@@ -537,27 +545,33 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 } else {
                     self?.delegate?.didSubmitReview()
 
-                    // 토스트 메시지 표시
-                    DispatchQueue.main.async {
-                        self?.showUploadSuccessToastAndDismiss()
+                    // 업로드 완료 후 토스트 메시지 표시 및 화면 닫기
+                                self?.showToastAndDismiss()
                     }
                 }
+
+        }
+    }
+
+
+    // 토스트 메시지 표시 후 화면 닫기
+    func showToastAndDismiss() {
+        DispatchQueue.main.async {
+            var style = ToastStyle()
+            style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+            style.messageColor = .white
+            style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+            self.view.makeToast("업로드가 완료되었습니다", duration: 3.0, position: .top, style: style)
+            ToastManager.shared.isTapToDismissEnabled = true
+
+            // 화면 닫기를 지연 실행
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }
 
-    // 토스트 메시지 표시 후 화면 닫기
-    private func showUploadSuccessToastAndDismiss() {
-        var style = ToastStyle()
-        style.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
-        style.messageColor = .white
-        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
-
-        self.view.makeToast("업로드가 완료되었습니다", duration: 2.0, position: .center, style: style) { didTap in
-            // 토스트 메시지가 사라진 후 화면을 닫습니다.
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
 
     // 이미지를 업로드하고 URL 배열을 반환하는 함수
     func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {
