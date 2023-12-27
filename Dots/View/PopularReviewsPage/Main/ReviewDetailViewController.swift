@@ -15,6 +15,8 @@ import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
 import Lottie
+import ImageSlideshow
+
 
 
 
@@ -863,7 +865,27 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
     }
-    
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let fullScreenSlideshowViewController = FullScreenSlideshowViewController()
+        fullScreenSlideshowViewController.slideshow.currentPageChanged = { page in
+            print("current page:", page)
+        }
+
+        // ImageSlideshow에 이미지 소스 설정
+        // SDWebImageSource를 사용하여 각 URL로부터 이미지 소스를 생성합니다.
+        let inputs = imageDatas.map { SDWebImageSource(url: $0.url) }
+        fullScreenSlideshowViewController.slideshow.setImageInputs(inputs)
+
+        // 현재 페이지 설정
+        fullScreenSlideshowViewController.slideshow.setCurrentPage(indexPath.row, animated: false)
+
+        // 전체 화면 슬라이드쇼 보기 표시
+        fullScreenSlideshowViewController.modalPresentationStyle = .fullScreen
+        present(fullScreenSlideshowViewController, animated: true, completion: nil)
+    }
+
+
 }
 
 extension ReviewDetailViewController: UIScrollViewDelegate {
@@ -871,6 +893,8 @@ extension ReviewDetailViewController: UIScrollViewDelegate {
         let pageIndex = round(scrollView.contentOffset.x / view.frame.width)
         pageControl.currentPage = Int(pageIndex)
     }
+
+    
 }
 
 

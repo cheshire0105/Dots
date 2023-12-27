@@ -16,6 +16,8 @@ target 'Dots' do
   pod 'SkeletonView'
   pod 'AlgoliaSearchClient'
     pod 'lottie-ios'
+    pod 'ImageSlideshow'
+    pod "ImageSlideshow/SDWebImage"
 
 
 end
