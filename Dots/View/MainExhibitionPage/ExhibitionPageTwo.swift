@@ -13,6 +13,8 @@ import UIKit
 import FirebaseStorage
 import Firebase
 import Toast_Swift
+import Lottie
+
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -45,14 +47,17 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
-    lazy var heartIcon: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+    lazy var heartIcon: LottieAnimationView = {
+        let animationView = LottieAnimationView()
+        animationView.animation = LottieAnimation.named("Animation - 1703665032206") // "heartAnimation"을 로티 애니메이션 파일 이름으로 교체하세요.
+        animationView.contentMode = .scaleAspectFill
+        animationView.loopMode = .playOnce // 또는 .loop 등 다른 옵션을 사용할 수 있습니다.
+        animationView.backgroundBehavior = .pauseAndRestore
+        animationView.translatesAutoresizingMaskIntoConstraints = false
 
-
-
-        button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
-        return button
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(heartIconTapped))
+        animationView.addGestureRecognizer(tapGesture)
+        return animationView
     }()
 
     lazy var recordButton: UIButton = {
@@ -588,9 +593,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 let isLiked = userLikes[userID] ?? false
 
                 DispatchQueue.main.async {
-                    self?.heartIcon.isSelected = isLiked
-                    self?.updateHeartIconState()
-                }
+                              // 좋아요 상태를 업데이트합니다.
+                              self?.isHeartIconSelected = isLiked
+                              self?.updateHeartIconState()
+                          }
             }
         }
     }
@@ -982,15 +988,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         recordButton.snp.makeConstraints{ make in
-            make.bottom.equalTo(heartIcon.snp.top).inset(-10)
+            make.bottom.equalTo(heartIcon.snp.top).inset(6)
             make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
         }
 
         heartIcon.snp.makeConstraints{ make in
-            make.bottom.equalTo(mapPageButton.snp.top).inset(-10)
-            make.trailing.equalTo(view.snp.trailing).inset(16)
-            make.width.height.equalTo(40)
+            make.bottom.equalTo(mapPageButton.snp.top).inset(7)
+            make.trailing.equalTo(view.snp.trailing).inset(-4)
+            make.width.height.equalTo(78)
         }
 
         mapPageButton.snp.makeConstraints{ make in
@@ -1058,8 +1064,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 print("Transaction successfully committed!")
                 DispatchQueue.main.async {
                     // 좋아요 상태의 UI를 토글합니다.
-                    self?.heartIcon.isSelected.toggle()
-                    if self?.heartIcon.isSelected == true {
+                    self?.isHeartIconSelected.toggle()
+                    self?.updateHeartIconState()
+
+                    if self?.isHeartIconSelected == true {
                         // 좋아요 상태일 때 토스트 메시지 표시
                         var style = ToastStyle()
 //                        style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
@@ -1067,7 +1075,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                         style.backgroundColor = .clear
                         style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 30) ?? .systemFont(ofSize: 30)
 
-                        self?.view.makeToast("❤️", duration: 2.0, position: .center, style: style)
+                        self?.view.makeToast("", duration: 2.0, position: .center, style: style)
                         ToastManager.shared.isTapToDismissEnabled = true
                     }
                     self?.updateHeartIconState()
@@ -1078,17 +1086,19 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
     }
 
+    // 하트 아이콘의 상태를 추적하기 위한 변수
+        var isHeartIconSelected: Bool = false
 
     func updateHeartIconState() {
-        if heartIcon.isSelected {
-            // 좋아요 상태일 때
-            heartIcon.setImage(UIImage(named: "Vector 2"), for: .normal)
-
-        } else {
-            // 좋아요 상태가 아닐 때
-            heartIcon.setImage(UIImage(named: "라이크"), for: .normal)
-        }
-    }
+           if isHeartIconSelected {
+               // 좋아요 상태일 때 애니메이션 재생
+               heartIcon.play()
+           } else {
+               // 좋아요 상태가 아닐 때 애니메이션 초기 상태로 되돌리기
+               heartIcon.stop()
+               heartIcon.currentFrame = 0
+           }
+       }
 
 
 
