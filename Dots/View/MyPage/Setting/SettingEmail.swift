@@ -122,7 +122,6 @@ class 이메일변경_화면 : UIViewController, UIGestureRecognizerDelegate {
         }
         UI레이아웃()
         버튼_클릭()
-        화면_제스쳐_실행()
         현재_이메일_텍스트필드.delegate = self
         새_이메일_텍스트필드.delegate = self
         
@@ -132,6 +131,7 @@ class 이메일변경_화면 : UIViewController, UIGestureRecognizerDelegate {
         
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        
     }
     private func showAlert(message: String) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
@@ -316,15 +316,3 @@ extension 이메일변경_화면 {
         }
     }
 
-extension 이메일변경_화면 {
-    
-    func 화면_제스쳐_실행 () {
-        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
-        화면_제스쳐.direction = .right
-        view.addGestureRecognizer(화면_제스쳐)
-    }
-    @objc private func 화면_제스쳐_뒤로_가기() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-}

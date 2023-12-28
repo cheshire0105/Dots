@@ -154,7 +154,6 @@ class 알림설정_화면 : UIViewController, UIGestureRecognizerDelegate {
 
         UI레이아웃()
         버튼_클릭()
-        화면_제스쳐_실행 ()
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
@@ -324,17 +323,4 @@ extension 알림설정_화면{
     @objc private func 뒤로가기_버튼_클릭() {
         navigationController?.popViewController(animated: true)
     }
-}
-
-extension 알림설정_화면 {
-    
-    func 화면_제스쳐_실행 () {
-        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
-        화면_제스쳐.direction = .right
-        view.addGestureRecognizer(화면_제스쳐)
-    }
-    @objc private func 화면_제스쳐_뒤로_가기() {
-        navigationController?.popViewController(animated: true)
-    }
-    
 }

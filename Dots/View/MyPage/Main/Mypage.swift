@@ -1,4 +1,4 @@
-// 최신화  - 유저 설정 페이지 재작업
+// 최신화 - 12 19
 import UIKit
 import SnapKit
 import FSCalendar
@@ -15,10 +15,11 @@ class Mypage: UIViewController {
         print("유저_다녀옴_날짜: \(유저_다녀옴_날짜)")
     }
     
-    // 추가 디버깅
-    func print특정날짜() {
-        print("특정날짜: \(특정날짜)")
-    }
+    let 배경_백 = {
+        let blurEffect = UIBlurEffect(style: .systemChromeMaterialDark)
+               let visualEffectView = UIVisualEffectView(effect: blurEffect)
+               return visualEffectView
+       }()
     var 마이페이지_프로필_이미지_버튼 = {
         var imageButton = UIButton()
         imageButton.layer.cornerRadius = 38
@@ -348,7 +349,12 @@ class Mypage: UIViewController {
             make.bottom.equalToSuperview().offset(-60)
         }
     }
-    
+    func 백_레이아웃() {
+        view.addSubview(배경_백)
+             배경_백.snp.makeConstraints { make in
+               make.edges.equalToSuperview()
+           }
+    }
 }
 
 extension Mypage {
@@ -362,7 +368,7 @@ extension Mypage {
         let 설정_이동 = 마이페이지_설정_페이지()
         self.navigationController?.pushViewController(설정_이동, animated: false)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     
@@ -370,28 +376,28 @@ extension Mypage {
         let 알림_이동 = 마이페이지_알림()
         self.navigationController?.pushViewController(알림_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     @objc func 마이페이지_전시_버튼_클릭 () {
         let 전시_이동 = 마이페이지_전시()
         self.navigationController?.pushViewController(전시_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     @objc func 마이페이지_후기_버튼_클릭 () {
         let 후기_이동 = 마이페이지_리뷰()
         self.navigationController?.pushViewController(후기_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     @objc func 마이페이지_보관함_버튼_클릭 () {
         let 보관함_이동 = 마이페이지_보관함()
         self.navigationController?.pushViewController(보관함_이동, animated: true)
         self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         
     }
     

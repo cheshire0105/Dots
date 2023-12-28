@@ -54,6 +54,9 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
                 날짜에_등록할_이미지.layer.cornerRadius = 20
                 날짜에_등록할_이미지.isUserInteractionEnabled = true
                 
+                날짜에_등록할_이미지.addTarget(self, action: #selector(imageButtonTapped), for: .touchUpInside)
+
+                
                 cell.addSubview(날짜에_등록할_이미지)
                 날짜에_등록할_이미지.snp.makeConstraints { make in
                     make.centerX.equalTo(cell.snp.centerX)
@@ -69,20 +72,10 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
         
         return cell
     }
-    
-    
-}
-
-// 켈린더 sheet present modal
-extension Mypage {
-    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        if Calendar.current.isDateInToday(date) {
-            calendar.appearance.titleSelectionColor = UIColor.black
-        } else {
-            calendar.appearance.titleSelectionColor = UIColor.white
-        }
+    @objc func imageButtonTapped() {
+        print("이미지 클릭됨")
         
-        
+        // 캘린더_스케쥴_등록_모달 띄우기
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
         
         if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
@@ -97,8 +90,44 @@ extension Mypage {
         
         캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
         self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
+//        백_레이아웃()
+    }
+
+    
+}
+
+// 켈린더 sheet present modal
+extension Mypage  {
+    
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        if Calendar.current.isDateInToday(date) {
+            calendar.appearance.titleSelectionColor = UIColor.black
+        } else {
+            calendar.appearance.titleSelectionColor = UIColor.white
+        }
+
+        handleSelectedDate(date)
+    }
+    
+    private func handleSelectedDate(_ date: Date) {
+        
+        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
+
+        if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
+            sheetPresent.prefersGrabberVisible = true
+            sheetPresent.detents = [.medium(), .large()]
+            캘린더_스케쥴_등록_모달.isModalInPresentation = false
+            sheetPresent.largestUndimmedDetentIdentifier = .large
+            sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
+            sheetPresent.preferredCornerRadius = 30
+            sheetPresent.prefersGrabberVisible = false
+        }
+
+        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
+        self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
     }
 }
+
 
 
 
