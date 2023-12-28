@@ -3,12 +3,9 @@ import Firebase
 import FirebaseFirestore
 
 class 켈린더_수정_뷰컨트롤러 : UIViewController {
-    var posterImageName: String?
-    var titleName : String?
+
     var 수정할셀데이터: 셀_데이터?
-    var 캘린더리로드 = Mypage()
-    var 달력참조 = Mypage()
-    var 참조 = BackgroundImageViewController()
+    
     let 배경_백 = {
         let blurEffect = UIBlurEffect(style: .systemChromeMaterialDark)
         let visualEffectView = UIVisualEffectView(effect: blurEffect)
@@ -87,7 +84,6 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
         print("리뷰문서ID: \(수정할셀데이터?.리뷰문서ID ?? "")")
         print("포스터스문서ID: \(수정할셀데이터?.포스터스문서ID ?? "")")
         
-        posterImageName = "ExamplePoster"  // 예시로 "ExamplePoster"를 넣어줍니다.
         
     }
     @objc private func handleBackgroundTap() {
@@ -146,9 +142,7 @@ extension 켈린더_수정_뷰컨트롤러 {
                                     print("리뷰문서ID: \(수정된셀데이터.리뷰문서ID )")
                                     print("포스터스문서ID: \(수정된셀데이터.포스터스문서ID )")
     
-//                                    self.달력참조.캘린더.reloadData()
-    
-//                                    print("캘린더 리로드 완료")
+
                                 }
                             }
                         }

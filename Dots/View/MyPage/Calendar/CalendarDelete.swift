@@ -2,6 +2,8 @@ import UIKit
 
 class 켈린더_삭제_뷰컨트롤러 : UIViewController {
     
+    var 삭제할셀데이터: 셀_데이터?
+
     let 배경_백 = {
         let blurEffect = UIBlurEffect(style: .systemChromeMaterialDark)
                let visualEffectView = UIVisualEffectView(effect: blurEffect)

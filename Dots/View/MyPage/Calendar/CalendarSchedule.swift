@@ -315,34 +315,45 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
         let 삭제 = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
             print("삭제 버튼 클릭")
             
-//            if let 현제모달 = self.findViewController() {
-//                현제모달.dismiss(animated: true) {
-//                    let 새모달 = 켈린더_삭제_뷰컨트롤러()
-//                    새모달.modalPresentationStyle = .fullScreen
-//                    현제모달.present(새모달, animated: false, completion: nil)
-//                    
-//                }
-//            }
-               let 선택된데이터 = self.셀_데이터_배열.셀_데이터_배열[indexPath.row]
-
-               let 데이터베이스 = Firestore.firestore()
-               let uid = Auth.auth().currentUser?.uid ?? ""
-               let 포스터스문서ID = "포스터스문서의ID"
-               let 리뷰문서ID = 선택된데이터.리뷰문서ID
-               let 리뷰문서참조 = 데이터베이스.collection("posters").document(포스터스문서ID).collection("reviews").document(리뷰문서ID)
-               
-               리뷰문서참조.delete { error in
-                   if let error = error {
-                       print("리뷰 문서 삭제 에러: \(error.localizedDescription)")
-                   } else {
-                       print("리뷰 문서 삭제 성공")
-
-                       self.셀_데이터_배열.셀_데이터_배열.remove(at: indexPath.row)
-                       self.캘린더_전시_테이블뷰.reloadData()
-                   }
-               }
-
-
+           
+//               let 선택된데이터 = self.셀_데이터_배열.셀_데이터_배열[indexPath.row]
+//
+//               let 데이터베이스 = Firestore.firestore()
+//               let uid = Auth.auth().currentUser?.uid ?? ""
+//               let 포스터스문서ID = "포스터스문서의ID"
+//               let 리뷰문서ID = 선택된데이터.리뷰문서ID
+//               let 리뷰문서참조 = 데이터베이스.collection("posters").document(포스터스문서ID).collection("reviews").document(리뷰문서ID)
+//               
+//               리뷰문서참조.delete { error in
+//                   if let error = error {
+//                       print("리뷰 문서 삭제 에러: \(error.localizedDescription)")
+//                   } else {
+//                       print("리뷰 문서 삭제 성공")
+//
+//                       self.셀_데이터_배열.셀_데이터_배열.remove(at: indexPath.row)
+//                       self.캘린더_전시_테이블뷰.reloadData()
+//                   }
+//               }
+//
+            let 선택된데이터 = self.셀_데이터_배열.셀_데이터_배열[indexPath.row]
+                  print("-----전달될 셀 데이터-----")
+                  print("포스터이미지URL: \(선택된데이터.포스터이미지URL)")
+                  print("전시명: \(선택된데이터.전시명)")
+                  print("장소: \(선택된데이터.장소)")
+                  print("방문날짜: \(선택된데이터.방문날짜)")
+                  print("리뷰문서ID: \(선택된데이터.리뷰문서ID)")
+                  print("포스터스문서ID: \(선택된데이터.포스터스문서ID)")
+            
+            
+            if let 현제모달 = self.findViewController() {
+                현제모달.dismiss(animated: true) {
+                    let 새모달 = 켈린더_삭제_뷰컨트롤러()
+                    새모달.modalPresentationStyle = .fullScreen
+                    현제모달.present(새모달, animated: false, completion: nil)
+                    
+                }
+            }
+            
             completionHandler(true)
         }
         삭제.image = UIImage(named: "내후기delete")
