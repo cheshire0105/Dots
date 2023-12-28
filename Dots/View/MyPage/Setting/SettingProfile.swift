@@ -205,7 +205,6 @@ extension 프로필변경_화면 {
                                             print("유저_데이터_관리에서 문서 업데이트 에러: \(에러.localizedDescription)")
                                         } else {
                                             print("프로필 이미지 URL 및 닉네임 업데이트 성공")
-                                            var 토스트 = 마이페이지_설정_페이지()
                                             DispatchQueue.main.async {
                                                 var 토스트 = ToastStyle()
                                                 토스트.backgroundColor = UIColor(named: "neon") ?? UIColor.white
@@ -214,12 +213,12 @@ extension 프로필변경_화면 {
                                                 
                                                 self.view.makeToast(
                                                     " 회원님의 프로필이 업데이트 되었습니다. ",
-                                                    duration: 2.5,
+                                                    duration: 2,
                                                     position: .top,
                                                     style: 토스트
                                                 )
                                             }
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                                 self.navigationController?.popViewController(animated: true)
                                             }
                                         }

@@ -25,7 +25,7 @@ class 켈린더_삭제_뷰컨트롤러 : UIViewController {
     
     let 전시기록_삭제_확인_라벨 = {
         let label = UILabel()
-        label.text = "삭제된 기록은 복구할 수 없어요.?"
+        label.text = "삭제된 기록은 복구할 수 없어요."
         label.font = UIFont(name: "Pretendard-Regular", size: 14)
         label.textAlignment = .center
         return label
@@ -110,11 +110,10 @@ extension 켈린더_삭제_뷰컨트롤러 {
         삭제_뷰.addSubview(유지하기_버튼)
         삭제_뷰.addSubview(삭제하기_버튼)
         
-        배경_백.snp.makeConstraints { make in
             배경_백.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
-        }
+        
         삭제_뷰.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.bottom.equalTo(삭제하기_버튼.snp.bottom).offset(20)

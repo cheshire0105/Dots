@@ -1,4 +1,5 @@
 import UIKit
+import Toast_Swift
 import FirebaseAuth
 import FirebaseFirestore
 
@@ -86,7 +87,7 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         
-        textField.clearButtonMode = .whileEditing
+//        textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
         textField.isSecureTextEntry = true
         
@@ -121,7 +122,7 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         
-        textField.clearButtonMode = .whileEditing
+//        textField.clearButtonMode = .whileEditing
         textField.rightViewMode = .whileEditing
         textField.isSecureTextEntry = true
         
@@ -214,7 +215,6 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         
         UI레이아웃()
         버튼_클릭()
-        화면_제스쳐_실행()
         
         새_비밀번호_텍스트필드.delegate = self
         현재_비밀번호_텍스트필드.delegate = self
@@ -278,12 +278,40 @@ extension 비밀번호변경_화면 {
     func 비밀번호변경_완료_업로드_재로그인_실행_함수(){
         guard let 새비밀번호 = 새_비밀번호_텍스트필드.text, !새비밀번호.isEmpty,
               let 새비밀번호확인 = 새_비밀번호_확인_텍스트필드.text, !새비밀번호확인.isEmpty else {
-            확인알럿(message: "새 비밀번호와 확인 비밀번호를 모두 입력해주세요.")
+//            확인알럿(message: "새 비밀번호와 확인 비밀번호를 모두 입력해주세요.")
+            var 토스트 = ToastStyle()
+//            토스트.backgroundColor = UIColor(named: "neon") ?? UIColor.white
+            토스트.backgroundColor = UIColor(red: 1, green: 0.269, blue: 0.269, alpha: 1)
+            토스트.messageColor = .black
+            토스트.cornerRadius = 20
+            
+            self.view.makeToast(
+                "새/확인 비밀번호를 모두 입력해주세요.",
+                duration: 2,
+                position: .top,
+                style: 토스트
+            )
+            새_비밀번호_백.layer.borderColor = UIColor.red.cgColor
+            새_비밀번호_확인_백.layer.borderColor = UIColor.red.cgColor
             return
         }
         
         if 새비밀번호 != 새비밀번호확인 {
-            확인알럿(message: "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.")
+//            확인알럿(message: "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.")
+            var 토스트 = ToastStyle()
+//            토스트.backgroundColor = UIColor(named: "neon") ?? UIColor.white
+            토스트.backgroundColor = UIColor(red: 1, green: 0.269, blue: 0.269, alpha: 1)
+            토스트.messageColor = .black
+            토스트.cornerRadius = 20
+            
+            self.view.makeToast(
+                "새/확인 비밀번호가 서로 일치하지 않습니다.",
+                duration: 2,
+                position: .top,
+                style: 토스트
+            )
+            새_비밀번호_백.layer.borderColor = UIColor.red.cgColor
+            새_비밀번호_확인_백.layer.borderColor = UIColor.red.cgColor
             return
         }
         
@@ -295,8 +323,9 @@ extension 비밀번호변경_화면 {
                         if let error = error {
                             self?.확인알럿(message: "비밀번호 업데이트 실패: \(error.localizedDescription)")
                         } else {
-                            self?.확인알럿(message: "비밀번호가 성공적으로 변경되었습니다.")
+//                            self?.확인알럿(message: "비밀번호가 성공적으로 변경되었습니다.")
                             self?.새비밀번호_파이어스토어_업로드 (새비밀번호)
+                          
                         }
                     }
                 } else {
@@ -371,7 +400,6 @@ extension 비밀번호변경_화면 {
                         }
                     } else {
                         print("Firestore: 일치하는 이메일이 없습니다.")
-                        self.완료된_로그아웃_프로세스_시작()
                     }
                 }
             }
@@ -382,12 +410,29 @@ extension 비밀번호변경_화면 {
         do {
             try Auth.auth().signOut()
             print("계정이 로그아웃되었습니다.")
+            DispatchQueue.main.async {
+                var 토스트 = ToastStyle()
+                토스트.backgroundColor = UIColor(named: "neon") ?? UIColor.white
+                토스트.messageColor = .black
+                토스트.cornerRadius = 20
+                
+                self.view.makeToast(
+                    " 새 비밀번호로 다시 로그인을 진행해주세요. ",
+                    duration: 2,
+                    position: .top,
+                    style: 토스트
+                )
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             let 로그인_뷰컨트롤러 = 로그인_뷰컨트롤러()
             let 로그인화면_이동 = UINavigationController(rootViewController: 로그인_뷰컨트롤러)
             로그인화면_이동.modalPresentationStyle = .fullScreen
-            dismiss(animated: true) {
-                UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-                self.present(로그인화면_이동, animated: true, completion: nil)
+                self.dismiss(animated: false) {
+                    UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
+                    self.present(로그인화면_이동, animated: false, completion: nil)
+                    self.새_비밀번호_텍스트필드.text = ""
+                    self.새_비밀번호_확인_텍스트필드.text = ""
+                }
             }
         } catch {
             print("로그아웃 실패: \(error.localizedDescription)")
@@ -427,19 +472,6 @@ extension 비밀번호변경_화면 {
     }
 }
 
-
-
-extension 비밀번호변경_화면 {
-    
-    func 화면_제스쳐_실행 () {
-        let 화면_제스쳐 = UISwipeGestureRecognizer(target: self, action: #selector(화면_제스쳐_뒤로_가기))
-        화면_제스쳐.direction = .right
-        view.addGestureRecognizer(화면_제스쳐)
-    }
-    @objc private func 화면_제스쳐_뒤로_가기() {
-        navigationController?.popViewController(animated: true)
-    }
-}
 
 
 
