@@ -4,6 +4,7 @@
 //
 //  Created by cheshire on 11/10/23.
 //
+// 최신화
 
 import Foundation
 import UIKit
@@ -12,6 +13,8 @@ import UIKit
 import FirebaseStorage
 import Firebase
 import Toast_Swift
+import Lottie
+
 
 class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -44,14 +47,17 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         return button
     }()
 
-    lazy var heartIcon: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "라이크"), for: .normal) // 버튼의 기본 상태 이미지를 설정합니다.
+    lazy var heartIcon: LottieAnimationView = {
+        let animationView = LottieAnimationView()
+        animationView.animation = LottieAnimation.named("Animation - 1703665032206") // "heartAnimation"을 로티 애니메이션 파일 이름으로 교체하세요.
+        animationView.contentMode = .scaleAspectFill
+        animationView.loopMode = .playOnce // 또는 .loop 등 다른 옵션을 사용할 수 있습니다.
+        animationView.backgroundBehavior = .pauseAndRestore
+        animationView.translatesAutoresizingMaskIntoConstraints = false
 
-
-
-        button.addTarget(self, action: #selector(heartIconTapped), for: .touchUpInside) // 버튼 액션 추가
-        return button
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(heartIconTapped))
+        animationView.addGestureRecognizer(tapGesture)
+        return animationView
     }()
 
     lazy var recordButton: UIButton = {
@@ -125,7 +131,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         label.text = "언제 다녀오셨나요?"
         label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
-//        label.textAlignment = .center
+        //        label.textAlignment = .center
         return label
     }()
 
@@ -134,7 +140,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         label.text = "다녀온 날짜를 입력해주시면 마이페이지에 나만의 전시 캘린더가 제공됩니다."
         label.textColor = UIColor(red: 0.757, green: 0.753, blue: 0.773, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 14)
-//        label.textAlignment = .center
+        //        label.textAlignment = .center
         label.numberOfLines = 0
         return label
     }()
@@ -383,6 +389,21 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                     // 방문을 처음 등록하는 경우, 날짜를 추가하고 방문 횟수를 증가시킵니다.
                     self?.addVisitDateToFirestore(visitDate: dateString, posterName: posterName) {
                         self?.dismissAlertViews()
+
+                        // 토스트 메시지 스타일 설정
+                        var style = ToastStyle()
+                        style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+                        style.messageColor = .white
+                        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+                        // 토스트 메시지 표시
+                        self?.view.makeToast("기록이 저장 되었습니다. 어떤 전시 였나요?", duration: 3.0, position: .center, style: style)
+                        ToastManager.shared.isTapToDismissEnabled = true
+
+                        // 3.5초 후에 화면 닫기
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                            self?.dismiss(animated: true, completion: nil)
+                        }
                     }
                 }
             }
@@ -455,15 +476,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
             return nil
         }) { (object, error) in
-               if let error = error {
-                   print("트랜잭션 실패: \(error)")
-               } else {
-                   print("트랜잭션이 성공적으로 완료됨")
-                   self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
+            if let error = error {
+                print("트랜잭션 실패: \(error)")
+            } else {
+                print("트랜잭션이 성공적으로 완료됨")
+                self.recordButton.setImage(UIImage(named: "footprint 1"), for: .normal)
 
-                   completion()
-                   self.fetchVisitorCountAndUpdateLabel() // 방문자 수 레이블을 업데이트합니다.
-               }
+                completion()
+                self.fetchVisitorCountAndUpdateLabel() // 방문자 수 레이블을 업데이트합니다.
+            }
         }
     }
 
@@ -538,7 +559,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
-        tabBarController?.tabBar.isHidden = true
+        //        tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: animated)
         updateHeartIconStateFromFirestore()
 
@@ -572,14 +593,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 let isLiked = userLikes[userID] ?? false
 
                 DispatchQueue.main.async {
-                    self?.heartIcon.isSelected = isLiked
-                    self?.updateHeartIconState()
-                }
+                              // 좋아요 상태를 업데이트합니다.
+                              self?.isHeartIconSelected = isLiked
+                              self?.updateHeartIconState()
+                          }
             }
         }
     }
 
-    
+
 
 
 
@@ -629,9 +651,9 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         // 딥링크에서 poster 매개변수 값을 사용하여 전시 타이틀을 설정합니다.
-            if let posterId = self.posterImageName {
-                fetchAndSetExhibitionTitle(posterId: posterId)
-            }
+        if let posterId = self.posterImageName {
+            fetchAndSetExhibitionTitle(posterId: posterId)
+        }
 
         if let posterName = self.posterImageName {
             checkIfVisitAlreadyRegistered(posterName: posterName) { [weak self] visited in
@@ -823,8 +845,8 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(datePicker.snp.bottom).offset(10)
             make.centerX.equalTo(customAlertView.snp.centerX)
-//            make.width.equalTo(273) // 버튼의 너비
-//            make.height.equalTo(56) // 버튼의 높이
+            //            make.width.equalTo(273) // 버튼의 너비
+            //            make.height.equalTo(56) // 버튼의 높이
             make.bottom.equalTo(customAlertView.snp.bottom).inset(10)
         }
 
@@ -966,15 +988,15 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
         }
 
         recordButton.snp.makeConstraints{ make in
-            make.bottom.equalTo(heartIcon.snp.top).inset(-10)
+            make.bottom.equalTo(heartIcon.snp.top).inset(6)
             make.trailing.equalTo(view.snp.trailing).inset(16)
             make.width.height.equalTo(40)
         }
 
         heartIcon.snp.makeConstraints{ make in
-            make.bottom.equalTo(mapPageButton.snp.top).inset(-10)
-            make.trailing.equalTo(view.snp.trailing).inset(16)
-            make.width.height.equalTo(40)
+            make.bottom.equalTo(mapPageButton.snp.top).inset(7)
+            make.trailing.equalTo(view.snp.trailing).inset(-4)
+            make.width.height.equalTo(78)
         }
 
         mapPageButton.snp.makeConstraints{ make in
@@ -992,6 +1014,10 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
     @objc func heartIconTapped() {
+
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+        feedbackGenerator.impactOccurred()
+
         guard let posterName = self.posterImageName, let userID = Auth.auth().currentUser?.uid else {
             print("Poster name or user ID is not available")
             return
@@ -1038,23 +1064,43 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
                 print("Transaction successfully committed!")
                 DispatchQueue.main.async {
                     // 좋아요 상태의 UI를 토글합니다.
-                    self?.heartIcon.isSelected.toggle()
+                    self?.isHeartIconSelected.toggle()
                     self?.updateHeartIconState()
+
+                    if self?.isHeartIconSelected == true {
+                        // 좋아요 상태일 때 토스트 메시지 표시
+                        var style = ToastStyle()
+//                        style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+                        style.messageColor = .white
+                        style.backgroundColor = .clear
+                        style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 30) ?? .systemFont(ofSize: 30)
+
+                        self?.view.makeToast("", duration: 2.0, position: .center, style: style)
+                        ToastManager.shared.isTapToDismissEnabled = true
+                    }
+                    self?.updateHeartIconState()
+
+
                 }
             }
         }
     }
 
+    // 하트 아이콘의 상태를 추적하기 위한 변수
+        var isHeartIconSelected: Bool = false
 
     func updateHeartIconState() {
-        if heartIcon.isSelected {
-            // 좋아요 상태일 때
-            heartIcon.setImage(UIImage(named: "Vector 2"), for: .normal)
-        } else {
-            // 좋아요 상태가 아닐 때
-            heartIcon.setImage(UIImage(named: "라이크"), for: .normal)
-        }
-    }
+           if isHeartIconSelected {
+               // 좋아요 상태일 때 애니메이션 재생
+               heartIcon.play()
+           } else {
+               // 좋아요 상태가 아닐 때 애니메이션 초기 상태로 되돌리기
+               heartIcon.stop()
+               heartIcon.currentFrame = 0
+           }
+       }
+
+
 
 
 
@@ -1114,15 +1160,15 @@ class ReviewTableViewCell: UITableViewCell {
     // UI 컴포넌트 선언
     private lazy var nickNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Bold", size: 12)
+        label.font = UIFont(name: "Pretendard-Bold", size: 14)
         label.textColor = .white
         return label
     }()
 
     private lazy var contentLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 12)
-        label.textColor = .white
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
+        label.textColor = UIColor(red: 0.497, green: 0.497, blue: 0.497, alpha: 1)
         label.numberOfLines = 3 // 멀티라인을 허용합니다.
         return label
     }()
@@ -1137,7 +1183,7 @@ class ReviewTableViewCell: UITableViewCell {
 
     private lazy var timeLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Bold", size: 10)
+        label.font = UIFont(name: "Pretendard-Regular", size: 12)
         label.textColor = .white
         return label
     }()
@@ -1147,7 +1193,7 @@ class ReviewTableViewCell: UITableViewCell {
     private lazy var newTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 18)
-        label.textColor = .white
+        label.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
         return label
     }()
 
@@ -1167,15 +1213,15 @@ class ReviewTableViewCell: UITableViewCell {
 
     private lazy var likeCount: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 10)
-        label.textColor = .white
+        label.font = UIFont(name: "Pretendard-Regular", size: 12)
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
         return label
     }()
 
     private lazy var viewCount: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 10)
-        label.textColor = .white
+        label.font = UIFont(name: "Pretendard-Regular", size: 12)
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
         return label
     }()
 
@@ -1270,17 +1316,17 @@ class ReviewTableViewCell: UITableViewCell {
         extraImageView1.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(15)
             make.left.equalToSuperview().offset(10)
-            make.width.equalTo(11.82)
-            make.height.equalTo(10) // 원하는 크기로 조정
+            make.width.equalTo(15.82)
+            make.height.equalTo(14) // 원하는 크기로 조정
             make.bottom.lessThanOrEqualToSuperview().offset(-10) // 셀 하단 여백 설정 // 유동적으로 늘어나야 할 때 사용 하는 메서드.
 
         }
 
         // 두 번째 이미지 뷰 레이아웃 설정
         extraImageView2.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(13)
+            make.top.equalTo(contentLabel.snp.bottom).offset(14)
             make.left.equalTo(likeCount.snp.right).offset(10)
-            make.width.height.equalTo(15) // 원하는 크기로 조정
+            make.width.height.equalTo(17) // 원하는 크기로 조정
         }
 
         // label123 레이아웃 설정
@@ -1329,7 +1375,7 @@ import MapKit
 import FirebaseFirestore
 
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     var mapView: MKMapView!
     let database = Firestore.firestore()
     var imageName: String? // 이미지 이름을 저장할 프로퍼티
@@ -1348,6 +1394,48 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside) // 버튼 액션 추가
         return button
+    }()
+
+    lazy var floatingButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 23 // 모서리 둥글게 설정
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowColor = UIColor.black.cgColor
+
+        button.setImage(UIImage(named: "🦆 icon _add pin alt_"), for: .normal) // 길찾기 이미지
+        button.setTitle("길찾기", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -13, bottom: 0, right: 0) // 이미지와 텍스트 간격 조정
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        button.addTarget(self, action: #selector(floatingButtonTapped), for: .touchUpInside) // 액션 추가
+
+        return button
+    }()
+
+    var locationData: CLLocationCoordinate2D? // 위치 데이터를 저장할 프로퍼티 추가
+    var locationManager: CLLocationManager!
+
+    var museumName: String? // 미술관 이름을 저장할 프로퍼티 추가
+
+    private lazy var mapAlertView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
+        view.layer.cornerRadius = 20
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
+    }()
+
+    private lazy var blurEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.frame = self.view.bounds
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.isHidden = true // 처음에는 숨겨둡니다.
+        return view
     }()
 
     override func viewDidAppear(_ animated: Bool) {
@@ -1383,6 +1471,143 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             make.width.height.equalTo(40) // 너비와 높이는 40포인트로 설정
         }
 
+
+        // 먼저 blurEffectView를 추가합니다.
+        view.addSubview(blurEffectView)
+        blurEffectView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
+        // blurEffectView가 추가된 후에 tapGesture를 추가합니다.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissMapAlertView))
+        blurEffectView.addGestureRecognizer(tapGesture)
+        blurEffectView.isUserInteractionEnabled = true
+
+        view.addSubview(floatingButton)
+        setupFloatingButtonConstraints()
+
+        // 이제 mapAlertView를 추가합니다.
+        view.addSubview(mapAlertView)
+        setupMapAlertViewConstraints()
+
+        configureLocationManager()
+    }
+
+    private func setupFloatingButtonConstraints() {
+        floatingButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-20)
+            make.centerX.equalTo(view.safeAreaLayoutGuide.snp.centerX)
+            make.width.equalTo(106)
+            make.height.equalTo(46)
+        }
+    }
+
+    private func setupMapAlertViewConstraints() {
+        mapAlertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(320)
+            make.height.equalTo(180)
+        }
+        // 여기에 mapAlertView 내부에 들어갈 컴포넌트들을 추가하고 제약 조건을 설정합니다.
+    }
+
+
+    @objc func modalLoadButtonTapped() {
+        blurEffectView.isHidden = false
+        mapAlertView.isHidden = false
+    }
+
+    @objc func dismissMapAlertView() {
+        // 얼럿 창을 닫고, 길찾기 버튼을 다시 표시합니다.
+        mapAlertView.isHidden = true
+        blurEffectView.isHidden = true
+        floatingButton.isHidden = false  // 길찾기 버튼 다시 표시
+    }
+
+
+    private func setupMapAlertView() {
+        // "길찾기" 레이블 설정
+        let guideLabel = UILabel()
+        guideLabel.text = "길찾기"
+        guideLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        guideLabel.textColor = .white
+
+        // 네이버 지도 버튼 및 레이블 설정
+        let naverButton = UIButton()
+        naverButton.setImage(UIImage(named: "image 72"), for: .normal)
+        let naverLabel = UILabel()
+        naverLabel.text = "네이버 지도"
+        naverLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        naverLabel.textColor = .white
+        naverLabel.textAlignment = .center
+        // 네이버 지도 버튼에 액션 추가
+        naverButton.addTarget(self, action: #selector(naverMapMove), for: .touchUpInside)
+
+
+        // 카카오맵 버튼 및 레이블 설정
+        let kakaoButton = UIButton()
+        kakaoButton.setImage(UIImage(named: "image 73"), for: .normal)
+        let kakaoLabel = UILabel()
+        kakaoLabel.text = "카카오맵"
+        kakaoLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        kakaoLabel.textColor = .white
+        kakaoLabel.textAlignment = .center
+        // 카카오맵 버튼에 액션 추가
+        kakaoButton.addTarget(self, action: #selector(openKakaoMap), for: .touchUpInside)
+
+        // 네이버 스택 뷰 설정
+        let naverStackView = UIStackView(arrangedSubviews: [naverButton, naverLabel])
+        naverStackView.axis = .vertical
+        naverStackView.spacing = 10
+        naverStackView.alignment = .center
+
+        // 카카오 스택 뷰 설정
+        let kakaoStackView = UIStackView(arrangedSubviews: [kakaoButton, kakaoLabel])
+        kakaoStackView.axis = .vertical
+        kakaoStackView.spacing = 10
+        kakaoStackView.alignment = .center
+
+        // 메인 스택 뷰 설정
+        let mainStackView = UIStackView(arrangedSubviews: [naverStackView, kakaoStackView])
+        mainStackView.axis = .horizontal
+        mainStackView.spacing = 10
+        mainStackView.distribution = .fillEqually
+
+        mapAlertView.addSubview(guideLabel)
+        mapAlertView.addSubview(mainStackView)
+
+        guideLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.leading.equalToSuperview().inset(20)
+        }
+
+        mainStackView.snp.makeConstraints { make in
+            make.top.equalTo(guideLabel.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(150)
+        }
+    }
+
+
+
+    func configureLocationManager() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+
+    // CLLocationManagerDelegate 메서드
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            // 현재 위치 처리
+            print("Current location: \(location.coordinate)")
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Failed to find user's location: \(error.localizedDescription)")
     }
 
     @objc func backButtonTapped() {
@@ -1393,7 +1618,69 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 
 
+
+
+    @objc func floatingButtonTapped() {
+        // 길찾기 버튼을 누르면 얼럿 창을 표시하고, 길찾기 버튼을 숨깁니다.
+        blurEffectView.isHidden = false
+        mapAlertView.isHidden = false
+        floatingButton.isHidden = true  // 길찾기 버튼 숨기기
+
+        // 얼럿 창에 추가될 내용 구성 및 설정
+        setupMapAlertView()
+    }
+
+    @objc func naverMapMove() {
+        guard let museumName = self.museumName else {
+            print("미술관 이름이 설정되지 않았습니다.")
+            return
+        }
+
+        let appname = Bundle.main.bundleIdentifier ?? "yourAppName"
+        let naverMapURLString = "nmap://search?query=\(museumName)&appname=\(appname)"
+        guard let encodedURLString = naverMapURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedURLString) else {
+            print("유효하지 않은 URL입니다.")
+            return
+        }
+
+        // 네이버 지도 앱 열기 또는 앱 스토어로 이동
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            let appStoreURL = URL(string: "http://itunes.apple.com/app/id311867728?mt=8")!
+            UIApplication.shared.open(appStoreURL)
+        }
+
+    }
+
+    @objc func openKakaoMap() {
+        guard let museumName = self.museumName else {
+            print("미술관 이름이 설정되지 않았습니다.")
+            return
+        }
+
+        let kakaoMapURLString = "kakaomap://search?q=\(museumName)"
+        guard let encodedURLString = kakaoMapURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedURLString) else {
+            print("유효하지 않은 URL입니다.")
+            return
+        }
+
+        // 카카오맵 앱 열기 또는 앱 스토어로 이동
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            let appStoreURL = URL(string: "https://apps.apple.com/app/id304608425")!
+            UIApplication.shared.open(appStoreURL)
+        }
+    }
+
+
+
     private func setupMapView() {
+
+
         mapView = MKMapView(frame: self.view.bounds)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView = MKMapView(frame: self.view.bounds)
@@ -1410,14 +1697,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             return
         }
 
-        // "전시_상세" 컬렉션에서 해당 이미지 이름의 문서를 조회합니다.
         let docRef = database.collection("전시_상세").document(imageName)
-
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
-                if let locationData = document.get("전시_좌표") as? GeoPoint {
-                    let location = CLLocationCoordinate2D(latitude: locationData.latitude, longitude: locationData.longitude)
-                    self.centerMapOnLocation(location: location)
+                let geoPoint = document.get("전시_좌표") as? GeoPoint
+                self.museumName = document.get("미술관_이름") as? String ?? "미술관 이름 없음"
+
+                if let geoPoint = geoPoint {
+                    let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                    self.locationData = location // 위치 데이터 저장
+                    self.centerMapOnLocation(location: location, museumName: self.museumName!)
                 } else {
                     print("장소_좌표 필드가 없습니다.")
                 }
@@ -1428,12 +1717,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 
     // 지도에 핀을 추가하는 메서드
-    private func addPinAtLocation(location: CLLocationCoordinate2D) {
+    private func addPinAtLocation(location: CLLocationCoordinate2D, museumName: String) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = location
+        annotation.title = museumName // "미술관_이름"을 타이틀로 설정
         mapView.addAnnotation(annotation)
     }
-
     // MKMapViewDelegate 메서드
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "MyPin"
@@ -1441,23 +1730,45 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
         if annotationView == nil {
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView?.canShowCallout = true // 필요한 경우 콜아웃을 표시할 수 있습니다.
+            annotationView?.canShowCallout = true
+            annotationView?.image = UIImage(named: "place 2")
+            //            annotationView?.backgroundColor = .gray
+
+            let label = UILabel()
+            label.text = annotation.title ?? "미술관 이름 없음"
+            label.textColor = .white // 글자색을 하얀색으로 설정
+            label.font = UIFont(name: "Pretendard-Medium", size: 20)
+            //            label.backgroundColor = .gray
+            label.textAlignment = .center
+            label.sizeToFit()
+
+            // 레이블의 위치를 이미지의 아래 중앙에 맞춥니다.
+            let imageWidth = annotationView?.image?.size.width ?? 0 // 이미지 너비
+            let imageHeight = annotationView?.image?.size.height ?? 0 // 이미지 높이
+
+            let labelX = (imageWidth - label.frame.width) / 2 // 중앙 정렬을 위한 X좌표 계산
+            let labelY = imageHeight // 이미지 아래에 위치하도록 Y좌표 설정
+
+            label.frame = CGRect(x: labelX, y: labelY, width: label.frame.width, height: label.frame.height)
+
+            annotationView?.addSubview(label)
         } else {
             annotationView?.annotation = annotation
         }
 
-        // 여기에 커스텀 이미지를 설정합니다. 예를 들어 'customPinImage.png' 파일을 사용한다고 가정합니다.
-        annotationView?.image = UIImage(named: "place 2")
         return annotationView
     }
 
-    private func centerMapOnLocation(location: CLLocationCoordinate2D) {
+
+
+    private func centerMapOnLocation(location: CLLocationCoordinate2D, museumName: String) {
         let regionRadius: CLLocationDistance = 200
         let coordinateRegion = MKCoordinateRegion(center: location,
                                                   latitudinalMeters: regionRadius,
                                                   longitudinalMeters: regionRadius)
-        addPinAtLocation(location: location)
+        addPinAtLocation(location: location, museumName: museumName)
 
         mapView.setRegion(coordinateRegion, animated: true)
     }
+
 }

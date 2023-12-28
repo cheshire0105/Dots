@@ -11,6 +11,7 @@ import PhotosUI // iOS 14 이상의 사진 라이브러리를 사용하기 위�
 import SnapKit
 import Firebase
 import FirebaseStorage
+import Toast_Swift
 
 protocol ReviewWritePageDelegate: AnyObject {
     func didSubmitReview()
@@ -47,8 +48,13 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        titleTextField.becomeFirstResponder()
 
+
+        titleTextField.becomeFirstResponder()
+        // 텍스트 필드 커서 색상 설정
+            titleTextField.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+            // 텍스트 뷰 커서 색상 설정
+            contentTextView.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         // posterName 값 확인
         if let posterName = posterName {
@@ -514,39 +520,60 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             return
         }
 
-        let reviewData: [String: Any] = [
-            "userId": userId, // 현재 로그인한 사용자의 ID를 추가
-
-            "title": title,
-            "content": content,
-            "createdAt": FieldValue.serverTimestamp(), // 현재 시간
-            // 필요한 추가 데이터
-        ]
-
-        // 포스터 이름으로 된 문서 내의 'reviews' 컬렉션에 리뷰 저장, 문서 ID는 유저의 UUID로 설정
-        let docRef = Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").document(userId)
+        print("업로드 시작: \(Date())")
 
 
-        docRef.setData(reviewData) { [weak self] error in
-            if let error = error {
-                print("Error writing document: \(error)")
-            } else {
-                // 이미지 업로드 후, 결과 URL을 가져와 Firestore 문서에 업데이트
-                self?.uploadImages(userId: userId, posterName: posterName) { urls in
-                    docRef.updateData(["images": urls]) { error in
-                        if let error = error {
-                            print("Error updating document: \(error)")
-                        } else {
-                            self?.delegate?.didSubmitReview()
-                        }
+        // 이미지 업로드 수행
+        uploadImages(userId: userId, posterName: posterName) { [weak self] uploadedUrls in
+
+            print("업로드 완료: \(Date())")
+
+            let reviewData: [String: Any] = [
+                "userId": userId,
+                "title": title,
+                "content": content,
+                "createdAt": FieldValue.serverTimestamp(),
+                "images": uploadedUrls
+            ]
+
+            let docRef = Firestore.firestore().collection("posters").document(posterName)
+                           .collection("reviews").document(userId)
+
+            docRef.setData(reviewData, merge: true) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    self?.delegate?.didSubmitReview()
+
+                    // 업로드 완료 후 토스트 메시지 표시 및 화면 닫기
+                                self?.showToastAndDismiss()
                     }
                 }
-                self?.dismiss(animated: true, completion: nil)
+
+        }
+    }
+
+
+    // 토스트 메시지 표시 후 화면 닫기
+    func showToastAndDismiss() {
+        DispatchQueue.main.async {
+            var style = ToastStyle()
+            style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+            style.messageColor = .white
+            style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+            self.view.makeToast("업로드가 완료되었습니다", duration: 3.0, position: .top, style: style)
+            ToastManager.shared.isTapToDismissEnabled = true
+
+            // 화면 닫기를 지연 실행
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }
 
+
+    // 이미지를 업로드하고 URL 배열을 반환하는 함수
     func uploadImages(userId: String, posterName: String, completion: @escaping ([String]) -> Void) {
         var uploadedUrls = [String]()
         let uploadGroup = DispatchGroup()
@@ -558,12 +585,11 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 continue
             }
 
-            // 이미지 이름을 인덱스를 포함하여 설정
             let imageName = "\(userId)_\(index).jpg"
             let storageRef = Storage.storage().reference().child("reviewImages/\(posterName)/\(imageName)")
 
             storageRef.putData(imageData, metadata: nil) { metadata, error in
-                guard let metadata = metadata else {
+                guard metadata != nil else {
                     print("Error uploading image: \(error?.localizedDescription ?? "")")
                     uploadGroup.leave()
                     return
@@ -572,8 +598,6 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
                 storageRef.downloadURL { (url, error) in
                     if let downloadURL = url {
                         uploadedUrls.append(downloadURL.absoluteString)
-                    } else {
-                        print("Error getting download URL: \(error?.localizedDescription ?? "")")
                     }
                     uploadGroup.leave()
                 }
@@ -584,6 +608,7 @@ class ReviewWritePage: UIViewController, UITextViewDelegate, UIImagePickerContro
             completion(uploadedUrls)
         }
     }
+
 
 
 

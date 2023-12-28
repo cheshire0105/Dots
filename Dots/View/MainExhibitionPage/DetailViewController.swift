@@ -38,12 +38,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     
 
 
-    var labelContents = ["23.11.10 - 24.02.12", "09:00 - 17:00", "2,000원", "16점", "김구림 외 3명"]
+    var labelContents = ["전시 기간: 23.11.10 - 24.02.12", "전시 시간: 09:00 - 17:00", "가격: 2,000원", "장르/작품수: 16점", "작가: 김구림 외 3명"]
+    let alertTitles = ["전시 기간", "전시 시간", "가격", "장르/작품수", "작가"]
+
 
     var mapView: MKMapView!
     let squaresStackView = UIStackView()
     var locationCoordinate: CLLocationCoordinate2D?
     var exhibitionDetail : String?
+
 
     var exhibitionTitle: String? // 클래스 프로퍼티로 전시 타이틀을 저장합니다.
 
@@ -125,7 +128,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 이미지와 레이블 레이아웃 설정
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview() // 가로축 중앙에 배치
-            make.centerY.equalToSuperview().offset(-50) // 세로축 중앙에서 30포인트 위로
+            make.top.equalToSuperview().offset(60)
             make.width.equalTo(100) // 이미지 크기 설정
             make.height.equalTo(imageView.snp.width) // 정사각형 이미지
         }
@@ -172,27 +175,35 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
         Firestore.firestore().collection("posters").document(posterName)
             .collection("reviews")
-            .order(by: "createdAt", descending: false) // 날짜 기준 내림차순 정렬
-            .getDocuments { (querySnapshot, error) in
+            .order(by: "createdAt", descending: true) // 날짜 기준 내림차순 정렬
+            .getDocuments { [weak self] (querySnapshot, error) in
                 if let error = error {
                     print("Error getting documents: \(error)")
                     return
                 }
-                var newReviews: [Review] = []
-                print(newReviews.count)
+
                 let group = DispatchGroup()
+                var newReviews: [Review] = []
 
                 querySnapshot?.documents.forEach { document in
                     group.enter()
                     let data = document.data()
                     let userId = document.documentID // UUID로 가정
+                    let likes = data["likes"] as? [String: Bool] ?? [:]
+
 
                     Firestore.firestore().collection("유저_데이터_관리").document(userId)
                         .getDocument { (userDoc, error) in
+                            defer { group.leave() }
+
                             if let userDoc = userDoc, userDoc.exists {
                                 let userData = userDoc.data()
                                 let nickname = userData?["닉네임"] as? String ?? ""
                                 let profileImageUrl = userData?["프로필이미지URL"] as? String ?? ""
+                                let userReviewUUID = document.documentID // UUID를 가져옵니다.
+                                let likesNum = data["likesNum"] as? Int ?? 0 // 'likesNum' 필드를 읽어옴
+
+
 
                                 let review = Review(
                                     title: data["title"] as? String ?? "",
@@ -201,21 +212,25 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                                     nickname: nickname,
                                     profileImageUrl: profileImageUrl,
                                     photoUrls: data["images"] as? [String] ?? [],
-                                    userId: data["userId"] as? String ?? "" // 여기에 userId를 추가
+                                    userId: data["userId"] as? String ?? "", 
+                                    userReviewUUID: userReviewUUID,
+                                    likes: likes,
+                                    likesNum: likesNum
+
+
                                 )
 
                                 newReviews.append(review)
-                                
                             }
-                            group.leave()
                         }
                 }
 
                 group.notify(queue: .main) {
-                    self.reviews = newReviews
-                    self.reviewsTableView.reloadData()
-                    self.updateTableViewBackground()
-
+                    // 모든 비동기 작업이 완료된 후에 실행됩니다.
+                    // newReviews 배열을 createdAt 기준으로 정렬합니다.
+                    self?.reviews = newReviews.sorted(by: { $0.createdAt > $1.createdAt })
+                    self?.reviewsTableView.reloadData()
+                    self?.updateTableViewBackground()
                 }
             }
     }
@@ -288,12 +303,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     // 스택 뷰 업데이트 함수
     private func updateStackView() {
         // squaresStackView에 있는 각 레이블에 새로운 값을 설정합니다.
-        for (index, label) in squaresStackView.arrangedSubviews.enumerated() {
-            if let containerView = label as? UIView, let label = containerView.subviews.last as? UILabel {
-                label.text = labelContents[index]
+        for (index, view) in squaresStackView.arrangedSubviews.enumerated() {
+            if let containerView = view as? UIView, let label = containerView.subviews.last as? UILabel {
+                // alertTitles 배열에서 해당 인덱스의 값을 가져와 설정합니다.
+                label.text = alertTitles[index]
             }
         }
     }
+
+
 
 
 
@@ -530,54 +548,50 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         // 스택 뷰에 이미지 뷰와 레이블을 추가하는 코드
         // 상위 컨테이너 뷰와 각각의 스택을 만들어서 그 안에 이미지와 레이블을 넣습니다.
         for index in 0..<5 {
+
+            
             // 컨테이너 뷰 생성
             let containerView = UIView()
-            containerView.clipsToBounds = true // 모서리가 둥근 하위 뷰를 클리핑하기 위함
+            containerView.clipsToBounds = true
             squaresStackView.addArrangedSubview(containerView)
 
             containerView.snp.makeConstraints { make in
-                make.width.equalTo(itemWidth) // 계산된 너비 설정
-                make.height.equalTo(160) // 설정된 높이
+                make.width.equalTo(itemWidth)
+                make.height.equalTo(85)
             }
 
-            // 정사각형 뷰 생성 및 설정
-            let squareView = UIView()
-            squareView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2) // 20% 투명도의 흰색 배경 설정
+            // 버튼 생성 및 설정
+            let button = UIButton()
+            button.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+            button.layer.cornerRadius = 10
+            button.setImage(UIImage(named: imageNames[index]), for: .normal)
+            button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
 
-            squareView.layer.cornerRadius = 10 // 모서리 둥글게 설정
-            containerView.addSubview(squareView) // 컨테이너 뷰에 squareView 추가
+            containerView.addSubview(button)
 
-            squareView.snp.makeConstraints { make in
-                make.top.equalTo(containerView.snp.top) // 상단 맞춤
-                make.width.equalTo(containerView.snp.width) // 너비 맞춤
-                make.height.equalTo(squareView.snp.width) // 높이를 너비와 동일하게 설정하여 정사각형 만듬
-                make.centerX.equalTo(containerView.snp.centerX) // 가운데 맞춤
+            button.snp.makeConstraints { make in
+                make.top.equalTo(containerView.snp.top)
+                make.width.equalTo(containerView.snp.width)
+                make.height.equalTo(button.snp.width)
+                make.centerX.equalTo(containerView.snp.centerX)
             }
 
-            // 이미지 뷰 설정
-            let imageView = UIImageView()
-            imageView.contentMode = .scaleAspectFit
-            imageView.image = UIImage(named: imageNames[index])
-            squareView.addSubview(imageView) // squareView에 imageView 추가
+            button.tag = index
 
-            imageView.snp.makeConstraints { make in
-                make.size.equalTo(squareView.snp.size).multipliedBy(0.5) // squareView 대비 80% 크기로 설정
-                make.center.equalTo(squareView.snp.center) // squareView 중앙에 위치
-            }
 
             // 레이블 설정
             let label = UILabel()
             label.text = labelContents[index]
             label.textColor = .white
             label.textAlignment = .center
-            label.font = UIFont(name: "Pretendard-Regular", size: 12)
-            label.numberOfLines = 0
-            containerView.addSubview(label) // containerView에 label 추가
+            label.font = UIFont(name: "Pretendard-Regular", size: 11)
+            label.numberOfLines = 5
+            containerView.addSubview(label)
 
             label.snp.makeConstraints { make in
-                make.top.equalTo(squareView.snp.bottom).offset(10) // squareView 아래에 위치
-                make.centerX.equalTo(containerView.snp.centerX) // containerView 중앙에 위치
-                make.leading.trailing.equalTo(containerView) // containerView의 leading과 trailing에 맞춤
+                make.top.equalTo(button.snp.bottom).offset(10)
+                make.centerX.equalTo(containerView.snp.centerX)
+                make.leading.trailing.equalTo(containerView)
             }
         }
 
@@ -670,6 +684,31 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
 
+    // 버튼 탭 액션
+    @objc func buttonTapped(sender: UIButton) {
+        // 버튼의 시각적 변화 (눌림 효과)
+        UIView.animate(withDuration: 0.1, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        }) { _ in
+            sender.transform = .identity
+        }
+
+        // 진동 효과
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+
+        // 나머지 기능 처리 (예: 얼럿 표시)
+        let tag = sender.tag
+        let alertTitle = alertTitles[tag]
+        let labelText = labelContents[tag].replacingOccurrences(of: "\\n", with: "\n")
+        showCustomAlert(title: alertTitle, message: labelText)
+    }
+
+
+
+
+
+
 
 
     @objc func segmentChanged(_ sender: UISegmentedControl) {
@@ -698,8 +737,30 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let review = reviews[indexPath.row]
         let timeString = convertDateToString(review.createdAt) // 리뷰 작성 시간을 문자열로 변환
 
+        // 현재 접속 중인 사용자의 ID를 가져옵니다. (Firebase Auth 사용 시)
+            guard let currentUserID = Auth.auth().currentUser?.uid else {
+                print("Current user ID not available")
+                return cell
+            }
+
+        let isLikedByCurrentUser = review.likes[currentUserID] ?? false
+
+        // '좋아요' 상태에 따른 이미지 설정
+           let likeImageName = isLikedByCurrentUser ? "streamline_interface-edit-view-eye-eyeball-open-view 4" : "streamline_interface-edit-view-eye-eyeball-open-view 3"
+           let likeImage = UIImage(named: likeImageName)
+
+
         // 셀에 리뷰 정보를 설정합니다.
-        cell.setReview(nikeName: review.nickname, content: review.content, profileImageUrl: review.profileImageUrl, nickname: timeString, newTitle: review.title, extraImageView1: UIImage(named: "Vector 4"), extraImageView2: UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view 1"), text123: "123", text456: "456")
+        cell.setReview(nikeName: review.nickname, 
+                       content: review.content,
+                       profileImageUrl: review.profileImageUrl,
+                       nickname: convertDateToString(review.createdAt),
+                       newTitle: review.title, 
+                       extraImageView1: likeImage,
+                       extraImageView2: UIImage(named: ""),
+                       text123: "\(review.likesNum)", // 'text123'에 좋아요 수 표시
+                       text456: "")
+
 
         // SDWebImage를 사용하여 프로필 이미지 캐시 및 로드
          if let profileImageUrl = URL(string: review.profileImageUrl) {
@@ -715,7 +776,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         return cell
     }
 
-
+    
 
     // 날짜 변환 함수 (예제)
     func convertDateToString(_ date: Date) -> String {
@@ -755,6 +816,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         detailViewController.exhibitionTitle = exhibitionTitle
         // 이미지 URL 배열을 전달합니다.
         detailViewController.imageUrls = selectedReview.photoUrls
+        detailViewController.userReviewUUID = selectedReview.userReviewUUID // UUID를 전달합니다.
+
 
         // 여기에 posterName 값을 추가합니다.
             detailViewController.posterName = self.posterImageName
@@ -771,5 +834,156 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 extension DetailViewController: ReviewWritePageDelegate {
     func didSubmitReview() {
         loadReviews() // 리뷰를 다시 로드합니다.
+    }
+}
+
+// DetailViewController.swift
+extension DetailViewController {
+    func showCustomAlert(title: String, message: String) {
+        let customAlertVC = CustomAlertViewController()
+        customAlertVC.configure(title: title, message: message)
+        customAlertVC.modalPresentationStyle = .overFullScreen
+        present(customAlertVC, animated: false, completion: nil)
+    }
+}
+
+
+
+
+import SnapKit
+
+import SnapKit
+
+class CustomAlertView: UIView {
+    var titleLabel = UILabel()
+    var messageLabel = UILabel()
+    var closeButton = UIButton()
+
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
+    }
+
+    private func setupView() {
+        backgroundColor = UIColor(red: 0.153, green: 0.157, blue: 0.165, alpha: 1)
+        layer.cornerRadius = 20
+
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont(name: "Pretendard-SemiBold", size: 21)
+        titleLabel.textColor = UIColor(red: 0.875, green: 0.871, blue: 0.886, alpha: 1)
+
+        messageLabel.textAlignment = .center
+        messageLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
+        messageLabel.textColor = UIColor(red: 0.757, green: 0.753, blue: 0.773, alpha: 1)
+        messageLabel.numberOfLines = 0
+
+        addSubview(titleLabel)
+        addSubview(messageLabel)
+
+        setupConstraints()
+
+        // 닫기 버튼 설정
+                closeButton.setTitle("닫기", for: .normal)
+                closeButton.backgroundColor = UIColor(red: 0.224, green: 0.231, blue: 0.243, alpha: 1)
+                closeButton.layer.cornerRadius = 20 // 모서리 둥글게
+                closeButton.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 15)
+                closeButton.setTitleColor(UIColor(red: 0.745, green: 0.741, blue: 0.761, alpha: 1), for: .normal) // 버튼 텍스트 색상
+                closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+
+                addSubview(closeButton)
+
+                setupCloseButtonConstraints()
+    }
+
+    @objc private func closeButtonTapped() {
+          // 버튼 탭 이벤트 처리. 실제로 얼럿을 닫는 동작은 CustomAlertViewController에서 구현합니다.
+      }
+
+    private func setupCloseButtonConstraints() {
+            closeButton.snp.makeConstraints { make in
+                make.top.equalTo(messageLabel.snp.bottom).offset(20)
+                make.centerX.equalToSuperview()
+                make.width.equalTo(100)
+                make.height.equalTo(40)
+                make.bottom.greaterThanOrEqualToSuperview().offset(-20)
+            }
+        }
+
+
+    private func setupConstraints() {
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+        }
+
+        messageLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+//            make.bottom.greaterThanOrEqualToSuperview().offset(-20)
+        }
+    }
+
+    func configure(title: String, message: String) {
+         titleLabel.text = title
+         messageLabel.text = message
+
+         // 내용에 따라 크기를 조정하기 위해 레이아웃을 업데이트합니다.
+         layoutIfNeeded()
+
+         // 내용에 맞게 얼럿 창의 크기를 조정합니다.
+         adjustSizeToFitContent()
+     }
+
+     private func adjustSizeToFitContent() {
+         // 내용에 따라 얼럿 창의 크기를 재계산합니다.
+         let targetSize = CGSize(width: 250, height: UIView.layoutFittingCompressedSize.height)
+         let fittingSize = systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+         frame.size = CGSize(width: 250, height: fittingSize.height)
+     }
+}
+
+// CustomAlertViewController.swift
+import UIKit
+
+class CustomAlertViewController: UIViewController {
+    var titleLabelText: String?
+    var messageText: String?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.frame = self.view.bounds
+        view.addSubview(blurView)
+
+        let alertView = CustomAlertView()
+               alertView.configure(title: titleLabelText ?? "", message: messageText ?? "")
+               alertView.closeButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
+        alertView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(alertView)
+
+        NSLayoutConstraint.activate([
+            alertView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            alertView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            alertView.widthAnchor.constraint(equalToConstant: 250)
+        ])
+    }
+
+    @objc private func dismissAlert() {
+          dismiss(animated: false, completion: nil)
+      }
+
+    func configure(title: String, message: String) {
+        titleLabelText = title
+        messageText = message
     }
 }

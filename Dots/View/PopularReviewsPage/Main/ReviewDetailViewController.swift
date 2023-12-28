@@ -14,6 +14,10 @@ import Firebase
 import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
+import Lottie
+import ImageSlideshow
+
+
 
 
 struct ImageData {
@@ -52,7 +56,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     
     // 새로운 컴포넌트 선언
-    let additionalImageView1 = UIImageView()
+    let additionalImageButton1 = UIButton()
     let additionalLabel1 = UILabel()
     let additionalImageView2 = UIImageView()
     let additionalLabel2 = UILabel()
@@ -66,13 +70,19 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     
     var imageUrls: [String] = [] // 이미지 URL 배열 추가
     
-    
+    var userReviewUUID : String?
+
     // 추가된 프로퍼티
     var museumName: String?
     var exhibitionTitle: String?
-    
+
+    let likeAnimationView = LottieAnimationView()
+
+
     private var pageControl: UIPageControl!
+
     
+
     override func viewWillAppear(_ animated: Bool) {
 
 
@@ -83,6 +93,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         super.viewDidLoad()
         view.backgroundColor = .black
         print("리뷰 디테일 페이지의 posterName\(self.posterName)")
+        print("후기 남긴 유저의 UUID \(userReviewUUID)")
         //        loadImages() // 이미지 로드
         setupPageControl()  // 이 부분을 확인
         
@@ -154,8 +165,32 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             }
         }
         
-        
+        checkLikeStatusAndUpdateIcon()
+
+        setupLikeAnimation()
+
+
     }
+
+    func setupLikeAnimation() {
+        // 로티 애니메이션 설정
+        likeAnimationView.animation = LottieAnimation.named("Animation - 1703493835464")
+        likeAnimationView.contentMode = .scaleAspectFill
+        likeAnimationView.isHidden = true
+
+        // additionalImageButton1에 로티 뷰 추가
+        additionalImageButton1.addSubview(likeAnimationView)
+
+        // 로티 뷰의 위치와 크기를 additionalImageButton1보다 크게 설정 (스냅킷 사용)
+        likeAnimationView.snp.makeConstraints { make in
+            make.centerX.equalTo(additionalImageButton1.snp.centerX)
+            make.centerY.equalTo(additionalImageButton1.snp.centerY)
+            make.width.equalTo(additionalImageButton1.snp.width).multipliedBy(3) // 버튼보다 20% 더 크게 설정
+            make.height.equalTo(additionalImageButton1.snp.height).multipliedBy(3) // 버튼보다 20% 더 크게 설정
+        }
+    }
+
+
 
     func sortImageUrls(_ urls: [String]) -> [String] {
         return urls.sorted { url1, url2 in
@@ -260,13 +295,23 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
             print("필요한 정보가 부족합니다.")
             return
         }
-        // Firestore에서 리뷰 데이터 삭제
-        let db = Firestore.firestore().collection("posters").document(posterName)
-            .collection("reviews").document(userId).delete() { [weak self] error in
+
+        // Firestore에서 특정 리뷰 데이터만 삭제
+        let reviewRef = Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").document(userId)
+
+        let fieldsToDelete: [String: Any] = [
+            "title": FieldValue.delete(),
+            "content": FieldValue.delete(),
+            "createdAt": FieldValue.delete(),
+            "images": FieldValue.delete()
+        ]
+
+        reviewRef.updateData(fieldsToDelete) { [weak self] error in
             if let error = error {
-                print("Error removing review: \(error)")
+                print("Error removing review fields: \(error)")
             } else {
-                print("Review successfully removed")
+                print("Review fields successfully removed")
                 self?.deleteImagesFromStorage(userId: userId, posterName: posterName) // 이미지 삭제 메서드 호출
             }
         }
@@ -593,12 +638,16 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         """
         contentLabel.numberOfLines = 0
         contentLabel.textColor = UIColor(red: 0.733, green: 0.733, blue: 0.733, alpha: 1)
-        contentLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
+        contentLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
         contentLabel.lineBreakMode = .byWordWrapping
         var paragraphStyle = NSMutableParagraphStyle()
         //            paragraphStyle.lineHeightMultiple = 1.21
         // Line height: 18 pt
         paragraphStyle.alignment = .justified
+        // 원하는 행간 비율 (160%)
+        let lineHeightMultiple: CGFloat = 1.34
+        // 폰트 크기에 비례하여 행간 설정
+        paragraphStyle.lineHeightMultiple = lineHeightMultiple
         let attrString = NSMutableAttributedString(string: contentLabel.text!)
         paragraphStyle.lineSpacing = 1
         attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
@@ -612,8 +661,9 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
         // 첫 번째 추가 이미지 뷰 및 레이블 구성
-        additionalImageView1.image = UIImage(named: "Vector 3")
-        
+        additionalImageButton1.setImage(UIImage(named: "Vector 3"), for: .normal)
+        additionalImageButton1.addTarget(self, action: #selector(additionalImageButton1Tapped), for: .touchUpInside)
+
         //        additionalLabel1.text = "123"
         additionalLabel1.text = "123"
         additionalLabel1.textColor = .white
@@ -628,45 +678,43 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
         // 두 번째 추가 이미지 뷰 및 레이블 구성
-        additionalImageView2.image = UIImage(named: "streamline_interface-edit-view-eye-eyeball-open-view")
+        additionalImageView2.image = UIImage(named: "")
         additionalLabel2.textColor = .white
         additionalLabel2.font = UIFont(name: "Pretendard-Light", size: 12)
         additionalLabel2.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
         
         
         //        additionalLabel2.text = "456"
-        additionalLabel2.text = "456"
+        additionalLabel2.text = ""
         
         // 스타일 및 글꼴 설정 등
         
-        scrollView.addSubview(additionalImageView1)
+        scrollView.addSubview(additionalImageButton1)
         scrollView.addSubview(additionalLabel1)
         scrollView.addSubview(additionalImageView2)
         scrollView.addSubview(additionalLabel2)
         
         
         
-        additionalImageView1.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(30)
-            make.left.equalTo(contentLabel.snp.left)
-            make.width.equalTo(17.5)
-            make.height.equalTo(14.5)
-            //            make.bottom.equalToSuperview().offset(-10)//
-            make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
-            
-            
-        }
-        
+        additionalImageButton1.snp.makeConstraints { make in
+               make.top.equalTo(contentLabel.snp.bottom).offset(30)
+               make.left.equalTo(contentLabel.snp.left)
+               make.width.equalTo(17.5)
+               make.height.equalTo(14.5)
+               make.bottom.lessThanOrEqualTo(scrollView.snp.bottom).offset(-20)
+           }
+
+
         additionalLabel1.snp.makeConstraints { make in
-            make.centerY.equalTo(additionalImageView1)
-            make.left.equalTo(additionalImageView1.snp.right).offset(10)
+            make.centerY.equalTo(additionalImageButton1)
+            make.left.equalTo(additionalImageButton1.snp.right).offset(10)
         }
         
         // 두 번째 추가 이미지 뷰와 레이블 레이아웃
         additionalImageView2.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(25)
+            make.top.equalTo(contentLabel.snp.bottom).offset(27.0)
             make.left.equalTo(additionalLabel1.snp.right).offset(10)
-            make.width.height.equalTo(24)
+            make.width.height.equalTo(20)
         }
         
         additionalLabel2.snp.makeConstraints { make in
@@ -676,7 +724,107 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         
         
     }
-    
+
+    @objc private func additionalImageButton1Tapped() {
+
+        // 햅틱 피드백 생성
+          let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+          feedbackGenerator.impactOccurred()
+        
+        guard let userReviewUUID = userReviewUUID, let posterName = posterName, let currentUserID = CurrentUser.shared.uid else {
+            print("필요한 정보가 부족합니다.")
+            return
+        }
+
+        let reviewRef = Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").document(userReviewUUID)
+
+        reviewRef.getDocument { [weak self] documentSnapshot, error in
+            guard let document = documentSnapshot, error == nil else {
+                print("Error fetching document: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            var likes = document.data()?["likes"] as? [String: Bool] ?? [:]
+            let currentLikeStatus = likes[currentUserID] ?? false
+            // 좋아요 상태 반전
+            likes[currentUserID] = !currentLikeStatus
+
+            // 좋아요 수 업데이트
+            var likesNum = document.data()?["likesNum"] as? Int ?? 0
+            likesNum += (currentLikeStatus ? -1 : 1)
+
+            DispatchQueue.main.async {
+                // UI 업데이트
+                self?.updateLikeButtonUI(isLiked: !currentLikeStatus, likeCount: likesNum)
+
+                // 로티 애니메이션 실행
+                       if !currentLikeStatus {
+                           self?.likeAnimationView.isHidden = false
+                           self?.likeAnimationView.play(completion: { finished in
+                               self?.likeAnimationView.isHidden = true
+                           })
+                       }
+            }
+
+            // Firestore 업데이트
+            reviewRef.updateData(["likes": likes, "likesNum": likesNum]) { error in
+                if let error = error {
+                    print("Error updating likes: \(error.localizedDescription)")
+                } else {
+                    print("Likes successfully updated.")
+                }
+            }
+        }
+    }
+
+    private func updateLikeButtonUI(isLiked: Bool, likeCount: Int) {
+        let iconName = isLiked ? "Vector 5" : "Vector 3"
+        additionalImageButton1.setImage(UIImage(named: iconName), for: .normal)
+        additionalLabel1.text = "\(likeCount)"
+    }
+
+
+
+    func checkLikeStatusAndUpdateIcon() {
+        guard let userReviewUUID = userReviewUUID, let posterName = posterName, let currentUserID = CurrentUser.shared.uid else {
+            print("필요한 정보가 부족합니다.")
+            return
+        }
+
+        let reviewRef = Firestore.firestore().collection("posters").document(posterName)
+            .collection("reviews").document(userReviewUUID)
+
+        reviewRef.getDocument { [weak self] documentSnapshot, error in
+            DispatchQueue.main.async {
+                guard let document = documentSnapshot, error == nil else {
+                    print("Error fetching document: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
+
+                let likes = document.data()?["likes"] as? [String: Bool] ?? [:]
+                let likesNum = document.data()?["likesNum"] as? Int ?? 0 // 좋아요 수 가져오기
+                let isLiked = likes[currentUserID] ?? false
+
+                // 좋아요 아이콘과 수 업데이트
+                self?.updateLikeButtonIcon(isLiked: isLiked)
+                self?.updateLikesCount(likesNum)
+            }
+        }
+    }
+
+    func updateLikesCount(_ count: Int) {
+        additionalLabel1.text = "\(count)"
+    }
+
+
+
+    func updateLikeButtonIcon(isLiked: Bool) {
+        let iconName = isLiked ? "Vector 5" : "Vector 3" // 좋아요 상태에 따른 아이콘 이름 변경
+        additionalImageButton1.setImage(UIImage(named: iconName), for: .normal)
+    }
+
+
     private func setupNavigationTitleAndSubtitle() {
         let titleLabel = UILabel()
         titleLabel.text = exhibitionTitle // 여기에 전시 타이틀을 설정
@@ -717,7 +865,27 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
     }
-    
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let fullScreenSlideshowViewController = FullScreenSlideshowViewController()
+        fullScreenSlideshowViewController.slideshow.currentPageChanged = { page in
+            print("current page:", page)
+        }
+
+        // ImageSlideshow에 이미지 소스 설정
+        // SDWebImageSource를 사용하여 각 URL로부터 이미지 소스를 생성합니다.
+        let inputs = imageDatas.map { SDWebImageSource(url: $0.url) }
+        fullScreenSlideshowViewController.slideshow.setImageInputs(inputs)
+
+        // 현재 페이지 설정
+        fullScreenSlideshowViewController.slideshow.setCurrentPage(indexPath.row, animated: false)
+
+        // 전체 화면 슬라이드쇼 보기 표시
+        fullScreenSlideshowViewController.modalPresentationStyle = .fullScreen
+        present(fullScreenSlideshowViewController, animated: true, completion: nil)
+    }
+
+
 }
 
 extension ReviewDetailViewController: UIScrollViewDelegate {
@@ -725,6 +893,8 @@ extension ReviewDetailViewController: UIScrollViewDelegate {
         let pageIndex = round(scrollView.contentOffset.x / view.frame.width)
         pageControl.currentPage = Int(pageIndex)
     }
+
+    
 }
 
 
@@ -735,6 +905,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 14
         contentView.addSubview(imageView)
         imageView.frame = contentView.bounds
     }

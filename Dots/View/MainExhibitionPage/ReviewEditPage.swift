@@ -12,6 +12,7 @@ import SnapKit
 import Firebase
 import FirebaseStorage
 import SDWebImage
+import Toast_Swift
 
 
 class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UICollectionViewDelegate, UICollectionViewDataSource, PHPickerViewControllerDelegate {
@@ -54,7 +55,9 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
 
         titleTextField.becomeFirstResponder()
 
-
+        titleTextField.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
+        // 텍스트 뷰 커서 색상 설정
+        contentTextView.tintColor = UIColor(red: 0.882, green: 1, blue: 0, alpha: 1)
 
         self.view.backgroundColor = .black
 
@@ -620,16 +623,30 @@ class ReviewEditPage: UIViewController, UITextViewDelegate, UIImagePickerControl
             ]
 
             let docRef = Firestore.firestore().collection("posters").document(posterName)
-                .collection("reviews").document(userId)
+                       .collection("reviews").document(userId)
 
-            docRef.setData(reviewData) { error in
-                if let error = error {
-                    print("Error writing document: \(error)")
-                } else {
-                    self?.delegate?.didSubmitReview()
-                    self?.dismiss(animated: true, completion: nil)
-                }
-            }
+                   docRef.updateData(reviewData) { error in
+                       if let error = error {
+                           print("Error updating document: \(error)")
+                       } else {
+                           self?.delegate?.didSubmitReview()
+                           // 토스트 메시지 표시
+                           DispatchQueue.main.async {
+                               var style = ToastStyle()
+                               style.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+                               style.messageColor = .white
+                               style.messageFont = UIFont(name: "Pretendard-SemiBold", size: 16) ?? .systemFont(ofSize: 16)
+
+                               self?.view.makeToast("수정이 완료되었습니다", duration: 3.0, position: .top, style: style)
+                               ToastManager.shared.isTapToDismissEnabled = true
+
+                               // 2초 후에 화면 닫기
+                               DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                                   self?.dismiss(animated: true, completion: nil)
+                               }
+                           }
+                       }
+                   }
         }
     }
 
