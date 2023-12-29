@@ -166,6 +166,22 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         self.present(navController, animated: true, completion: nil)
     }
 
+    func updateFloatingActionButtonText() {
+        // 현재 사용자 ID 가져오기
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("Current user ID not available")
+            return
+        }
+
+        // 현재 사용자의 후기가 있는지 확인
+        let hasCurrentUserReview = reviews.contains { $0.userId == currentUserID }
+
+        // 플로팅 버튼의 텍스트 업데이트
+        let buttonTitle = hasCurrentUserReview ? "내 후기" : "후기 작성"
+        floatingActionButton.setTitle(buttonTitle, for: .normal)
+    }
+
+
 
     func loadReviews() {
         guard let posterName = posterImageName else {
@@ -231,6 +247,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
                     self?.reviews = newReviews.sorted(by: { $0.createdAt > $1.createdAt })
                     self?.reviewsTableView.reloadData()
                     self?.updateTableViewBackground()
+                    // 플로팅 버튼 텍스트 업데이트
+                       self?.updateFloatingActionButtonText() // 여기에 추가
                 }
             }
     }
@@ -395,20 +413,56 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
 
-    @objc func floatingActionButtonTapped() {
-        let reviewWriteVC = ReviewWritePage()
-        reviewWriteVC.delegate = self
+//    @objc func floatingActionButtonTapped() {
+//        let reviewWriteVC = ReviewWritePage()
+//        reviewWriteVC.delegate = self
+//
+//        reviewWriteVC.posterName = self.posterImageName // 여기서 포스터 이름을 전달합니다.
+//        reviewWriteVC.reviewTitle = self.exhibitionTitle // 전시 타이틀을 ReviewWritePage에 전달합니다.
+//
+//
+//        let navController = UINavigationController(rootViewController: reviewWriteVC) // UINavigationController를 생성하고 rootViewController로 설정합니다.
+//        navController.modalPresentationStyle = .fullScreen // 전체 화면으로 설정
+//        self.present(navController, animated: true, completion: nil) // UINavigationController를 모달로 표시합니다.
 
-        reviewWriteVC.posterName = self.posterImageName // 여기서 포스터 이름을 전달합니다.
-        reviewWriteVC.reviewTitle = self.exhibitionTitle // 전시 타이틀을 ReviewWritePage에 전달합니다.
+        @objc func floatingActionButtonTapped() {
+            if let currentUserReview = findCurrentUserReview() {
+                // 현재 사용자의 후기가 있을 경우 상세 페이지로 이동
+                navigateToReviewDetailPage(with: currentUserReview)
+            } else {
+                // 현재 사용자의 후기가 없을 경우 후기 작성 페이지로 이동
+                navigateToReviewWritePage()
+            }
+        }
+
+    
 
 
-        let navController = UINavigationController(rootViewController: reviewWriteVC) // UINavigationController를 생성하고 rootViewController로 설정합니다.
-        navController.modalPresentationStyle = .fullScreen // 전체 화면으로 설정
-        self.present(navController, animated: true, completion: nil) // UINavigationController를 모달로 표시합니다.
+
+    func navigateToReviewDetailPage(with review: Review) {
+        let detailViewController = ReviewDetailViewController()
+        detailViewController.review = review
+        // 필요한 추가 데이터 설정
+        detailViewController.museumName = exhibitionTitleLabel.text
+        detailViewController.exhibitionTitle = exhibitionTitle
+        detailViewController.imageUrls = review.photoUrls
+        detailViewController.userReviewUUID = review.userReviewUUID
+
+        let navigationController = UINavigationController(rootViewController: detailViewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true, completion: nil)
     }
 
-
+    func navigateToReviewWritePage() {
+        // 후기 작성 페이지로 이동하는 기존 코드
+        let reviewWriteVC = ReviewWritePage()
+        reviewWriteVC.delegate = self
+        reviewWriteVC.posterName = self.posterImageName
+        reviewWriteVC.reviewTitle = self.exhibitionTitle
+        let navController = UINavigationController(rootViewController: reviewWriteVC)
+        navController.modalPresentationStyle = .fullScreen
+        self.present(navController, animated: true, completion: nil)
+    }
 
 
 
@@ -662,6 +716,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
     }
+
+    func findCurrentUserReview() -> Review? {
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("Current user ID not available")
+            return nil
+        }
+        return reviews.first { $0.userId == currentUserID }
+    }
+
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         let mapVC = MapViewController()
