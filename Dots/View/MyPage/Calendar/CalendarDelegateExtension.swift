@@ -1,3 +1,4 @@
+
 import UIKit
 import FSCalendar
 import SnapKit
@@ -27,26 +28,36 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
         return nil
     }
     
-    func calendar(_ calendar: FSCalendar, cellFor date: Date, at 포스터이미지_등록할_특정날짜: FSCalendarMonthPosition) -> FSCalendarCell {
-        let cell = calendar.dequeueReusableCell(withIdentifier: "cell", for: date, at: 포스터이미지_등록할_특정날짜)
-        
+   
+    func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
+        let cell = calendar.dequeueReusableCell(withIdentifier: "cell", for: date, at: position)
+
+        cell.subviews.filter { $0 is UIButton }.forEach { $0.removeFromSuperview() }
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        if 포스터이미지_등록할_특정날짜 == .current, let cell = cell as? FSCalendarCell, 유저_다녀옴_날짜.contains(where: { Calendar.current.isDate(date, inSameDayAs: $0) }) {
-            
+
+        if position == .current, let cell = cell as? FSCalendarCell, 유저_다녀옴_날짜.contains(where: { Calendar.current.isDate(date, inSameDayAs: $0) }) {
+
             if cell.subviews.filter({ $0 is UIButton }).isEmpty {
                 let 날짜에_등록할_이미지 = UIButton(type: .custom)
-                
+
                 if let 특정날짜 = 특정날짜.first(where: { $0.date == dateFormatter.string(from: date) }) {
                     if let imageURLString = 특정날짜.imageURL, let imageURL = URL(string: imageURLString) {
-                        날짜에_등록할_이미지.sd_setImage(with: imageURL, for: .normal)
-                    }
-                    else {
+                        SDWebImageManager.shared.loadImage(
+                            with: imageURL,
+                            options: sdOptions,
+                            progress: nil) { [weak self] (image, _, _, _, _, _) in
+                                if let image = image {
+                                    날짜에_등록할_이미지.setImage(image, for: .normal)
+                                    self?.addImageToCell(cell, imageButton: 날짜에_등록할_이미지)
+                                }
+                        }
+                    } else {
                         날짜에_등록할_이미지.setImage(UIImage(named: "기본프로필사진"), for: .normal)
                     }
                 }
-                
+
                 날짜에_등록할_이미지.layer.borderWidth = 1
                 날짜에_등록할_이미지.layer.borderColor = UIColor.white.cgColor
                 날짜에_등록할_이미지.clipsToBounds = true
@@ -54,24 +65,30 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
                 날짜에_등록할_이미지.layer.cornerRadius = 20
                 날짜에_등록할_이미지.isUserInteractionEnabled = true
                 날짜에_등록할_이미지.isEnabled = false
-                
+
                 날짜에_등록할_이미지.addTarget(self, action: #selector(imageButtonTapped), for: .touchUpInside)
-                
-                
+
                 cell.addSubview(날짜에_등록할_이미지)
                 날짜에_등록할_이미지.snp.makeConstraints { make in
                     make.centerX.equalTo(cell.snp.centerX)
                     make.centerY.equalTo(cell.snp.centerY).offset(-5)
                     make.size.equalTo(40)
                 }
-                캘린더.reloadData()
-                
             }
         } else {
             cell.subviews.filter { $0 is UIButton }.forEach { $0.removeFromSuperview() }
         }
-        
+
         return cell
+    }
+    
+    func addImageToCell(_ cell: FSCalendarCell, imageButton: UIButton) {
+        cell.addSubview(imageButton)
+        imageButton.snp.makeConstraints { make in
+            make.centerX.equalTo(cell.snp.centerX)
+            make.centerY.equalTo(cell.snp.centerY).offset(-5)
+            make.size.equalTo(40)
+        }
     }
     @objc func imageButtonTapped() {
         print("이미지 클릭됨")
@@ -82,7 +99,7 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
 extension Mypage  {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        
+        print("날짜 클릭")
         if Calendar.current.isDateInToday(date) {
             calendar.appearance.titleSelectionColor = UIColor.black
         } else {
@@ -92,12 +109,9 @@ extension Mypage  {
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
         
             if let 모달Instance = 캘린더_스케쥴_등록_모달 as? UIViewController {
-                self.presentedViewController?.dismiss(animated: true, completion: nil)
-
                 모달Instance.modalPresentationStyle = .pageSheet
                 self.present(모달Instance, animated: true, completion: nil)
                 if let sheetPresent = 모달Instance.presentationController as? UISheetPresentationController {
-                    sheetPresent.prefersGrabberVisible = true
                     sheetPresent.detents = [.medium(), .large()]
                     캘린더_스케쥴_등록_모달.isModalInPresentation = false
                     sheetPresent.largestUndimmedDetentIdentifier = .large
@@ -105,32 +119,10 @@ extension Mypage  {
                     sheetPresent.preferredCornerRadius = 30
                     sheetPresent.prefersGrabberVisible = false
                 }
-            }
+            } 
         }
-    
-    
-//    private func handleSelectedDate(_ date: Date) {
-        
-        //        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-        //
-        //        DispatchQueue.main.async { [weak self] in
-        //            if let 모달Instance = 캘린더_스케쥴_등록_모달 as? UIViewController {
-        //                if let sheetPresent = 모달Instance.presentationController as? UISheetPresentationController {
-        //                    sheetPresent.prefersGrabberVisible = true
-        //                    sheetPresent.detents = [.medium(), .large()]
-        //                    캘린더_스케쥴_등록_모달.isModalInPresentation = false
-        //                    sheetPresent.largestUndimmedDetentIdentifier = .large
-        //                    sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-        //                    sheetPresent.preferredCornerRadius = 30
-        //                    sheetPresent.prefersGrabberVisible = false
-        //                }
-        //
-        //                모달Instance.modalPresentationStyle = .pageSheet
-        //                self?.present(모달Instance, animated: true, completion: nil)
-        //            }
-        //        }
-//    }
-}
+   
+    }
 
 
 
@@ -152,52 +144,54 @@ extension Mypage {
         }
         return 현제유저.uid
     }
-    
+
+
     func 특정날짜방문_캘린더_적용() {
         guard let uid = getCurrentUserUID() else {
             print("User not authenticated")
             return
         }
-        
+
         let 파이어스토어 = Firestore.firestore()
         let posters_메인컬렉션 = 파이어스토어.collection("posters")
-        
-        특정날짜SnapshotListener = posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
+
+
+        posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
             guard let self = self, let 메인_문서들 = querySnapshot?.documents, error == nil else {
                 return
             }
-            
+
             self.특정날짜 = []
-            
+
             for 메인_문서 in 메인_문서들 {
                 self.달력_방문날짜_포스터_업데이트(uid: uid, document: 메인_문서)
             }
-            
+
             self.캘린더.reloadData()
         }
     }
-    
+
+
     func 달력_방문날짜_포스터_업데이트(uid: String, document: QueryDocumentSnapshot) {
         let reviews_서브컬렉션 = document.reference.collection("reviews")
-        
+
         reviews_서브컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
             guard let self = self, let 서브_문서들 = querySnapshot?.documents, error == nil else {
                 return
             }
-            
+
             for 서브_문서 in 서브_문서들 {
                 if let 다녀온_날짜 = 서브_문서["유저_다녀옴_날짜"] as? String {
                     if uid == 서브_문서.documentID {
                         self.달력_방문날짜_포스터_업데이트_배열(documentID: document.documentID, imageURL: 다녀온_날짜)
                         self.캘린더.reloadData()
-                        
-                    } else {
                     }
                 }
             }
         }
     }
-    
+
+
     func 달력_방문날짜_포스터_업데이트_배열(documentID: String, imageURL: String) {
         let 스토리지 = Storage.storage()
         let 스토리지참조 = 스토리지.reference().child("images")

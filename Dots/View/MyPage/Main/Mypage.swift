@@ -9,7 +9,7 @@ import GoogleSignIn
 import SDWebImage
 
 class Mypage: UIViewController {
-    var 특정날짜SnapshotListener: ListenerRegistration?
+    let sdOptions: SDWebImageOptions = [.retryFailed, .avoidDecodeImage]
 
     var 특정날짜: [(date: String, imageURL: String?)] = []
     func printUserVisitedDates() {
@@ -222,10 +222,7 @@ class Mypage: UIViewController {
           // InteractivePopGestureRecognizer의 Delegate 설정
           self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
-    deinit {
-          // 뷰 컨트롤러가 메모리에서 해제되기 전에 리스너를 제거
-          특정날짜SnapshotListener?.remove()
-      }
+ 
 //
 //    @objc private func handleOutsideTap() {
 //        if presentedViewController != nil {
