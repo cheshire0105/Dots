@@ -9,7 +9,8 @@ import GoogleSignIn
 import SDWebImage
 
 class Mypage: UIViewController {
-    
+    var 특정날짜SnapshotListener: ListenerRegistration?
+
     var 특정날짜: [(date: String, imageURL: String?)] = []
     func printUserVisitedDates() {
         print("유저_다녀옴_날짜: \(유저_다녀옴_날짜)")
@@ -187,6 +188,7 @@ class Mypage: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
         특정날짜방문_캘린더_적용()
+        
         tabBarController?.tabBar.isHidden = false
 
     }
@@ -209,9 +211,9 @@ class Mypage: UIViewController {
         캘린더.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
         포스터이미지URL업데이트_파이어스토어()
         캐시된_유저_데이터_마이페이지_적용하기()
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
-        tapGestureRecognizer.delegate = self
-        view.addGestureRecognizer(tapGestureRecognizer)
+//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
+//        tapGestureRecognizer.delegate = self
+//        view.addGestureRecognizer(tapGestureRecognizer)
         
         특정날짜방문_캘린더_적용()
 
@@ -220,12 +222,16 @@ class Mypage: UIViewController {
           // InteractivePopGestureRecognizer의 Delegate 설정
           self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
-    
-    @objc private func handleOutsideTap() {
-        if presentedViewController != nil {
-            dismiss(animated: true, completion: nil)
-        }
-    }
+    deinit {
+          // 뷰 컨트롤러가 메모리에서 해제되기 전에 리스너를 제거
+          특정날짜SnapshotListener?.remove()
+      }
+//
+//    @objc private func handleOutsideTap() {
+//        if presentedViewController != nil {
+//            dismiss(animated: true, completion: nil)
+//        }
+//    }
     private func 버튼_백_레이아웃 () {
         for 버튼배치 in [마이페이지_전시_버튼,마이페이지_후기_버튼,마이페이지_보관함_버튼,마이페이지_전시_아이콘,마이페이지_후기_아이콘,마이페이지_보관함_아이콘,마이페이지_전시_라벨,마이페이지_후기_라벨,마이페이지_보관함_라벨] {
             버튼_백.addSubview(버튼배치)
@@ -360,6 +366,7 @@ class Mypage: UIViewController {
 extension Mypage {
     func 버튼_클릭() {
         마이페이지_설정_버튼.addTarget(self, action: #selector(마이페이지_설정_버튼_클릭), for: .touchUpInside)
+        마이페이지_알림_버튼.addTarget(self, action: #selector(마이페이지_알림_버튼_클릭), for: .touchUpInside)
         마이페이지_전시_버튼.addTarget(self, action: #selector(마이페이지_전시_버튼_클릭), for: .touchUpInside)
         마이페이지_후기_버튼.addTarget(self, action: #selector(마이페이지_후기_버튼_클릭), for: .touchUpInside)
         마이페이지_보관함_버튼.addTarget(self, action: #selector(마이페이지_보관함_버튼_클릭), for: .touchUpInside)
@@ -373,10 +380,28 @@ extension Mypage {
     }
     
     @objc func 마이페이지_알림_버튼_클릭() {
-        let 알림_이동 = 마이페이지_알림()
-        self.navigationController?.pushViewController(알림_이동, animated: true)
-        self.navigationItem.hidesBackButton = true
-        self.dismiss(animated: false, completion: nil)
+//        let 알림_이동 = 마이페이지_알림()
+//        self.navigationController?.pushViewController(알림_이동, animated: true)
+//        self.navigationItem.hidesBackButton = true
+//        self.dismiss(animated: false, completion: nil)
+        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
+        
+            
+            if let 모달Instance = 캘린더_스케쥴_등록_모달 as? UIViewController {
+                presentedViewController?.dismiss(animated: true, completion: nil)
+
+                모달Instance.modalPresentationStyle = .pageSheet
+                self.present(모달Instance, animated: true, completion: nil)
+                if let sheetPresent = 모달Instance.presentationController as? UISheetPresentationController {
+                    sheetPresent.prefersGrabberVisible = true
+                    sheetPresent.detents = [.medium(), .large()]
+                    캘린더_스케쥴_등록_모달.isModalInPresentation = false
+                    sheetPresent.largestUndimmedDetentIdentifier = .large
+                    sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
+                    sheetPresent.preferredCornerRadius = 30
+                    sheetPresent.prefersGrabberVisible = false
+                }
+            }
         
     }
     @objc func 마이페이지_전시_버튼_클릭 () {
@@ -415,46 +440,7 @@ extension UIImage {
 
 
 extension Mypage {
-    
-    //    private func 접속_유저_데이터_마이페이지_적용하기() {
-    //          guard let 현재접속중인유저 = Auth.auth().currentUser else {
-    //              return
-    //          }
-    //
-    //          let 파이어스토어 = Firestore.firestore()
-    //          let 이메일 = 현재접속중인유저.email ?? ""
-    //          let 유저컬렉션: CollectionReference
-    //
-    //          if let providerID = 현재접속중인유저.providerData.first?.providerID, providerID == GoogleAuthProviderID {
-    //              유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
-    //          } else {
-    //              유저컬렉션 = 파이어스토어.collection("유저_데이터_관리")
-    //          }
-    //
-    //          유저컬렉션.whereField("이메일", isEqualTo: 이메일).getDocuments { [weak self] (querySnapshot, error) in
-    //              guard let self = self, let documents = querySnapshot?.documents, error == nil else {
-    //                  print("컬렉션 조회 실패")
-    //                  return
-    //              }
-    //
-    //              if let userDocument = documents.first {
-    //                  let 프로필이미지URL = userDocument["프로필이미지URL"] as? String ?? ""
-    //                  let 닉네임 = userDocument["닉네임"] as? String ?? ""
-    //                  let 이메일 = userDocument["이메일"] as? String ?? ""
-    //
-    //                  DispatchQueue.main.async {
-    //                      if let url = URL(string: 프로필이미지URL) {
-    //
-    //                          self.마이페이지_프로필_이미지_버튼.sd_setImage(with: url, for: .normal, completed: nil)
-    //                      }
-    //
-    //                      self.마이페이지_프로필_닉네임.text = 닉네임
-    //                      self.마이페이지_프로필_이메일.text = 이메일
-    //                  }
-    //              }
-    //          }
-    //      }
-    
+  
     
     private func 캐시된_유저_데이터_마이페이지_적용하기() {
         var 닉네임_캐싱: String?
@@ -513,7 +499,7 @@ extension Mypage {
         }
     }
 }
-
+//
 extension Mypage: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         

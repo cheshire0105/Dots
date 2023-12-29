@@ -53,9 +53,10 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
                 날짜에_등록할_이미지.layer.masksToBounds = true
                 날짜에_등록할_이미지.layer.cornerRadius = 20
                 날짜에_등록할_이미지.isUserInteractionEnabled = true
+                날짜에_등록할_이미지.isEnabled = false
                 
                 날짜에_등록할_이미지.addTarget(self, action: #selector(imageButtonTapped), for: .touchUpInside)
-
+                
                 
                 cell.addSubview(날짜에_등록할_이미지)
                 날짜에_등록할_이미지.snp.makeConstraints { make in
@@ -74,58 +75,61 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
     }
     @objc func imageButtonTapped() {
         print("이미지 클릭됨")
-        
-        // 캘린더_스케쥴_등록_모달 띄우기
-        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-        
-        if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
-            sheetPresent.prefersGrabberVisible = true
-            sheetPresent.detents = [.medium(), .large()]
-            캘린더_스케쥴_등록_모달.isModalInPresentation = false
-            sheetPresent.largestUndimmedDetentIdentifier = .large
-            sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-            sheetPresent.preferredCornerRadius = 30
-            sheetPresent.prefersGrabberVisible = false
         }
-        
-        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
-        self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
-//        백_레이아웃()
     }
 
-    
-}
 
-// 켈린더 sheet present modal
 extension Mypage  {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        
         if Calendar.current.isDateInToday(date) {
             calendar.appearance.titleSelectionColor = UIColor.black
         } else {
             calendar.appearance.titleSelectionColor = UIColor.white
         }
-
-        handleSelectedDate(date)
-    }
-    
-    private func handleSelectedDate(_ date: Date) {
         
         let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
+        
+            if let 모달Instance = 캘린더_스케쥴_등록_모달 as? UIViewController {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
 
-        if let sheetPresent = 캘린더_스케쥴_등록_모달.presentationController as? UISheetPresentationController {
-            sheetPresent.prefersGrabberVisible = true
-            sheetPresent.detents = [.medium(), .large()]
-            캘린더_스케쥴_등록_모달.isModalInPresentation = false
-            sheetPresent.largestUndimmedDetentIdentifier = .large
-            sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-            sheetPresent.preferredCornerRadius = 30
-            sheetPresent.prefersGrabberVisible = false
+                모달Instance.modalPresentationStyle = .pageSheet
+                self.present(모달Instance, animated: true, completion: nil)
+                if let sheetPresent = 모달Instance.presentationController as? UISheetPresentationController {
+                    sheetPresent.prefersGrabberVisible = true
+                    sheetPresent.detents = [.medium(), .large()]
+                    캘린더_스케쥴_등록_모달.isModalInPresentation = false
+                    sheetPresent.largestUndimmedDetentIdentifier = .large
+                    sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
+                    sheetPresent.preferredCornerRadius = 30
+                    sheetPresent.prefersGrabberVisible = false
+                }
+            }
         }
-
-        캘린더_스케쥴_등록_모달.modalPresentationStyle = .pageSheet
-        self.present(캘린더_스케쥴_등록_모달, animated: true, completion: nil)
-    }
+    
+    
+//    private func handleSelectedDate(_ date: Date) {
+        
+        //        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
+        //
+        //        DispatchQueue.main.async { [weak self] in
+        //            if let 모달Instance = 캘린더_스케쥴_등록_모달 as? UIViewController {
+        //                if let sheetPresent = 모달Instance.presentationController as? UISheetPresentationController {
+        //                    sheetPresent.prefersGrabberVisible = true
+        //                    sheetPresent.detents = [.medium(), .large()]
+        //                    캘린더_스케쥴_등록_모달.isModalInPresentation = false
+        //                    sheetPresent.largestUndimmedDetentIdentifier = .large
+        //                    sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
+        //                    sheetPresent.preferredCornerRadius = 30
+        //                    sheetPresent.prefersGrabberVisible = false
+        //                }
+        //
+        //                모달Instance.modalPresentationStyle = .pageSheet
+        //                self?.present(모달Instance, animated: true, completion: nil)
+        //            }
+        //        }
+//    }
 }
 
 
@@ -158,7 +162,7 @@ extension Mypage {
         let 파이어스토어 = Firestore.firestore()
         let posters_메인컬렉션 = 파이어스토어.collection("posters")
         
-        posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
+        특정날짜SnapshotListener = posters_메인컬렉션.addSnapshotListener { [weak self] (querySnapshot, error) in
             guard let self = self, let 메인_문서들 = querySnapshot?.documents, error == nil else {
                 return
             }
@@ -214,7 +218,6 @@ extension Mypage {
             }
         }
     }
-    
 }
 
 extension Mypage {
@@ -227,7 +230,7 @@ extension Mypage {
         
         포스터컬렉션.getDocuments { (쿼리스냅샷, 에러) in
             guard let 문서들 = 쿼리스냅샷?.documents, 에러 == nil else {
-//                print("문서 가져오기 오류: \(에러?.localizedDescription ?? "알 수 없는 오류")")
+                //                print("문서 가져오기 오류: \(에러?.localizedDescription ?? "알 수 없는 오류")")
                 return
             }
             
@@ -245,12 +248,10 @@ extension Mypage {
                         }
                         return
                     }
-
                     이미지파일참조.downloadURL { (url, 에러) in
                         if let 에러 = 에러 {
                             return
                         }
-                        
                         if let 다운로드된URL = url {
                             self.리뷰서브컬렉션내포스터이미지URL업데이트(리뷰컬렉션: 리뷰컬렉션, 이미지URL: 다운로드된URL.absoluteString)
                         }
@@ -259,9 +260,6 @@ extension Mypage {
             }
         }
     }
-
-
-
     
     func 리뷰서브컬렉션내포스터이미지URL업데이트(리뷰컬렉션: CollectionReference, 이미지URL: String) {
         리뷰컬렉션.getDocuments { (쿼리스냅샷, 에러) in

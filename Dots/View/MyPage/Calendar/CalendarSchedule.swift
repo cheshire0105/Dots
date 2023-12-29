@@ -348,6 +348,9 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
             if let 현제모달 = self.findViewController() {
                 현제모달.dismiss(animated: true) {
                     let 새모달 = 켈린더_삭제_뷰컨트롤러()
+                    
+                    새모달.삭제할셀데이터 = 선택된데이터
+
                     새모달.modalPresentationStyle = .fullScreen
                     현제모달.present(새모달, animated: false, completion: nil)
                     
