@@ -588,66 +588,59 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
 
 
         // 스택 뷰 생성 및 구성
-        squaresStackView.axis = .horizontal
-        squaresStackView.distribution = .fillEqually
-        squaresStackView.alignment = .fill
-        squaresStackView.spacing = 10 // 또는 원하는 간격
+          squaresStackView.axis = .horizontal
+          squaresStackView.distribution = .fillEqually
+          squaresStackView.alignment = .fill
+          squaresStackView.spacing = 10 // 간격을 0으로 설정
 
         // 각 이미지 뷰에 설정할 이미지 이름 배열
-        let imageNames = ["calenderE", "Group 50", "Group 48", "Union 1", "Group 125"]
+          let imageNames = ["period", "period 1", "period 2"] // 이미지 이름을 세 개로 변경
+          let alertTitles = ["전시 기간", "관람 시간", "입장료"] // 타이틀을 세 개로 변경
 
 
-
-        // 스택 뷰의 각 요소 내에 정사각형 검정 뷰 추가 및 그 아래 레이블 추가
-        // 스택 뷰에 이미지 뷰와 레이블을 추가하는 코드
-        // 상위 컨테이너 뷰와 각각의 스택을 만들어서 그 안에 이미지와 레이블을 넣습니다.
-        for index in 0..<5 {
-
-            
-            // 컨테이너 뷰 생성
+        // 스택 뷰의 각 요소 내에 버튼과 레이블 추가
+        for index in 0..<3 {
             let containerView = UIView()
             containerView.clipsToBounds = true
             squaresStackView.addArrangedSubview(containerView)
 
+            // 컨테이너 뷰 제약 조건 설정
             containerView.snp.makeConstraints { make in
-                make.width.equalTo(itemWidth)
-                make.height.equalTo(85)
+                make.height.equalTo(50)
             }
 
-            // 버튼 생성 및 설정
             let button = UIButton()
-            button.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+            button.backgroundColor = .black
             button.layer.cornerRadius = 10
             button.setImage(UIImage(named: imageNames[index]), for: .normal)
-            button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+            button.setTitle(alertTitles[index], for: .normal)
+            button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
+            button.setTitleColor(.white, for: .normal)
+
+            // 이미지의 여백을 조절
+            button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
+
+            // 타이틀의 여백을 조절
+            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: -20, bottom: 0, right: -10)
 
             containerView.addSubview(button)
-
             button.snp.makeConstraints { make in
-                make.top.equalTo(containerView.snp.top)
-                make.width.equalTo(containerView.snp.width)
-                make.height.equalTo(button.snp.width)
-                make.centerX.equalTo(containerView.snp.centerX)
+                make.edges.equalToSuperview()
             }
 
-            button.tag = index
-
-
-            // 레이블 설정
-            let label = UILabel()
-            label.text = labelContents[index]
-            label.textColor = .white
-            label.textAlignment = .center
-            label.font = UIFont(name: "Pretendard-Regular", size: 11)
-            label.numberOfLines = 5
-            containerView.addSubview(label)
-
-            label.snp.makeConstraints { make in
-                make.top.equalTo(button.snp.bottom).offset(10)
-                make.centerX.equalTo(containerView.snp.centerX)
-                make.leading.trailing.equalTo(containerView)
+            // 마지막 버튼이 아닐 경우 경계선 추가
+            if index < 2 {
+                let separator = UIView()
+                separator.backgroundColor = UIColor(red: 0.219, green: 0.219, blue: 0.219, alpha: 1)
+                containerView.addSubview(separator)
+                separator.snp.makeConstraints { make in
+                    make.trailing.equalTo(containerView.snp.trailing)
+                    make.width.equalTo(1) // 경계선 두께
+                    make.top.bottom.equalToSuperview().inset(20)
+                }
             }
         }
+
 
         // 스크롤 뷰 내 컨텐츠 뷰에 스택 뷰 추가
         detailContentView.addSubview(squaresStackView)
