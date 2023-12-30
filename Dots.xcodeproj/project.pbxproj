@@ -14,6 +14,18 @@
 		37051B842B05F89900D33C07 /* SettingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37051B832B05F89900D33C07 /* SettingService.swift */; };
 		370E5CAF2B24502900388020 /* CalendarDelegateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E5CAE2B24502900388020 /* CalendarDelegateExtension.swift */; };
 		370F3F0A2AEEC11000C4A8F5 /* MyPageExhibitionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */; };
+		3729249F2B3FB81F00BAA329 /* CalendarSchedule_func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3729249E2B3FB81F00BAA329 /* CalendarSchedule_func.swift */; };
+		372924A12B3FB8AB00BAA329 /* CalendarSchedule_tableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924A02B3FB8AB00BAA329 /* CalendarSchedule_tableView.swift */; };
+		372924A42B3FB90600BAA329 /* CalendarSchedule_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924A32B3FB90600BAA329 /* CalendarSchedule_Layout.swift */; };
+		372924A72B3FB97F00BAA329 /* CalendarSchedule_ViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924A62B3FB97F00BAA329 /* CalendarSchedule_ViewType.swift */; };
+		372924AD2B3FBAC600BAA329 /* CalendarDelete_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924AC2B3FBAC600BAA329 /* CalendarDelete_Layout.swift */; };
+		372924AF2B3FBB2000BAA329 /* CalendarDelete_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924AE2B3FBB2000BAA329 /* CalendarDelete_Func.swift */; };
+		372924B42B3FBBA800BAA329 /* CalendarEdit_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924B32B3FBBA800BAA329 /* CalendarEdit_Func.swift */; };
+		372924B62B3FBBB500BAA329 /* CalendarEdit_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924B52B3FBBB500BAA329 /* CalendarEdit_Layout.swift */; };
+		372924B92B3FBC7D00BAA329 /* CalendarEdit_PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924B82B3FBC7D00BAA329 /* CalendarEdit_PickerView.swift */; };
+		372924BF2B3FBD6800BAA329 /* CalendarScheduleCell_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924BE2B3FBD6800BAA329 /* CalendarScheduleCell_Layout.swift */; };
+		372924C12B3FBDB000BAA329 /* CalendarScheduleCell_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924C02B3FBDB000BAA329 /* CalendarScheduleCell_Func.swift */; };
+		372924C32B3FBE0300BAA329 /* CalendarScheduleCell_Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372924C22B3FBE0300BAA329 /* CalendarScheduleCell_Image.swift */; };
 		373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F22B0D500D000A7BCD /* Alert.swift */; };
 		373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */; };
 		37404DEE2B1491C600D16F60 /* SettingEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37404DED2B1491C600D16F60 /* SettingEmail.swift */; };
@@ -21,6 +33,23 @@
 		377130242AFB88C40018D4C1 /* SignUPthird.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130232AFB88C40018D4C1 /* SignUPthird.swift */; };
 		377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130252AFB88FA0018D4C1 /* SignUPfourth.swift */; };
 		3771302A2AFCAB0A0018D4C1 /* SignUPsecondCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */; };
+		377C1AE72B3FC49000147D07 /* Mypage_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1AE62B3FC49000147D07 /* Mypage_Layout.swift */; };
+		377C1AEA2B3FC54900147D07 /* Mypage_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1AE92B3FC54900147D07 /* Mypage_Func.swift */; };
+		377C1AF32B3FC7A200147D07 /* MypageUserSetting_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1AF22B3FC7A200147D07 /* MypageUserSetting_Layout.swift */; };
+		377C1AF52B3FC91600147D07 /* MypageUserSetting_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1AF42B3FC91600147D07 /* MypageUserSetting_Func.swift */; };
+		377C1AF72B3FCCE500147D07 /* MypageUserSetting_TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1AF62B3FCCE500147D07 /* MypageUserSetting_TableView.swift */; };
+		377C1B012B3FEAF200147D07 /* SettingProfile_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B002B3FEAF200147D07 /* SettingProfile_Layout.swift */; };
+		377C1B032B3FEB5200147D07 /* SettingProfile_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B022B3FEB5200147D07 /* SettingProfile_Func.swift */; };
+		377C1B052B3FEC2300147D07 /* SettingProfile_TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B042B3FEC2300147D07 /* SettingProfile_TextField.swift */; };
+		377C1B072B3FEC7C00147D07 /* SettingProfile_ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B062B3FEC7C00147D07 /* SettingProfile_ImagePicker.swift */; };
+		377C1B0C2B3FED1B00147D07 /* SettingEmail_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B0B2B3FED1B00147D07 /* SettingEmail_Layout.swift */; };
+		377C1B0E2B3FEDD600147D07 /* SettingEmail_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B0D2B3FEDD600147D07 /* SettingEmail_Func.swift */; };
+		377C1B102B3FEE2300147D07 /* SettingEmail_TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B0F2B3FEE2300147D07 /* SettingEmail_TextField.swift */; };
+		377C1B152B3FEEE400147D07 /* SettingPassword_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B142B3FEEE400147D07 /* SettingPassword_Layout.swift */; };
+		377C1B172B3FEF5500147D07 /* SettingPassword_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B162B3FEF5500147D07 /* SettingPassword_Func.swift */; };
+		377C1B192B3FF04500147D07 /* SettingPassword_TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B182B3FF04500147D07 /* SettingPassword_TextField.swift */; };
+		377C1B1E2B3FF0DD00147D07 /* SettingNotification_Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B1D2B3FF0DD00147D07 /* SettingNotification_Layout.swift */; };
+		377C1B202B3FF16300147D07 /* SettingNotification_Func.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C1B1F2B3FF16300147D07 /* SettingNotification_Func.swift */; };
 		377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */; };
 		37838F342B1EE46A00E4AFBA /* CalendarScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37838F332B1EE46A00E4AFBA /* CalendarScheduleCell.swift */; };
 		37838F3A2B20608C00E4AFBA /* CalendarEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37838F392B20608C00E4AFBA /* CalendarEdit.swift */; };
@@ -121,6 +150,18 @@
 		37051B832B05F89900D33C07 /* SettingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingService.swift; sourceTree = "<group>"; };
 		370E5CAE2B24502900388020 /* CalendarDelegateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDelegateExtension.swift; sourceTree = "<group>"; };
 		370F3F092AEEC11000C4A8F5 /* MyPageExhibitionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyPageExhibitionCell.swift; path = "../마이페이지_전시폴더/MyPageExhibitionCell.swift"; sourceTree = "<group>"; };
+		3729249E2B3FB81F00BAA329 /* CalendarSchedule_func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule_func.swift; sourceTree = "<group>"; };
+		372924A02B3FB8AB00BAA329 /* CalendarSchedule_tableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule_tableView.swift; sourceTree = "<group>"; };
+		372924A32B3FB90600BAA329 /* CalendarSchedule_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule_Layout.swift; sourceTree = "<group>"; };
+		372924A62B3FB97F00BAA329 /* CalendarSchedule_ViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSchedule_ViewType.swift; sourceTree = "<group>"; };
+		372924AC2B3FBAC600BAA329 /* CalendarDelete_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDelete_Layout.swift; sourceTree = "<group>"; };
+		372924AE2B3FBB2000BAA329 /* CalendarDelete_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDelete_Func.swift; sourceTree = "<group>"; };
+		372924B32B3FBBA800BAA329 /* CalendarEdit_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEdit_Func.swift; sourceTree = "<group>"; };
+		372924B52B3FBBB500BAA329 /* CalendarEdit_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEdit_Layout.swift; sourceTree = "<group>"; };
+		372924B82B3FBC7D00BAA329 /* CalendarEdit_PickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEdit_PickerView.swift; sourceTree = "<group>"; };
+		372924BE2B3FBD6800BAA329 /* CalendarScheduleCell_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarScheduleCell_Layout.swift; sourceTree = "<group>"; };
+		372924C02B3FBDB000BAA329 /* CalendarScheduleCell_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarScheduleCell_Func.swift; sourceTree = "<group>"; };
+		372924C22B3FBE0300BAA329 /* CalendarScheduleCell_Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarScheduleCell_Image.swift; sourceTree = "<group>"; };
 		373FC7F22B0D500D000A7BCD /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		373FC7F52B0E0B09000A7BCD /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
 		37404DED2B1491C600D16F60 /* SettingEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEmail.swift; sourceTree = "<group>"; };
@@ -128,6 +169,23 @@
 		377130232AFB88C40018D4C1 /* SignUPthird.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPthird.swift; sourceTree = "<group>"; };
 		377130252AFB88FA0018D4C1 /* SignUPfourth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPfourth.swift; sourceTree = "<group>"; };
 		377130292AFCAB0A0018D4C1 /* SignUPsecondCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUPsecondCell.swift; sourceTree = "<group>"; };
+		377C1AE62B3FC49000147D07 /* Mypage_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mypage_Layout.swift; sourceTree = "<group>"; };
+		377C1AE92B3FC54900147D07 /* Mypage_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mypage_Func.swift; sourceTree = "<group>"; };
+		377C1AF22B3FC7A200147D07 /* MypageUserSetting_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageUserSetting_Layout.swift; sourceTree = "<group>"; };
+		377C1AF42B3FC91600147D07 /* MypageUserSetting_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageUserSetting_Func.swift; sourceTree = "<group>"; };
+		377C1AF62B3FCCE500147D07 /* MypageUserSetting_TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageUserSetting_TableView.swift; sourceTree = "<group>"; };
+		377C1B002B3FEAF200147D07 /* SettingProfile_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfile_Layout.swift; sourceTree = "<group>"; };
+		377C1B022B3FEB5200147D07 /* SettingProfile_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfile_Func.swift; sourceTree = "<group>"; };
+		377C1B042B3FEC2300147D07 /* SettingProfile_TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfile_TextField.swift; sourceTree = "<group>"; };
+		377C1B062B3FEC7C00147D07 /* SettingProfile_ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfile_ImagePicker.swift; sourceTree = "<group>"; };
+		377C1B0B2B3FED1B00147D07 /* SettingEmail_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEmail_Layout.swift; sourceTree = "<group>"; };
+		377C1B0D2B3FEDD600147D07 /* SettingEmail_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEmail_Func.swift; sourceTree = "<group>"; };
+		377C1B0F2B3FEE2300147D07 /* SettingEmail_TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEmail_TextField.swift; sourceTree = "<group>"; };
+		377C1B142B3FEEE400147D07 /* SettingPassword_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingPassword_Layout.swift; sourceTree = "<group>"; };
+		377C1B162B3FEF5500147D07 /* SettingPassword_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingPassword_Func.swift; sourceTree = "<group>"; };
+		377C1B182B3FF04500147D07 /* SettingPassword_TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingPassword_TextField.swift; sourceTree = "<group>"; };
+		377C1B1D2B3FF0DD00147D07 /* SettingNotification_Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingNotification_Layout.swift; sourceTree = "<group>"; };
+		377C1B1F2B3FF16300147D07 /* SettingNotification_Func.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingNotification_Func.swift; sourceTree = "<group>"; };
 		377D21152AEFBE740005A9A2 /* MyPageTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTicketCell.swift; sourceTree = "<group>"; };
 		37838F332B1EE46A00E4AFBA /* CalendarScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarScheduleCell.swift; sourceTree = "<group>"; };
 		37838F392B20608C00E4AFBA /* CalendarEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEdit.swift; sourceTree = "<group>"; };
@@ -237,6 +295,7 @@
 		37051B7C2B05F83F00D33C07 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				377C1AF82B3FEA5F00147D07 /* Extension */,
 				37051B7D2B05F86B00D33C07 /* SettingProfile.swift */,
 				37051B832B05F89900D33C07 /* SettingService.swift */,
 				37404DED2B1491C600D16F60 /* SettingEmail.swift */,
@@ -244,6 +303,153 @@
 				37051B7F2B05F87700D33C07 /* SettingPassword.swift */,
 			);
 			path = Setting;
+			sourceTree = "<group>";
+		};
+		372924972B3FB71C00BAA329 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				372924BA2B3FBD1900BAA329 /* CalendarScheduleCell */,
+				372924B02B3FBB7E00BAA329 /* CalendarEdit */,
+				372924A82B3FBA3600BAA329 /* CalendarDelete */,
+				372924982B3FB72700BAA329 /* CalendarSchedule */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		372924982B3FB72700BAA329 /* CalendarSchedule */ = {
+			isa = PBXGroup;
+			children = (
+				372924A52B3FB96800BAA329 /* Type */,
+				372924A22B3FB8F200BAA329 /* Layout */,
+				3729249B2B3FB75D00BAA329 /* Delegate */,
+				3729249A2B3FB75400BAA329 /* Func */,
+			);
+			path = CalendarSchedule;
+			sourceTree = "<group>";
+		};
+		3729249A2B3FB75400BAA329 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				3729249E2B3FB81F00BAA329 /* CalendarSchedule_func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		3729249B2B3FB75D00BAA329 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				372924A02B3FB8AB00BAA329 /* CalendarSchedule_tableView.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		372924A22B3FB8F200BAA329 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				372924A32B3FB90600BAA329 /* CalendarSchedule_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		372924A52B3FB96800BAA329 /* Type */ = {
+			isa = PBXGroup;
+			children = (
+				372924A62B3FB97F00BAA329 /* CalendarSchedule_ViewType.swift */,
+			);
+			path = Type;
+			sourceTree = "<group>";
+		};
+		372924A82B3FBA3600BAA329 /* CalendarDelete */ = {
+			isa = PBXGroup;
+			children = (
+				372924AA2B3FBA4A00BAA329 /* Func */,
+				372924A92B3FBA4100BAA329 /* Layout */,
+			);
+			path = CalendarDelete;
+			sourceTree = "<group>";
+		};
+		372924A92B3FBA4100BAA329 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				372924AC2B3FBAC600BAA329 /* CalendarDelete_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		372924AA2B3FBA4A00BAA329 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				372924AE2B3FBB2000BAA329 /* CalendarDelete_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		372924B02B3FBB7E00BAA329 /* CalendarEdit */ = {
+			isa = PBXGroup;
+			children = (
+				372924B72B3FBC6100BAA329 /* Delegate */,
+				372924B22B3FBB9900BAA329 /* Func */,
+				372924B12B3FBB8F00BAA329 /* Layout */,
+			);
+			path = CalendarEdit;
+			sourceTree = "<group>";
+		};
+		372924B12B3FBB8F00BAA329 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				372924B52B3FBBB500BAA329 /* CalendarEdit_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		372924B22B3FBB9900BAA329 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				372924B32B3FBBA800BAA329 /* CalendarEdit_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		372924B72B3FBC6100BAA329 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				372924B82B3FBC7D00BAA329 /* CalendarEdit_PickerView.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		372924BA2B3FBD1900BAA329 /* CalendarScheduleCell */ = {
+			isa = PBXGroup;
+			children = (
+				372924BD2B3FBD4F00BAA329 /* Delegate */,
+				372924BC2B3FBD4900BAA329 /* Func */,
+				372924BB2B3FBD3000BAA329 /* Layout */,
+			);
+			path = CalendarScheduleCell;
+			sourceTree = "<group>";
+		};
+		372924BB2B3FBD3000BAA329 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				372924BE2B3FBD6800BAA329 /* CalendarScheduleCell_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		372924BC2B3FBD4900BAA329 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				372924C02B3FBDB000BAA329 /* CalendarScheduleCell_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		372924BD2B3FBD4F00BAA329 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				372924C22B3FBE0300BAA329 /* CalendarScheduleCell_Image.swift */,
+			);
+			path = Delegate;
 			sourceTree = "<group>";
 		};
 		373FC7EF2B0D4F44000A7BCD /* SignUP */ = {
@@ -284,6 +490,213 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		377C1AE32B3FC45700147D07 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AEE2B3FC74C00147D07 /* MypageUserSetting */,
+				377C1AE42B3FC47900147D07 /* Mypage */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		377C1AE42B3FC47900147D07 /* Mypage */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AE82B3FC4E700147D07 /* Func */,
+				377C1AE52B3FC48100147D07 /* Layout */,
+			);
+			path = Mypage;
+			sourceTree = "<group>";
+		};
+		377C1AE52B3FC48100147D07 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AE62B3FC49000147D07 /* Mypage_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		377C1AE82B3FC4E700147D07 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AE92B3FC54900147D07 /* Mypage_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		377C1AEE2B3FC74C00147D07 /* MypageUserSetting */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AF12B3FC78E00147D07 /* Delegate */,
+				377C1AF02B3FC78800147D07 /* Func */,
+				377C1AEF2B3FC77E00147D07 /* Layout */,
+			);
+			path = MypageUserSetting;
+			sourceTree = "<group>";
+		};
+		377C1AEF2B3FC77E00147D07 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AF22B3FC7A200147D07 /* MypageUserSetting_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		377C1AF02B3FC78800147D07 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AF42B3FC91600147D07 /* MypageUserSetting_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		377C1AF12B3FC78E00147D07 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AF62B3FCCE500147D07 /* MypageUserSetting_TableView.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		377C1AF82B3FEA5F00147D07 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AFC2B3FEA9300147D07 /* SettingNotification */,
+				377C1AFB2B3FEA8200147D07 /* SettingPassword */,
+				377C1AFA2B3FEA7800147D07 /* SettingEmail */,
+				377C1AF92B3FEA6F00147D07 /* SettingProfile */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		377C1AF92B3FEA6F00147D07 /* SettingProfile */ = {
+			isa = PBXGroup;
+			children = (
+				377C1AFF2B3FEADB00147D07 /* Delegate */,
+				377C1AFE2B3FEAC500147D07 /* Func */,
+				377C1AFD2B3FEABD00147D07 /* Layout */,
+			);
+			path = SettingProfile;
+			sourceTree = "<group>";
+		};
+		377C1AFA2B3FEA7800147D07 /* SettingEmail */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B0A2B3FECE200147D07 /* Delegate */,
+				377C1B092B3FECDB00147D07 /* Func */,
+				377C1B082B3FECD400147D07 /* Layout */,
+			);
+			path = SettingEmail;
+			sourceTree = "<group>";
+		};
+		377C1AFB2B3FEA8200147D07 /* SettingPassword */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B132B3FEED300147D07 /* Delegate */,
+				377C1B122B3FEEBB00147D07 /* Func */,
+				377C1B112B3FEEB600147D07 /* Layout */,
+			);
+			path = SettingPassword;
+			sourceTree = "<group>";
+		};
+		377C1AFC2B3FEA9300147D07 /* SettingNotification */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B1B2B3FF0A000147D07 /* Func */,
+				377C1B1A2B3FF09700147D07 /* Layout */,
+			);
+			path = SettingNotification;
+			sourceTree = "<group>";
+		};
+		377C1AFD2B3FEABD00147D07 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B002B3FEAF200147D07 /* SettingProfile_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		377C1AFE2B3FEAC500147D07 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B022B3FEB5200147D07 /* SettingProfile_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		377C1AFF2B3FEADB00147D07 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B042B3FEC2300147D07 /* SettingProfile_TextField.swift */,
+				377C1B062B3FEC7C00147D07 /* SettingProfile_ImagePicker.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		377C1B082B3FECD400147D07 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B0B2B3FED1B00147D07 /* SettingEmail_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		377C1B092B3FECDB00147D07 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B0D2B3FEDD600147D07 /* SettingEmail_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		377C1B0A2B3FECE200147D07 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B0F2B3FEE2300147D07 /* SettingEmail_TextField.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		377C1B112B3FEEB600147D07 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B142B3FEEE400147D07 /* SettingPassword_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		377C1B122B3FEEBB00147D07 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B162B3FEF5500147D07 /* SettingPassword_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
+		377C1B132B3FEED300147D07 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B182B3FF04500147D07 /* SettingPassword_TextField.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		377C1B1A2B3FF09700147D07 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B1D2B3FF0DD00147D07 /* SettingNotification_Layout.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		377C1B1B2B3FF0A000147D07 /* Func */ = {
+			isa = PBXGroup;
+			children = (
+				377C1B1F2B3FF16300147D07 /* SettingNotification_Func.swift */,
+			);
+			path = Func;
+			sourceTree = "<group>";
+		};
 		37976D592B10422E004F278F /* SNS */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,6 +709,7 @@
 			isa = PBXGroup;
 			children = (
 				37B3D8022B0A1B9100DDCEC2 /* CalendarSchedule.swift */,
+				372924972B3FB71C00BAA329 /* Extension */,
 				37838F3B2B20850000E4AFBA /* CalendarDelete.swift */,
 				37838F332B1EE46A00E4AFBA /* CalendarScheduleCell.swift */,
 				37838F392B20608C00E4AFBA /* CalendarEdit.swift */,
@@ -323,6 +737,7 @@
 		37DE8F932B03A4390086FC58 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				377C1AE32B3FC45700147D07 /* Extension */,
 				37DE8F912B039C8E0086FC58 /* MypageNotification.swift */,
 				FF58FB2D2AE6013600853006 /* Mypage.swift */,
 				37051B7A2B04F43800D33C07 /* MypageUserSetting.swift */,
@@ -751,49 +1166,76 @@
 			files = (
 				3771302A2AFCAB0A0018D4C1 /* SignUPsecondCell.swift in Sources */,
 				37DE8F8E2B0396DF0086FC58 /* MypageReview.swift in Sources */,
+				372924AD2B3FBAC600BAA329 /* CalendarDelete_Layout.swift in Sources */,
+				377C1AEA2B3FC54900147D07 /* Mypage_Func.swift in Sources */,
 				FF1EBFEE2B03141E00343619 /* DetailAudioPage.swift in Sources */,
+				372924C12B3FBDB000BAA329 /* CalendarScheduleCell_Func.swift in Sources */,
 				FF58FB302AE6025100853006 /* MapPage.swift in Sources */,
 				37051B802B05F87700D33C07 /* SettingPassword.swift in Sources */,
 				37051B7E2B05F86B00D33C07 /* SettingProfile.swift in Sources */,
 				FFE23F112AE661880002C479 /* CategotyCell.swift in Sources */,
+				377C1B032B3FEB5200147D07 /* SettingProfile_Func.swift in Sources */,
 				37DE8F882AFE38260086FC58 /* SignUPthirdCell.swift in Sources */,
 				FF77BFBF2AF780AC00EA5A1B /* SignUPfirst.swift in Sources */,
+				372924B92B3FBC7D00BAA329 /* CalendarEdit_PickerView.swift in Sources */,
+				377C1B172B3FEF5500147D07 /* SettingPassword_Func.swift in Sources */,
 				37B3D8032B0A1B9100DDCEC2 /* CalendarSchedule.swift in Sources */,
+				377C1AF32B3FC7A200147D07 /* MypageUserSetting_Layout.swift in Sources */,
 				37E2AAD42AEF9FFB00611B0D /* MyPageTicket.swift in Sources */,
+				377C1B052B3FEC2300147D07 /* SettingProfile_TextField.swift in Sources */,
 				37976D5B2B104274004F278F /* Google.swift in Sources */,
 				FFAFCB782AFB76460030C3C9 /* 선별_전시_컬렉션_셀.swift in Sources */,
+				377C1B072B3FEC7C00147D07 /* SettingProfile_ImagePicker.swift in Sources */,
 				37838F3A2B20608C00E4AFBA /* CalendarEdit.swift in Sources */,
 				FFE0C9AF2AE6BB0800F3D783 /* MainExhibitionFirstSectionCollectionCell.swift in Sources */,
 				FFAFCB7A2AFD2D200030C3C9 /* ExhibitionPageTwo.swift in Sources */,
 				37838F342B1EE46A00E4AFBA /* CalendarScheduleCell.swift in Sources */,
+				377C1B152B3FEEE400147D07 /* SettingPassword_Layout.swift in Sources */,
 				FF77BFC12AF79D3A00EA5A1B /* LaunchScreenViewController.swift in Sources */,
 				37DE8F8C2B0396CF0086FC58 /* MypageExhibition.swift in Sources */,
 				37DE8F922B039C8E0086FC58 /* MypageNotification.swift in Sources */,
+				372924A42B3FB90600BAA329 /* CalendarSchedule_Layout.swift in Sources */,
 				FFAFCB822B01DCE00030C3C9 /* ReviewWrittePage.swift in Sources */,
 				FF58FB2C2AE6010F00853006 /* PopularReviewsPage.swift in Sources */,
 				37051B822B05F88D00D33C07 /* SettingNotification.swift in Sources */,
+				372924BF2B3FBD6800BAA329 /* CalendarScheduleCell_Layout.swift in Sources */,
+				377C1AF72B3FCCE500147D07 /* MypageUserSetting_TableView.swift in Sources */,
+				377C1AE72B3FC49000147D07 /* Mypage_Layout.swift in Sources */,
 				FF90EFF82B1D5E3000CE3C41 /* Review.swift in Sources */,
 				FF77BFBD2AF7736900EA5A1B /* LogIN.swift in Sources */,
 				FFAFCB762AFB76220030C3C9 /* ExhibitionModel.swift in Sources */,
 				FF77BFB82AF3E0DB00EA5A1B /* searchPageTableViewCell.swift in Sources */,
+				377C1AF52B3FC91600147D07 /* MypageUserSetting_Func.swift in Sources */,
+				372924A72B3FB97F00BAA329 /* CalendarSchedule_ViewType.swift in Sources */,
 				FF58FB2E2AE6013600853006 /* Mypage.swift in Sources */,
 				37838F3C2B20850000E4AFBA /* CalendarDelete.swift in Sources */,
 				FFBD77AE2B18D1E30078F6CB /* ReviewDetailViewController.swift in Sources */,
+				372924AF2B3FBB2000BAA329 /* CalendarDelete_Func.swift in Sources */,
 				377130242AFB88C40018D4C1 /* SignUPthird.swift in Sources */,
 				FF58FB372AE60BFB00853006 /* SearchPage.swift in Sources */,
 				37DE8FA12B04A6C90086FC58 /* SavedReviewCell.swift in Sources */,
 				37DE8F902B0396EA0086FC58 /* MypageSaved.swift in Sources */,
+				377C1B192B3FF04500147D07 /* SettingPassword_TextField.swift in Sources */,
+				377C1B102B3FEE2300147D07 /* SettingEmail_TextField.swift in Sources */,
+				3729249F2B3FB81F00BAA329 /* CalendarSchedule_func.swift in Sources */,
 				37051B7B2B04F43800D33C07 /* MypageUserSetting.swift in Sources */,
+				377C1B0E2B3FEDD600147D07 /* SettingEmail_Func.swift in Sources */,
+				372924B62B3FBBB500BAA329 /* CalendarEdit_Layout.swift in Sources */,
+				377C1B0C2B3FED1B00147D07 /* SettingEmail_Layout.swift in Sources */,
 				370F3F0A2AEEC11000C4A8F5 /* MyPageExhibitionCell.swift in Sources */,
 				377130262AFB88FA0018D4C1 /* SignUPfourth.swift in Sources */,
 				FF77BFBB2AF7733F00EA5A1B /* SignUPandLogIN.swift in Sources */,
+				377C1B202B3FF16300147D07 /* SettingNotification_Func.swift in Sources */,
+				372924C32B3FBE0300BAA329 /* CalendarScheduleCell_Image.swift in Sources */,
 				FFAFCB742AFB71080030C3C9 /* API.swift in Sources */,
 				37404DEE2B1491C600D16F60 /* SettingEmail.swift in Sources */,
 				FF3C971F2AE5FEA1006FEF23 /* MainExhibitionPage.swift in Sources */,
 				FF5DEC842B2F2EED00C16694 /* ReviewEditPage.swift in Sources */,
 				373FC7F32B0D500D000A7BCD /* Alert.swift in Sources */,
 				FF58FB2A2AE600DF00853006 /* AudioGuidePage.swift in Sources */,
+				377C1B1E2B3FF0DD00147D07 /* SettingNotification_Layout.swift in Sources */,
 				37DE8F9D2B04A6A30086FC58 /* SavedArtgalleryCel.swift in Sources */,
+				377C1B012B3FEAF200147D07 /* SettingProfile_Layout.swift in Sources */,
 				370E5CAF2B24502900388020 /* CalendarDelegateExtension.swift in Sources */,
 				FF3C971B2AE5FEA1006FEF23 /* AppDelegate.swift in Sources */,
 				FFAFCB802B01B01E0030C3C9 /* DetailViewController.swift in Sources */,
@@ -801,9 +1243,11 @@
 				37DE8F9B2B04A6760086FC58 /* SavedExhibitionCell.swift in Sources */,
 				37DE8F9F2B04A6AF0086FC58 /* SavedArtistCell.swift in Sources */,
 				37051B842B05F89900D33C07 /* SettingService.swift in Sources */,
+				372924A12B3FB8AB00BAA329 /* CalendarSchedule_tableView.swift in Sources */,
 				377D21162AEFBE740005A9A2 /* MyPageTicketCell.swift in Sources */,
 				377130222AFB88B00018D4C1 /* SignUPsecond.swift in Sources */,
 				FF47B5EE2AE61BA5006A5004 /* TabBar.swift in Sources */,
+				372924B42B3FBBA800BAA329 /* CalendarEdit_Func.swift in Sources */,
 				37DE8F992B03B46A0086FC58 /* MypageReviewCell.swift in Sources */,
 				373FC7F62B0E0B09000A7BCD /* ForgotPassword.swift in Sources */,
 			);
@@ -980,6 +1424,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cheshire0105.Dots;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dots_key_pro;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1016,6 +1461,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cheshire0105.Dots;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dots_key_pro;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
