@@ -74,17 +74,6 @@ class 켈린더_수정_뷰컨트롤러 : UIViewController {
         배경_백.addGestureRecognizer(panGestureRecognizer)
         let panGestureRecognizer2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         수정_뷰.addGestureRecognizer(panGestureRecognizer2)
-        
-        print("다녀온 날짜 변경 화면")
-        print("----전달 받은 셀 데이터----")
-        print("포스터이미지URL: \(수정할셀데이터?.포스터이미지URL ?? "")")
-        print("전시명: \(수정할셀데이터?.전시명 ?? "")")
-        print("장소: \(수정할셀데이터?.장소 ?? "")")
-        print("방문날짜: \(수정할셀데이터?.방문날짜 ?? "")")
-        print("리뷰문서ID: \(수정할셀데이터?.리뷰문서ID ?? "")")
-        print("포스터스문서ID: \(수정할셀데이터?.포스터스문서ID ?? "")")
-        
-        
     }
     @objc private func handleBackgroundTap() {
         dismiss(animated: false, completion: nil)

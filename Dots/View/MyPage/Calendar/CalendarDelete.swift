@@ -75,16 +75,6 @@ class 켈린더_삭제_뷰컨트롤러 : UIViewController {
         let panGestureRecognizer2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
               삭제_뷰.addGestureRecognizer(panGestureRecognizer2)
         
-        
-        print("다녀온 날짜 삭제/유지 화면")
-        print("----전달 받은 셀 데이터----")
-        print("포스터이미지URL: \(삭제할셀데이터?.포스터이미지URL ?? "")")
-        print("전시명: \(삭제할셀데이터?.전시명 ?? "")")
-        print("장소: \(삭제할셀데이터?.장소 ?? "")")
-        print("방문날짜: \(삭제할셀데이터?.방문날짜 ?? "")")
-        print("리뷰문서ID: \(삭제할셀데이터?.리뷰문서ID ?? "")")
-        print("포스터스문서ID: \(삭제할셀데이터?.포스터스문서ID ?? "")")
-        
     }
     @objc private func handleBackgroundTap() {
             dismiss(animated: false, completion: nil)
