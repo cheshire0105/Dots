@@ -188,7 +188,8 @@ class Mypage: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         캐시된_유저_데이터_마이페이지_적용하기()
         특정날짜방문_캘린더_적용()
-        
+        포스터이미지URL업데이트_파이어스토어()
+
         tabBarController?.tabBar.isHidden = false
 
     }
