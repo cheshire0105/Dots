@@ -14,21 +14,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
             방문날짜_라벨.text = 데이터.방문날짜
         }
     }
-    func 전시_포스터_이미지(from url: String) {
-        guard let imageURL = URL(string: url) else {
-            전시_포스터_이미지.image = UIImage(named: "기본프로필사진")
-            return
-        }
-        
-        전시_포스터_이미지.sd_setImage(with: imageURL) { [weak self] (image, error, _, _) in
-            if let image = image {
-                if let 평균색상_추출 = image.이미지_평균색상() {
-                    self?.이미지_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
-                    self?.라벨_백.backgroundColor = 평균색상_추출.withAlphaComponent(0.8)
-                }
-            }
-        }
-    }
+   
     
     
     let 이미지_백 = {
@@ -71,7 +57,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     let 장소_라벨 = {
         let label = UILabel()
         label.text = "전시 장소"
-        //        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+      
         label.textColor = UIColor.black
         
         
@@ -84,7 +70,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
         let label = UILabel()
         label.text = "2022년 2월 2일"
         label.font = UIFont(name: "HelveticaNeue", size: 12)
-        //        label.textColor =  UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
+      
         label.textColor = UIColor.black
         
         
@@ -148,87 +134,6 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.selectionStyle = .none
-    }
-}
-
-
-
-extension 캘린더_스케쥴_등록_셀{
-    func 캘린더_스케쥴_등록_셀_레이아웃() {
-        contentView.addSubview(이미지_백)
-        contentView.addSubview(라벨_백)
-        contentView.addSubview(구분선)
-        
-        contentView.addSubview(전시_포스터_이미지)
-        contentView.addSubview(전시명_라벨)
-        contentView.addSubview(장소_라벨)
-        contentView.addSubview(방문날짜_라벨)
-        
-        contentView.addSubview(내후기_버튼)
-        
-        이미지_백.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(5)
-            make.leading.equalToSuperview().offset(5)
-            make.bottom.equalToSuperview().offset(-5)
-            make.width.equalTo(이미지_백.snp.height)
-        }
-        
-        전시_포스터_이미지.snp.makeConstraints { make in
-            make.edges.equalTo(이미지_백).inset(5)
-        }
-        
-        라벨_백.snp.makeConstraints { make in
-            make.top.bottom.equalTo(이미지_백)
-            make.leading.equalTo(이미지_백.snp.trailing)
-            make.trailing.equalToSuperview().offset(-5)
-        }
-        
-        구분선.snp.makeConstraints { make in
-            make.centerY.equalTo(이미지_백)
-            make.leading.equalTo(이미지_백.snp.trailing).offset(-40)
-            make.size.equalTo(80)
-        }
-        
-        전시명_라벨.snp.makeConstraints { make in
-            make.top.equalTo(전시_포스터_이미지)
-            make.leading.equalTo(라벨_백).offset(12)
-            make.trailing.equalTo(내후기_버튼.snp.leading)
-        }
-        
-        내후기_버튼.snp.makeConstraints { make in
-            make.centerY.equalTo(전시명_라벨)
-            make.trailing.equalTo(라벨_백).offset(-12)
-            make.size.equalTo(24)
-        }
-        
-        장소_라벨.snp.makeConstraints { make in
-            make.top.equalTo(전시명_라벨.snp.bottom).offset(8)
-            make.leading.equalTo(전시명_라벨)
-        }
-        
-        방문날짜_라벨.snp.makeConstraints { make in
-            make.leading.equalTo(전시명_라벨)
-            make.bottom.equalTo(전시_포스터_이미지)
-        }
-    }
-}
-
-
-extension UIImage {
-    func 이미지_평균색상() -> UIColor? {
-        guard let cgImage = self.cgImage else { return nil }
-        let 입력_이미지 = CIImage(cgImage: cgImage)
-        
-        let 범위_벡터 = CIVector(x: 입력_이미지.extent.origin.x, y: 입력_이미지.extent.origin.y, z: 입력_이미지.extent.size.width, w: 입력_이미지.extent.size.height)
-        let 필터 = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: 입력_이미지, kCIInputExtentKey: 범위_벡터])
-        
-        guard let 출력_이미지 = 필터?.outputImage else { return nil }
-        
-        var 비트맵 = [UInt8](repeating: 0, count: 4)
-        let 컨텍스트 = CIContext(options: [.workingColorSpace: kCFNull ?? "" as AnyObject])
-        컨텍스트.render(출력_이미지, toBitmap: &비트맵, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: CIFormat.RGBA8, colorSpace: nil)
-        
-        return UIColor(red: CGFloat(비트맵[0]) / 255.0, green: CGFloat(비트맵[1]) / 255.0, blue: CGFloat(비트맵[2]) / 255.0, alpha: CGFloat(비트맵[3]) / 255.0)
     }
 }
 

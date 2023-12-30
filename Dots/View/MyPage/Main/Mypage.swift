@@ -382,25 +382,6 @@ extension Mypage {
 //        self.navigationController?.pushViewController(알림_이동, animated: true)
 //        self.navigationItem.hidesBackButton = true
 //        self.dismiss(animated: false, completion: nil)
-        let 캘린더_스케쥴_등록_모달 = 캘린더_스케쥴_등록_모달()
-        
-            
-            if let 모달Instance = 캘린더_스케쥴_등록_모달 as? UIViewController {
-                presentedViewController?.dismiss(animated: true, completion: nil)
-
-                모달Instance.modalPresentationStyle = .pageSheet
-                self.present(모달Instance, animated: true, completion: nil)
-                if let sheetPresent = 모달Instance.presentationController as? UISheetPresentationController {
-                    sheetPresent.prefersGrabberVisible = true
-                    sheetPresent.detents = [.medium(), .large()]
-                    캘린더_스케쥴_등록_모달.isModalInPresentation = false
-                    sheetPresent.largestUndimmedDetentIdentifier = .large
-                    sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
-                    sheetPresent.preferredCornerRadius = 30
-                    sheetPresent.prefersGrabberVisible = false
-                }
-            }
-        
     }
     @objc func 마이페이지_전시_버튼_클릭 () {
         let 전시_이동 = 마이페이지_전시()
