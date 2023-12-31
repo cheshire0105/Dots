@@ -873,6 +873,7 @@ extension DetailViewController: ReviewWritePageDelegate {
 }
 
 import UIKit
+import SnapKit
 
 class ExhibitionDetailViewController: UIViewController {
     var exhibitionDetail: ExhibitionDetailModel?
@@ -896,26 +897,50 @@ class ExhibitionDetailViewController: UIViewController {
     let exhibitionPriceLabel = UILabel()
     let exhibitionPriceImageView = UIImageView()
     let exhibitionPriceLabelDetail = UILabel()
-    
+
+    // 스크롤 뷰와 콘텐츠 뷰
+       let scrollView = UIScrollView()
+       let contentView = UIView()
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         
+        setupScrollView()
         setupUI()
         bindData()
     }
-    
+
+    private func setupScrollView() {
+           view.addSubview(scrollView)
+           scrollView.addSubview(contentView)
+
+           scrollView.snp.makeConstraints { make in
+               make.edges.equalTo(view.safeAreaLayoutGuide)
+           }
+
+        contentView.snp.makeConstraints { make in
+            make.top.equalTo(scrollView.snp.top)
+            make.leading.trailing.equalTo(view)
+            make.width.equalTo(scrollView)
+
+
+        }
+
+       }
+
     private func setupUI() {
         // 커스텀 닫기 버튼 생성
         let closeButton = UIButton()
         closeButton.setImage(UIImage(named: "close"), for: .normal)
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
-        view.addSubview(closeButton)
-        
+        contentView.addSubview(closeButton)
+
         // SnapKit을 사용하여 위치 지정
         closeButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
+            make.top.equalTo(contentView.snp.top).offset(10)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-10)
             make.width.height.equalTo(30) // 적절한 크기로 설정
         }
         
@@ -923,16 +948,16 @@ class ExhibitionDetailViewController: UIViewController {
         exhibitionPeriodLabel.text = "전시 기간"
         exhibitionPeriodLabel.textColor = .white
         exhibitionPeriodLabel.font = UIFont(name: "Pretendard-Bold", size: 16)
-        view.addSubview(exhibitionPeriodLabel)
-        
+        contentView.addSubview(exhibitionPeriodLabel)
+
         // 이미지 뷰 설정
         exhibitionPeriodImageView.image = UIImage(named: "period")
-        view.addSubview(exhibitionPeriodImageView)
-        
+        contentView.addSubview(exhibitionPeriodImageView)
+
         // 이미지 뷰 레이아웃
         exhibitionPeriodImageView.snp.makeConstraints { make in
             make.top.equalTo(closeButton.snp.bottom).offset(20)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(24)
+            make.leading.equalTo(contentView).offset(24)
             make.width.height.equalTo(24) // 적절한 크기 지정
         }
         
@@ -945,21 +970,21 @@ class ExhibitionDetailViewController: UIViewController {
         // 전시 기간 레이블 레이아웃
         exhibitionDatesLabel.textColor = .white
         exhibitionDatesLabel.font = UIFont(name: "Pretendard-Light", size: 15)
-        view.addSubview(exhibitionDatesLabel)
-        
+        contentView.addSubview(exhibitionDatesLabel)
+
         exhibitionDatesLabel.snp.makeConstraints { make in
             make.top.equalTo(exhibitionPeriodLabel.snp.bottom).offset(10)
             make.leading.equalTo(exhibitionPeriodLabel.snp.leading)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-24)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-24)
         }
         
         // 하얀색 경계선 추가
         let borderLineView = UIView()
         borderLineView.backgroundColor = UIColor(red: 0.162, green: 0.162, blue: 0.162, alpha: 1)
-        view.addSubview(borderLineView)
+        contentView.addSubview(borderLineView)
         borderLineView.snp.makeConstraints { make in
             make.top.equalTo(exhibitionDatesLabel.snp.bottom).offset(24)
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalTo(contentView)
             make.height.equalTo(1) // 높이 1로 설정
         }
         
@@ -967,17 +992,17 @@ class ExhibitionDetailViewController: UIViewController {
         exhibitionHoursTitleLabel.text = "관람시간"
         exhibitionHoursTitleLabel.textColor = .white
         exhibitionHoursTitleLabel.font = UIFont(name: "Pretendard-Bold", size: 16)
-        view.addSubview(exhibitionHoursTitleLabel)
-        
+        contentView.addSubview(exhibitionHoursTitleLabel)
+
         // 관람시간 이미지 뷰 설정
         exhibitionHoursImageView.image = UIImage(named: "period 1") // 적절한 이미지 설정 필요
-        view.addSubview(exhibitionHoursImageView)
-        
+        contentView.addSubview(exhibitionHoursImageView)
+
         
         // 관람시간 이미지 뷰 레이아웃
         exhibitionHoursImageView.snp.makeConstraints { make in
             make.top.equalTo(borderLineView.snp.bottom).offset(20)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(24)
+            make.leading.equalTo(contentView).offset(24)
             make.width.height.equalTo(24) // 적절한 크기 지정
         }
         
@@ -991,23 +1016,23 @@ class ExhibitionDetailViewController: UIViewController {
 
         exhibitionHoursLabel.textColor = .white
         exhibitionHoursLabel.font = UIFont(name: "Pretendard-Light", size: 15)
-        view.addSubview(exhibitionHoursLabel)
-        
+        contentView.addSubview(exhibitionHoursLabel)
+
         
         exhibitionHoursLabel.snp.makeConstraints { make in
             make.top.equalTo(exhibitionHoursTitleLabel.snp.bottom).offset(10)
             make.leading.equalTo(exhibitionHoursTitleLabel.snp.leading)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-24)
+            make.trailing.equalTo(contentView).offset(-24)
         }
         
         
         // 하얀색 경계선 추가
         let borderLineViewTwo = UIView()
         borderLineViewTwo.backgroundColor = UIColor(red: 0.162, green: 0.162, blue: 0.162, alpha: 1)
-        view.addSubview(borderLineViewTwo)
+        contentView.addSubview(borderLineViewTwo)
         borderLineViewTwo.snp.makeConstraints { make in
             make.top.equalTo(exhibitionHoursLabel.snp.bottom).offset(24)
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalTo(contentView)
             make.height.equalTo(1) // 높이 1로 설정
         }
         
@@ -1015,16 +1040,16 @@ class ExhibitionDetailViewController: UIViewController {
         exhibitionPriceLabel.text = "입장료"
         exhibitionPriceLabel.textColor = .white
         exhibitionPriceLabel.font = UIFont(name: "Pretendard-Bold", size: 16)
-        view.addSubview(exhibitionPriceLabel)
-        
+        contentView.addSubview(exhibitionPriceLabel)
+
         // 관람시간 이미지 뷰 설정
         exhibitionPriceImageView.image = UIImage(named: "period 2") // 적절한 이미지 설정 필요
-        view.addSubview(exhibitionPriceImageView)
-        
+        contentView.addSubview(exhibitionPriceImageView)
+
         
         exhibitionPriceImageView.snp.makeConstraints { make in
             make.top.equalTo(borderLineViewTwo.snp.bottom).offset(20)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(24)
+            make.leading.equalTo(contentView).offset(24)
             make.width.height.equalTo(24) // 적절한 크기 지정
         }
         
@@ -1037,15 +1062,20 @@ class ExhibitionDetailViewController: UIViewController {
         
         exhibitionPriceLabelDetail.textColor = .white
         exhibitionPriceLabelDetail.font = UIFont(name: "Pretendard-Light", size: 15)
-        view.addSubview(exhibitionPriceLabelDetail)
-        
+        contentView.addSubview(exhibitionPriceLabelDetail)
+
         
         exhibitionPriceLabelDetail.snp.makeConstraints { make in
-            make.top.equalTo(exhibitionPriceLabel.snp.bottom).offset(10)
-            make.leading.equalTo(exhibitionPriceLabel.snp.leading)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-24)
+              make.top.equalTo(exhibitionPriceLabel.snp.bottom).offset(10)
+              make.leading.equalTo(exhibitionPriceLabel.snp.leading)
+              make.trailing.equalTo(contentView).offset(-24)
+              make.bottom.equalTo(contentView.snp.bottom).offset(-20) // contentView의 bottom에 연결
+          }
+
+        contentView.snp.makeConstraints { make in
+            make.top.leading.bottom.trailing.width.equalTo(scrollView)
         }
-        
+
         
     }
     
