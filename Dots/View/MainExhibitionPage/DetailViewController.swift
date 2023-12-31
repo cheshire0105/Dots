@@ -987,7 +987,8 @@ class ExhibitionDetailViewController: UIViewController {
             make.leading.equalTo(exhibitionHoursImageView.snp.trailing).offset(10)
         }
         exhibitionHoursLabel.numberOfLines = 0
-        
+        exhibitionHoursLabel.textAlignment = .left
+
         exhibitionHoursLabel.textColor = .white
         exhibitionHoursLabel.font = UIFont(name: "Pretendard-Light", size: 15)
         view.addSubview(exhibitionHoursLabel)
