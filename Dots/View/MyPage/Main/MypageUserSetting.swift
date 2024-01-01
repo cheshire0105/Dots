@@ -40,7 +40,9 @@ class 마이페이지_설정_페이지 : UIViewController, UINavigationControlle
     
     override func viewDidLoad() {
         view.backgroundColor = .black
-        
+        // 테이블 뷰 설정
+                설정_테이블뷰.separatorStyle = .none // 구분선 숨기기
+                설정_테이블뷰.backgroundColor = .clear // 배경색 투명하게 설정
         UI레이아웃()
         설정_테이블뷰.delegate = self
         설정_테이블뷰.dataSource = self

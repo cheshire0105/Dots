@@ -90,6 +90,8 @@ class 프로필변경_화면 : UIViewController, UINavigationControllerDelegate,
         button.setTitle("변경", for: .normal)
         button.setTitleColor(UIColor(named: "neon"), for: .normal)
         button.setTitleColor(UIColor.black, for: .selected)
+         button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+
         button.backgroundColor = UIColor(named: "neon")
         button.isSelected = !button.isSelected
         button.layer.cornerRadius = 10

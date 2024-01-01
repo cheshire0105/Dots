@@ -410,7 +410,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
             self.회원가입_유저정보_업로드(유저ID: 유저ID, 회원가입_타입: "도트", 닉네임: 닉네임, 이메일: 이메일, 비밀번호: 비밀번호, 로그인상태: false, 프로필이미지URL: 기본프로필이미지URL, 마지막로그인: "로그인 기록이 없음", 마지막로그아웃: "로그아웃 기록이 없음")
             
             // 다음 화면으로 이동
-            let 다음화면_이동 = 회원가입_두번째_뷰컨트롤러()
+            let 다음화면_이동 = 회원가입_네번째_뷰컨트롤러()
             self.navigationController?.pushViewController(다음화면_이동, animated: true)
             self.navigationItem.hidesBackButton = true
         }

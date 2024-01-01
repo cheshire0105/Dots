@@ -177,6 +177,8 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         button.setTitleColor(UIColor.black, for: .selected)
         button.backgroundColor = UIColor(named: "neon")
         button.isSelected = !button.isSelected
+         button.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+
         button.layer.cornerRadius = 10
         return button
     } ()

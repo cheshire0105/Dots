@@ -18,7 +18,7 @@ class 캘린더_스케쥴_등록_모달 : UIViewController {
     let 손잡이 = {
         let uiView = UIView()
         uiView.backgroundColor = .darkGray
-        uiView.layer.cornerRadius = 5
+        uiView.layer.cornerRadius = 2.5
         uiView.layer.borderWidth = 0.5
         return uiView
     } ()
@@ -45,7 +45,8 @@ class 캘린더_스케쥴_등록_모달 : UIViewController {
     
     
     override func viewDidLoad() {
-        
+
+
         view.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         view.layer.borderWidth = 0.3
         

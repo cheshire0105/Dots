@@ -26,7 +26,7 @@ extension 비밀번호변경_화면{
             make.size.equalTo(40)
         }
         페이지_제목.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(60)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
             make.centerX.equalToSuperview()
             make.height.equalTo(44)
         }

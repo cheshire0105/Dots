@@ -363,7 +363,7 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(트위터_버튼)
         
         뒤로가기_버튼.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
             make.size.equalTo(40)
         }

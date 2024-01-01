@@ -561,7 +561,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 탭바를 숨깁니다.
-        //        tabBarController?.tabBar.isHidden = true
+                tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: animated)
         updateHeartIconStateFromFirestore()
 

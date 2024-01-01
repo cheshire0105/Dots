@@ -16,7 +16,7 @@ extension Mypage {
     }
     @objc func 마이페이지_설정_버튼_클릭() {
         let 설정_이동 = 마이페이지_설정_페이지()
-        self.navigationController?.pushViewController(설정_이동, animated: false)
+        self.navigationController?.pushViewController(설정_이동, animated: true)
         self.navigationItem.hidesBackButton = true
         self.dismiss(animated: false, completion: nil)
         

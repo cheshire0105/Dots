@@ -50,6 +50,7 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
                             progress: nil) { [weak self] (image, _, _, _, _, _) in
                                 if let image = image {
                                     날짜에_등록할_이미지.setImage(image, for: .normal)
+                                    
                                     self?.addImageToCell(cell, imageButton: 날짜에_등록할_이미지)
                                 }
                         }
@@ -58,8 +59,8 @@ extension Mypage: FSCalendarDelegate, FSCalendarDataSource {
                     }
                 }
 
-                날짜에_등록할_이미지.layer.borderWidth = 1
-                날짜에_등록할_이미지.layer.borderColor = UIColor.white.cgColor
+//                날짜에_등록할_이미지.layer.borderWidth = 1
+//                날짜에_등록할_이미지.layer.borderColor = UIColor.white.cgColor
                 날짜에_등록할_이미지.clipsToBounds = true
                 날짜에_등록할_이미지.layer.masksToBounds = true
                 날짜에_등록할_이미지.layer.cornerRadius = 20
@@ -113,11 +114,12 @@ extension Mypage  {
                 self.present(모달Instance, animated: true, completion: nil)
                 if let sheetPresent = 모달Instance.presentationController as? UISheetPresentationController {
                     sheetPresent.detents = [.medium(), .large()]
+                    sheetPresent.prefersGrabberVisible = true
+
                     캘린더_스케쥴_등록_모달.isModalInPresentation = false
                     sheetPresent.largestUndimmedDetentIdentifier = .large
                     sheetPresent.prefersScrollingExpandsWhenScrolledToEdge = true
                     sheetPresent.preferredCornerRadius = 30
-                    sheetPresent.prefersGrabberVisible = false
                 }
             } 
         }

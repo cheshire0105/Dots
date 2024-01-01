@@ -27,6 +27,8 @@ class Mypage: UIViewController {
         imageButton.clipsToBounds = true
         //        imageButton.setImage(UIImage(named: "cabanel"), for: .selected)
         //        imageButton.setImage(UIImage(named: "cabanel"), for: .normal)
+        imageButton.imageView?.contentMode = .scaleAspectFit
+
         imageButton.isSelected = !imageButton.isSelected
         return imageButton
     }()
@@ -159,12 +161,14 @@ class Mypage: UIViewController {
         
         
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
-        calendar.appearance.headerDateFormat = "MMMM yyyy"
+        calendar.appearance.headerDateFormat = "yyyy년 MMMM"
         calendar.appearance.headerTitleColor = UIColor.white
         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 20)
         calendar.appearance.weekdayTextColor = UIColor.darkGray
         calendar.appearance.todayColor = UIColor.white
-        
+        calendar.locale = Locale(identifier: "ko_KR")
+
+
         calendar.appearance.todaySelectionColor = UIColor.white
 //        calendar.appearance.titleTodayColor = UIColor(named: "neon")
         calendar.appearance.titleTodayColor = UIColor.black
@@ -175,7 +179,7 @@ class Mypage: UIViewController {
         calendar.appearance.titleSelectionColor = UIColor.white
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 17)
         calendar.appearance.weekdayFont = UIFont.boldSystemFont(ofSize: 14)
-        calendar.scrollDirection = .vertical
+        calendar.scrollDirection = .horizontal
         calendar.scope = .month
         calendar.allowsMultipleSelection = false
         
@@ -205,7 +209,6 @@ class Mypage: UIViewController {
         
         버튼_클릭()
         UI레이아웃()
-        버튼_백_레이아웃 ()
         캘린더_레이아웃()
         캘린더.dataSource = self
         캘린더.delegate = self

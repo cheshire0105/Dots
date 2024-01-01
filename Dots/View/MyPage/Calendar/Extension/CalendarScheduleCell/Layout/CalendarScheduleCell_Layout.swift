@@ -37,16 +37,16 @@ extension 캘린더_스케쥴_등록_셀{
         }
         
         전시명_라벨.snp.makeConstraints { make in
-            make.top.equalTo(전시_포스터_이미지)
+            make.top.equalTo(전시_포스터_이미지).offset(3)
             make.leading.equalTo(라벨_백).offset(12)
-            make.trailing.equalTo(내후기_버튼.snp.leading)
+//            make.trailing.equalTo(view.snp.leading)
         }
         
-        내후기_버튼.snp.makeConstraints { make in
-            make.centerY.equalTo(전시명_라벨)
-            make.trailing.equalTo(라벨_백).offset(-12)
-            make.size.equalTo(24)
-        }
+//        내후기_버튼.snp.makeConstraints { make in
+//            make.centerY.equalTo(전시명_라벨)
+//            make.trailing.equalTo(라벨_백).offset(-12)
+//            make.size.equalTo(24)
+//        }
         
         장소_라벨.snp.makeConstraints { make in
             make.top.equalTo(전시명_라벨.snp.bottom).offset(8)
@@ -55,7 +55,7 @@ extension 캘린더_스케쥴_등록_셀{
         
         방문날짜_라벨.snp.makeConstraints { make in
             make.leading.equalTo(전시명_라벨)
-            make.bottom.equalTo(전시_포스터_이미지)
+            make.bottom.equalTo(전시_포스터_이미지).inset(3)
         }
     }
 }

@@ -50,6 +50,7 @@ class 캘린더_스케쥴_등록_셀 : UITableViewCell {
         label.text = "전시 제목"
         label.textColor = UIColor.black
         label.textAlignment = .left
+        label.numberOfLines = 0
         label.font = UIFont.boldSystemFont(ofSize: 16)
         return label
     } ()

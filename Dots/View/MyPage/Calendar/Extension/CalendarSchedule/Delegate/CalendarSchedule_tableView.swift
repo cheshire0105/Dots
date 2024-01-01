@@ -33,10 +33,24 @@ extension 캘린더_스케쥴_등록_모달: UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.cellForRow(at: indexPath)?.selectionStyle = .none
-        print("셀클릭")
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let 선택된데이터 = 셀_데이터_배열.셀_데이터_배열[indexPath.row]
+        let 포스터스문서ID = 선택된데이터.포스터스문서ID
+
+        // 모달을 닫고 네비게이션 진행
+        self.dismiss(animated: true) {
+            if let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? UITabBarController,
+               let navVC = tabBarVC.selectedViewController as? UINavigationController {
+                let 상세페이지뷰컨트롤러 = BackgroundImageViewController()
+                상세페이지뷰컨트롤러.posterImageName = 포스터스문서ID
+                
+                navVC.pushViewController(상세페이지뷰컨트롤러, animated: true)
+            }
+        }
     }
-    
+
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = .clear

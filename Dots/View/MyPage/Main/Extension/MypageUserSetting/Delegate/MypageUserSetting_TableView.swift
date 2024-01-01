@@ -16,12 +16,12 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
         셀.configure(with: 설정아이템.title)
         셀.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         
-        if indexPath.section == 0 && indexPath.row == 0 {
-            let 스위치 = UISwitch()
-            스위치.isOn = 설정아이템.isSwitchOn
-            스위치.addTarget(self, action: #selector(프로필스위치변경), for: .valueChanged)
-            셀.accessoryView = 스위치
-            셀.selectionStyle = .none
+        if indexPath.section == 0 {
+//            let 스위치 = UISwitch()
+//            스위치.isOn = 설정아이템.isSwitchOn
+//            스위치.addTarget(self, action: #selector(프로필스위치변경), for: .valueChanged)
+//            셀.accessoryView = 스위치
+//            셀.selectionStyle = .none
             셀.layer.cornerRadius = 10
             
         } else if indexPath.section == 1 {
@@ -29,7 +29,7 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
             셀.tintColor = UIColor.lightGray
             if indexPath.row == 0 {
                 셀.layer.cornerRadius = 10
-                셀.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+//                셀.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             } else if indexPath.row == 3 {
                 셀.layer.cornerRadius = 10
                 셀.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -91,15 +91,50 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 || indexPath.section == 2 || indexPath.section == 3 , indexPath.section == 1 && indexPath.row == 3 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        let cornerRadius: CGFloat = 10
+        cell.backgroundColor = .clear
+
+        let layer = CAShapeLayer()
+        let pathRef = CGMutablePath()
+        let bounds = cell.bounds.insetBy(dx: 10, dy: 0)
+
+        var addLine = false
+
+        if indexPath.row == 0 && indexPath.row == 설정아이템들[indexPath.section].count - 1 {
+            pathRef.addRoundedRect(in: bounds, cornerWidth: cornerRadius, cornerHeight: cornerRadius)
+        } else if indexPath.row == 0 {
+            pathRef.move(to: CGPoint(x: bounds.minX, y: bounds.maxY))
+            pathRef.addArc(tangent1End: CGPoint(x: bounds.minX, y: bounds.minY), tangent2End: CGPoint(x: bounds.midX, y: bounds.minY), radius: cornerRadius)
+            pathRef.addArc(tangent1End: CGPoint(x: bounds.maxX, y: bounds.minY), tangent2End: CGPoint(x: bounds.maxX, y: bounds.midY), radius: cornerRadius)
+            pathRef.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY))
+            addLine = true
+        } else if indexPath.row == 설정아이템들[indexPath.section].count - 1 {
+            pathRef.move(to: CGPoint(x: bounds.minX, y: bounds.minY))
+            pathRef.addArc(tangent1End: CGPoint(x: bounds.minX, y: bounds.maxY), tangent2End: CGPoint(x: bounds.midX, y: bounds.maxY), radius: cornerRadius)
+            pathRef.addArc(tangent1End: CGPoint(x: bounds.maxX, y: bounds.maxY), tangent2End: CGPoint(x: bounds.maxX, y: bounds.midY), radius: cornerRadius)
+            pathRef.addLine(to: CGPoint(x: bounds.maxX, y: bounds.minY))
         } else {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            pathRef.addRect(bounds)
+            addLine = true
         }
-        if indexPath.row == 설정아이템들[indexPath.section].count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+
+        layer.path = pathRef
+        layer.fillColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1).cgColor
+
+        if addLine {
+            let lineLayer = CALayer()
+            let lineHeight = (1 / UIScreen.main.scale)
+            lineLayer.frame = CGRect(x: bounds.minX + 10, y: bounds.size.height - lineHeight, width: bounds.size.width - 20, height: lineHeight)
+            lineLayer.backgroundColor = tableView.separatorColor?.cgColor
+            layer.addSublayer(lineLayer)
         }
+
+        let testView = UIView(frame: bounds)
+        testView.layer.insertSublayer(layer, at: 0)
+        testView.backgroundColor = .clear
+        cell.backgroundView = testView
     }
+
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         tabBarController?.tabBar.isHidden = true
     }
@@ -117,34 +152,40 @@ extension 마이페이지_설정_페이지 : UITableViewDelegate, UITableViewDat
 }
 
 class 설정_셀: UITableViewCell {
-    
+
     let 버튼_이름_라벨 = {
         let label = UILabel()
         label.textColor = .white
         return label
     }()
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
+
         setupUI()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setupUI() {
         contentView.addSubview(버튼_이름_라벨)
-        
+
+        // 폰트 설정
+        버튼_이름_라벨.font = UIFont.systemFont(ofSize: 16) // 원하는 폰트와 크기로 변경
+
+        // 오토레이아웃 설정
         버튼_이름_라벨.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
-            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().offset(30) // 왼쪽 여백
+            make.centerY.equalToSuperview() // 세로 중앙 정렬
+            // 추가적인 레이아웃 조건 설정 가능
         }
     }
-    
+
     func configure(with title: String) {
         버튼_이름_라벨.text = title
+        // 여기에서 추가적인 설정 가능, 예를 들어 글자 색상 변경 등
     }
 }
-
-
