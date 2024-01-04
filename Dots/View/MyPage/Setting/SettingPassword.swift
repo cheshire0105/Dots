@@ -208,13 +208,17 @@ class 비밀번호변경_화면 : UIViewController, UIGestureRecognizerDelegate 
         if let 제공업체 = Auth.auth().currentUser?.providerData {
             for 유저정보 in 제공업체 {
                 if 유저정보.providerID == "google.com" {
-                    // Google 연동 계정이면 알럿을 바로 띄우고 되돌려보냄
+                    // Google에 연동된 계정일 경우 알림 표시
                     showAlert(message: "구글 연동 계정입니다")
+                    break
+                } else if 유저정보.providerID == "apple.com" {
+                    // Apple에 연동된 계정일 경우 알림 표시
+                    showAlert(message: "애플 연동 계정입니다")
                     break
                 }
             }
         }
-        
+
         UI레이아웃()
         버튼_클릭()
         

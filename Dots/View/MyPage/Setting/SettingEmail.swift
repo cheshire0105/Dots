@@ -119,6 +119,10 @@ class 이메일변경_화면 : UIViewController, UIGestureRecognizerDelegate {
                     // Google에 연동된 계정일 경우 알림 표시
                     showAlert(message: "구글 연동 계정입니다")
                     break
+                } else if 유저정보.providerID == "apple.com" {
+                    // Apple에 연동된 계정일 경우 알림 표시
+                    showAlert(message: "애플 연동 계정입니다")
+                    break
                 }
             }
         }

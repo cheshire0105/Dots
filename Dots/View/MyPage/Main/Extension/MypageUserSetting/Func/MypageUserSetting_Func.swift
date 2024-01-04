@@ -135,27 +135,34 @@ extension 마이페이지_설정_페이지 {
 extension 마이페이지_설정_페이지 {
     
     func 회원탈퇴_기능() {
-        if let 현재접속중인유저 = Auth.auth().currentUser {
-            if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "password" {
-                UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-                회원탈퇴_auth()
-                
-                
-            } else if let 제공업체 = 현재접속중인유저.providerData.first?.providerID, 제공업체 == "google.com" {
-                let 구글계정일경우_알럿 = UIAlertController(title: "구글 계정입니다.", message: "구글 계정은 회원 탈퇴 서비스를 지원하지 않습니다.", preferredStyle: .alert)
-                
-                let 확인액션 = UIAlertAction(title: "확인", style: .default) { _ in
-                }
-                
-                구글계정일경우_알럿.addAction(확인액션)
-                
-                self.present(구글계정일경우_알럿, animated: true, completion: nil)
-            }
-        } else {
-            print("도트 회원가입 자체 서비스 방식으로 가입한 계정이 아닙니다.")
-        }
+          if let 현재접속중인유저 = Auth.auth().currentUser {
+              if let 제공업체 = 현재접속중인유저.providerData.first?.providerID {
+                  switch 제공업체 {
+                  case "google.com":
+                      // 구글 계정일 경우 처리
+                      계정탈퇴_알럿_표시(제목: "구글 계정입니다.", 메시지: "구글 계정은 회원 탈퇴 서비스를 지원하지 않습니다.")
+                  case "apple.com":
+                      // 애플 계정일 경우 처리
+                      계정탈퇴_알럿_표시(제목: "애플 계정입니다.", 메시지: "애플 계정은 회원 탈퇴 서비스를 지원하지 않습니다.")
+                  case "password":
+                      // 이메일/비밀번호 계정일 경우 처리
+                      회원탈퇴_auth()
+                  default:
+                      print("지원되지 않는 계정 타입입니다.")
+                  }
+              }
+          } else {
+              print("도트 회원가입 자체 서비스 방식으로 가입한 계정이 아닙니다.")
+          }
+      }
+
+    func 계정탈퇴_알럿_표시(제목: String, 메시지: String) {
+        let 알럿 = UIAlertController(title: 제목, message: 메시지, preferredStyle: .alert)
+        let 확인액션 = UIAlertAction(title: "확인", style: .default, handler: nil)
+        알럿.addAction(확인액션)
+        self.present(알럿, animated: true, completion: nil)
     }
-    
+
     
     func 회원탈퇴_auth() {
         if let user = Auth.auth().currentUser {
