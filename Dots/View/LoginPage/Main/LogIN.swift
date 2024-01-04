@@ -361,7 +361,7 @@ extension 로그인_뷰컨트롤러 {
         view.addSubview(간편로그인_라벨)
         view.addSubview(구글_버튼)
         view.addSubview(애플_버튼)
-        view.addSubview(트위터_버튼)
+//        view.addSubview(트위터_버튼)
         
         뒤로가기_버튼.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10) // 상단 safe area로부터 10포인트 아래에 위치
@@ -427,11 +427,11 @@ extension 로그인_뷰컨트롤러 {
             make.centerX.equalToSuperview()
             make.size.equalTo(50)
         }
-        트위터_버튼.snp.makeConstraints { make in
-            make.centerY.equalTo(애플_버튼)
-            make.leading.equalTo(애플_버튼.snp.trailing).offset(20)
-            make.size.equalTo(50)
-        }
+//        트위터_버튼.snp.makeConstraints { make in
+//            make.centerY.equalTo(애플_버튼)
+//            make.leading.equalTo(애플_버튼.snp.trailing).offset(20)
+//            make.size.equalTo(50)
+//        }
     }
 }
 

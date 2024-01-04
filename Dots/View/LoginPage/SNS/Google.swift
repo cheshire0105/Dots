@@ -238,6 +238,10 @@ extension 로그인_뷰컨트롤러: ASAuthorizationControllerDelegate, ASAuthor
        }
 
        func 메인화면으로_이동() {
+
+           UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
+
+
            let 메인화면_이동 = TabBar()
            self.navigationController?.pushViewController(메인화면_이동, animated: true)
            self.navigationItem.hidesBackButton = true
