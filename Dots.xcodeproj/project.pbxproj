@@ -239,6 +239,7 @@
 		FF88217A2B3973F4007D462B /* Animation - 1703492547297.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Animation - 1703492547297.json"; sourceTree = "<group>"; };
 		FF88217C2B39787E007D462B /* Animation - 1703663030547.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Animation - 1703663030547.json"; sourceTree = "<group>"; };
 		FF90EFF72B1D5E3000CE3C41 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
+		FF9B47F12B46544B00CB5D86 /* Dots.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Dots.entitlements; sourceTree = "<group>"; };
 		FFAFCB732AFB71080030C3C9 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		FFAFCB752AFB76220030C3C9 /* ExhibitionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExhibitionModel.swift; sourceTree = "<group>"; };
 		FFAFCB772AFB76460030C3C9 /* 선별_전시_컬렉션_셀.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "선별_전시_컬렉션_셀.swift"; sourceTree = "<group>"; };
@@ -847,6 +848,7 @@
 		FF3C97192AE5FEA1006FEF23 /* Dots */ = {
 			isa = PBXGroup;
 			children = (
+				FF9B47F12B46544B00CB5D86 /* Dots.entitlements */,
 				FF3C97342AE5FF57006FEF23 /* AppScene */,
 				FF3C97332AE5FF49006FEF23 /* Api */,
 				FF3C97322AE5FF3C006FEF23 /* ViewModel */,
@@ -1400,6 +1402,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Dots/Dots.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 29;
@@ -1439,6 +1442,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Dots/Dots.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 29;

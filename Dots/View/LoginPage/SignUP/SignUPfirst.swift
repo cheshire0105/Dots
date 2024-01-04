@@ -6,8 +6,8 @@ import FirebaseFirestore
 import Firebase
 import SnapKit
 
-class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate {
-    
+class 회원가입_첫번째_뷰컨트롤러 : UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+
     var 활성화된텍스트필드: UITextField?
     //페이지 제목
     private let 제목_라벨 = {
@@ -238,6 +238,7 @@ extension 회원가입_첫번째_뷰컨트롤러 {
         회원가입_중복확인_버튼.addTarget(self, action: #selector(회원가입_중복확인_버튼_클릭), for: .touchUpInside)
         비밀번호_표시_온오프.addTarget(self, action: #selector(비밀번호_표시_온오프_클릭), for: .touchUpInside)
         구글_버튼.addTarget(self, action: #selector(구글_버튼_클릭), for: .touchUpInside)
+        애플_버튼.addTarget(self, action: #selector(애플_버튼_클릭), for: .touchUpInside)
         이메일_리프레쉬.addTarget(self, action: #selector(이메일_리프레쉬_클릭), for: .touchUpInside)
     }
     
@@ -644,3 +645,200 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     
 }
 
+import UIKit
+import FirebaseAuth
+import FirebaseCore
+import AuthenticationServices
+import FirebaseFirestore
+
+extension 회원가입_첫번째_뷰컨트롤러: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+
+    @objc func 애플_버튼_클릭() {
+        print("애플 버튼 클릭")
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential, let appleIDToken = appleIDCredential.identityToken, let idTokenString = String(data: appleIDToken, encoding: .utf8) {
+            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nil)
+
+            Auth.auth().signIn(with: credential) { [weak self] (authResult, error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                // 로그인 성공 후
+                guard let self = self, let user = authResult?.user else { return }
+
+                // 애플 로그인 완료 후 처리
+                self.handleAppleSignInCompleted(user: user)
+            }
+        }
+    }
+    // 애플 로그인 완료 후 호출되는 메소드
+    func handleAppleSignInCompleted(user: User) {
+        // 프로필 이미지 선택 안내 얼럿
+        let alert = UIAlertController(title: "프로필 이미지", message: "프로필 이미지를 선택해주세요.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .photoLibrary
+
+            self.present(imagePicker, animated: true, completion: nil)
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+
+
+
+    // 사용자가 이미지를 선택했을 때 호출되는 메소드
+    // UIImagePickerControllerDelegate 메소드
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let selectedImage = info[.originalImage] as? UIImage else {
+            picker.dismiss(animated: true, completion: nil)
+            return
+        }
+
+        uploadImageToFirebaseStorage(image: selectedImage) { [weak self] imageUrl in
+            picker.dismiss(animated: true) {
+                guard let self = self else { return }
+                if let imageUrl = imageUrl {
+                    self.promptForNickname { nickname in
+                        // Firestore에 사용자 정보 저장
+                        self.completeSignUp(with: imageUrl, nickname: nickname)
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    // 회원가입 완료 후 Firestore에 유저 데이터 저장
+    // Firestore에 유저 데이터 저장
+    private func completeSignUp(with imageUrl: String, nickname: String) {
+        guard let 유저ID = Auth.auth().currentUser?.uid else { return }
+        let 회원가입_타입 = "애플"
+        let 이메일 = Auth.auth().currentUser?.email ?? "알 수 없음"
+
+        self.회원가입_유저정보_업로드(유저ID: 유저ID,
+                           회원가입_타입: 회원가입_타입,
+                           닉네임: nickname,
+                           이메일: 이메일,
+                           비밀번호: "",
+                           로그인상태: true,
+                           프로필이미지URL: imageUrl,
+                           마지막로그인: "로그인 기록이 없음",
+                           마지막로그아웃: "로그아웃 기록이 없음")
+
+        // 메인 화면 (TabBar)으로 전환
+               let 메인화면_이동 = TabBar()
+               self.navigationController?.pushViewController(메인화면_이동, animated: true)
+               self.navigationItem.hidesBackButton = true
+    }
+
+
+    private func uploadImageToFirebaseStorage(image: UIImage, completion: @escaping (String?) -> Void) {
+        // 이미지를 JPEG 데이터로 변환
+        guard let imageData = image.jpegData(compressionQuality: 0.5) else {
+            completion(nil)
+            return
+        }
+
+        // Firebase Storage 경로 설정
+        let imageName = "\(UUID().uuidString).jpg"
+        let storageRef = Storage.storage().reference().child("profile_images/\(imageName)")
+
+        // 이미지 데이터를 Firebase Storage에 업로드
+        storageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                print("이미지 업로드 에러: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+
+            // 업로드된 이미지의 URL을 가져옴
+            storageRef.downloadURL { url, error in
+                 if let error = error {
+                     print("이미지 URL 가져오기 에러: \(error.localizedDescription)")
+                     completion(nil)
+                 } else if let url = url {
+                     print("이미지 URL: \(url.absoluteString)")
+                     completion(url.absoluteString)
+                 } else {
+                     print("이미지 URL 가져오기 실패: URL이 없음")
+                     completion(nil)
+                 }
+             }
+        }
+    }
+
+
+    // 닉네임 입력 얼럿
+    private func promptForNickname(completion: @escaping (String) -> Void) {
+        let alert = UIAlertController(title: "프로필 설정", message: "닉네임을 입력해주세요.", preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.placeholder = "닉네임"
+        }
+        let saveAction = UIAlertAction(title: "저장", style: .default) { _ in
+            let nickname = alert.textFields?.first?.text ?? "Unknown"
+            completion(nickname)
+        }
+        alert.addAction(saveAction)
+        present(alert, animated: true, completion: nil)
+    }
+
+    // Firestore에 사용자 프로필 업데이트
+    private func updateUserProfile(user: User, nickname: String, profileImageUrl: String) {
+        let 데이터베이스 = Firestore.firestore()
+        let userData: [String: Any] = [
+            "닉네임": nickname,
+            "프로필이미지URL": profileImageUrl,
+            // 다른 필요한 데이터 추가
+        ]
+
+        데이터베이스.collection("유저_데이터_관리").document(user.uid).updateData(userData) { 에러 in
+            if let 에러 = 에러 {
+                print("사용자 정보 업데이트 실패: \(에러.localizedDescription)")
+            } else {
+                print("사용자 정보 업데이트 성공")
+                // 추가적인 작업 수행
+            }
+        }
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+
+    func 애플계정정보_파이어스토어_업로드(회원가입_타입: String, 애플이메일: String, 애플닉네임: String, 유저UID: String, 로그인상태: Bool, 프로필이미지URL: String) {
+        let 데이터베이스 = Firestore.firestore()
+        let 유저컬렉션 = 데이터베이스.collection("유저_데이터_관리").document(유저UID)
+        let 현재날짜시간 = Timestamp(date: Date())
+
+        let userData: [String: Any] = [
+            "회원가입_타입": 회원가입_타입,
+            "로그인상태": 로그인상태,
+            "닉네임": 애플닉네임,
+            "이메일": 애플이메일,
+            "프로필이미지URL": 프로필이미지URL,
+            "마지막로그인": 현재날짜시간,
+            "마지막로그아웃": "로그아웃 기록이 없음"
+        ]
+
+        유저컬렉션.setData(userData) { 에러 in
+            if let 에러 = 에러 {
+                print("Firestore 애플 데이터 등록 실패: \(에러.localizedDescription)")
+            } else {
+                print("애플 계정 auth 등록 후 필요 데이터를 Firestore에 애플 데이터 등록 성공")
+            }
+        }
+    }
+}
