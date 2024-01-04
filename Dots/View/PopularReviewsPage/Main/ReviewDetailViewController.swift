@@ -57,7 +57,7 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
     
     // 새로운 컴포넌트 선언
     let additionalImageButton1 = UIButton()
-    let additionalLabel1 = UILabel()
+    var additionalLabel1 = UILabel()
     let additionalImageView2 = UIImageView()
     let additionalLabel2 = UILabel()
     let reviewTitle = UILabel()
@@ -78,10 +78,13 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
     let likeAnimationView = LottieAnimationView()
 
+    var isLikedByCurrentUser: Bool = false
+
 
     private var pageControl: UIPageControl!
 
-    
+    var likesNum: Int? // 추가된 프로퍼티
+
 
     override func viewWillAppear(_ animated: Bool) {
 
@@ -115,7 +118,8 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
         configureNavigationBar()
         setupRightNavigationButton()
         
-        
+        updateLikesCount(likesNum) // 좋아요 수 업데이트 메소드 호출
+
         
         
         
@@ -169,8 +173,17 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
 
         setupLikeAnimation()
 
-
+        if let likes = likesNum {
+            additionalLabel1.text = "\(likes)"
+        }
     }
+
+    // 좋아요 수 업데이트 메소드
+      func updateLikesCount(_ count: Int?) {
+          guard let count = count else { return }
+          additionalLabel1.text = "\(count)"
+      }
+
 
     func setupLikeAnimation() {
         // 로티 애니메이션 설정
@@ -805,23 +818,23 @@ class ReviewDetailViewController: UIViewController, UICollectionViewDataSource, 
                 let likes = document.data()?["likes"] as? [String: Bool] ?? [:]
                 let likesNum = document.data()?["likesNum"] as? Int ?? 0 // 좋아요 수 가져오기
                 let isLiked = likes[currentUserID] ?? false
-
+                
                 // 좋아요 아이콘과 수 업데이트
-                self?.updateLikeButtonIcon(isLiked: isLiked)
                 self?.updateLikesCount(likesNum)
+                // 좋아요 버튼 UI 업데이트
+                self?.updateLikeButtonUI(isLiked: isLiked)
             }
         }
     }
 
-    func updateLikesCount(_ count: Int) {
-        additionalLabel1.text = "\(count)"
+    // 좋아요 버튼 UI 업데이트 함수
+    func updateLikeButtonUI(isLiked: Bool) {
+        let iconName = isLiked ? "Vector 5" : "Vector 3" // 'likedIconName'과 'unlikedIconName'을 실제 아이콘 이름으로 교체하세요.
+        additionalImageButton1.setImage(UIImage(named: iconName), for: .normal)
     }
 
-
-
-    func updateLikeButtonIcon(isLiked: Bool) {
-        let iconName = isLiked ? "Vector 5" : "Vector 3" // 좋아요 상태에 따른 아이콘 이름 변경
-        additionalImageButton1.setImage(UIImage(named: iconName), for: .normal)
+    func updateLikesCount(_ count: Int) {
+        additionalLabel1.text = "\(count)"
     }
 
 

@@ -967,7 +967,7 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
     private func setupBackButton() {
 
         view.addSubview(createCustomBackButton)
-        view.addSubview(createCustomHeadsetIcon)
+//        view.addSubview(createCustomHeadsetIcon)
 
         view.addSubview(heartIcon)
         view.addSubview(recordButton)
@@ -983,11 +983,11 @@ class BackgroundImageViewController: UIViewController, UIGestureRecognizerDelega
 
 
 
-        createCustomHeadsetIcon.snp.makeConstraints{ make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.trailing.equalTo(view.snp.trailing).offset(-16)
-            make.width.height.equalTo(40)
-        }
+//        createCustomHeadsetIcon.snp.makeConstraints{ make in
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+//            make.trailing.equalTo(view.snp.trailing).offset(-16)
+//            make.width.height.equalTo(40)
+//        }
 
         recordButton.snp.makeConstraints{ make in
             make.bottom.equalTo(heartIcon.snp.top).inset(6)
