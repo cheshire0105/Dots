@@ -196,6 +196,7 @@ extension 로그인_뷰컨트롤러 {
         로그인_비밀번호찾기_버튼.addTarget(self, action: #selector(로그인_비밀번호찾기_버튼_클릭), for: .touchUpInside)
         로그인_버튼.addTarget(self, action: #selector(로그인_버튼_클릭), for: .touchUpInside)
         구글_버튼.addTarget(self, action: #selector(구글_버튼_클릭), for: .touchUpInside)
+        애플_버튼.addTarget(self, action: #selector(애플_버튼_클릭), for: .touchUpInside)
     }
     //일반 화면전환 버튼
     @objc func 뒤로가기_버튼_클릭() {

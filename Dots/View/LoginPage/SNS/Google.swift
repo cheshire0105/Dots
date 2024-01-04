@@ -1,10 +1,16 @@
 import UIKit
+import AuthenticationServices
 import FirebaseAuth
 import FirebaseCore
 import GoogleSignIn
 import SnapKit
 import Firebase
 import Foundation
+import UIKit
+import FirebaseAuth
+import FirebaseCore
+import AuthenticationServices
+import FirebaseFirestore
 
 extension 로그인_뷰컨트롤러 {
 
@@ -177,3 +183,88 @@ extension 회원가입_첫번째_뷰컨트롤러 {
     }
 }
 
+extension 로그인_뷰컨트롤러: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+
+    @objc func 애플_버튼_클릭() {
+        print("애플 로그인 시도")
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+            // 기존 코드 유지
+            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential, let appleIDToken = appleIDCredential.identityToken, let idTokenString = String(data: appleIDToken, encoding: .utf8) {
+                let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nil)
+
+                Auth.auth().signIn(with: credential) { [weak self] (authResult, error) in
+                    guard let self = self else { return }
+                    if let error = error {
+                        print("애플 로그인 에러: \(error.localizedDescription)")
+                        return
+                    }
+                    print("애플 로그인 성공")
+
+
+                    // 사용자 정보 가져오기
+                                   guard let user = authResult?.user else { return }
+                                   let 유저UID = user.uid
+
+                    // Firestore에서 사용자 정보 조회
+                                  self.사용자정보조회_및_처리(유저UID: 유저UID)
+
+           
+            }
+        }
+    }
+
+    func 사용자정보조회_및_처리(유저UID: String) {
+           let 데이터베이스 = Firestore.firestore()
+           데이터베이스.collection("유저_데이터_관리").document(유저UID).getDocument { (document, error) in
+               if let document = document, document.exists {
+                   // 기존 사용자 정보가 있음: 로그인 처리
+                   print("기존 사용자 정보 사용")
+                   // 메인 화면으로 이동
+                   self.메인화면으로_이동()
+               } else {
+                   // 새 사용자: 회원가입 처리 또는 적절한 조치
+                   print("새 사용자 또는 사용자 정보 없음")
+               }
+           }
+       }
+
+       func 메인화면으로_이동() {
+           let 메인화면_이동 = TabBar()
+           self.navigationController?.pushViewController(메인화면_이동, animated: true)
+           self.navigationItem.hidesBackButton = true
+       }
+
+    // 애플 로그인 사용자 정보 Firestore에 저장
+    func 애플계정정보_파이어스토어_업로드(회원가입_타입: String, 애플이메일: String, 애플닉네임: String, 유저UID: String, 로그인상태: Bool, 프로필이미지URL: String) {
+        let 데이터베이스 = Firestore.firestore()
+        let userData: [String: Any] = [
+            "회원가입_타입": 회원가입_타입,
+            "로그인상태": 로그인상태,
+            "닉네임": 애플닉네임,
+            "이메일": 애플이메일,
+            "프로필이미지URL": 프로필이미지URL,
+            "마지막로그인": Timestamp(date: Date()),
+            "마지막로그아웃": "로그아웃 기록이 없음"
+        ]
+        데이터베이스.collection("유저_데이터_관리").document(유저UID).setData(userData) { 에러 in
+            if let 에러 = 에러 {
+                print("Firestore 애플 데이터 등록 실패: \(에러.localizedDescription)")
+            } else {
+                print("Firestore에 애플 데이터 등록 성공")
+            }
+        }
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+}
