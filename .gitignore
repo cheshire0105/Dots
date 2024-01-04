@@ -26,8 +26,11 @@ xcuserdata/
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 
-# Exclude plist files
-*.plist
+# Ignore specific plist files
+Dots.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+Dots.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+Dots/GoogleService-Info.plist
+Dots/Info.plist
 
 
 # End of https://www.toptal.com/developers/gitignore/api/xcode,cocoapods
