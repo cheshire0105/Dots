@@ -3,7 +3,7 @@
 //  Dots
 //
 //  Created by cheshire on 10/23/23.
-// 최신화 
+// 최신화
 
 import UIKit
 import SnapKit
@@ -50,7 +50,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        
+
 
     }
 
@@ -451,7 +451,7 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
         }
     }
 
-    
+
 
     func setupTableView() {
         tableView.delegate = self
@@ -475,11 +475,12 @@ class SearchPage: UIViewController, UISearchBarDelegate, UITableViewDelegate, UI
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if tableView == autocompleteTableView {
-              return 44 // 자동완성 셀의 높이를 44pt로 설정
-          } else {
-              return 200 // 기본 테이블 뷰 셀의 높이
-          }
+            return 44 // 자동완성 셀의 높이
+        } else {
+            return 160 // searchPageTableViewCell의 높이를 160으로 조정
+        }
     }
+
 
 
 
@@ -672,6 +673,3 @@ class AutocompleteTableViewCell: UITableViewCell {
         titleLabel.text = text
     }
 }
-
-
-

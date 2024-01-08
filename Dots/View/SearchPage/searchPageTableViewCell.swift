@@ -54,12 +54,12 @@ class searchPageTableViewCell: UITableViewCell {
         contentView.addSubview(popularCellImageView)
 
         ExhibitionTitleLabel.textColor = .white
-        ExhibitionTitleLabel.font = UIFont(name: "Pretendard-Regular", size: 20)
+        ExhibitionTitleLabel.font = UIFont(name: "Pretendard-Bold", size: 16)
         ExhibitionTitleLabel.numberOfLines = 0
         contentView.addSubview(ExhibitionTitleLabel)
 
         museumLabel.textColor = .white
-        museumLabel.font = UIFont(name: "Pretendard-Regular", size: 15)
+        museumLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
         contentView.addSubview(museumLabel)
 
 
@@ -67,8 +67,8 @@ class searchPageTableViewCell: UITableViewCell {
         popularCellImageView.snp.makeConstraints { make in
             make.centerY.equalTo(contentView)
             make.leading.equalTo(contentView).offset(15)
-            make.width.equalTo(130)
-            make.height.equalTo(180)
+            make.width.equalTo(100)
+            make.height.equalTo(150)
         }
 
         ExhibitionTitleLabel.snp.makeConstraints { make in
@@ -125,5 +125,3 @@ extension searchPageTableViewCell {
 
 
 }
-
-
