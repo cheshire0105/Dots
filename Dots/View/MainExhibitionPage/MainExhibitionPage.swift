@@ -124,7 +124,7 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             // Main Exhibition Section
             let section = NSCollectionLayoutSection(group: mainExhibitionGroup)
             section.orthogonalScrollingBehavior = .groupPaging // 여기에서 가로 스크롤을 설정합니다.
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0) // 첫 번째 섹션의 아래 간격을 10으로 설정
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 50, trailing: 0) // 첫 번째 섹션의 아래 간격을 10으로 설정
 
             return section // 이 부분이 누락되어 있었습니다.
 
@@ -146,9 +146,9 @@ class MainExhibitionPage: UIViewController, UIPickerViewDataSource, UIPickerView
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44))
             let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
             section.boundarySupplementaryItems = [header]
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 20, trailing: 0)
 
-            section.interGroupSpacing = 16
+            section.interGroupSpacing = 0
             section.orthogonalScrollingBehavior = .continuous
 
             return section
