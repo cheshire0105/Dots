@@ -1381,6 +1381,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var mapView: MKMapView!
     let database = Firestore.firestore()
     var imageName: String? // 이미지 이름을 저장할 프로퍼티
+    
 
     lazy var backButton: UIButton = {
         let button = UIButton()
@@ -1492,7 +1493,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         view.addSubview(mapAlertView)
         setupMapAlertViewConstraints()
 
-        configureLocationManager()
+//        configureLocationManager()
     }
 
     private func setupFloatingButtonConstraints() {
